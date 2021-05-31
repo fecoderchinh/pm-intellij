@@ -56,10 +56,10 @@ public class LoginController {
                     infoBox("Vui lòng nhập đúng Tài khoản và Mật khẩu", null, "Thông báo");
                 } else {
                     String sessionID = authorize(user,pass);
+//                    infoBox("Đăng nhập thành công!", null, "Thông báo");
                     if (sessionID != null) {
                         loginManager.authenticated(sessionID);
                     }
-                    infoBox("Đăng nhập thành công!", null, "Thông báo");
                 }
             }
         });
@@ -75,7 +75,7 @@ public class LoginController {
 
     private String generateSessionID() {
         sessionID++;
-        return "Session: " + Integer.toHexString(sessionID);
+        return ""+sessionID;
     }
 
     public static void infoBox(String infoMessage, String headerText, String title) {
