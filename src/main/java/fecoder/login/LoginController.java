@@ -3,6 +3,7 @@ package fecoder.login;
 import java.sql.SQLException;
 
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -16,44 +17,65 @@ import fecoder.DAO.jdbcDAO;
 public class LoginController {
 
     @FXML
-    private TextField accountField;
+    private TextField account;
 
     @FXML
-    private PasswordField passwordField;
+    private PasswordField password;
 
     @FXML
     private Button submitButton;
 
-    @FXML
-    public void login(ActionEvent event) throws SQLException {
+    public void initialize() {}
 
-        Window owner = submitButton.getScene().getWindow();
+    public void initManager(final LoginManager loginManager) {
+        submitButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
 
-//        System.out.println(accountField.getText());
-//        System.out.println(passwordField.getText());
+                if (account.getText().isEmpty()) {
+                    showAlert("Tài khoản không thể bỏ trống");
+                    return;
+                }
+                if (password.getText().isEmpty()) {
+                    showAlert("Mật khẩu không thể bỏ trống");
+                    return;
+                }
 
-        if (accountField.getText().isEmpty()) {
-            showAlert(owner,
-                    "Tài khoản không thể bỏ trống");
-            return;
-        }
-        if (passwordField.getText().isEmpty()) {
-            showAlert(owner,
-                    "Mật khẩu không thể bỏ trống");
-            return;
-        }
+                String user = account.getText();
+                String pass = password.getText();
 
-        String emailId = accountField.getText();
-        String password = passwordField.getText();
+                jdbcDAO connect = new jdbcDAO();
+                boolean flag = false;
+                try {
+                    flag = connect.validate(user, pass);
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
 
-        jdbcDAO connect = new jdbcDAO();
-        boolean flag = connect.validate(emailId, password);
+                if (!flag) {
+                    infoBox("Vui lòng nhập đúng Tài khoản và Mật khẩu", null, "Thông báo");
+                } else {
+                    String sessionID = authorize(user,pass);
+                    if (sessionID != null) {
+                        loginManager.authenticated(sessionID);
+                    }
+                    infoBox("Đăng nhập thành công!", null, "Thông báo");
+                }
+            }
+        });
+    }
 
-        if (!flag) {
-            infoBox("Vui lòng nhập đúng Tài khoản và Mật khẩu", null, "Thông báo");
-        } else {
-            infoBox("Đăng nhập thành công!", null, "Thông báo");
-        }
+    private String authorize(String user, String pass) {
+        return user.equals(account.getText()) && pass.equals(password.getText())
+                ? generateSessionID()
+                : null;
+    }
+
+    private static int sessionID = 0;
+
+    private String generateSessionID() {
+        sessionID++;
+        return "Session: " + Integer.toHexString(sessionID);
     }
 
     public static void infoBox(String infoMessage, String headerText, String title) {
@@ -64,12 +86,11 @@ public class LoginController {
         alert.showAndWait();
     }
 
-    private static void showAlert(Window owner, String message) {
+    private static void showAlert(String message) {
         Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle("Thông báo");
         alert.setHeaderText(null);
         alert.setContentText(message);
-        alert.initOwner(owner);
         alert.show();
     }
 }
