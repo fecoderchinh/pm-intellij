@@ -12,8 +12,8 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
 //        System.out.println(getClass());
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/login_form.fxml"));
-        primaryStage.setTitle("User Registration");
-        primaryStage.setScene(new Scene(root, 800, 500));
+        primaryStage.setTitle("Đăng nhập");
+        primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
 

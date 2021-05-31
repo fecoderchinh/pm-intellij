@@ -19,7 +19,7 @@
                            maxWidth="Infinity" hgrow="ALWAYS"/>
     </columnConstraints>
     <!-- Add Header Label -->
-    <Label text="Login Form (FXML)" GridPane.columnIndex="0"
+    <Label text="ĐĂNG NHẬP TÀI KHOẢN" GridPane.columnIndex="0"
            GridPane.rowIndex="0" GridPane.columnSpan="2"
            GridPane.rowSpan="1" GridPane.halignment="CENTER" >
         <font>
@@ -30,19 +30,19 @@
         </GridPane.margin>
     </Label>
     <!-- Add Email Label -->
-    <Label text="Email ID : " GridPane.columnIndex="0"
+    <Label text="Tài khoản : " GridPane.columnIndex="0"
            GridPane.rowIndex="2"/>
     <!-- Add Email Text Field -->
     <TextField fx:id="accountField" prefHeight="40"
                GridPane.columnIndex="1" GridPane.rowIndex="2"/>
     <!-- Add Password Label -->
-    <Label text="Password : " GridPane.columnIndex="0"
+    <Label text="Mật khẩu : " GridPane.columnIndex="0"
            GridPane.rowIndex="3"/>
     <!-- Add Password Field -->
     <PasswordField fx:id="passwordField" prefHeight="40"
                    GridPane.columnIndex="1" GridPane.rowIndex="3"/>
     <!-- Add Submit Button -->
-    <Button fx:id="submitButton" text="Submit"
+    <Button fx:id="submitButton" text="ĐĂNG NHẬP"
             prefWidth="100" prefHeight="40" defaultButton="true"
             GridPane.columnIndex="0" GridPane.rowIndex="4"
             GridPane.columnSpan="2" GridPane.rowSpan="1"

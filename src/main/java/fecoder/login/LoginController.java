@@ -34,12 +34,12 @@ public class LoginController {
 
         if (accountField.getText().isEmpty()) {
             showAlert(owner,
-                    "Please enter your email id");
+                    "Tài khoản không thể bỏ trống");
             return;
         }
         if (passwordField.getText().isEmpty()) {
             showAlert(owner,
-                    "Please enter a password");
+                    "Mật khẩu không thể bỏ trống");
             return;
         }
 
@@ -50,9 +50,9 @@ public class LoginController {
         boolean flag = connect.validate(emailId, password);
 
         if (!flag) {
-            infoBox("Please enter correct Email and Password", null, "Failed");
+            infoBox("Vui lòng nhập đúng Tài khoản và Mật khẩu", null, "Thông báo");
         } else {
-            infoBox("Login Successful!", null, "Failed");
+            infoBox("Đăng nhập thành công!", null, "Thông báo");
         }
     }
 
@@ -66,7 +66,7 @@ public class LoginController {
 
     private static void showAlert(Window owner, String message) {
         Alert alert = new Alert(AlertType.ERROR);
-        alert.setTitle("Form Error!");
+        alert.setTitle("Thông báo");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.initOwner(owner);
