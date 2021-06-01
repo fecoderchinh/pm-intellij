@@ -43,6 +43,8 @@ public class LoginManager {
                     getClass().getResource("/fxml/mainview.fxml")
             );
             scene.setRoot((Parent) loader.load());
+            scene.getWindow().sizeToScene();
+            scene.getWindow().centerOnScreen();
             MainViewController controller = loader.<MainViewController>getController();
             controller.initSessionID(this, sessionID);
         } catch (IOException ex) {
