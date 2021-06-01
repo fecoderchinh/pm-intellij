@@ -18,6 +18,7 @@ public class Main extends Application {
         loginManager.showLoginScreen();
 
         primaryStage.setScene(scene);
+        primaryStage.setTitle("Xác thực");
         primaryStage.show();
     }
 
