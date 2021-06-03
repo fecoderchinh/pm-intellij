@@ -129,44 +129,44 @@ public class SuplierController implements Initializable {
         ObservableList<Suplier> list = FXCollections.observableArrayList(suplierDAO.getSupliers());
         FilteredList<Suplier> filteredList = new FilteredList<>(list, p -> true);
 
-//        searchField.textProperty()
-//                .addListener((observable, oldValue, newValue) -> {
-//                    switch (comboBox.getValue()) {
-//                        case "Mã":
-//                            filteredList.setPredicate(str -> {
-//                                if (newValue == null || newValue.isEmpty())
-//                                    return true;
-//                                String lowerCaseFilter = newValue.toLowerCase();
-//                                return str.getCode().toLowerCase().contains
-//                                        (lowerCaseFilter);
-//                            });
-//                            break;
-//                        case "Tên":
-//                            filteredList.setPredicate(str -> {
-//                                if (newValue == null || newValue.isEmpty())
-//                                    return true;
-//                                String lowerCaseFilter = newValue.toLowerCase();
-//                                return str.getName().toLowerCase().contains
-//                                        (lowerCaseFilter);
-//                            });
-//                            break;
-//                        case "Địa chỉ":
-//                            filteredList.setPredicate(str -> {
-//                                if (newValue == null || newValue.isEmpty())
-//                                    return true;
-//                                String lowerCaseFilter = newValue.toLowerCase();
-//                                return str.getAddress().toLowerCase().contains
-//                                        (lowerCaseFilter);
-//                            });
-//                            break;
-//                    }
-//                });
-//
-//        comboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-//            if(newVal != null) {
-//                searchField.setText(null);
-//            }
-//        });
+        searchField.textProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    switch (comboBox.getValue()) {
+                        case "Mã":
+                            filteredList.setPredicate(str -> {
+                                if (newValue == null || newValue.isEmpty())
+                                    return true;
+                                String lowerCaseFilter = newValue.toLowerCase();
+                                return str.getCode().toLowerCase().contains
+                                        (lowerCaseFilter);
+                            });
+                            break;
+                        case "Tên":
+                            filteredList.setPredicate(str -> {
+                                if (newValue == null || newValue.isEmpty())
+                                    return true;
+                                String lowerCaseFilter = newValue.toLowerCase();
+                                return str.getName().toLowerCase().contains
+                                        (lowerCaseFilter);
+                            });
+                            break;
+                        case "Địa chỉ":
+                            filteredList.setPredicate(str -> {
+                                if (newValue == null || newValue.isEmpty())
+                                    return true;
+                                String lowerCaseFilter = newValue.toLowerCase();
+                                return str.getAddress().toLowerCase().contains
+                                        (lowerCaseFilter);
+                            });
+                            break;
+                    }
+                });
+
+        comboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if(newVal != null) {
+                searchField.setText(null);
+            }
+        });
 
         SortedList<Suplier> sortedList = new SortedList<>(filteredList);
         sortedList.comparatorProperty().bind(suplierTable.comparatorProperty());
