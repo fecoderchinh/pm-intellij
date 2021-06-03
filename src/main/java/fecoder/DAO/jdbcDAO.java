@@ -20,7 +20,7 @@ public class jdbcDAO {
     }
 
     public boolean validate(String account, String password) throws SQLException {
-        String sql = "Select * from user where account = ? and password = ?";
+        String sql = "Select * from users where account = ? and password = ?";
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(sql);

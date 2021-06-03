@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 
 public class MainViewController {
     public Button newWindowButton;
+    public Button suplierManage;
     @FXML private Button logoutButton;
     @FXML private Label sessionLabel;
 
@@ -29,19 +30,20 @@ public class MainViewController {
             }
         });
 
-        newWindowButton.setOnMouseClicked((event) -> {
+        suplierManage.setOnMouseClicked((event) -> {
             try {
                 FXMLLoader fxmlLoader = new FXMLLoader();
-                fxmlLoader.setLocation(getClass().getResource("/fxml/NewWindow.fxml"));
+                fxmlLoader.setLocation(getClass().getResource("/fxml/suplier.fxml"));
                 /*
                  * if "fx:controller" is not set in fxml
                  * fxmlLoader.setController(NewWindowController);
                  */
                 Scene scene = new Scene(fxmlLoader.load());
                 Stage stage = new Stage();
-                stage.setTitle("New Window");
+                stage.setTitle("Quản Lý Danh Sách Nhà Cung Cấp");
                 stage.setScene(scene);
                 stage.initModality(Modality.APPLICATION_MODAL);
+                stage.setResizable(false);
                 stage.show();
             } catch (IOException e) {
                 Logger logger = Logger.getLogger(getClass().getName());

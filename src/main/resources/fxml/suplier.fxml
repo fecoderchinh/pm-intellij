@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.collections.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fecoder.controllers.SuplierController">
+
+    <top>
+        <VBox spacing="10">
+            <HBox spacing="10">
+                <Label text="QUẢN LÝ DANH SÁCH NHÀ CUNG CẤP">
+                    <font>
+                        <Font size="28.0" />
+                    </font>
+                </Label>
+            </HBox>
+            <padding>
+                <Insets bottom="20" />
+            </padding>
+        </VBox>
+    </top>
+
+    <left>
+        <VBox prefHeight="688.0" prefWidth="234.0" spacing="10">
+            <HBox prefWidth="340" spacing="10">
+                <VBox spacing="16.5">
+                    <Label text="Code">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </Label>
+                    <Label text="Tên">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </Label>
+                    <Label text="Địa chỉ">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </Label>
+                    <Label text="Email">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </Label>
+                    <Label text="Đại diện">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </Label>
+                    <Label text="Điện thoại">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </Label>
+                    <Label text="Fax">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </Label>
+                </VBox>
+                <VBox spacing="10">
+                    <TextField fx:id="codeField" />
+                    <TextField fx:id="nameField" />
+                    <TextField fx:id="addressField" />
+                    <TextField fx:id="emailField" />
+                    <TextField fx:id="deputyField" />
+                    <TextField fx:id="phoneField" />
+                    <TextField fx:id="faxField" />
+                </VBox>
+            </HBox>
+            <HBox spacing="10">
+                <Button fx:id="insertButton" onAction="#insertButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="60.0" text="THÊM" />
+                <Button fx:id="updateButton" onAction="#updateButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="80.0" text="CẬP NHẬT" />
+                <Button fx:id="clearButton" onAction="#clearButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="60.0" text="CLEAR" />
+            </HBox>
+        </VBox>
+    </left>
+
+    <center>
+        <VBox spacing="10">
+            <HBox prefWidth="790" spacing="10">
+                <HBox alignment="CENTER_LEFT" prefWidth="500" spacing="10">
+                    <Label text="Tìm theo">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </Label>
+                    <ComboBox>
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <String fx:value="Mã" />
+                                <String fx:value="Tên" />
+                                <String fx:value="Địa chỉ" />
+                            </FXCollections>
+                        </items>
+                        <value>
+                            <String fx:value="Mã" />
+                        </value>
+                    </ComboBox>
+                    <TextField fx:id="searchField" />
+                </HBox>
+                <HBox alignment="BASELINE_RIGHT" prefWidth="290" spacing="10">
+                    <Button id="reloadData" fx:id="reloadData" onAction="#reloadData" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="TẢI LẠI BẢNG" />
+                </HBox>
+            </HBox>
+            <ScrollPane prefHeight="655.0" prefWidth="770.0">
+                <TableView fx:id="suplierTable" maxWidth="1.7976931348623157E308" prefHeight="655.0" editable="true">
+                    <columns>
+                        <TableColumn fx:id="idColumn" prefWidth="50.0" text="STT" />
+                        <TableColumn fx:id="codeColumn" prefWidth="70.0" text="Mã" />
+                        <TableColumn fx:id="nameColumn" prefWidth="180.0" text="Tên" />
+                        <TableColumn fx:id="addressColumn" prefWidth="200.0" text="Địa chỉ" />
+                        <TableColumn fx:id="emailColumn" prefWidth="180.0" text="Email" />
+                        <TableColumn fx:id="deputyColumn" prefWidth="180.0" text="Đại diện" />
+                        <TableColumn fx:id="phoneColumn" prefWidth="180.0" text="Điện thoại" />
+                        <TableColumn fx:id="faxColumn" prefWidth="180.0" text="Fax" />
+                    </columns>
+                </TableView>
+            </ScrollPane>
+        </VBox>
+    </center>
+
+    <bottom>
+        <VBox spacing="10">
+            <HBox spacing="10">
+                <Label fx:id="anchorLabel">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </Label>
+                <Label fx:id="anchorData">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </Label>
+            </HBox>
+        </VBox>
+    </bottom>
+
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+    </padding>
+
+
+</BorderPane>
