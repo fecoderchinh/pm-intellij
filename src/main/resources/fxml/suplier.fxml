@@ -91,7 +91,7 @@
                             <Font size="14.0" />
                         </font>
                     </Label>
-                    <ComboBox>
+                    <ComboBox fx:id="comboBox">
                         <items>
                             <FXCollections fx:factory="observableArrayList">
                                 <String fx:value="Mã" />

@@ -6,6 +6,8 @@ import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -46,10 +48,11 @@ public class SuplierController implements Initializable {
     public Label anchorLabel;
     public Label anchorData;
     public Button clearButton;
+    public ComboBox<String> comboBox;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        showSupliers();
+        loadView();
     }
 
     @FXML
@@ -64,7 +67,7 @@ public class SuplierController implements Initializable {
 
     private void reload() {
         suplierTable.getItems().clear();
-        showSupliers();
+        loadView();
     }
 
     @FXML
@@ -81,7 +84,7 @@ public class SuplierController implements Initializable {
         );
         clearFields();
         suplierTable.getItems().clear();
-        showSupliers();
+        loadView();
     }
 
     @FXML
@@ -97,7 +100,7 @@ public class SuplierController implements Initializable {
         );
         clearFields();
         suplierTable.getItems().clear();
-        showSupliers();
+        loadView();
     }
 
     private void getSuplier(String name, String address, String email, String deputy, String phone, String fax, String code, int id) {
@@ -124,8 +127,51 @@ public class SuplierController implements Initializable {
         anchorData.setText(null);
     }
 
-    public void showSupliers() {
+    public void loadView() {
         ObservableList<Suplier> list = FXCollections.observableArrayList(suplierDAO.getSupliers());
+        FilteredList<Suplier> filteredList = new FilteredList<>(list, p -> true);
+
+        searchField.textProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    switch (comboBox.getValue()) {
+                        case "Mã":
+                            filteredList.setPredicate(str -> {
+                                if (newValue == null || newValue.isEmpty())
+                                    return true;
+                                String lowerCaseFilter = newValue.toLowerCase();
+                                return str.getCode().toLowerCase().contains
+                                        (lowerCaseFilter);
+                            });
+                            break;
+                        case "Tên":
+                            filteredList.setPredicate(str -> {
+                                if (newValue == null || newValue.isEmpty())
+                                    return true;
+                                String lowerCaseFilter = newValue.toLowerCase();
+                                return str.getName().toLowerCase().contains
+                                        (lowerCaseFilter);
+                            });
+                            break;
+                        case "Địa chỉ":
+                            filteredList.setPredicate(str -> {
+                                if (newValue == null || newValue.isEmpty())
+                                    return true;
+                                String lowerCaseFilter = newValue.toLowerCase();
+                                return str.getAddress().toLowerCase().contains
+                                        (lowerCaseFilter);
+                            });
+                            break;
+                    }
+                });
+
+        comboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if(newVal != null) {
+                searchField.setText(null);
+            }
+        });
+
+        SortedList<Suplier> sortedList = new SortedList<>(filteredList);
+        sortedList.comparatorProperty().bind(suplierTable.comparatorProperty());
 
         suplierTable.setEditable(true);
 
@@ -263,6 +309,7 @@ public class SuplierController implements Initializable {
             return row ;
         });
 
-        suplierTable.setItems(list);
+//        suplierTable.setItems(list);
+        suplierTable.setItems(sortedList);
     }
 }
