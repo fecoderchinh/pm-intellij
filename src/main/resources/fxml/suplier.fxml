@@ -106,11 +106,11 @@
                     <TextField fx:id="searchField" />
                 </HBox>
                 <HBox alignment="BASELINE_RIGHT" prefWidth="290" spacing="10">
-                    <Button id="reloadData" fx:id="reloadData" onAction="#reloadData" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="TẢI LẠI BẢNG" />
+                    <Button id="reloadData" fx:id="reloadData" onAction="#reloadData" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="TẢI LẠI TRANG" />
                 </HBox>
             </HBox>
             <ScrollPane prefHeight="655.0" prefWidth="770.0">
-                <TableView fx:id="suplierTable" maxWidth="1.7976931348623157E308" prefHeight="655.0" editable="true">
+                <TableView fx:id="dataTable" maxWidth="1.7976931348623157E308" prefHeight="655.0" editable="true">
                     <columns>
                         <TableColumn fx:id="idColumn" prefWidth="50.0" text="STT" />
                         <TableColumn fx:id="codeColumn" prefWidth="70.0" text="Mã" />

@@ -9,11 +9,6 @@ import java.util.List;
 
 public class SuplierDAO {
 
-    String selectAll = "Select * from supliers";
-    String insertQuery = "insert into supliers (name, address, email, deputy, phone, fax, code) values(?,?,?,?,?,?,?)";
-    String updateQuery = "update supliers set name=?, address=?, email=?, deputy=?, phone=?, fax=?, code=? where id=?";
-    String deleteQuery = "delete from supliers where id=?";
-
     private Suplier createSuplier(ResultSet resultSet) {
         Suplier suplier = new Suplier();
         try {
@@ -26,7 +21,7 @@ public class SuplierDAO {
             suplier.setFax(resultSet.getString("fax"));
             suplier.setCode(resultSet.getString("code"));
         } catch (SQLException ex) {
-            fecoder.DAO.jdbcDAO.printSQLException(ex);
+            jdbcDAO.printSQLException(ex);
         }
         return suplier;
     }
@@ -36,7 +31,8 @@ public class SuplierDAO {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             Statement statement = conn.createStatement();
-            ResultSet resultSet = statement.executeQuery(this.selectAll);
+            String selectAll = "Select * from supliers";
+            ResultSet resultSet = statement.executeQuery(selectAll);
             while (resultSet.next()) {
                 Suplier suplier = createSuplier(resultSet);
                 list.add(suplier);
@@ -45,51 +41,31 @@ public class SuplierDAO {
             conn.close();
         } catch (ClassNotFoundException | SQLException ex) {
             assert ex instanceof SQLException;
-            fecoder.DAO.jdbcDAO.printSQLException((SQLException) ex);
+            jdbcDAO.printSQLException((SQLException) ex);
         }
 
         return list;
     }
 
     public void updateData(String column, String value, int id) {
-        String query = "update supliers set "+ column +"=? where id=?";
-        try {
-            Connection conn = ConnectionUtils.getMyConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setString(1, value);
-            preparedStatement.setInt(2, id);
-            preparedStatement.execute();
-        } catch (Exception ex) {
-            assert ex instanceof SQLException;
-            fecoder.DAO.jdbcDAO.printSQLException((SQLException) ex);
-        }
+        jdbcDAO.updateSingleData("supliers", column, value, id);
     }
 
     public void delete(int id) {
-        try {
-            Connection conn = ConnectionUtils.getMyConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(this.deleteQuery);
-            preparedStatement.setInt(1, id);
-
-            preparedStatement.executeUpdate();
-
-            preparedStatement.close();
-            conn.close();
-        } catch (Exception ex) {
-            assert ex instanceof SQLException;
-            fecoder.DAO.jdbcDAO.printSQLException((SQLException) ex);
-        }
+        jdbcDAO.delete("supliers", id);
     }
 
     public void update(String name, String address, String email, String deputy, String phone, String fax, String code, int id) {
-        preparedQueryWhereId(this.updateQuery, name, address, email, deputy, phone, fax, code, id);
+        String updateQuery = "update supliers set name=?, address=?, email=?, deputy=?, phone=?, fax=?, code=? where id=?";
+        preparedUpdateQuery(updateQuery, name, address, email, deputy, phone, fax, code, id);
     }
 
     public void insert(String name, String address, String email, String deputy, String phone, String fax, String code) {
-        preparedQuery(this.insertQuery, name, address, email, deputy, phone, fax, code);
+        String insertQuery = "insert into supliers (name, address, email, deputy, phone, fax, code) values(?,?,?,?,?,?,?)";
+        preparedInsertQuery(insertQuery, name, address, email, deputy, phone, fax, code);
     }
 
-    public void preparedQuery(String query, String name, String address, String email, String deputy, String phone, String fax, String code) {
+    public void preparedInsertQuery(String query, String name, String address, String email, String deputy, String phone, String fax, String code) {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
@@ -107,11 +83,11 @@ public class SuplierDAO {
             conn.close();
         } catch (Exception ex) {
             assert ex instanceof SQLException;
-            fecoder.DAO.jdbcDAO.printSQLException((SQLException) ex);
+            jdbcDAO.printSQLException((SQLException) ex);
         }
     }
 
-    public void preparedQueryWhereId(String query, String name, String address, String email, String deputy, String phone, String fax, String code, int id) {
+    public void preparedUpdateQuery(String query, String name, String address, String email, String deputy, String phone, String fax, String code, int id) {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
@@ -130,7 +106,7 @@ public class SuplierDAO {
             conn.close();
         } catch (Exception ex) {
             assert ex instanceof SQLException;
-            fecoder.DAO.jdbcDAO.printSQLException((SQLException) ex);
+            jdbcDAO.printSQLException((SQLException) ex);
         }
     }
 }

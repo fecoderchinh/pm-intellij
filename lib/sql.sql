@@ -47,7 +47,37 @@ CREATE TABLE supliers
 );
 
 insert into supliers
-values (1, N'Tân Thuận Thành', N'Sài Gòn', 'tanthuanthanh7@gmail.com', N'Mr. Toàn', '0906 388 337', '0906 304 336', 'TTT'),
-	   (2, N'Duy Nhật', N'Tây Ninh', 'vantam@baobiduynhat.com', N'Mr. Tâm', '0906 388 337', '0906 304 336', 'DN');
+values (1, N'TĂ¢n Thuáº­n ThĂ nh', N'SĂ i GĂ²n', 'tanthuanthanh7@gmail.com', N'Mr. ToĂ n', '0906 388 337', '0906 304 336', 'TTT'),
+	   (2, N'Duy Nháº­t', N'TĂ¢y Ninh', 'vantam@baobiduynhat.com', N'Mr. TĂ¢m', '0906 388 337', '0906 304 336', 'DN');
 	   
 select * from supliers;
+
+/*
+=================================================
+table loai
+*/
+create table types (
+	id bigint unsigned not null auto_increment,
+	name varchar(100) not null,
+	primary key (id)
+);
+
+insert into types (name)
+values (N'Thùng Carton'),
+	   (N'Hộp Carton'),
+	   (N'Hộp Duplex'),
+	   (N'Hộp Ivory'),
+	   (N'Túi PE trắng'),
+	   (N'Túi PE xanh'),
+	   (N'Túi PA trắng'),
+	   (N'Túi PE in'),
+	   (N'Túi PA in'),
+	   (N'Decal'),
+	   (N'Rider'),
+	   (N'Thẻ'),
+	   (N'Manh PE trắng'),
+	   (N'Manh PE xanh'),
+	   (N'Túi PE trắng xếp hông'),
+	   (N'Túi PE xanh xếp hông');
+	   
+select * from types;

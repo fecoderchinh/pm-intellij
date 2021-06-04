@@ -20,7 +20,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 
 import javafx.scene.control.TableColumn;
-import javafx.scene.input.PickResult;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
@@ -30,12 +29,11 @@ import javafx.stage.Window;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 public class SuplierController implements Initializable {
 
-    public TableView<Suplier> suplierTable;
+    public TableView<Suplier> dataTable;
     public TableColumn<Suplier, Integer> idColumn;
     public TableColumn<Suplier, String> codeColumn;
     public TableColumn<Suplier, String> nameColumn;
@@ -80,6 +78,7 @@ public class SuplierController implements Initializable {
 
     private void reload() {
         loadView();
+        clearFields();
     }
 
     @FXML
@@ -211,11 +210,11 @@ public class SuplierController implements Initializable {
         });
 
         SortedList<Suplier> sortedList = new SortedList<>(filteredList);
-        sortedList.comparatorProperty().bind(suplierTable.comparatorProperty());
+        sortedList.comparatorProperty().bind(dataTable.comparatorProperty());
 
-        suplierTable.setEditable(true);
+        dataTable.setEditable(true);
 
-        TableView.TableViewSelectionModel<Suplier> selectionModel = suplierTable.getSelectionModel();
+        TableView.TableViewSelectionModel<Suplier> selectionModel = dataTable.getSelectionModel();
         selectionModel.setSelectionMode(SelectionMode.SINGLE);
 
         ObservableList<Suplier> getSelectedItems = selectionModel.getSelectedItems();
@@ -229,7 +228,7 @@ public class SuplierController implements Initializable {
 
 //        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         idColumn.setSortable(false);
-        idColumn.setCellValueFactory(column -> new ReadOnlyObjectWrapper<Integer>(suplierTable.getItems().indexOf(column.getValue())+1));
+        idColumn.setCellValueFactory(column -> new ReadOnlyObjectWrapper<Integer>(dataTable.getItems().indexOf(column.getValue())+1));
 
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 //        nameColumn.setCellFactory(TextFieldTableCell.<Suplier>forTableColumn());
@@ -252,11 +251,11 @@ public class SuplierController implements Initializable {
 //            EDIT IN NEW WINDOW
             cell.setOnMouseClicked(e -> {
                 if (e.getClickCount() == 2 && ! cell.isEmpty()) {
-                    showEditingWindow(suplierTable.getScene().getWindow(), cell.getItem(), newValue -> {
-                        Suplier item = suplierTable.getItems().get(cell.getIndex());
+                    showEditingWindow(dataTable.getScene().getWindow(), cell.getItem(), newValue -> {
+                        Suplier item = dataTable.getItems().get(cell.getIndex());
                         item.setName(newValue);
                         suplierDAO.updateData("name", newValue, item.getId());
-                        suplierTable.refresh();
+                        dataTable.refresh();
                     });
                 }
             });
@@ -276,14 +275,14 @@ public class SuplierController implements Initializable {
             text.wrappingWidthProperty().bind(nameColumn.widthProperty());
             text.textProperty().bind(cell.itemProperty());
 
-//            EDIT IN NEW WINDOW
+//          EDIT IN NEW WINDOW
             cell.setOnMouseClicked(e -> {
                 if (e.getClickCount() == 2 && ! cell.isEmpty()) {
-                    showEditingWindow(suplierTable.getScene().getWindow(), cell.getItem(), newValue -> {
-                        Suplier item = suplierTable.getItems().get(cell.getIndex());
+                    showEditingWindow(dataTable.getScene().getWindow(), cell.getItem(), newValue -> {
+                        Suplier item = dataTable.getItems().get(cell.getIndex());
                         item.setName(newValue);
                         suplierDAO.updateData("address", newValue, item.getId());
-                        suplierTable.refresh();
+                        dataTable.refresh();
                     });
                 }
             });
@@ -306,11 +305,11 @@ public class SuplierController implements Initializable {
 //            EDIT IN NEW WINDOW
             cell.setOnMouseClicked(e -> {
                 if (e.getClickCount() == 2 && ! cell.isEmpty()) {
-                    showEditingWindow(suplierTable.getScene().getWindow(), cell.getItem(), newValue -> {
-                        Suplier item = suplierTable.getItems().get(cell.getIndex());
+                    showEditingWindow(dataTable.getScene().getWindow(), cell.getItem(), newValue -> {
+                        Suplier item = dataTable.getItems().get(cell.getIndex());
                         item.setName(newValue);
                         suplierDAO.updateData("email", newValue, item.getId());
-                        suplierTable.refresh();
+                        dataTable.refresh();
                     });
                 }
             });
@@ -324,7 +323,7 @@ public class SuplierController implements Initializable {
             final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
             ((Suplier) event.getTableView().getItems().get(event.getTablePosition().getRow())).setDeputy(data);
             suplierDAO.updateData("deputy", data, event.getRowValue().getId());
-            suplierTable.refresh();
+            dataTable.refresh();
         });
 
         phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
@@ -333,7 +332,7 @@ public class SuplierController implements Initializable {
             final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
             ((Suplier) event.getTableView().getItems().get(event.getTablePosition().getRow())).setPhone(data);
             suplierDAO.updateData("phone", data, event.getRowValue().getId());
-            suplierTable.refresh();
+            dataTable.refresh();
         });
 
         faxColumn.setCellValueFactory(new PropertyValueFactory<>("fax"));
@@ -342,7 +341,7 @@ public class SuplierController implements Initializable {
             final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
             ((Suplier) event.getTableView().getItems().get(event.getTablePosition().getRow())).setFax(data);
             suplierDAO.updateData("fax", data, event.getRowValue().getId());
-            suplierTable.refresh();
+            dataTable.refresh();
         });
 
         codeColumn.setCellValueFactory(new PropertyValueFactory<>("code"));
@@ -351,10 +350,10 @@ public class SuplierController implements Initializable {
             final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
             ((Suplier) event.getTableView().getItems().get(event.getTablePosition().getRow())).setCode(data);
             suplierDAO.updateData("code", data, event.getRowValue().getId());
-            suplierTable.refresh();
+            dataTable.refresh();
         });
 
-        suplierTable.setRowFactory((TableView<Suplier> tableView) -> {
+        dataTable.setRowFactory((TableView<Suplier> tableView) -> {
             final TableRow<Suplier> row = new TableRow<>();
 
             final ContextMenu contextMenu = new ContextMenu();
@@ -363,8 +362,8 @@ public class SuplierController implements Initializable {
             final MenuItem removeItem = new MenuItem("Xóa dòng");
 
             viewItem.setOnAction((ActionEvent event) -> {
-                Suplier suplier = suplierTable.getSelectionModel().getSelectedItem();
-                int rowIndex = suplierTable.getSelectionModel().getSelectedIndex();
+                Suplier suplier = dataTable.getSelectionModel().getSelectedItem();
+                int rowIndex = dataTable.getSelectionModel().getSelectedIndex();
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Chi tiết Nhà Cung Cấp");
@@ -391,13 +390,13 @@ public class SuplierController implements Initializable {
             contextMenu.getItems().add(viewItem);
 
             editItem.setOnAction((ActionEvent event) -> {
-                Suplier suplier = suplierTable.getSelectionModel().getSelectedItem();
+                Suplier suplier = dataTable.getSelectionModel().getSelectedItem();
                 getSuplier(suplier.getName(), suplier.getAddress(), suplier.getEmail(), suplier.getDeputy(), suplier.getPhone(), suplier.getFax(), suplier.getCode(), suplier.getId());
             });
             contextMenu.getItems().add(editItem);
 
             removeItem.setOnAction((ActionEvent event) -> {
-                Suplier suplier = suplierTable.getSelectionModel().getSelectedItem();
+                Suplier suplier = dataTable.getSelectionModel().getSelectedItem();
                 suplierDAO.delete(suplier.getId());
                 reload();
             });
@@ -412,6 +411,6 @@ public class SuplierController implements Initializable {
         });
 
 //        suplierTable.setItems(list);
-        suplierTable.setItems(sortedList);
+        dataTable.setItems(sortedList);
     }
 }

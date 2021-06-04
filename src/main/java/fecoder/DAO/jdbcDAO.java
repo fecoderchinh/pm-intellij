@@ -40,6 +40,36 @@ public class jdbcDAO {
         return false;
     }
 
+    public static void updateSingleData(String table, String column, String value, int id) {
+        String query = "update "+ table +" set "+ column +"=? where id=?";
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, value);
+            preparedStatement.setInt(2, id);
+            preparedStatement.execute();
+        } catch (Exception ex) {
+            assert ex instanceof SQLException;
+            printSQLException((SQLException) ex);
+        }
+    }
+
+    public static void delete(String table, int id) {
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement("delete from "+ table + " where id=?");
+            preparedStatement.setInt(1, id);
+
+            preparedStatement.executeUpdate();
+
+            preparedStatement.close();
+            conn.close();
+        } catch (Exception ex) {
+            assert ex instanceof SQLException;
+            printSQLException((SQLException) ex);
+        }
+    }
+
     public static void printSQLException(SQLException ex) {
         for (Throwable e: ex) {
             if( e instanceof SQLException ) {
