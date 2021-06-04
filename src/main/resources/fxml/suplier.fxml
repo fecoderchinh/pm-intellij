@@ -114,7 +114,7 @@
                     <columns>
                         <TableColumn fx:id="idColumn" prefWidth="50.0" text="STT" />
                         <TableColumn fx:id="codeColumn" prefWidth="70.0" text="Mã" />
-                        <TableColumn fx:id="nameColumn" prefWidth="180.0" text="Tên" />
+                        <TableColumn fx:id="nameColumn" prefWidth="180.0" text="Tên công ty" />
                         <TableColumn fx:id="addressColumn" prefWidth="200.0" text="Địa chỉ" />
                         <TableColumn fx:id="emailColumn" prefWidth="180.0" text="Email" />
                         <TableColumn fx:id="deputyColumn" prefWidth="180.0" text="Đại diện" />

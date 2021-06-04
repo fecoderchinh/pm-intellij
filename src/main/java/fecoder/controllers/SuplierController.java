@@ -12,14 +12,26 @@ import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 
 import javafx.scene.control.TableColumn;
+import javafx.scene.input.PickResult;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 public class SuplierController implements Initializable {
 
@@ -125,6 +137,36 @@ public class SuplierController implements Initializable {
         anchorData.setText(null);
     }
 
+    private void showEditingWindow(Window owner, String currentValue, Consumer<String> commitHandler) {
+        Stage stage = new Stage();
+        stage.initOwner(owner);
+        stage.initModality(Modality.APPLICATION_MODAL);
+
+        TextArea textArea = new TextArea(currentValue);
+
+        Button okButton = new Button("ÁP DỤNG");
+        okButton.setDefaultButton(true);
+        okButton.setOnAction(e -> {
+            commitHandler.accept(textArea.getText());
+            stage.hide();
+        });
+
+        Button cancelButton = new Button("HỦY BỎ");
+        cancelButton.setCancelButton(true);
+        cancelButton.setOnAction(e -> stage.hide());
+
+        HBox buttons = new HBox(5, okButton, cancelButton);
+        buttons.setAlignment(Pos.CENTER);
+        buttons.setPadding(new Insets(5));
+
+        BorderPane root = new BorderPane(textArea, null, null, buttons, null);
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.setTitle("Cập nhật giá trị");
+        stage.setResizable(false);
+        stage.show();
+    }
+
     public void loadView() {
         ObservableList<Suplier> list = FXCollections.observableArrayList(suplierDAO.getSupliers());
         FilteredList<Suplier> filteredList = new FilteredList<>(list, p -> true);
@@ -190,30 +232,90 @@ public class SuplierController implements Initializable {
         idColumn.setCellValueFactory(column -> new ReadOnlyObjectWrapper<Integer>(suplierTable.getItems().indexOf(column.getValue())+1));
 
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        nameColumn.setCellFactory(TextFieldTableCell.<Suplier>forTableColumn());
-        nameColumn.setOnEditCommit(event -> {
-            final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
-            ((Suplier) event.getTableView().getItems().get(event.getTablePosition().getRow())).setName(data);
-            suplierDAO.updateData("name", data, event.getRowValue().getId());
-            suplierTable.refresh();
+//        nameColumn.setCellFactory(TextFieldTableCell.<Suplier>forTableColumn());
+//        nameColumn.setOnEditCommit(event -> {
+//            final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
+//            ((Suplier) event.getTableView().getItems().get(event.getTablePosition().getRow())).setName(data);
+//            suplierDAO.updateData("name", data, event.getRowValue().getId());
+//            suplierTable.refresh();
+//        });
+        nameColumn.setCellFactory(tc -> {
+
+            TableCell<Suplier, String> cell = new TableCell<>();
+
+            Text text = new Text();
+            cell.setGraphic(text);
+            cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
+            text.wrappingWidthProperty().bind(nameColumn.widthProperty());
+            text.textProperty().bind(cell.itemProperty());
+
+//            EDIT IN NEW WINDOW
+            cell.setOnMouseClicked(e -> {
+                if (e.getClickCount() == 2 && ! cell.isEmpty()) {
+                    showEditingWindow(suplierTable.getScene().getWindow(), cell.getItem(), newValue -> {
+                        Suplier item = suplierTable.getItems().get(cell.getIndex());
+                        item.setName(newValue);
+                        suplierDAO.updateData("name", newValue, item.getId());
+                        suplierTable.refresh();
+                    });
+                }
+            });
+
+            return cell ;
         });
 
         addressColumn.setCellValueFactory(new PropertyValueFactory<>("address"));
         addressColumn.setCellFactory(TextFieldTableCell.<Suplier>forTableColumn());
-        addressColumn.setOnEditCommit(event -> {
-            final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
-            ((Suplier) event.getTableView().getItems().get(event.getTablePosition().getRow())).setAddress(data);
-            suplierDAO.updateData("address", data, event.getRowValue().getId());
-            suplierTable.refresh();
+        addressColumn.setCellFactory(tc -> {
+
+            TableCell<Suplier, String> cell = new TableCell<>();
+
+            Text text = new Text();
+            cell.setGraphic(text);
+            cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
+            text.wrappingWidthProperty().bind(nameColumn.widthProperty());
+            text.textProperty().bind(cell.itemProperty());
+
+//            EDIT IN NEW WINDOW
+            cell.setOnMouseClicked(e -> {
+                if (e.getClickCount() == 2 && ! cell.isEmpty()) {
+                    showEditingWindow(suplierTable.getScene().getWindow(), cell.getItem(), newValue -> {
+                        Suplier item = suplierTable.getItems().get(cell.getIndex());
+                        item.setName(newValue);
+                        suplierDAO.updateData("address", newValue, item.getId());
+                        suplierTable.refresh();
+                    });
+                }
+            });
+
+            return cell ;
         });
 
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
         emailColumn.setCellFactory(TextFieldTableCell.<Suplier>forTableColumn());
-        emailColumn.setOnEditCommit(event -> {
-            final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
-            ((Suplier) event.getTableView().getItems().get(event.getTablePosition().getRow())).setEmail(data);
-            suplierDAO.updateData("email", data, event.getRowValue().getId());
-            suplierTable.refresh();
+        emailColumn.setCellFactory(tc -> {
+
+            TableCell<Suplier, String> cell = new TableCell<>();
+
+            Text text = new Text();
+            cell.setGraphic(text);
+            cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
+            text.wrappingWidthProperty().bind(nameColumn.widthProperty());
+            text.textProperty().bind(cell.itemProperty());
+
+//            EDIT IN NEW WINDOW
+            cell.setOnMouseClicked(e -> {
+                if (e.getClickCount() == 2 && ! cell.isEmpty()) {
+                    showEditingWindow(suplierTable.getScene().getWindow(), cell.getItem(), newValue -> {
+                        Suplier item = suplierTable.getItems().get(cell.getIndex());
+                        item.setName(newValue);
+                        suplierDAO.updateData("email", newValue, item.getId());
+                        suplierTable.refresh();
+                    });
+                }
+            });
+
+            return cell ;
         });
 
         deputyColumn.setCellValueFactory(new PropertyValueFactory<>("deputy"));

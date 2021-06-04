@@ -4,6 +4,7 @@ import fecoder.MainViewController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -35,6 +36,7 @@ public class LoginManager {
                 scene.getWindow().sizeToScene();
                 scene.getWindow().centerOnScreen();
                 Stage stage = (Stage) scene.getWindow();
+                stage.setResizable(false);
                 stage.setTitle("Xác thực");
             }
             LoginController controller = loader.<LoginController>getController();
@@ -54,6 +56,7 @@ public class LoginManager {
             scene.getWindow().centerOnScreen();
             Stage stage = (Stage) scene.getWindow();
             stage.setTitle("Trang chính");
+            stage.setResizable(false);
             MainViewController controller = loader.<MainViewController>getController();
             controller.initSessionID(this, sessionID);
         } catch (IOException ex) {
