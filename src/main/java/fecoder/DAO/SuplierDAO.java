@@ -10,20 +10,20 @@ import java.util.List;
 public class SuplierDAO {
 
     private Suplier createSuplier(ResultSet resultSet) {
-        Suplier suplier = new Suplier();
+        Suplier data = new Suplier();
         try {
-            suplier.setId(resultSet.getInt("id"));
-            suplier.setName(resultSet.getString("name"));
-            suplier.setAddress(resultSet.getString("address"));
-            suplier.setEmail(resultSet.getString("email"));
-            suplier.setDeputy(resultSet.getString("deputy"));
-            suplier.setPhone(resultSet.getString("phone"));
-            suplier.setFax(resultSet.getString("fax"));
-            suplier.setCode(resultSet.getString("code"));
+            data.setId(resultSet.getInt("id"));
+            data.setName(resultSet.getString("name"));
+            data.setAddress(resultSet.getString("address"));
+            data.setEmail(resultSet.getString("email"));
+            data.setDeputy(resultSet.getString("deputy"));
+            data.setPhone(resultSet.getString("phone"));
+            data.setFax(resultSet.getString("fax"));
+            data.setCode(resultSet.getString("code"));
         } catch (SQLException ex) {
             jdbcDAO.printSQLException(ex);
         }
-        return suplier;
+        return data;
     }
 
     public List<Suplier> getSupliers() {
@@ -34,8 +34,8 @@ public class SuplierDAO {
             String selectAll = "Select * from supliers";
             ResultSet resultSet = statement.executeQuery(selectAll);
             while (resultSet.next()) {
-                Suplier suplier = createSuplier(resultSet);
-                list.add(suplier);
+                Suplier data = createSuplier(resultSet);
+                list.add(data);
             }
             resultSet.close();
             conn.close();

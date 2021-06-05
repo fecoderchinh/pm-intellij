@@ -1,13 +1,13 @@
 package fecoder.models;
 
-public class Type {
+public class PackagingType {
 
     private int id;
     private String name;
 
-    public Type(){}
+    public PackagingType(){}
 
-    public Type(int id, String name) {
+    public PackagingType(int id, String name) {
         this.id = id;
         this.name = name;
     }

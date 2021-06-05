@@ -30,7 +30,7 @@ select * from users;
 
 /*
 =================================================
-table nhacungcap
+table nh� cung c?p
 */
 CREATE TABLE supliers
 ( 
@@ -47,22 +47,22 @@ CREATE TABLE supliers
 );
 
 insert into supliers
-values (1, N'TĂ¢n Thuáº­n ThĂ nh', N'SĂ i GĂ²n', 'tanthuanthanh7@gmail.com', N'Mr. ToĂ n', '0906 388 337', '0906 304 336', 'TTT'),
-	   (2, N'Duy Nháº­t', N'TĂ¢y Ninh', 'vantam@baobiduynhat.com', N'Mr. TĂ¢m', '0906 388 337', '0906 304 336', 'DN');
+values (1, N'T�n Thu?n Th�nh', N'S�i G?n', 'tanthuanthanh7@gmail.com', N'Mr. T�on', '0906 388 337', '0906 304 336', 'TTT'),
+	   (2, N'Duy Nh?t', N'T�y Ninh', 'vantam@baobiduynhat.com', N'Mr. T�m', '0906 388 337', '0906 304 336', 'DN');
 	   
 select * from supliers;
 
 /*
 =================================================
-table loai
+table lo?i
 */
-create table types (
+create table packaging_types (
 	id bigint unsigned not null auto_increment,
 	name varchar(100) not null,
 	primary key (id)
 );
 
-insert into types (name)
+insert into packaging_types (name)
 values (N'Thùng Carton'),
 	   (N'Hộp Carton'),
 	   (N'Hộp Duplex'),
@@ -80,4 +80,14 @@ values (N'Thùng Carton'),
 	   (N'Túi PE trắng xếp hông'),
 	   (N'Túi PE xanh xếp hông');
 	   
-select * from types;
+select * from packaging_types;
+
+/*
+=================================================
+table bao b?
+*/
+create table dimension_type (
+	id bigint unsigned not null auto_increment,
+	name varchar(100) not null,
+	unit varchar(100) not null,
+);

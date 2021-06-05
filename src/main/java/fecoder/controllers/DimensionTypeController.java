@@ -1,7 +1,7 @@
 package fecoder.controllers;
 
-import fecoder.DAO.TypeDAO;
-import fecoder.models.Type;
+import fecoder.DAO.DimensionTypeDAO;
+import fecoder.models.DimensionType;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -10,7 +10,6 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -19,41 +18,40 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class TypeController implements Initializable {
+public class DimensionTypeController implements Initializable {
+    public TextField nameField;
+    public TextField unitField;
     public Button insertButton;
     public Button updateButton;
     public Button clearButton;
-    public TextField nameField;
     public TextField searchField;
     public Button reloadData;
-    public TableView<Type> dataTable;
-    public TableColumn<Type, Integer> idColumn;
-    public TableColumn<Type, String> nameColumn;
+    public TableView<DimensionType> dataTable;
+    public TableColumn<DimensionType, Integer> idColumn;
+    public TableColumn<DimensionType, String> nameColumn;
+    public TableColumn<DimensionType, String> unitColumn;
     public Label anchorLabel;
     public Label anchorData;
 
-    private final TypeDAO typeDAO = new TypeDAO();
+    private final DimensionTypeDAO dimensionTypeDAO = new DimensionTypeDAO();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         loadView();
     }
 
-    @FXML
     public void insertButton(ActionEvent actionEvent) {
-        typeDAO.insert(nameField.getText());
+        dimensionTypeDAO.insert(nameField.getText(), unitField.getText());
         clearFields();
         reload();
     }
 
-    @FXML
     public void updateButton(ActionEvent actionEvent) {
-        typeDAO.update(nameField.getText(), Integer.parseInt(anchorData.getText()));
+        dimensionTypeDAO.update(nameField.getText(), unitField.getText(), Integer.parseInt(anchorData.getText()));
         clearFields();
         reload();
     }
 
-    @FXML
     public void clearButton(ActionEvent actionEvent) {
         clearFields();
     }
@@ -62,9 +60,28 @@ public class TypeController implements Initializable {
         reload();
     }
 
+    private void reload() {
+        loadView();
+        clearFields();
+    }
+
+    private void getItem(String name, String unit, int id) {
+        nameField.setText(name);
+        unitField.setText(unit);
+        anchorLabel.setText("Current ID: ");
+        anchorData.setText(""+id);
+    }
+
+    private void clearFields() {
+        nameField.setText(null);
+        unitField.setText(null);
+        anchorLabel.setText(null);
+        anchorData.setText(null);
+    }
+
     public void loadView() {
-        ObservableList<Type> list = FXCollections.observableArrayList(typeDAO.getTypes());
-        FilteredList<Type> filteredList = new FilteredList<>(list, p -> true);
+        ObservableList<DimensionType> list = FXCollections.observableArrayList(dimensionTypeDAO.getDimensionTypes());
+        FilteredList<DimensionType> filteredList = new FilteredList<>(list, p -> true);
 
         searchField.textProperty()
                 .addListener((observable, oldValue, newValue) -> {
@@ -77,19 +94,19 @@ public class TypeController implements Initializable {
                     });
                 });
 
-        SortedList<Type> sortedList = new SortedList<>(filteredList);
+        SortedList<DimensionType> sortedList = new SortedList<>(filteredList);
         sortedList.comparatorProperty().bind(dataTable.comparatorProperty());
 
         dataTable.setEditable(true);
 
-        TableView.TableViewSelectionModel<Type> selectionModel = dataTable.getSelectionModel();
+        TableView.TableViewSelectionModel<DimensionType> selectionModel = dataTable.getSelectionModel();
         selectionModel.setSelectionMode(SelectionMode.SINGLE);
 
-        ObservableList<Type> getSelectedItems = selectionModel.getSelectedItems();
+        ObservableList<DimensionType> getSelectedItems = selectionModel.getSelectedItems();
 
-        getSelectedItems.addListener(new ListChangeListener<Type>() {
+        getSelectedItems.addListener(new ListChangeListener<DimensionType>() {
             @Override
-            public void onChanged(Change<? extends Type> change) {
+            public void onChanged(Change<? extends DimensionType> change) {
 //                System.out.println("Selection changed: " + change.getList());
             }
         });
@@ -98,16 +115,25 @@ public class TypeController implements Initializable {
         idColumn.setCellValueFactory(column -> new ReadOnlyObjectWrapper<Integer>(dataTable.getItems().indexOf(column.getValue())+1));
 
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        nameColumn.setCellFactory(TextFieldTableCell.<Type>forTableColumn());
+        nameColumn.setCellFactory(TextFieldTableCell.<DimensionType>forTableColumn());
         nameColumn.setOnEditCommit(event -> {
             final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
-            ((Type) event.getTableView().getItems().get(event.getTablePosition().getRow())).setName(data);
-            typeDAO.updateData("name", data, event.getRowValue().getId());
+            ((DimensionType) event.getTableView().getItems().get(event.getTablePosition().getRow())).setName(data);
+            dimensionTypeDAO.updateData("name", data, event.getRowValue().getId());
             dataTable.refresh();
         });
 
-        dataTable.setRowFactory((TableView<Type> tableView) -> {
-            final TableRow<Type> row = new TableRow<>();
+        unitColumn.setCellValueFactory(new PropertyValueFactory<>("unit"));
+        unitColumn.setCellFactory(TextFieldTableCell.<DimensionType>forTableColumn());
+        unitColumn.setOnEditCommit(event -> {
+            final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
+            ((DimensionType) event.getTableView().getItems().get(event.getTablePosition().getRow())).setUnit(data);
+            dimensionTypeDAO.updateData("unit", data, event.getRowValue().getId());
+            dataTable.refresh();
+        });
+
+        dataTable.setRowFactory((TableView<DimensionType> tableView) -> {
+            final TableRow<DimensionType> row = new TableRow<>();
 
             final ContextMenu contextMenu = new ContextMenu();
             final MenuItem viewItem = new MenuItem("Chi tiết");
@@ -115,14 +141,15 @@ public class TypeController implements Initializable {
             final MenuItem removeItem = new MenuItem("Xóa dòng");
 
             viewItem.setOnAction((ActionEvent event) -> {
-                Type suplier = dataTable.getSelectionModel().getSelectedItem();
+                DimensionType data = dataTable.getSelectionModel().getSelectedItem();
                 int rowIndex = dataTable.getSelectionModel().getSelectedIndex();
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Chi tiết Nhà Cung Cấp");
-                alert.setHeaderText(suplier.getName());
+                alert.setTitle("Chi tiết kích thước");
+                alert.setHeaderText(data.getName());
                 alert.setContentText(
-                        "Tên loại: " + suplier.getName()
+                        "Tên loại: " + data.getName() +"\n"+
+                        "Đơn vị: " + data.getUnit()
                 );
 
                 alert.showAndWait();
@@ -130,14 +157,14 @@ public class TypeController implements Initializable {
             contextMenu.getItems().add(viewItem);
 
             editItem.setOnAction((ActionEvent event) -> {
-                Type data = dataTable.getSelectionModel().getSelectedItem();
-                getItem(data.getName(), data.getId());
+                DimensionType data = dataTable.getSelectionModel().getSelectedItem();
+                getItem(data.getName(), data.getUnit(), data.getId());
             });
             contextMenu.getItems().add(editItem);
 
             removeItem.setOnAction((ActionEvent event) -> {
-                Type data = dataTable.getSelectionModel().getSelectedItem();
-                typeDAO.delete(data.getId());
+                DimensionType data = dataTable.getSelectionModel().getSelectedItem();
+                dimensionTypeDAO.delete(data.getId());
                 reload();
             });
             contextMenu.getItems().add(removeItem);
@@ -151,22 +178,5 @@ public class TypeController implements Initializable {
         });
 
         dataTable.setItems(sortedList);
-    }
-
-    private void reload() {
-        loadView();
-        clearFields();
-    }
-
-    private void getItem(String name, int id) {
-        nameField.setText(name);
-        anchorLabel.setText("Current ID: ");
-        anchorData.setText(""+id);
-    }
-
-    private void clearFields() {
-        nameField.setText(null);
-        anchorLabel.setText(null);
-        anchorData.setText(null);
     }
 }

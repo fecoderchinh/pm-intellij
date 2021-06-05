@@ -17,7 +17,8 @@ import java.util.logging.Logger;
 public class MainViewController {
     public Button newWindowButton;
     public Button suplierManage;
-    public Button typeManage;
+    public Button packagingTypeManage;
+    public Button dimensionTypeManage;
     @FXML private Button logoutButton;
     @FXML private Label sessionLabel;
 
@@ -56,8 +57,12 @@ public class MainViewController {
             loadScene("/fxml/suplier.fxml", "Quản Lý Danh Sách Nhà Cung Cấp");
         });
 
-        typeManage.setOnMouseClicked((event) -> {
-            loadScene("/fxml/type.fxml", "Quản Lý Loại Bao Bì");
+        packagingTypeManage.setOnMouseClicked((event) -> {
+            loadScene("/fxml/packaging_type.fxml", "Quản Lý Loại Bao Bì");
+        });
+
+        dimensionTypeManage.setOnMouseClicked((event) -> {
+            loadScene("/fxml/dimesion_type.fxml", "Quản Lý Loại Kích Thước");
         });
     }
 

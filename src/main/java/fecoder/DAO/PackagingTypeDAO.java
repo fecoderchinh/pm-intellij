@@ -1,35 +1,35 @@
 package fecoder.DAO;
 
 import fecoder.connection.ConnectionUtils;
-import fecoder.models.Type;
+import fecoder.models.PackagingType;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TypeDAO {
+public class PackagingTypeDAO {
 
-    private Type createType(ResultSet resultSet) {
-        Type suplier = new Type();
+    private PackagingType createType(ResultSet resultSet) {
+        PackagingType data = new PackagingType();
         try {
-            suplier.setId(resultSet.getInt("id"));
-            suplier.setName(resultSet.getString("name"));
+            data.setId(resultSet.getInt("id"));
+            data.setName(resultSet.getString("name"));
         } catch (SQLException ex) {
             fecoder.DAO.jdbcDAO.printSQLException(ex);
         }
-        return suplier;
+        return data;
     }
 
-    public List<Type> getTypes() {
-        List<Type> list = new ArrayList<>();
+    public List<PackagingType> getTypes() {
+        List<PackagingType> list = new ArrayList<>();
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             Statement statement = conn.createStatement();
-            String selectAll = "select * from types";
+            String selectAll = "select * from packaging_types";
             ResultSet resultSet = statement.executeQuery(selectAll);
             while(resultSet.next()) {
-                Type type = createType(resultSet);
-                list.add(type);
+                PackagingType data = createType(resultSet);
+                list.add(data);
             }
             resultSet.close();
             conn.close();
@@ -41,20 +41,20 @@ public class TypeDAO {
     }
 
     public void updateData(String column, String value, int id) {
-        jdbcDAO.updateSingleData("types", column, value, id);
+        jdbcDAO.updateSingleData("packaging_types", column, value, id);
     }
 
     public void delete(int id) {
-        jdbcDAO.delete("types", id);
+        jdbcDAO.delete("packaging_types", id);
     }
 
     public void update(String name, int id) {
-        String updateQuery = "update types set name=? where id=?";
+        String updateQuery = "update packaging_types set name=? where id=?";
         preparedUpdateQuery(updateQuery, name, id);
     }
 
     public void insert(String name) {
-        String insertQuery = "insert into types (name) values(?)";
+        String insertQuery = "insert into packaging_types (name) values(?)";
         preparedInsertQuery(insertQuery, name);
     }
 

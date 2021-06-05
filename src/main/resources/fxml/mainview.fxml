@@ -9,7 +9,8 @@
         <HBox prefWidth="200.0" BorderPane.alignment="CENTER" spacing="10">
             <children>
                 <Button id="suplierManage" fx:id="suplierManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="NHÀ CUNG CẤP" />
-                <Button id="typeManage" fx:id="typeManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="LOẠI BAO BÌ" />
+                <Button id="packagingTypeManage" fx:id="packagingTypeManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="LOẠI BAO BÌ" />
+                <Button id="dimensionTypeManage" fx:id="dimensionTypeManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="LOẠI KÍCH THƯỚC" />
             </children>
             <padding>
                 <Insets bottom="10" />
