@@ -19,6 +19,7 @@ public class MainViewController {
     public Button suplierManage;
     public Button packagingTypeManage;
     public Button yearManage;
+    public Button sizeManage;
     @FXML private Button logoutButton;
     @FXML private Label sessionLabel;
 
@@ -42,6 +43,10 @@ public class MainViewController {
 
         yearManage.setOnMouseClicked((event) -> {
             loadScene("/fxml/year.fxml", "Quản Lý Loại Kích Thước");
+        });
+
+        sizeManage.setOnMouseClicked((event) -> {
+            loadScene("/fxml/size.fxml", "Quản lý size tôm");
         });
     }
 

@@ -1,7 +1,7 @@
 package fecoder.controllers;
 
-import fecoder.DAO.YearDAO;
-import fecoder.models.Year;
+import fecoder.DAO.SizeDAO;
+import fecoder.models.Size;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -18,20 +18,20 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class YearController implements Initializable {
-    public TextField yearField;
+public class SizeController implements Initializable {
+    public TextField sizeField;
     public Button insertButton;
     public Button updateButton;
     public Button clearButton;
     public TextField searchField;
     public Button reloadData;
-    public TableView<Year> dataTable;
-    public TableColumn<Year, Integer> idColumn;
-    public TableColumn<Year, String> yearColumn;
+    public TableView<Size> dataTable;
+    public TableColumn<Size, Integer> idColumn;
+    public TableColumn<Size, String> sizeColumn;
     public Label anchorLabel;
     public Label anchorData;
 
-    private final YearDAO yearDAO = new YearDAO();
+    private final SizeDAO DAO = new SizeDAO();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -39,13 +39,13 @@ public class YearController implements Initializable {
     }
 
     public void insertButton(ActionEvent actionEvent) {
-        yearDAO.insert(yearField.getText());
+        DAO.insert(sizeField.getText());
         clearFields();
         reload();
     }
 
     public void updateButton(ActionEvent actionEvent) {
-        yearDAO.update(yearField.getText(), Integer.parseInt(anchorData.getText()));
+        DAO.update(sizeField.getText(), Integer.parseInt(anchorData.getText()));
         clearFields();
         reload();
     }
@@ -63,21 +63,21 @@ public class YearController implements Initializable {
         clearFields();
     }
 
-    private void getItem(String year, int id) {
-        yearField.setText(year);
+    private void getItem(String data, int id) {
+        sizeField.setText(data);
         anchorLabel.setText("Current ID: ");
         anchorData.setText(""+id);
     }
 
     private void clearFields() {
-        yearField.setText(null);
+        sizeField.setText(null);
         anchorLabel.setText(null);
         anchorData.setText(null);
     }
 
     public void loadView() {
-        ObservableList<Year> list = FXCollections.observableArrayList(yearDAO.getYears());
-        FilteredList<Year> filteredList = new FilteredList<>(list, p -> true);
+        ObservableList<Size> list = FXCollections.observableArrayList(DAO.getLists());
+        FilteredList<Size> filteredList = new FilteredList<>(list, p -> true);
 
         searchField.textProperty()
                 .addListener((observable, oldValue, newValue) -> {
@@ -85,24 +85,24 @@ public class YearController implements Initializable {
                         if (newValue == null || newValue.isEmpty())
                             return true;
                         String lowerCaseFilter = newValue.toLowerCase();
-                        return str.getYear().toLowerCase().contains
+                        return str.getSize().toLowerCase().contains
                                 (lowerCaseFilter);
                     });
                 });
 
-        SortedList<Year> sortedList = new SortedList<>(filteredList);
+        SortedList<Size> sortedList = new SortedList<>(filteredList);
         sortedList.comparatorProperty().bind(dataTable.comparatorProperty());
 
         dataTable.setEditable(true);
 
-        TableView.TableViewSelectionModel<Year> selectionModel = dataTable.getSelectionModel();
+        TableView.TableViewSelectionModel<Size> selectionModel = dataTable.getSelectionModel();
         selectionModel.setSelectionMode(SelectionMode.SINGLE);
 
-        ObservableList<Year> getSelectedItems = selectionModel.getSelectedItems();
+        ObservableList<Size> getSelectedItems = selectionModel.getSelectedItems();
 
-        getSelectedItems.addListener(new ListChangeListener<Year>() {
+        getSelectedItems.addListener(new ListChangeListener<Size>() {
             @Override
-            public void onChanged(Change<? extends Year> change) {
+            public void onChanged(Change<? extends Size> change) {
 //                System.out.println("Selection changed: " + change.getList());
             }
         });
@@ -110,17 +110,17 @@ public class YearController implements Initializable {
         idColumn.setSortable(false);
         idColumn.setCellValueFactory(column -> new ReadOnlyObjectWrapper<Integer>(dataTable.getItems().indexOf(column.getValue())+1));
 
-        yearColumn.setCellValueFactory(new PropertyValueFactory<>("year"));
-        yearColumn.setCellFactory(TextFieldTableCell.<Year>forTableColumn());
-        yearColumn.setOnEditCommit(event -> {
+        sizeColumn.setCellValueFactory(new PropertyValueFactory<>("size"));
+        sizeColumn.setCellFactory(TextFieldTableCell.<Size>forTableColumn());
+        sizeColumn.setOnEditCommit(event -> {
             final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
-            ((Year) event.getTableView().getItems().get(event.getTablePosition().getRow())).setYear(data);
-            yearDAO.updateData("year", data, event.getRowValue().getId());
+            ((Size) event.getTableView().getItems().get(event.getTablePosition().getRow())).setSize(data);
+            DAO.updateData("size", data, event.getRowValue().getId());
             dataTable.refresh();
         });
 
-        dataTable.setRowFactory((TableView<Year> tableView) -> {
-            final TableRow<Year> row = new TableRow<>();
+        dataTable.setRowFactory((TableView<Size> tableView) -> {
+            final TableRow<Size> row = new TableRow<>();
 
             final ContextMenu contextMenu = new ContextMenu();
             final MenuItem viewItem = new MenuItem("Chi tiết");
@@ -128,14 +128,14 @@ public class YearController implements Initializable {
             final MenuItem removeItem = new MenuItem("Xóa dòng");
 
             viewItem.setOnAction((ActionEvent event) -> {
-                Year data = dataTable.getSelectionModel().getSelectedItem();
+                Size data = dataTable.getSelectionModel().getSelectedItem();
                 int rowIndex = dataTable.getSelectionModel().getSelectedIndex();
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Chi tiết kích thước");
-                alert.setHeaderText(data.getYear());
+                alert.setTitle("Chi tiết size");
+                alert.setHeaderText(data.getSize());
                 alert.setContentText(
-                        "Năm phát hành: " + data.getYear() +"\n"
+                        "Size: " + data.getSize() +"\n"
                 );
 
                 alert.showAndWait();
@@ -143,14 +143,14 @@ public class YearController implements Initializable {
             contextMenu.getItems().add(viewItem);
 
             editItem.setOnAction((ActionEvent event) -> {
-                Year data = dataTable.getSelectionModel().getSelectedItem();
-                getItem(data.getYear(), data.getId());
+                Size data = dataTable.getSelectionModel().getSelectedItem();
+                getItem(data.getSize(), data.getId());
             });
             contextMenu.getItems().add(editItem);
 
             removeItem.setOnAction((ActionEvent event) -> {
-                Year data = dataTable.getSelectionModel().getSelectedItem();
-                yearDAO.delete(data.getId());
+                Size data = dataTable.getSelectionModel().getSelectedItem();
+                DAO.delete(data.getId());
                 reload();
             });
             contextMenu.getItems().add(removeItem);
