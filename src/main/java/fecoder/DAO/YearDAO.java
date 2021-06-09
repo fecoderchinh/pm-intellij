@@ -1,35 +1,34 @@
 package fecoder.DAO;
 
 import fecoder.connection.ConnectionUtils;
-import fecoder.models.DimensionType;
+import fecoder.models.Year;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DimensionTypeDAO {
+public class YearDAO {
 
-    private DimensionType createDimensionType(ResultSet resultSet) {
-        DimensionType data = new DimensionType();
+    private Year createYear(ResultSet resultSet) {
+        Year data = new Year();
         try {
             data.setId(resultSet.getInt("id"));
-            data.setName(resultSet.getString("name"));
-            data.setUnit(resultSet.getString("unit"));
+            data.setYear(resultSet.getString("year"));
         } catch (SQLException ex) {
             fecoder.DAO.jdbcDAO.printSQLException(ex);
         }
         return data;
     }
 
-    public List<DimensionType> getDimensionTypes() {
-        List<DimensionType> list = new ArrayList<>();
+    public List<Year> getYears() {
+        List<Year> list = new ArrayList<>();
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             Statement statement = conn.createStatement();
-            String selectAll = "select * from dimension_types";
+            String selectAll = "select * from years";
             ResultSet resultSet = statement.executeQuery(selectAll);
             while(resultSet.next()) {
-                DimensionType data = createDimensionType(resultSet);
+                Year data = createYear(resultSet);
                 list.add(data);
             }
             resultSet.close();
@@ -41,30 +40,29 @@ public class DimensionTypeDAO {
         return list;
     }
 
-    public void updateData(String column, String value, int id) {
-        jdbcDAO.updateSingleData("dimension_types", column, value, id);
+    public void updateData(String column, String year, int id) {
+        jdbcDAO.updateSingleData("years", column, year, id);
     }
 
     public void delete(int id) {
-        jdbcDAO.delete("dimension_types", id);
+        jdbcDAO.delete("years", id);
     }
 
-    public void update(String name, String unit, int id) {
-        String updateQuery = "update dimension_types set name=?, unit=? where id=?";
-        preparedUpdateQuery(updateQuery, name, unit, id);
+    public void update(String year, int id) {
+        String updateQuery = "update years set year=? where id=?";
+        preparedUpdateQuery(updateQuery, year, id);
     }
 
-    public void insert(String name, String unit) {
-        String insertQuery = "insert into dimension_types (name, unit) values(?,?)";
-        preparedInsertQuery(insertQuery, name, unit);
+    public void insert(String year) {
+        String insertQuery = "insert into years (year) values(?)";
+        preparedInsertQuery(insertQuery, year);
     }
 
-    public void preparedInsertQuery(String query, String name, String unit) {
+    public void preparedInsertQuery(String query, String year) {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setString(1, name);
-            preparedStatement.setString(2, unit);
+            preparedStatement.setString(1, year);
 
             preparedStatement.executeUpdate();
 
@@ -76,13 +74,12 @@ public class DimensionTypeDAO {
         }
     }
 
-    public void preparedUpdateQuery(String query, String name, String unit, int id) {
+    public void preparedUpdateQuery(String query, String year, int id) {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setString(1, name);
-            preparedStatement.setString(2, unit);
-            preparedStatement.setInt(3, id);
+            preparedStatement.setString(1, year);
+            preparedStatement.setInt(2, id);
 
             preparedStatement.executeUpdate();
 

@@ -5,12 +5,12 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fecoder.controllers.DimensionTypeController">
+<BorderPane prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fecoder.controllers.YearController">
 
     <top>
         <VBox spacing="10">
             <HBox spacing="10">
-                <Label text="QUẢN LÝ LOẠI KÍCH THƯỚC">
+                <Label text="NĂM PHÁT HÀNH LỆNH">
                     <font>
                         <Font size="28.0" />
                     </font>
@@ -26,20 +26,14 @@
         <VBox prefHeight="688.0" prefWidth="234.0" spacing="10">
             <HBox prefWidth="340" spacing="10">
                 <VBox spacing="16.5">
-                    <Label text="Tên loại">
-                        <font>
-                            <Font size="14.0" />
-                        </font>
-                    </Label>
-                    <Label text="Đơn vị">
+                    <Label text="Năm">
                         <font>
                             <Font size="14.0" />
                         </font>
                     </Label>
                 </VBox>
                 <VBox spacing="10">
-                    <TextField fx:id="nameField" />
-                    <TextField fx:id="unitField" />
+                    <TextField fx:id="yearField"/>
                 </VBox>
             </HBox>
             <HBox spacing="10">
@@ -69,8 +63,7 @@
                 <TableView fx:id="dataTable" editable="true" maxWidth="1.7976931348623157E308" prefHeight="655.0" prefWidth="766.0">
                     <columns>
                         <TableColumn fx:id="idColumn" prefWidth="50.0" text="STT" />
-                        <TableColumn fx:id="nameColumn" prefWidth="420.0" text="Tên loại" />
-                        <TableColumn fx:id="unitColumn" prefWidth="300.0" text="Đơn vị" />
+                        <TableColumn fx:id="yearColumn" prefWidth="720.0" text="Tên loại" />
                     </columns>
                 </TableView>
             </ScrollPane>

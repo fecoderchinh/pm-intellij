@@ -10,7 +10,7 @@
             <children>
                 <Button id="suplierManage" fx:id="suplierManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="NHÀ CUNG CẤP" />
                 <Button id="packagingTypeManage" fx:id="packagingTypeManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="LOẠI BAO BÌ" />
-                <Button id="dimensionTypeManage" fx:id="dimensionTypeManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="LOẠI KÍCH THƯỚC" />
+                <Button id="yearManage" fx:id="yearManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="NĂM" />
             </children>
             <padding>
                 <Insets bottom="10" />

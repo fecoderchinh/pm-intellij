@@ -1,7 +1,7 @@
 package fecoder.controllers;
 
-import fecoder.DAO.DimensionTypeDAO;
-import fecoder.models.DimensionType;
+import fecoder.DAO.YearDAO;
+import fecoder.models.Year;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -18,22 +18,21 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class DimensionTypeController implements Initializable {
-    public TextField nameField;
-    public TextField unitField;
+public class YearController implements Initializable {
+    public TextField yearField;
     public Button insertButton;
     public Button updateButton;
     public Button clearButton;
     public TextField searchField;
     public Button reloadData;
-    public TableView<DimensionType> dataTable;
-    public TableColumn<DimensionType, Integer> idColumn;
-    public TableColumn<DimensionType, String> nameColumn;
-    public TableColumn<DimensionType, String> unitColumn;
+    public TableView<Year> dataTable;
+    public TableColumn<Year, Integer> idColumn;
+    public TableColumn<Year, String> yearColumn;
+    public TableColumn<Year, String> unitColumn;
     public Label anchorLabel;
     public Label anchorData;
 
-    private final DimensionTypeDAO dimensionTypeDAO = new DimensionTypeDAO();
+    private final YearDAO yearDAO = new YearDAO();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -41,13 +40,13 @@ public class DimensionTypeController implements Initializable {
     }
 
     public void insertButton(ActionEvent actionEvent) {
-        dimensionTypeDAO.insert(nameField.getText(), unitField.getText());
+        yearDAO.insert(yearField.getText());
         clearFields();
         reload();
     }
 
     public void updateButton(ActionEvent actionEvent) {
-        dimensionTypeDAO.update(nameField.getText(), unitField.getText(), Integer.parseInt(anchorData.getText()));
+        yearDAO.update(yearField.getText(), Integer.parseInt(anchorData.getText()));
         clearFields();
         reload();
     }
@@ -65,23 +64,21 @@ public class DimensionTypeController implements Initializable {
         clearFields();
     }
 
-    private void getItem(String name, String unit, int id) {
-        nameField.setText(name);
-        unitField.setText(unit);
+    private void getItem(String year, int id) {
+        yearField.setText(year);
         anchorLabel.setText("Current ID: ");
         anchorData.setText(""+id);
     }
 
     private void clearFields() {
-        nameField.setText(null);
-        unitField.setText(null);
+        yearField.setText(null);
         anchorLabel.setText(null);
         anchorData.setText(null);
     }
 
     public void loadView() {
-        ObservableList<DimensionType> list = FXCollections.observableArrayList(dimensionTypeDAO.getDimensionTypes());
-        FilteredList<DimensionType> filteredList = new FilteredList<>(list, p -> true);
+        ObservableList<Year> list = FXCollections.observableArrayList(yearDAO.getYears());
+        FilteredList<Year> filteredList = new FilteredList<>(list, p -> true);
 
         searchField.textProperty()
                 .addListener((observable, oldValue, newValue) -> {
@@ -89,24 +86,24 @@ public class DimensionTypeController implements Initializable {
                         if (newValue == null || newValue.isEmpty())
                             return true;
                         String lowerCaseFilter = newValue.toLowerCase();
-                        return str.getName().toLowerCase().contains
+                        return str.getYear().toLowerCase().contains
                                 (lowerCaseFilter);
                     });
                 });
 
-        SortedList<DimensionType> sortedList = new SortedList<>(filteredList);
+        SortedList<Year> sortedList = new SortedList<>(filteredList);
         sortedList.comparatorProperty().bind(dataTable.comparatorProperty());
 
         dataTable.setEditable(true);
 
-        TableView.TableViewSelectionModel<DimensionType> selectionModel = dataTable.getSelectionModel();
+        TableView.TableViewSelectionModel<Year> selectionModel = dataTable.getSelectionModel();
         selectionModel.setSelectionMode(SelectionMode.SINGLE);
 
-        ObservableList<DimensionType> getSelectedItems = selectionModel.getSelectedItems();
+        ObservableList<Year> getSelectedItems = selectionModel.getSelectedItems();
 
-        getSelectedItems.addListener(new ListChangeListener<DimensionType>() {
+        getSelectedItems.addListener(new ListChangeListener<Year>() {
             @Override
-            public void onChanged(Change<? extends DimensionType> change) {
+            public void onChanged(Change<? extends Year> change) {
 //                System.out.println("Selection changed: " + change.getList());
             }
         });
@@ -114,26 +111,17 @@ public class DimensionTypeController implements Initializable {
         idColumn.setSortable(false);
         idColumn.setCellValueFactory(column -> new ReadOnlyObjectWrapper<Integer>(dataTable.getItems().indexOf(column.getValue())+1));
 
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        nameColumn.setCellFactory(TextFieldTableCell.<DimensionType>forTableColumn());
-        nameColumn.setOnEditCommit(event -> {
+        yearColumn.setCellValueFactory(new PropertyValueFactory<>("year"));
+        yearColumn.setCellFactory(TextFieldTableCell.<Year>forTableColumn());
+        yearColumn.setOnEditCommit(event -> {
             final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
-            ((DimensionType) event.getTableView().getItems().get(event.getTablePosition().getRow())).setName(data);
-            dimensionTypeDAO.updateData("name", data, event.getRowValue().getId());
+            ((Year) event.getTableView().getItems().get(event.getTablePosition().getRow())).setYear(data);
+            yearDAO.updateData("year", data, event.getRowValue().getId());
             dataTable.refresh();
         });
 
-        unitColumn.setCellValueFactory(new PropertyValueFactory<>("unit"));
-        unitColumn.setCellFactory(TextFieldTableCell.<DimensionType>forTableColumn());
-        unitColumn.setOnEditCommit(event -> {
-            final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
-            ((DimensionType) event.getTableView().getItems().get(event.getTablePosition().getRow())).setUnit(data);
-            dimensionTypeDAO.updateData("unit", data, event.getRowValue().getId());
-            dataTable.refresh();
-        });
-
-        dataTable.setRowFactory((TableView<DimensionType> tableView) -> {
-            final TableRow<DimensionType> row = new TableRow<>();
+        dataTable.setRowFactory((TableView<Year> tableView) -> {
+            final TableRow<Year> row = new TableRow<>();
 
             final ContextMenu contextMenu = new ContextMenu();
             final MenuItem viewItem = new MenuItem("Chi tiết");
@@ -141,15 +129,14 @@ public class DimensionTypeController implements Initializable {
             final MenuItem removeItem = new MenuItem("Xóa dòng");
 
             viewItem.setOnAction((ActionEvent event) -> {
-                DimensionType data = dataTable.getSelectionModel().getSelectedItem();
+                Year data = dataTable.getSelectionModel().getSelectedItem();
                 int rowIndex = dataTable.getSelectionModel().getSelectedIndex();
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Chi tiết kích thước");
-                alert.setHeaderText(data.getName());
+                alert.setHeaderText(data.getYear());
                 alert.setContentText(
-                        "Tên loại: " + data.getName() +"\n"+
-                        "Đơn vị: " + data.getUnit()
+                        "Năm phát hành: " + data.getYear() +"\n"
                 );
 
                 alert.showAndWait();
@@ -157,14 +144,14 @@ public class DimensionTypeController implements Initializable {
             contextMenu.getItems().add(viewItem);
 
             editItem.setOnAction((ActionEvent event) -> {
-                DimensionType data = dataTable.getSelectionModel().getSelectedItem();
-                getItem(data.getName(), data.getUnit(), data.getId());
+                Year data = dataTable.getSelectionModel().getSelectedItem();
+                getItem(data.getYear(), data.getId());
             });
             contextMenu.getItems().add(editItem);
 
             removeItem.setOnAction((ActionEvent event) -> {
-                DimensionType data = dataTable.getSelectionModel().getSelectedItem();
-                dimensionTypeDAO.delete(data.getId());
+                Year data = dataTable.getSelectionModel().getSelectedItem();
+                yearDAO.delete(data.getId());
                 reload();
             });
             contextMenu.getItems().add(removeItem);
