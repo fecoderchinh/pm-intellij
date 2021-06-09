@@ -1,15 +1,17 @@
 package fecoder.models;
 
-public class PackagingType {
+public class Type {
 
     private int id;
     private String name;
+    private String unit;
 
-    public PackagingType(){}
+    public Type(){}
 
-    public PackagingType(int id, String name) {
+    public Type(int id, String name, String unit) {
         this.id = id;
         this.name = name;
+        this.unit = unit;
     }
 
     public int getId() { return id; }
@@ -17,4 +19,7 @@ public class PackagingType {
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
+
+    public String getUnit() { return unit; }
+    public void setUnit(String unit) { this.unit = unit; }
 }

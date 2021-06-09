@@ -1,7 +1,7 @@
 package fecoder.controllers;
 
-import fecoder.DAO.PackagingTypeDAO;
-import fecoder.models.PackagingType;
+import fecoder.DAO.TypeDAO;
+import fecoder.models.Type;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -19,20 +19,22 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PackagingTypeController implements Initializable {
+public class TypeController implements Initializable {
     public Button insertButton;
     public Button updateButton;
     public Button clearButton;
     public TextField nameField;
     public TextField searchField;
     public Button reloadData;
-    public TableView<PackagingType> dataTable;
-    public TableColumn<PackagingType, Integer> idColumn;
-    public TableColumn<PackagingType, String> nameColumn;
+    public TableView<Type> dataTable;
+    public TableColumn<Type, Integer> idColumn;
+    public TableColumn<Type, String> nameColumn;
+    public TableColumn<Type, String> unitColumn;
     public Label anchorLabel;
     public Label anchorData;
 
-    private final PackagingTypeDAO packagingTypeDAO = new PackagingTypeDAO();
+    private final TypeDAO typeDAO = new TypeDAO();
+    public TextField unitField;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -41,14 +43,14 @@ public class PackagingTypeController implements Initializable {
 
     @FXML
     public void insertButton(ActionEvent actionEvent) {
-        packagingTypeDAO.insert(nameField.getText());
+        typeDAO.insert(nameField.getText(), unitField.getText());
         clearFields();
         reload();
     }
 
     @FXML
     public void updateButton(ActionEvent actionEvent) {
-        packagingTypeDAO.update(nameField.getText(), Integer.parseInt(anchorData.getText()));
+        typeDAO.update(nameField.getText(), unitField.getText(), Integer.parseInt(anchorData.getText()));
         clearFields();
         reload();
     }
@@ -63,8 +65,8 @@ public class PackagingTypeController implements Initializable {
     }
 
     public void loadView() {
-        ObservableList<PackagingType> list = FXCollections.observableArrayList(packagingTypeDAO.getTypes());
-        FilteredList<PackagingType> filteredList = new FilteredList<>(list, p -> true);
+        ObservableList<Type> list = FXCollections.observableArrayList(typeDAO.getTypes());
+        FilteredList<Type> filteredList = new FilteredList<>(list, p -> true);
 
         searchField.textProperty()
                 .addListener((observable, oldValue, newValue) -> {
@@ -77,19 +79,19 @@ public class PackagingTypeController implements Initializable {
                     });
                 });
 
-        SortedList<PackagingType> sortedList = new SortedList<>(filteredList);
+        SortedList<Type> sortedList = new SortedList<>(filteredList);
         sortedList.comparatorProperty().bind(dataTable.comparatorProperty());
 
         dataTable.setEditable(true);
 
-        TableView.TableViewSelectionModel<PackagingType> selectionModel = dataTable.getSelectionModel();
+        TableView.TableViewSelectionModel<Type> selectionModel = dataTable.getSelectionModel();
         selectionModel.setSelectionMode(SelectionMode.SINGLE);
 
-        ObservableList<PackagingType> getSelectedItems = selectionModel.getSelectedItems();
+        ObservableList<Type> getSelectedItems = selectionModel.getSelectedItems();
 
-        getSelectedItems.addListener(new ListChangeListener<PackagingType>() {
+        getSelectedItems.addListener(new ListChangeListener<Type>() {
             @Override
-            public void onChanged(Change<? extends PackagingType> change) {
+            public void onChanged(Change<? extends Type> change) {
 //                System.out.println("Selection changed: " + change.getList());
             }
         });
@@ -98,16 +100,25 @@ public class PackagingTypeController implements Initializable {
         idColumn.setCellValueFactory(column -> new ReadOnlyObjectWrapper<Integer>(dataTable.getItems().indexOf(column.getValue())+1));
 
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        nameColumn.setCellFactory(TextFieldTableCell.<PackagingType>forTableColumn());
+        nameColumn.setCellFactory(TextFieldTableCell.<Type>forTableColumn());
         nameColumn.setOnEditCommit(event -> {
             final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
-            ((PackagingType) event.getTableView().getItems().get(event.getTablePosition().getRow())).setName(data);
-            packagingTypeDAO.updateData("name", data, event.getRowValue().getId());
+            ((Type) event.getTableView().getItems().get(event.getTablePosition().getRow())).setName(data);
+            typeDAO.updateData("name", data, event.getRowValue().getId());
             dataTable.refresh();
         });
 
-        dataTable.setRowFactory((TableView<PackagingType> tableView) -> {
-            final TableRow<PackagingType> row = new TableRow<>();
+        unitColumn.setCellValueFactory(new PropertyValueFactory<>("unit"));
+        unitColumn.setCellFactory(TextFieldTableCell.<Type>forTableColumn());
+        unitColumn.setOnEditCommit(event -> {
+            final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
+            ((Type) event.getTableView().getItems().get(event.getTablePosition().getRow())).setName(data);
+            typeDAO.updateData("unit", data, event.getRowValue().getId());
+            dataTable.refresh();
+        });
+
+        dataTable.setRowFactory((TableView<Type> tableView) -> {
+            final TableRow<Type> row = new TableRow<>();
 
             final ContextMenu contextMenu = new ContextMenu();
             final MenuItem viewItem = new MenuItem("Chi tiết");
@@ -115,14 +126,15 @@ public class PackagingTypeController implements Initializable {
             final MenuItem removeItem = new MenuItem("Xóa dòng");
 
             viewItem.setOnAction((ActionEvent event) -> {
-                PackagingType suplier = dataTable.getSelectionModel().getSelectedItem();
+                Type suplier = dataTable.getSelectionModel().getSelectedItem();
                 int rowIndex = dataTable.getSelectionModel().getSelectedIndex();
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Chi tiết loại bao bì");
                 alert.setHeaderText(suplier.getName());
                 alert.setContentText(
-                        "Tên loại: " + suplier.getName()
+                        "Tên loại: " + suplier.getName() + "\n" +
+                        "Đơn vị tính: " + suplier.getUnit()
                 );
 
                 alert.showAndWait();
@@ -130,14 +142,14 @@ public class PackagingTypeController implements Initializable {
             contextMenu.getItems().add(viewItem);
 
             editItem.setOnAction((ActionEvent event) -> {
-                PackagingType data = dataTable.getSelectionModel().getSelectedItem();
-                getItem(data.getName(), data.getId());
+                Type data = dataTable.getSelectionModel().getSelectedItem();
+                getItem(data.getName(), data.getUnit(), data.getId());
             });
             contextMenu.getItems().add(editItem);
 
             removeItem.setOnAction((ActionEvent event) -> {
-                PackagingType data = dataTable.getSelectionModel().getSelectedItem();
-                packagingTypeDAO.delete(data.getId());
+                Type data = dataTable.getSelectionModel().getSelectedItem();
+                typeDAO.delete(data.getId());
                 reload();
             });
             contextMenu.getItems().add(removeItem);
@@ -158,14 +170,16 @@ public class PackagingTypeController implements Initializable {
         clearFields();
     }
 
-    private void getItem(String name, int id) {
+    private void getItem(String name, String unit, int id) {
         nameField.setText(name);
+        unitField.setText(unit);
         anchorLabel.setText("Current ID: ");
         anchorData.setText(""+id);
     }
 
     private void clearFields() {
         nameField.setText(null);
+        unitField.setText(null);
         anchorLabel.setText(null);
         anchorData.setText(null);
     }

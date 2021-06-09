@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fecoder.controllers.PackagingTypeController">
+<BorderPane prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fecoder.controllers.TypeController">
 
     <top>
         <VBox spacing="10">
@@ -31,9 +31,15 @@
                             <Font size="14.0" />
                         </font>
                     </Label>
+                    <Label text="Đơn vị tính">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </Label>
                 </VBox>
                 <VBox spacing="10">
                     <TextField fx:id="nameField" />
+                    <TextField fx:id="unitField" />
                 </VBox>
             </HBox>
             <HBox spacing="10">
@@ -63,7 +69,8 @@
                 <TableView fx:id="dataTable" editable="true" maxWidth="1.7976931348623157E308" prefHeight="655.0" prefWidth="766.0">
                     <columns>
                         <TableColumn fx:id="idColumn" prefWidth="50.0" text="STT" />
-                        <TableColumn fx:id="nameColumn" prefWidth="720.0" text="Tên loại" />
+                        <TableColumn fx:id="nameColumn" prefWidth="360.0" text="Tên loại" />
+                        <TableColumn fx:id="unitColumn" prefWidth="360.0" text="Đơn vị tính" />
                     </columns>
                 </TableView>
             </ScrollPane>

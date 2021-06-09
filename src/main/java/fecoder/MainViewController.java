@@ -32,33 +32,12 @@ public class MainViewController {
             }
         });
 
-//        suplierManage.setOnMouseClicked((event) -> {
-//            try {
-//                FXMLLoader fxmlLoader = new FXMLLoader();
-//                fxmlLoader.setLocation(getClass().getResource("/fxml/suplier.fxml"));
-//                /*
-//                 * if "fx:controller" is not set in fxml
-//                 * fxmlLoader.setController(NewWindowController);
-//                 */
-//                Scene scene = new Scene(fxmlLoader.load());
-//                Stage stage = new Stage();
-//                stage.setTitle("Quản Lý Danh Sách Nhà Cung Cấp");
-//                stage.setScene(scene);
-//                stage.initModality(Modality.APPLICATION_MODAL);
-//                stage.setResizable(false);
-//                stage.show();
-//            } catch (IOException e) {
-//                Logger logger = Logger.getLogger(getClass().getName());
-//                logger.log(Level.SEVERE, "Failed to create new Window.", e);
-//            }
-//        });
-
         suplierManage.setOnMouseClicked((event) -> {
             loadScene("/fxml/suplier.fxml", "Quản Lý Danh Sách Nhà Cung Cấp");
         });
 
         packagingTypeManage.setOnMouseClicked((event) -> {
-            loadScene("/fxml/packaging_type.fxml", "Quản Lý Loại Bao Bì");
+            loadScene("/fxml/type.fxml", "Quản Lý Loại Bao Bì");
         });
 
         dimensionTypeManage.setOnMouseClicked((event) -> {
