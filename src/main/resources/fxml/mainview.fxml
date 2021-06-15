@@ -13,6 +13,7 @@
                 <Button id="yearManage" fx:id="yearManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="NĂM" />
                 <Button id="sizeManage" fx:id="sizeManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="SIZE TÔM" />
                 <Button id="customerManage" fx:id="customerManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="KHÁCH HÀNG" />
+                <Button id="packagingManage" fx:id="packagingManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="BAO BÌ" />
             </children>
             <padding>
                 <Insets bottom="10" />

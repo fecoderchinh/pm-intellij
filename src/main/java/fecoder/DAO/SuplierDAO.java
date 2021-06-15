@@ -1,7 +1,9 @@
 package fecoder.DAO;
 
 import fecoder.connection.ConnectionUtils;
+import fecoder.models.Packaging;
 import fecoder.models.Suplier;
+import fecoder.models.Type;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -9,7 +11,7 @@ import java.util.List;
 
 public class SuplierDAO {
 
-    private Suplier createSuplier(ResultSet resultSet) {
+    private static Suplier createSuplier(ResultSet resultSet) {
         Suplier data = new Suplier();
         try {
             data.setId(resultSet.getInt("id"));
@@ -47,12 +49,89 @@ public class SuplierDAO {
         return list;
     }
 
+    public Suplier getDataByID(int value) {
+        Suplier data = new Suplier();
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement("select * from supliers where id=?");
+            preparedStatement.setInt(1, value);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                data = createSuplier(resultSet);
+            }
+            resultSet.close();
+            conn.close();
+        } catch (ClassNotFoundException | SQLException ex) {
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
+        }
+        return data;
+    }
+
+    public Suplier getDataByName(String value) {
+        Suplier data = new Suplier();
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement("select * from supliers where name=?");
+            preparedStatement.setString(1, value);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                data = createSuplier(resultSet);
+            }
+            resultSet.close();
+            conn.close();
+        } catch (ClassNotFoundException | SQLException ex) {
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
+        }
+        return data;
+    }
+
+    public boolean hasName(String value) {
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement("select * from supliers where name=?");
+            preparedStatement.setString(1, value);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                return true;
+            }
+            resultSet.close();
+            conn.close();
+        } catch (ClassNotFoundException | SQLException ex) {
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
+        }
+        return false;
+    }
+
     public void updateData(String column, String value, int id) {
         jdbcDAO.updateSingleData("supliers", column, value, id);
     }
 
     public void delete(int id) {
         jdbcDAO.delete("supliers", id);
+    }
+
+    public List<Suplier> getRow(int id) {
+        String query = "select * from supliers where id=?";
+        List<Suplier> list = new ArrayList<>();
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setInt(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                Suplier data = createSuplier(resultSet);
+                list.add(data);
+            }
+            resultSet.close();
+            conn.close();
+        } catch (ClassNotFoundException | SQLException ex) {
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
+        }
+        return list;
     }
 
     public void update(String name, String address, String email, String deputy, String phone, String fax, String code, int id) {

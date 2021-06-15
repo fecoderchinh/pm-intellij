@@ -88,26 +88,27 @@ create table packaging(
 	name varchar(250) not null,
 	specifications varchar(250) not null,
 	dimension varchar(250) not null,
-	suplier_id bigint unsigned,
-	type_id bigint unsigned,
+	suplier bigint unsigned,
+	type bigint unsigned,
 	minimum_order int not null default 0,
-	is_stamped bit not null default 0,
+	stamped bit not null default 0,
 	code varchar(100),
 	main bit not null default 0,
 	note longtext,
+	price float,
 	primary key(id),
 	unique key(name, code),
-	foreign key (suplier_id) references supliers(id),
-	foreign key (type_id) references types(id)
+	foreign key (suplier) references supliers(id),
+	foreign key (type) references types(id)
 );
 
 drop table packaging;
 
-insert into packaging (name, specifications, dimension, suplier_id, type_id, minimum_order, is_stamped, code, main, note)
-values ('Túi PA trắng 20 x 33 rider 7.5', 'PAPE, dày 100mic, hàn biên 1cm, đuôi rider 7.5 cm (bao gồm đường hàn)', '20 x 33', 4, 3, 0, 0, '', 0, ''),
-	   (N'Que tre', 'Dài 20.5 cm, cờ 3.5 cm, đuờng kính 2.5 mm, canh trên bo tròn', '20.5 - 3.5', 3, 4, 0, 0, '', 0, ''),
-	   (N'Rider KAILISBROS Cooked Prawn SGM 250g (New Ingredient)', 'Giấy C230, in Offset, 02 mặt khác nhau', '17.5 x 5', 1, 5, 0, 0, 'N742', 0, ''),
-	   ('Thùng KAILISBROS Cooked Prawn SGM 250g x 20 (New COO)', 'Thùng giấy carton, 05 lớp, sóng EB, chống thấm 02 mặt, in Flexo 01 màu', '36.5 x 22 x 14', 1, 1, 0, 0, 'T556', 1, '');
+insert into packaging (name, specifications, dimension, suplier, type, minimum_order, stamped, code, main, note, price)
+values ('Túi PA trắng 20 x 33 rider 7.5', 'PAPE, dày 100mic, hàn biên 1cm, đuôi rider 7.5 cm (bao gồm đường hàn)', '20 x 33', 4, 3, 0, 0, '', 0, '', 752),
+	   (N'Que tre', 'Dài 20.5 cm, cờ 3.5 cm, đuờng kính 2.5 mm, canh trên bo tròn', '20.5 - 3.5', 3, 4, 0, 0, '', 0, '', 239),
+	   (N'Rider KAILISBROS Cooked Prawn SGM 250g (New Ingredient)', 'Giấy C230, in Offset, 02 mặt khác nhau', '17.5 x 5', 1, 5, 0, 0, 'N742', 0, '', 170),
+	   ('Thùng KAILISBROS Cooked Prawn SGM 250g x 20 (New COO)', 'Thùng giấy carton, 05 lớp, sóng EB, chống thấm 02 mặt, in Flexo 01 màu', '36.5 x 22 x 14', 1, 1, 0, 0, 'T556', 1, '', 6300);
 
 select * from packaging;
 
@@ -137,7 +138,7 @@ table năm sản xuất
 */
 create table years(
 	id bigint unsigned not null auto_increment,
-	year int,
+	year varchar(4),
 	primary key(id),
 	unique key(year)
 );
@@ -145,7 +146,7 @@ create table years(
 drop table years;
 
 insert into years(year)
-values (2021), (2022);
+values ('2020'), ('2021');
 
 select * from years;
 
@@ -237,22 +238,24 @@ table mặt hàng và size
 */
 create table item_packaging_size (
 	id bigint unsigned not null auto_increment,
-	item_id bigint unsigned,
-	size_id bigint unsigned,
-	packaging_id bigint unsigned,
+	item bigint unsigned,
+	size bigint unsigned,
+	packaging bigint unsigned,
 	quantity int not null,
 	odd int not null default 0,
 	stock int not null default 0,
 	minimum int not null default 0,
 	primary key (id),
-	foreign key (item_id) references items(id),
-	foreign key (size_id) references sizes(id),
-	foreign key (packaging_id) references packaging(id)
+	foreign key (item) references items(id),
+	foreign key (size) references sizes(id),
+	foreign key (packaging) references packaging(id)
 );
+
+drop table item_packaging_size;
 
 select * from item_packaging_size;
 
-insert into item_packaging_size (item_id, size_id, packaging_id, quantity, odd, stock, minimum)
+insert into item_packaging_size (item, size, packaging, quantity, odd, stock, minimum)
 values (1, 2, 1, 20, 150, 0, 0), (1, 2, 2, 100, 200, 0, 0), (1, 2, 3, 20, 100, 0 ,0), (1, 2, 4, 1, 10, 0, 0);
 
 select * from item_packaging_size;

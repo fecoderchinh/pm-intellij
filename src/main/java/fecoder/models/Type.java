@@ -22,4 +22,9 @@ public class Type {
 
     public String getUnit() { return unit; }
     public void setUnit(String unit) { this.unit = unit; }
+
+    @Override
+    public String toString() {
+        return this.getName();
+    }
 }

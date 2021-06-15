@@ -41,6 +41,62 @@ public class TypeDAO {
         return list;
     }
 
+    public Type getDataByID(int value) {
+        Type type = new Type();
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement("select * from types where id=?");
+            preparedStatement.setInt(1, value);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                type = createType(resultSet);
+            }
+            resultSet.close();
+            conn.close();
+        } catch (ClassNotFoundException | SQLException ex) {
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
+        }
+        return type;
+    }
+
+    public Type getDataByName(String value) {
+        Type type = new Type();
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement("select * from types where name=?");
+            preparedStatement.setString(1, value);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                type = createType(resultSet);
+            }
+            resultSet.close();
+            conn.close();
+        } catch (ClassNotFoundException | SQLException ex) {
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
+        }
+        return type;
+    }
+
+    public boolean hasName(String value) {
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement("select * from types where name=?");
+            preparedStatement.setString(1, value);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                return true;
+            }
+            resultSet.close();
+            conn.close();
+        } catch (ClassNotFoundException | SQLException ex) {
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
+        }
+        return false;
+    }
+
     public void updateData(String column, String value, int id) {
         jdbcDAO.updateSingleData("types", column, value, id);
     }

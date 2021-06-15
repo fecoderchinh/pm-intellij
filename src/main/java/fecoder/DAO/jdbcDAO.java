@@ -54,6 +54,48 @@ public class jdbcDAO {
         }
     }
 
+    public static void updateSingleDataInteger(String table, String column, int value, int id) {
+        String query = "update "+ table +" set "+ column +"=? where id=?";
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setInt(1, value);
+            preparedStatement.setInt(2, id);
+            preparedStatement.execute();
+        } catch (Exception ex) {
+            assert ex instanceof SQLException;
+            printSQLException((SQLException) ex);
+        }
+    }
+
+    public static void updateSingleDataFloat(String table, String column, float value, int id) {
+        String query = "update "+ table +" set "+ column +"=? where id=?";
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setFloat(1, value);
+            preparedStatement.setInt(2, id);
+            preparedStatement.execute();
+        } catch (Exception ex) {
+            assert ex instanceof SQLException;
+            printSQLException((SQLException) ex);
+        }
+    }
+
+    public static void updateSingleDataBoolean(String table, String column, boolean value, int id) {
+        String query = "update "+ table +" set "+ column +"=? where id=?";
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setBoolean(1, value);
+            preparedStatement.setInt(2, id);
+            preparedStatement.execute();
+        } catch (Exception ex) {
+            assert ex instanceof SQLException;
+            printSQLException((SQLException) ex);
+        }
+    }
+
     public static void delete(String table, int id) {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
