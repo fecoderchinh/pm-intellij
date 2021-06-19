@@ -563,6 +563,7 @@ public class PackagingController implements Initializable {
                     int selectedRow = dataTable.getItems().get(pos.getRow()).getId();
                     cell.setGraphic(box);
                     cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
+                    box.getTextbox().setPromptText("Nhập từ để tìm");
 
                     box.getTextbox().setOnKeyReleased(event -> {
                         if(event.getCode() == KeyCode.ENTER && !typeDAO.hasName(box.getTextbox().textProperty().getValue())) {
@@ -641,6 +642,7 @@ public class PackagingController implements Initializable {
                     int selectedRow = dataTable.getItems().get(pos.getRow()).getId();
                     cell.setGraphic(box);
                     cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
+                    box.getTextbox().setPromptText("Nhập mã NCC");
 
                     box.getTextbox().setOnKeyReleased(event -> {
                         if(event.getCode() == KeyCode.ENTER && !suplierDAO.hasName(box.getTextbox().textProperty().getValue())) {

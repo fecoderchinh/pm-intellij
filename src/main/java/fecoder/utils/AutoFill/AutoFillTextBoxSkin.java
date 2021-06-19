@@ -379,7 +379,9 @@ public class AutoFillTextBoxSkin<T> extends SkinBase<AutoFillTextBox<T>>
     public void changed(ObservableValue<? extends String> ov, String t, String t1) {
 
         if (ov.getValue().toString().length() > 0) {
-            String txtdata = (textbox.getText()).trim();
+//            String txtdata = (textbox.getText()).trim();
+            // the above will throw null exception when press SPACEBAR and break the listview
+            String txtdata = (textbox.getText());
 
             //Limit of data cell to be shown in ListView
             int limit = 0;
