@@ -84,8 +84,8 @@ public class PackagingController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        typeComboBox.getItems().addAll(FXCollections.observableArrayList(typeDAO.getTypes()));
-        suplierComboBox.getItems().addAll(FXCollections.observableArrayList(suplierDAO.getSupliers()));
+        typeComboBox.getItems().addAll(FXCollections.observableArrayList(typeDAO.getList()));
+        suplierComboBox.getItems().addAll(FXCollections.observableArrayList(suplierDAO.getList()));
         loadView();
     }
 
@@ -224,7 +224,7 @@ public class PackagingController implements Initializable {
             }
         });
 
-        ObservableList<Packaging> packagingObservableList = FXCollections.observableArrayList(packagingDAO.getLists());
+        ObservableList<Packaging> packagingObservableList = FXCollections.observableArrayList(packagingDAO.getList());
         FilteredList<Packaging> packagingFilteredList = new FilteredList<>(packagingObservableList, p -> true);
 
         searchField.textProperty()
@@ -490,7 +490,7 @@ public class PackagingController implements Initializable {
                     }
                 });
 
-        ObservableList<Type> typeObservableList = FXCollections.observableArrayList(typeDAO.getTypes());
+        ObservableList<Type> typeObservableList = FXCollections.observableArrayList(typeDAO.getList());
         typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
 //        typeColumn.setCellFactory(ComboBoxTableCell.forTableColumn(typeObservableList));
 //        typeColumn.setCellFactory(new Callback<TableColumn<Packaging, Type>,TableCell<Packaging, Type>>() {
@@ -610,7 +610,7 @@ public class PackagingController implements Initializable {
             return cell ;
         });
 
-        ObservableList<Suplier> suplierObservableList = FXCollections.observableArrayList(suplierDAO.getSupliers());
+        ObservableList<Suplier> suplierObservableList = FXCollections.observableArrayList(suplierDAO.getList());
         suplierColumn.setCellValueFactory(new PropertyValueFactory<>("suplier"));
         suplierColumn.setCellFactory(TextFieldTableCell.<Packaging, Integer>forTableColumn(new IntegerStringConverter()));
         suplierColumn.setCellFactory(tc -> {

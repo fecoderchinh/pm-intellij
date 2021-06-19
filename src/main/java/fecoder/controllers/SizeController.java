@@ -76,7 +76,7 @@ public class SizeController implements Initializable {
     }
 
     public void loadView() {
-        ObservableList<Size> list = FXCollections.observableArrayList(DAO.getLists());
+        ObservableList<Size> list = FXCollections.observableArrayList(DAO.getList());
         FilteredList<Size> filteredList = new FilteredList<>(list, p -> true);
 
         searchField.textProperty()

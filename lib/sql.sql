@@ -214,7 +214,7 @@ drop table size_packaging;
 =================================================
 table mặt hàng
 */
-create table items(
+create table products(
 	id bigint unsigned not null auto_increment,
 	name varchar(250) not null,
 	description longtext not null,
@@ -225,12 +225,12 @@ create table items(
 	foreign key (command_id) references commands(id)
 );
 
-drop table items;
+drop table products;
 
-insert into items (name, description, specification, note, command_id)
+insert into products (name, description, specification, note, command_id)
 values ('Tôm Thẻ CPD Xiên Que Tỏi 250g x 20 - SGM', 'Tôm Vannamei PD Xiên Que, Tẩm Marinade Tỏi, Luộc', '72% tôm : 28% marinade', '', 1);
 
-select * from items;
+select * from products;
 
 /*
 =================================================
@@ -242,9 +242,6 @@ create table item_packaging_size (
 	size bigint unsigned,
 	packaging bigint unsigned,
 	quantity int not null,
-	odd int not null default 0,
-	stock int not null default 0,
-	minimum int not null default 0,
 	primary key (id),
 	foreign key (item) references items(id),
 	foreign key (size) references sizes(id),
@@ -255,8 +252,8 @@ drop table item_packaging_size;
 
 select * from item_packaging_size;
 
-insert into item_packaging_size (item, size, packaging, quantity, odd, stock, minimum)
-values (1, 2, 1, 20, 150, 0, 0), (1, 2, 2, 100, 200, 0, 0), (1, 2, 3, 20, 100, 0 ,0), (1, 2, 4, 1, 10, 0, 0);
+insert into item_packaging_size (item, size, packaging, quantity)
+values (1, 2, 1, 20), (1, 2, 2, 100), (1, 2, 3, 20), (1, 2, 4, 1);
 
 select * from item_packaging_size;
 /*
@@ -266,16 +263,16 @@ table số lượng đặt
 create table quantity(
 	id bigint unsigned not null auto_increment,
 	qty int not null default 0,
-	item_id bigint unsigned,
+	product_id bigint unsigned,
 	command_id bigint unsigned,
 	primary key (id),
-	foreign key (item_id) references items(id),
+	foreign key (product_id) references products(id),
 	foreign key (command_id) references commands(id)
 );
 
 drop table quantity;
 
-insert into quantity (qty, item_id, command_id)
+insert into quantity (qty, product_id, command_id)
 values (105, 1, 1);
 
 select * from quantity;

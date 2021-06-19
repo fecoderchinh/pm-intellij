@@ -9,7 +9,7 @@ import java.util.List;
 
 public class TypeDAO {
 
-    private Type createType(ResultSet resultSet) {
+    private Type createData(ResultSet resultSet) {
         Type data = new Type();
         try {
             data.setId(resultSet.getInt("id"));
@@ -21,7 +21,7 @@ public class TypeDAO {
         return data;
     }
 
-    public List<Type> getTypes() {
+    public List<Type> getList() {
         List<Type> list = new ArrayList<>();
         try {
             Connection conn = ConnectionUtils.getMyConnection();
@@ -29,7 +29,7 @@ public class TypeDAO {
             String selectAll = "select * from types";
             ResultSet resultSet = statement.executeQuery(selectAll);
             while(resultSet.next()) {
-                Type data = createType(resultSet);
+                Type data = createData(resultSet);
                 list.add(data);
             }
             resultSet.close();
@@ -49,7 +49,7 @@ public class TypeDAO {
             preparedStatement.setInt(1, value);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
-                type = createType(resultSet);
+                type = createData(resultSet);
             }
             resultSet.close();
             conn.close();
@@ -68,7 +68,7 @@ public class TypeDAO {
             preparedStatement.setString(1, value);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
-                type = createType(resultSet);
+                type = createData(resultSet);
             }
             resultSet.close();
             conn.close();

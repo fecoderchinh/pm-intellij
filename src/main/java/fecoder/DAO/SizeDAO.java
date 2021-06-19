@@ -20,7 +20,7 @@ public class SizeDAO {
         return data;
     }
 
-    public List<Size> getLists() {
+    public List<Size> getList() {
         List<Size> list = new ArrayList<>();
         try {
             Connection conn = ConnectionUtils.getMyConnection();

@@ -1,9 +1,7 @@
 package fecoder.DAO;
 
 import fecoder.connection.ConnectionUtils;
-import fecoder.models.Packaging;
 import fecoder.models.Suplier;
-import fecoder.models.Type;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -11,7 +9,7 @@ import java.util.List;
 
 public class SuplierDAO {
 
-    private static Suplier createSuplier(ResultSet resultSet) {
+    private static Suplier createData(ResultSet resultSet) {
         Suplier data = new Suplier();
         try {
             data.setId(resultSet.getInt("id"));
@@ -28,7 +26,7 @@ public class SuplierDAO {
         return data;
     }
 
-    public List<Suplier> getSupliers() {
+    public List<Suplier> getList() {
         List<Suplier> list = new ArrayList<>();
         try {
             Connection conn = ConnectionUtils.getMyConnection();
@@ -36,7 +34,7 @@ public class SuplierDAO {
             String selectAll = "Select * from supliers";
             ResultSet resultSet = statement.executeQuery(selectAll);
             while (resultSet.next()) {
-                Suplier data = createSuplier(resultSet);
+                Suplier data = createData(resultSet);
                 list.add(data);
             }
             resultSet.close();
@@ -57,7 +55,7 @@ public class SuplierDAO {
             preparedStatement.setInt(1, value);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
-                data = createSuplier(resultSet);
+                data = createData(resultSet);
             }
             resultSet.close();
             conn.close();
@@ -76,7 +74,7 @@ public class SuplierDAO {
             preparedStatement.setString(1, value);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
-                data = createSuplier(resultSet);
+                data = createData(resultSet);
             }
             resultSet.close();
             conn.close();
@@ -122,7 +120,7 @@ public class SuplierDAO {
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
-                Suplier data = createSuplier(resultSet);
+                Suplier data = createData(resultSet);
                 list.add(data);
             }
             resultSet.close();

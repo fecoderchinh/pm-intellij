@@ -31,7 +31,7 @@ public class PackagingDAO {
         return data;
     }
 
-    public List<Packaging> getLists() {
+    public List<Packaging> getList() {
         List<Packaging> list = new ArrayList<>();
         try {
             Connection conn = ConnectionUtils.getMyConnection();

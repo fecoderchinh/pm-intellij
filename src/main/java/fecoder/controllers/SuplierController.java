@@ -167,7 +167,7 @@ public class SuplierController implements Initializable {
     }
 
     public void loadView() {
-        ObservableList<Suplier> list = FXCollections.observableArrayList(suplierDAO.getSupliers());
+        ObservableList<Suplier> list = FXCollections.observableArrayList(suplierDAO.getList());
         FilteredList<Suplier> filteredList = new FilteredList<>(list, p -> true);
 
         searchField.textProperty()

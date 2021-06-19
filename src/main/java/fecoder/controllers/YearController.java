@@ -76,7 +76,7 @@ public class YearController implements Initializable {
     }
 
     public void loadView() {
-        ObservableList<Year> list = FXCollections.observableArrayList(yearDAO.getYears());
+        ObservableList<Year> list = FXCollections.observableArrayList(yearDAO.getList());
         FilteredList<Year> filteredList = new FilteredList<>(list, p -> true);
 
         searchField.textProperty()

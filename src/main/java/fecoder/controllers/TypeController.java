@@ -65,7 +65,7 @@ public class TypeController implements Initializable {
     }
 
     public void loadView() {
-        ObservableList<Type> list = FXCollections.observableArrayList(typeDAO.getTypes());
+        ObservableList<Type> list = FXCollections.observableArrayList(typeDAO.getList());
         FilteredList<Type> filteredList = new FilteredList<>(list, p -> true);
 
         searchField.textProperty()

@@ -9,7 +9,7 @@ import java.util.List;
 
 public class YearDAO {
 
-    private Year createYear(ResultSet resultSet) {
+    private Year createData(ResultSet resultSet) {
         Year data = new Year();
         try {
             data.setId(resultSet.getInt("id"));
@@ -20,7 +20,7 @@ public class YearDAO {
         return data;
     }
 
-    public List<Year> getYears() {
+    public List<Year> getList() {
         List<Year> list = new ArrayList<>();
         try {
             Connection conn = ConnectionUtils.getMyConnection();
@@ -28,7 +28,7 @@ public class YearDAO {
             String selectAll = "select * from years";
             ResultSet resultSet = statement.executeQuery(selectAll);
             while(resultSet.next()) {
-                Year data = createYear(resultSet);
+                Year data = createData(resultSet);
                 list.add(data);
             }
             resultSet.close();

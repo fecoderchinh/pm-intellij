@@ -2,7 +2,6 @@ package fecoder.controllers;
 
 import fecoder.DAO.CustomerDAO;
 import fecoder.models.Customer;
-import fecoder.models.Customer;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -81,7 +80,7 @@ public class CustomerController implements Initializable {
     }
 
     public void loadView() {
-        ObservableList<Customer> list = FXCollections.observableArrayList(DAO.getLists());
+        ObservableList<Customer> list = FXCollections.observableArrayList(DAO.getList());
         FilteredList<Customer> filteredList = new FilteredList<>(list, p -> true);
 
         searchField.textProperty()
