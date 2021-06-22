@@ -31,4 +31,9 @@ public class Product {
 
     public String getNote() { return this.note; }
     public void  setNote(String note) { this.note = note; }
+
+    @Override
+    public String toString() {
+        return this.getName();
+    }
 }

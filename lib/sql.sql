@@ -220,15 +220,13 @@ create table products(
 	description longtext not null,
 	specification varchar(250) not null,
 	note longtext,
-	command_id bigint unsigned,
-	primary key (id),
-	foreign key (command_id) references commands(id)
+	primary key (id)
 );
 
 drop table products;
 
-insert into products (name, description, specification, note, command_id)
-values ('Tôm Thẻ CPD Xiên Que Tỏi 250g x 20 - SGM', 'Tôm Vannamei PD Xiên Que, Tẩm Marinade Tỏi, Luộc', '72% tôm : 28% marinade', '', 1);
+insert into products (name, description, specification, note)
+values ('Tôm Thẻ CPD Xiên Que Tỏi 250g x 20 - SGM', 'Tôm Vannamei PD Xiên Que, Tẩm Marinade Tỏi, Luộc', '72% tôm : 28% marinade', 'mô tả ngắn');
 
 select * from products;
 
@@ -236,26 +234,31 @@ select * from products;
 =================================================
 table mặt hàng và size
 */
-create table item_packaging_size (
+create table packaging_product_size (
 	id bigint unsigned not null auto_increment,
-	item bigint unsigned,
-	size bigint unsigned,
-	packaging bigint unsigned,
-	quantity int not null,
+	product_id bigint unsigned,
+	size_id bigint unsigned,
+	packaging_id bigint unsigned,
+	pack_qty int not null,
 	primary key (id),
-	foreign key (item) references items(id),
-	foreign key (size) references sizes(id),
-	foreign key (packaging) references packaging(id)
+	foreign key (product_id) references products(id),
+	foreign key (size_id) references sizes(id),
+	foreign key (packaging_id) references packaging(id)
 );
 
-drop table item_packaging_size;
+drop table packaging_product_size;
 
-select * from item_packaging_size;
+select * from packaging_product_size;
 
-insert into item_packaging_size (item, size, packaging, quantity)
+insert into packaging_product_size (product_id, size_id, packaging_id, pack_qty)
 values (1, 2, 1, 20), (1, 2, 2, 100), (1, 2, 3, 20), (1, 2, 4, 1);
 
-select * from item_packaging_size;
+select * from packaging_product_size;
+
+select a.id as id, b.name as packagingName, c.name as productName, d.size as size, a.pack_qty as pack_qty
+from packaging_product_size a, packaging b, products c, sizes d
+where a.packaging_id = b.id and a.product_id = c.id and a.size_id = d.id
+order by c.name;
 /*
 =================================================
 table số lượng đặt

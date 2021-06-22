@@ -51,6 +51,25 @@ public class PackagingDAO {
         return list;
     }
 
+    public Packaging getListRaw() {
+        Packaging data = new Packaging();
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            Statement statement = conn.createStatement();
+            String selectAll = "select * from packaging";
+            ResultSet resultSet = statement.executeQuery(selectAll);
+            while(resultSet.next()) {
+                data = createData(resultSet);
+            }
+            resultSet.close();
+            conn.close();
+        } catch (ClassNotFoundException | SQLException ex) {
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
+        }
+        return data;
+    }
+
     public Packaging getDataByID(int value) {
         Packaging data = new Packaging();
         try {
@@ -87,6 +106,24 @@ public class PackagingDAO {
             jdbcDAO.printSQLException((SQLException) ex);
         }
         return data;
+    }
+
+    public boolean has(String column, String value) {
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement("select * from packaging where "+column+"=?");
+            preparedStatement.setString(1, value);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                return true;
+            }
+            resultSet.close();
+            conn.close();
+        } catch (ClassNotFoundException | SQLException ex) {
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
+        }
+        return false;
     }
 
     public void updateData(String column, String value, int id) {
