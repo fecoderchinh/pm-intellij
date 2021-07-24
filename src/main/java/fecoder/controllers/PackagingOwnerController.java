@@ -2,6 +2,7 @@ package fecoder.controllers;
 
 import fecoder.DAO.*;
 import fecoder.models.*;
+import fecoder.utils.Utils;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleObjectProperty;
@@ -14,26 +15,17 @@ import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.Window;
 import javafx.util.Callback;
 
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.function.Consumer;
 
 public class PackagingOwnerController implements Initializable {
 
@@ -66,10 +58,13 @@ public class PackagingOwnerController implements Initializable {
 
     private boolean isEditableComboBox = false;
     private boolean isUpdating = false;
+    private int currentRow;
+    private String currentCell;
 
     private final ObservableList<Product> productObservableList = FXCollections.observableArrayList(productDAO.getList());
     private final ObservableList<Size> sizeObservableList = FXCollections.observableArrayList(sizeDAO.getList());
     private final ObservableList<Packaging> packagingObservableList = FXCollections.observableArrayList(packagingDAO.getList());
+    private final Utils utils = new Utils();
 
     public void insertButton(ActionEvent actionEvent) {
         Product productInsertData = productDAO.getDataByName(productComboBox.getEditor().getText());
@@ -158,36 +153,6 @@ public class PackagingOwnerController implements Initializable {
         anchorLabel.setText("Current ID: ");
         anchorData.setText(""+p.getId());
         this.isUpdating = true;
-    }
-
-    private void showEditingWindow(Window owner, String currentValue, Consumer<String> commitHandler, String title) {
-        Stage stage = new Stage();
-        stage.initOwner(owner);
-        stage.initModality(Modality.APPLICATION_MODAL);
-
-        TextArea textArea = new TextArea(currentValue);
-
-        Button okButton = new Button("ÁP DỤNG");
-        okButton.setDefaultButton(true);
-        okButton.setOnAction(e -> {
-            commitHandler.accept(textArea.getText());
-            stage.hide();
-        });
-
-        Button cancelButton = new Button("HỦY BỎ");
-        cancelButton.setCancelButton(true);
-        cancelButton.setOnAction(e -> stage.hide());
-
-        HBox buttons = new HBox(5, okButton, cancelButton);
-        buttons.setAlignment(Pos.CENTER);
-        buttons.setPadding(new Insets(5));
-
-        BorderPane root = new BorderPane(textArea, null, null, buttons, null);
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.setTitle(title);
-        stage.setResizable(false);
-        stage.show();
     }
 
     private void clearEditableComboBox(ComboBox comboBox) {
@@ -430,6 +395,9 @@ public class PackagingOwnerController implements Initializable {
 
             TableCell<PackagingOwnerString, String> cell = new TableCell<>();
 
+            currentRow = cell.getIndex();
+            currentCell = cell.getText();
+
             Text text = new Text();
             ComboBox<Product> productComboBoxTableCell = new ComboBox<>();
             cell.setGraphic(text);
@@ -578,13 +546,6 @@ public class PackagingOwnerController implements Initializable {
             return cell ;
         });
 
-
-        dataTable.setOnKeyPressed(event -> {
-            if(event.getCode() == KeyCode.ESCAPE || event.getCode() == KeyCode.F5) {
-                dataTable.refresh();
-            }
-        });
-
         dataTable.setRowFactory((TableView<PackagingOwnerString> tableView) -> {
             final TableRow<PackagingOwnerString> row = new TableRow<>();
 
@@ -648,6 +609,8 @@ public class PackagingOwnerController implements Initializable {
             );
             return row ;
         });
+
+        utils.updateTableOnChanged(dataTable, currentRow, currentCell);
 
         dataTable.setItems(modelSortedList);
     }

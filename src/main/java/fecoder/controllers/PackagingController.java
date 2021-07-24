@@ -7,6 +7,7 @@ import fecoder.models.Packaging;
 import fecoder.models.Suplier;
 import fecoder.models.Type;
 import fecoder.utils.AutoFill.AutoFillTextBox;
+import fecoder.utils.Utils;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.*;
@@ -20,20 +21,12 @@ import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.Window;
 import javafx.util.Callback;
 import javafx.util.converter.FloatStringConverter;
 import javafx.util.converter.IntegerStringConverter;
@@ -41,7 +34,6 @@ import javafx.util.converter.IntegerStringConverter;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.function.Consumer;
 
 public class PackagingController implements Initializable {
     public TextField nameField;
@@ -81,6 +73,8 @@ public class PackagingController implements Initializable {
     private final PackagingDAO packagingDAO = new PackagingDAO();
     public Label anchorLabel;
     public Label anchorData;
+
+    private final Utils utils = new Utils();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -176,36 +170,6 @@ public class PackagingController implements Initializable {
         priceField.setText(p.getPrice()+"");
         anchorLabel.setText("Current ID: ");
         anchorData.setText(""+p.getId());
-    }
-
-    private void showEditingWindow(Window owner, String currentValue, Consumer<String> commitHandler, String title) {
-        Stage stage = new Stage();
-        stage.initOwner(owner);
-        stage.initModality(Modality.APPLICATION_MODAL);
-
-        TextArea textArea = new TextArea(currentValue);
-
-        Button okButton = new Button("ÁP DỤNG");
-        okButton.setDefaultButton(true);
-        okButton.setOnAction(e -> {
-            commitHandler.accept(textArea.getText());
-            stage.hide();
-        });
-
-        Button cancelButton = new Button("HỦY BỎ");
-        cancelButton.setCancelButton(true);
-        cancelButton.setOnAction(e -> stage.hide());
-
-        HBox buttons = new HBox(5, okButton, cancelButton);
-        buttons.setAlignment(Pos.CENTER);
-        buttons.setPadding(new Insets(5));
-
-        BorderPane root = new BorderPane(textArea, null, null, buttons, null);
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.setTitle(title);
-        stage.setResizable(false);
-        stage.show();
     }
 
     public void loadView(){
@@ -312,7 +276,7 @@ public class PackagingController implements Initializable {
 //            EDIT IN NEW WINDOW
             cell.setOnMouseClicked(e -> {
                 if (e.getClickCount() == 2 && ! cell.isEmpty()) {
-                    showEditingWindow(dataTable.getScene().getWindow(), cell.getItem(), newValue -> {
+                    utils.openTextareaWindow(dataTable.getScene().getWindow(), cell.getItem(), newValue -> {
                         Packaging item = dataTable.getItems().get(cell.getIndex());
                         item.setName(newValue);
                         packagingDAO.updateData("name", newValue, item.getId());
@@ -338,7 +302,7 @@ public class PackagingController implements Initializable {
 //            EDIT IN NEW WINDOW
             cell.setOnMouseClicked(e -> {
                 if (e.getClickCount() == 2 && ! cell.isEmpty()) {
-                    showEditingWindow(dataTable.getScene().getWindow(), cell.getItem(), newValue -> {
+                    utils.openTextareaWindow(dataTable.getScene().getWindow(), cell.getItem(), newValue -> {
                         Packaging item = dataTable.getItems().get(cell.getIndex());
                         item.setName(newValue);
                         packagingDAO.updateData("specifications", newValue, item.getId());
@@ -400,7 +364,7 @@ public class PackagingController implements Initializable {
 //            EDIT IN NEW WINDOW
             cell.setOnMouseClicked(e -> {
                 if (e.getClickCount() == 2 && ! cell.isEmpty()) {
-                    showEditingWindow(dataTable.getScene().getWindow(), cell.getItem(), newValue -> {
+                    utils.openTextareaWindow(dataTable.getScene().getWindow(), cell.getItem(), newValue -> {
                         Packaging item = dataTable.getItems().get(cell.getIndex());
                         item.setName(newValue);
                         packagingDAO.updateData("note", newValue, item.getId());
