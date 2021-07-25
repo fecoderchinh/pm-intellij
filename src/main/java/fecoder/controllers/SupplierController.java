@@ -2,6 +2,7 @@ package fecoder.controllers;
 
 import fecoder.DAO.SupplierDAO;
 import fecoder.models.Supplier;
+import fecoder.utils.Utils;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -12,26 +13,17 @@ import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 
 import javafx.scene.control.TableColumn;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.Window;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.function.Consumer;
 
-public class SuplierController implements Initializable {
+public class SupplierController implements Initializable {
 
     public TableView<Supplier> dataTable;
     public TableColumn<Supplier, Integer> idColumn;
@@ -42,6 +34,7 @@ public class SuplierController implements Initializable {
     public TableColumn<Supplier, String> deputyColumn;
     public TableColumn<Supplier, String> phoneColumn;
     public TableColumn<Supplier, String> faxColumn;
+
     public TextField codeField;
     public TextField nameField;
     public TextField addressField;
@@ -50,9 +43,6 @@ public class SuplierController implements Initializable {
     public TextField phoneField;
     public TextField faxField;
     public TextField searchField;
-
-
-    private final SupplierDAO supplierDAO = new SupplierDAO();
     public Button insertButton;
     public Button updateButton;
     public Button reloadData;
@@ -61,26 +51,47 @@ public class SuplierController implements Initializable {
     public Button clearButton;
     public ComboBox<String> comboBox;
 
+    private int currentRow;
+    private String currentCell;
+    private final Utils utils = new Utils();
+
+    private final SupplierDAO supplierDAO = new SupplierDAO();
+
+    /**
+     * All needed to start controller
+     * */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         loadView();
     }
 
+    /**
+     * Handle event on reloading Window
+     * */
     @FXML
     private void reloadData() {
         reload();
     }
 
+    /**
+     * Handle event on clearing all inputs
+     * */
     @FXML
     private void clearButton() {
         clearFields();
     }
 
+    /**
+     * Reloading method
+     * */
     private void reload() {
         loadView();
         clearFields();
     }
 
+    /**
+     * Updating button action
+     * */
     @FXML
     private void updateButton() {
         supplierDAO.update(
@@ -97,6 +108,9 @@ public class SuplierController implements Initializable {
         reload();
     }
 
+    /**
+     * Inserting button action
+     * */
     @FXML
     private void insertButton() {
         supplierDAO.insert(
@@ -112,7 +126,19 @@ public class SuplierController implements Initializable {
         reload();
     }
 
-    private void getSuplier(String name, String address, String email, String deputy, String phone, String fax, String code, int id) {
+    /**
+     * Setting data for inputs
+     *
+     * @param name - the record's name
+     * @param address - the record's address
+     * @param email - the record's email
+     * @param deputy - the record's deputy
+     * @param phone - the record's phone number
+     * @param fax - the record's fax number
+     * @param code - the record's code
+     * @param id - the record's id
+     * */
+    private void getSupplier(String name, String address, String email, String deputy, String phone, String fax, String code, int id) {
         nameField.setText(name);
         addressField.setText(address);
         emailField.setText(email);
@@ -124,6 +150,9 @@ public class SuplierController implements Initializable {
         anchorData.setText(""+id);
     }
 
+    /**
+     * Handle on clearing specific inputs
+     * */
     private void clearFields() {
         nameField.setText(null);
         addressField.setText(null);
@@ -136,37 +165,10 @@ public class SuplierController implements Initializable {
         anchorData.setText(null);
     }
 
-    private void showEditingWindow(Window owner, String currentValue, Consumer<String> commitHandler) {
-        Stage stage = new Stage();
-        stage.initOwner(owner);
-        stage.initModality(Modality.APPLICATION_MODAL);
-
-        TextArea textArea = new TextArea(currentValue);
-
-        Button okButton = new Button("ÁP DỤNG");
-        okButton.setDefaultButton(true);
-        okButton.setOnAction(e -> {
-            commitHandler.accept(textArea.getText());
-            stage.hide();
-        });
-
-        Button cancelButton = new Button("HỦY BỎ");
-        cancelButton.setCancelButton(true);
-        cancelButton.setOnAction(e -> stage.hide());
-
-        HBox buttons = new HBox(5, okButton, cancelButton);
-        buttons.setAlignment(Pos.CENTER);
-        buttons.setPadding(new Insets(5));
-
-        BorderPane root = new BorderPane(textArea, null, null, buttons, null);
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.setTitle("Cập nhật giá trị");
-        stage.setResizable(false);
-        stage.show();
-    }
-
-    public void loadView() {
+    /**
+     * Handle on searching data
+     * */
+    public void setSearchField() {
         ObservableList<Supplier> list = FXCollections.observableArrayList(supplierDAO.getList());
         FilteredList<Supplier> filteredList = new FilteredList<>(list, p -> true);
 
@@ -212,8 +214,13 @@ public class SuplierController implements Initializable {
         SortedList<Supplier> sortedList = new SortedList<>(filteredList);
         sortedList.comparatorProperty().bind(dataTable.comparatorProperty());
 
-        dataTable.setEditable(true);
+        dataTable.setItems(sortedList);
+    }
 
+    /**
+     * Getting current row on click
+     * */
+    public void getCurrentRow() {
         TableView.TableViewSelectionModel<Supplier> selectionModel = dataTable.getSelectionModel();
         selectionModel.setSelectionMode(SelectionMode.SINGLE);
 
@@ -223,24 +230,43 @@ public class SuplierController implements Initializable {
             @Override
             public void onChanged(Change<? extends Supplier> change) {
 //                System.out.println("Selection changed: " + change.getList());
+                dataTable.refresh();
             }
         });
+    }
 
+    /**
+     * Load the current view resources.
+     * <br>
+     * Contains: <br>
+     * - getCurrentRow() <br>
+     * - setSearchField() <br>
+     * - Controlling columns view and actions <br>
+     * - Implementing contextMenu on right click <br>
+     * */
+    public void loadView() {
+        dataTable.setEditable(true);
+
+        getCurrentRow();
+
+        /*
+         * Uncomment the below code to show the exact record ID
+         * */
 //        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+
+        /*
+         * The below code show auto increase number
+         * */
         idColumn.setSortable(false);
         idColumn.setCellValueFactory(column -> new ReadOnlyObjectWrapper<Integer>(dataTable.getItems().indexOf(column.getValue())+1));
 
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-//        nameColumn.setCellFactory(TextFieldTableCell.<Suplier>forTableColumn());
-//        nameColumn.setOnEditCommit(event -> {
-//            final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
-//            ((Suplier) event.getTableView().getItems().get(event.getTablePosition().getRow())).setName(data);
-//            suplierDAO.updateData("name", data, event.getRowValue().getId());
-//            suplierTable.refresh();
-//        });
         nameColumn.setCellFactory(tc -> {
 
             TableCell<Supplier, String> cell = new TableCell<>();
+
+            currentRow = cell.getIndex();
+            currentCell = cell.getText();
 
             Text text = new Text();
             cell.setGraphic(text);
@@ -248,15 +274,14 @@ public class SuplierController implements Initializable {
             text.wrappingWidthProperty().bind(nameColumn.widthProperty());
             text.textProperty().bind(cell.itemProperty());
 
-//            EDIT IN NEW WINDOW
             cell.setOnMouseClicked(e -> {
                 if (e.getClickCount() == 2 && ! cell.isEmpty()) {
-                    showEditingWindow(dataTable.getScene().getWindow(), cell.getItem(), newValue -> {
+                    utils.openTextareaWindow(dataTable.getScene().getWindow(), cell.getItem(), newValue -> {
                         Supplier item = dataTable.getItems().get(cell.getIndex());
                         item.setName(newValue);
                         supplierDAO.updateData("name", newValue, item.getId());
                         dataTable.refresh();
-                    });
+                    }, "Cập nhật tên nhà cung cấp");
                 }
             });
 
@@ -268,6 +293,8 @@ public class SuplierController implements Initializable {
         addressColumn.setCellFactory(tc -> {
 
             TableCell<Supplier, String> cell = new TableCell<>();
+            currentRow = cell.getIndex();
+            currentCell = cell.getText();
 
             Text text = new Text();
             cell.setGraphic(text);
@@ -275,15 +302,14 @@ public class SuplierController implements Initializable {
             text.wrappingWidthProperty().bind(nameColumn.widthProperty());
             text.textProperty().bind(cell.itemProperty());
 
-//          EDIT IN NEW WINDOW
             cell.setOnMouseClicked(e -> {
                 if (e.getClickCount() == 2 && ! cell.isEmpty()) {
-                    showEditingWindow(dataTable.getScene().getWindow(), cell.getItem(), newValue -> {
+                    utils.openTextareaWindow(dataTable.getScene().getWindow(), cell.getItem(), newValue -> {
                         Supplier item = dataTable.getItems().get(cell.getIndex());
                         item.setName(newValue);
                         supplierDAO.updateData("address", newValue, item.getId());
                         dataTable.refresh();
-                    });
+                    }, "Cập nhật địa chỉ");
                 }
             });
 
@@ -295,6 +321,8 @@ public class SuplierController implements Initializable {
         emailColumn.setCellFactory(tc -> {
 
             TableCell<Supplier, String> cell = new TableCell<>();
+            currentRow = cell.getIndex();
+            currentCell = cell.getText();
 
             Text text = new Text();
             cell.setGraphic(text);
@@ -302,15 +330,14 @@ public class SuplierController implements Initializable {
             text.wrappingWidthProperty().bind(nameColumn.widthProperty());
             text.textProperty().bind(cell.itemProperty());
 
-//            EDIT IN NEW WINDOW
             cell.setOnMouseClicked(e -> {
                 if (e.getClickCount() == 2 && ! cell.isEmpty()) {
-                    showEditingWindow(dataTable.getScene().getWindow(), cell.getItem(), newValue -> {
+                    utils.openTextareaWindow(dataTable.getScene().getWindow(), cell.getItem(), newValue -> {
                         Supplier item = dataTable.getItems().get(cell.getIndex());
                         item.setName(newValue);
                         supplierDAO.updateData("email", newValue, item.getId());
                         dataTable.refresh();
-                    });
+                    }, "Cập nhật email");
                 }
             });
 
@@ -379,19 +406,12 @@ public class SuplierController implements Initializable {
                 );
 
                 alert.showAndWait();
-
-//                // Traditional way to get the response value.
-//                Optional<String> result = dialog.showAndWait();
-//                if (result.isPresent()){
-//                    suplier.setCode(result.get());
-//                    tableView.getItems().set(rowIndex, suplier);
-//                }
             });
             contextMenu.getItems().add(viewItem);
 
             editItem.setOnAction((ActionEvent event) -> {
                 Supplier supplier = dataTable.getSelectionModel().getSelectedItem();
-                getSuplier(supplier.getName(), supplier.getAddress(), supplier.getEmail(), supplier.getDeputy(), supplier.getPhone(), supplier.getFax(), supplier.getCode(), supplier.getId());
+                getSupplier(supplier.getName(), supplier.getAddress(), supplier.getEmail(), supplier.getDeputy(), supplier.getPhone(), supplier.getFax(), supplier.getCode(), supplier.getId());
             });
             contextMenu.getItems().add(editItem);
 
@@ -411,6 +431,7 @@ public class SuplierController implements Initializable {
         });
 
 //        suplierTable.setItems(list);
-        dataTable.setItems(sortedList);
+        utils.updateTableOnChanged(dataTable, currentRow, currentCell);
+        setSearchField();
     }
 }

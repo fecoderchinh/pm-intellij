@@ -5,10 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TablePosition;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -56,10 +53,10 @@ public class Utils {
      *
      * Handle an event for opening new Window with a Textarea
      *
-     * @param owner - the parent Window
-     * @param currentValue - the value before updating
-     * @param commitHandler - commit the new value back to its parent's Window
-     * @param title - a dynamic title for Window
+     * @param owner the parent Window
+     * @param currentValue the value before updating
+     * @param commitHandler commit the new value back to its parent's Window
+     * @param title a dynamic title for Window
      * */
     public void openTextareaWindow(Window owner, String currentValue, Consumer<String> commitHandler, String title) {
         Stage stage = new Stage();
