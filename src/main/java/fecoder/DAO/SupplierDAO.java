@@ -1,16 +1,24 @@
 package fecoder.DAO;
 
 import fecoder.connection.ConnectionUtils;
-import fecoder.models.Suplier;
+import fecoder.models.Supplier;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SuplierDAO {
+public class SupplierDAO {
+    
+    private final String tableName = "supliers";
 
-    private static Suplier createData(ResultSet resultSet) {
-        Suplier data = new Suplier();
+    /**
+     * Representing a database
+     *
+     * @param resultSet - A table of data representing a database result set
+     * @return data
+     * */
+    private static Supplier createData(ResultSet resultSet) {
+        Supplier data = new Supplier();
         try {
             data.setId(resultSet.getInt("id"));
             data.setName(resultSet.getString("name"));
@@ -26,15 +34,20 @@ public class SuplierDAO {
         return data;
     }
 
-    public List<Suplier> getList() {
-        List<Suplier> list = new ArrayList<>();
+    /**
+     * Getting all records of table
+     *
+     * @return list
+     * */
+    public List<Supplier> getList() {
+        List<Supplier> list = new ArrayList<>();
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             Statement statement = conn.createStatement();
             String selectAll = "Select * from supliers";
             ResultSet resultSet = statement.executeQuery(selectAll);
             while (resultSet.next()) {
-                Suplier data = createData(resultSet);
+                Supplier data = createData(resultSet);
                 list.add(data);
             }
             resultSet.close();
@@ -47,12 +60,18 @@ public class SuplierDAO {
         return list;
     }
 
-    public Suplier getDataByID(int value) {
-        Suplier data = new Suplier();
+    /**
+     * Getting record data by its ID
+     *
+     * @param id - record id
+     * @return data
+     * */
+    public Supplier getDataByID(int id) {
+        Supplier data = new Supplier();
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             PreparedStatement preparedStatement = conn.prepareStatement("select * from supliers where id=?");
-            preparedStatement.setInt(1, value);
+            preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
                 data = createData(resultSet);
@@ -66,8 +85,14 @@ public class SuplierDAO {
         return data;
     }
 
-    public Suplier getDataByName(String value) {
-        Suplier data = new Suplier();
+    /**
+     * Getting record data by its name
+     *
+     * @param value - record's name
+     * @return data
+     * */
+    public Supplier getDataByName(String value) {
+        Supplier data = new Supplier();
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             PreparedStatement preparedStatement = conn.prepareStatement("select * from supliers where name=?");
@@ -85,6 +110,12 @@ public class SuplierDAO {
         return data;
     }
 
+    /**
+     * Determine the name exists
+     *
+     * @param value - the record's value
+     * @return boolean
+     * */
     public boolean hasName(String value) {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
@@ -103,24 +134,42 @@ public class SuplierDAO {
         return false;
     }
 
+    /**
+     * Updating record data
+     * 
+     * @param column - table's column
+     * @param value - column's new value
+     * @param id - record's id
+     * */
     public void updateData(String column, String value, int id) {
-        jdbcDAO.updateSingleData("supliers", column, value, id);
+        jdbcDAO.updateSingleData(tableName, column, value, id);
     }
 
+    /**
+     * Deleting record data
+     *
+     * @param id - record's id
+     * */
     public void delete(int id) {
-        jdbcDAO.delete("supliers", id);
+        jdbcDAO.delete(tableName, id);
     }
 
-    public List<Suplier> getRow(int id) {
+    /**
+     * Getting all records by its id
+     *
+     * @param id - the record's id
+     * @return list
+     * */
+    public List<Supplier> getRow(int id) {
         String query = "select * from supliers where id=?";
-        List<Suplier> list = new ArrayList<>();
+        List<Supplier> list = new ArrayList<>();
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
-                Suplier data = createData(resultSet);
+                Supplier data = createData(resultSet);
                 list.add(data);
             }
             resultSet.close();
@@ -132,16 +181,51 @@ public class SuplierDAO {
         return list;
     }
 
+    /**
+     * Updating all columns
+     *
+     * @param name - column name
+     * @param address - column address
+     * @param email - column email
+     * @param deputy - column deputy
+     * @param phone - column phone
+     * @param fax - column fax
+     * @param code - column code
+     * @param id - column id
+     * */
     public void update(String name, String address, String email, String deputy, String phone, String fax, String code, int id) {
         String updateQuery = "update supliers set name=?, address=?, email=?, deputy=?, phone=?, fax=?, code=? where id=?";
         preparedUpdateQuery(updateQuery, name, address, email, deputy, phone, fax, code, id);
     }
 
+    /**
+     * Inserting all columns
+     *
+     * @param name - column name
+     * @param address - column address
+     * @param email - column email
+     * @param deputy - column deputy
+     * @param phone - column phone
+     * @param fax - column fax
+     * @param code - column code
+     * */
     public void insert(String name, String address, String email, String deputy, String phone, String fax, String code) {
         String insertQuery = "insert into supliers (name, address, email, deputy, phone, fax, code) values(?,?,?,?,?,?,?)";
         preparedInsertQuery(insertQuery, name, address, email, deputy, phone, fax, code);
     }
 
+    /**
+     * Preparing Insert Query before action
+     *
+     * @param query - SQL query
+     * @param name - column name
+     * @param address - column address
+     * @param email - column email
+     * @param deputy - column deputy
+     * @param phone - column phone
+     * @param fax - column fax
+     * @param code - column code
+     * */
     public void preparedInsertQuery(String query, String name, String address, String email, String deputy, String phone, String fax, String code) {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
@@ -164,6 +248,19 @@ public class SuplierDAO {
         }
     }
 
+    /**
+     * Preparing Update Query before action
+     *
+     * @param query - SQL query
+     * @param name - column name
+     * @param address - column address
+     * @param email - column email
+     * @param deputy - column deputy
+     * @param phone - column phone
+     * @param fax - column fax
+     * @param code - column code
+     * @param id - column id
+     * */
     public void preparedUpdateQuery(String query, String name, String address, String email, String deputy, String phone, String fax, String code, int id) {
         try {
             Connection conn = ConnectionUtils.getMyConnection();

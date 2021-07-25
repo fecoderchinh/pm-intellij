@@ -30,6 +30,7 @@ public class Utils {
      * @param currentRow - current row for comparison
      * @param currentCell - current cell for comparison
      *
+     * (this mean there are currentRow and currentCell in the controller)
      *
     * */
     public void updateTableOnChanged(TableView tv, int currentRow, String currentCell) {

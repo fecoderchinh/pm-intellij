@@ -1,14 +1,9 @@
 package fecoder.controllers;
 
 import fecoder.DAO.ProductDAO;
-import fecoder.models.Packaging;
 import fecoder.models.Product;
-import fecoder.models.Suplier;
-import fecoder.models.Type;
 import javafx.beans.binding.Bindings;
-import javafx.beans.binding.StringBinding;
 import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;

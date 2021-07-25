@@ -6,6 +6,11 @@ import fecoder.models.User;
 import java.sql.*;
 
 public class jdbcDAO {
+
+    /**
+     *
+     * This method is on development
+     * */
     private User createUser(ResultSet rs) {
         User user = new User();
         try {
@@ -19,6 +24,14 @@ public class jdbcDAO {
         return user;
     }
 
+    /**
+     *
+     * Handle on validating user input
+     *
+     * @param account - user account
+     * @param password - user password
+     * @return boolean
+     * */
     public boolean validate(String account, String password) throws SQLException {
         String sql = "Select * from users where account = ? and password = ?";
         try {
@@ -40,6 +53,15 @@ public class jdbcDAO {
         return false;
     }
 
+    /**
+     *
+     * Handle on updating specific String property
+     *
+     * @param table - the selected table
+     * @param column - the selected column
+     * @param value - the string new value
+     * @param id - the record id
+     * */
     public static void updateSingleData(String table, String column, String value, int id) {
         String query = "update "+ table +" set "+ column +"=? where id=?";
         try {
@@ -54,6 +76,15 @@ public class jdbcDAO {
         }
     }
 
+    /**
+     *
+     * Handle on updating specific Integer property
+     *
+     * @param table - the selected table
+     * @param column - the selected column
+     * @param value - the integer new value
+     * @param id - the record id
+     * */
     public static void updateSingleDataInteger(String table, String column, int value, int id) {
         String query = "update "+ table +" set "+ column +"=? where id=?";
         try {
@@ -68,6 +99,15 @@ public class jdbcDAO {
         }
     }
 
+    /**
+     *
+     * Handle on updating specific Float property
+     *
+     * @param table - the selected table
+     * @param column - the selected column
+     * @param value - the float new value
+     * @param id - the record id
+     * */
     public static void updateSingleDataFloat(String table, String column, float value, int id) {
         String query = "update "+ table +" set "+ column +"=? where id=?";
         try {
@@ -82,6 +122,15 @@ public class jdbcDAO {
         }
     }
 
+    /**
+     *
+     * Handle on updating specific Boolean property
+     *
+     * @param table - the selected table
+     * @param column - the selected column
+     * @param value - the boolean new value
+     * @param id - the record id
+     * */
     public static void updateSingleDataBoolean(String table, String column, boolean value, int id) {
         String query = "update "+ table +" set "+ column +"=? where id=?";
         try {
@@ -96,6 +145,13 @@ public class jdbcDAO {
         }
     }
 
+    /**
+     *
+     * Handle delete record data
+     *
+     * @param table - the selected table
+     * @param id - the record id
+     * */
     public static void delete(String table, int id) {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
@@ -112,6 +168,12 @@ public class jdbcDAO {
         }
     }
 
+    /**
+     *
+     * Controlling SQL Exceptions
+     *
+     * @param ex - the SQL Exception data
+     * */
     public static void printSQLException(SQLException ex) {
         for (Throwable e: ex) {
             if( e instanceof SQLException ) {

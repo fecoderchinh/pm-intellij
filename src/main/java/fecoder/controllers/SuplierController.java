@@ -1,7 +1,7 @@
 package fecoder.controllers;
 
-import fecoder.DAO.SuplierDAO;
-import fecoder.models.Suplier;
+import fecoder.DAO.SupplierDAO;
+import fecoder.models.Supplier;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -33,15 +33,15 @@ import java.util.function.Consumer;
 
 public class SuplierController implements Initializable {
 
-    public TableView<Suplier> dataTable;
-    public TableColumn<Suplier, Integer> idColumn;
-    public TableColumn<Suplier, String> codeColumn;
-    public TableColumn<Suplier, String> nameColumn;
-    public TableColumn<Suplier, String> addressColumn;
-    public TableColumn<Suplier, String> emailColumn;
-    public TableColumn<Suplier, String> deputyColumn;
-    public TableColumn<Suplier, String> phoneColumn;
-    public TableColumn<Suplier, String> faxColumn;
+    public TableView<Supplier> dataTable;
+    public TableColumn<Supplier, Integer> idColumn;
+    public TableColumn<Supplier, String> codeColumn;
+    public TableColumn<Supplier, String> nameColumn;
+    public TableColumn<Supplier, String> addressColumn;
+    public TableColumn<Supplier, String> emailColumn;
+    public TableColumn<Supplier, String> deputyColumn;
+    public TableColumn<Supplier, String> phoneColumn;
+    public TableColumn<Supplier, String> faxColumn;
     public TextField codeField;
     public TextField nameField;
     public TextField addressField;
@@ -52,7 +52,7 @@ public class SuplierController implements Initializable {
     public TextField searchField;
 
 
-    private final SuplierDAO suplierDAO = new SuplierDAO();
+    private final SupplierDAO supplierDAO = new SupplierDAO();
     public Button insertButton;
     public Button updateButton;
     public Button reloadData;
@@ -83,7 +83,7 @@ public class SuplierController implements Initializable {
 
     @FXML
     private void updateButton() {
-        suplierDAO.update(
+        supplierDAO.update(
                 nameField.getText(),
                 addressField.getText(),
                 emailField.getText(),
@@ -99,7 +99,7 @@ public class SuplierController implements Initializable {
 
     @FXML
     private void insertButton() {
-        suplierDAO.insert(
+        supplierDAO.insert(
                 nameField.getText(),
                 addressField.getText(),
                 emailField.getText(),
@@ -167,8 +167,8 @@ public class SuplierController implements Initializable {
     }
 
     public void loadView() {
-        ObservableList<Suplier> list = FXCollections.observableArrayList(suplierDAO.getList());
-        FilteredList<Suplier> filteredList = new FilteredList<>(list, p -> true);
+        ObservableList<Supplier> list = FXCollections.observableArrayList(supplierDAO.getList());
+        FilteredList<Supplier> filteredList = new FilteredList<>(list, p -> true);
 
         searchField.textProperty()
                 .addListener((observable, oldValue, newValue) -> {
@@ -209,19 +209,19 @@ public class SuplierController implements Initializable {
             }
         });
 
-        SortedList<Suplier> sortedList = new SortedList<>(filteredList);
+        SortedList<Supplier> sortedList = new SortedList<>(filteredList);
         sortedList.comparatorProperty().bind(dataTable.comparatorProperty());
 
         dataTable.setEditable(true);
 
-        TableView.TableViewSelectionModel<Suplier> selectionModel = dataTable.getSelectionModel();
+        TableView.TableViewSelectionModel<Supplier> selectionModel = dataTable.getSelectionModel();
         selectionModel.setSelectionMode(SelectionMode.SINGLE);
 
-        ObservableList<Suplier> getSelectedItems = selectionModel.getSelectedItems();
+        ObservableList<Supplier> getSelectedItems = selectionModel.getSelectedItems();
 
-        getSelectedItems.addListener(new ListChangeListener<Suplier>() {
+        getSelectedItems.addListener(new ListChangeListener<Supplier>() {
             @Override
-            public void onChanged(Change<? extends Suplier> change) {
+            public void onChanged(Change<? extends Supplier> change) {
 //                System.out.println("Selection changed: " + change.getList());
             }
         });
@@ -240,7 +240,7 @@ public class SuplierController implements Initializable {
 //        });
         nameColumn.setCellFactory(tc -> {
 
-            TableCell<Suplier, String> cell = new TableCell<>();
+            TableCell<Supplier, String> cell = new TableCell<>();
 
             Text text = new Text();
             cell.setGraphic(text);
@@ -252,9 +252,9 @@ public class SuplierController implements Initializable {
             cell.setOnMouseClicked(e -> {
                 if (e.getClickCount() == 2 && ! cell.isEmpty()) {
                     showEditingWindow(dataTable.getScene().getWindow(), cell.getItem(), newValue -> {
-                        Suplier item = dataTable.getItems().get(cell.getIndex());
+                        Supplier item = dataTable.getItems().get(cell.getIndex());
                         item.setName(newValue);
-                        suplierDAO.updateData("name", newValue, item.getId());
+                        supplierDAO.updateData("name", newValue, item.getId());
                         dataTable.refresh();
                     });
                 }
@@ -264,10 +264,10 @@ public class SuplierController implements Initializable {
         });
 
         addressColumn.setCellValueFactory(new PropertyValueFactory<>("address"));
-        addressColumn.setCellFactory(TextFieldTableCell.<Suplier>forTableColumn());
+        addressColumn.setCellFactory(TextFieldTableCell.<Supplier>forTableColumn());
         addressColumn.setCellFactory(tc -> {
 
-            TableCell<Suplier, String> cell = new TableCell<>();
+            TableCell<Supplier, String> cell = new TableCell<>();
 
             Text text = new Text();
             cell.setGraphic(text);
@@ -279,9 +279,9 @@ public class SuplierController implements Initializable {
             cell.setOnMouseClicked(e -> {
                 if (e.getClickCount() == 2 && ! cell.isEmpty()) {
                     showEditingWindow(dataTable.getScene().getWindow(), cell.getItem(), newValue -> {
-                        Suplier item = dataTable.getItems().get(cell.getIndex());
+                        Supplier item = dataTable.getItems().get(cell.getIndex());
                         item.setName(newValue);
-                        suplierDAO.updateData("address", newValue, item.getId());
+                        supplierDAO.updateData("address", newValue, item.getId());
                         dataTable.refresh();
                     });
                 }
@@ -291,10 +291,10 @@ public class SuplierController implements Initializable {
         });
 
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
-        emailColumn.setCellFactory(TextFieldTableCell.<Suplier>forTableColumn());
+        emailColumn.setCellFactory(TextFieldTableCell.<Supplier>forTableColumn());
         emailColumn.setCellFactory(tc -> {
 
-            TableCell<Suplier, String> cell = new TableCell<>();
+            TableCell<Supplier, String> cell = new TableCell<>();
 
             Text text = new Text();
             cell.setGraphic(text);
@@ -306,9 +306,9 @@ public class SuplierController implements Initializable {
             cell.setOnMouseClicked(e -> {
                 if (e.getClickCount() == 2 && ! cell.isEmpty()) {
                     showEditingWindow(dataTable.getScene().getWindow(), cell.getItem(), newValue -> {
-                        Suplier item = dataTable.getItems().get(cell.getIndex());
+                        Supplier item = dataTable.getItems().get(cell.getIndex());
                         item.setName(newValue);
-                        suplierDAO.updateData("email", newValue, item.getId());
+                        supplierDAO.updateData("email", newValue, item.getId());
                         dataTable.refresh();
                     });
                 }
@@ -318,43 +318,43 @@ public class SuplierController implements Initializable {
         });
 
         deputyColumn.setCellValueFactory(new PropertyValueFactory<>("deputy"));
-        deputyColumn.setCellFactory(TextFieldTableCell.<Suplier>forTableColumn());
+        deputyColumn.setCellFactory(TextFieldTableCell.<Supplier>forTableColumn());
         deputyColumn.setOnEditCommit(event -> {
             final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
-            ((Suplier) event.getTableView().getItems().get(event.getTablePosition().getRow())).setDeputy(data);
-            suplierDAO.updateData("deputy", data, event.getRowValue().getId());
+            ((Supplier) event.getTableView().getItems().get(event.getTablePosition().getRow())).setDeputy(data);
+            supplierDAO.updateData("deputy", data, event.getRowValue().getId());
             dataTable.refresh();
         });
 
         phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
-        phoneColumn.setCellFactory(TextFieldTableCell.<Suplier>forTableColumn());
+        phoneColumn.setCellFactory(TextFieldTableCell.<Supplier>forTableColumn());
         phoneColumn.setOnEditCommit(event -> {
             final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
-            ((Suplier) event.getTableView().getItems().get(event.getTablePosition().getRow())).setPhone(data);
-            suplierDAO.updateData("phone", data, event.getRowValue().getId());
+            ((Supplier) event.getTableView().getItems().get(event.getTablePosition().getRow())).setPhone(data);
+            supplierDAO.updateData("phone", data, event.getRowValue().getId());
             dataTable.refresh();
         });
 
         faxColumn.setCellValueFactory(new PropertyValueFactory<>("fax"));
-        faxColumn.setCellFactory(TextFieldTableCell.<Suplier>forTableColumn());
+        faxColumn.setCellFactory(TextFieldTableCell.<Supplier>forTableColumn());
         faxColumn.setOnEditCommit(event -> {
             final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
-            ((Suplier) event.getTableView().getItems().get(event.getTablePosition().getRow())).setFax(data);
-            suplierDAO.updateData("fax", data, event.getRowValue().getId());
+            ((Supplier) event.getTableView().getItems().get(event.getTablePosition().getRow())).setFax(data);
+            supplierDAO.updateData("fax", data, event.getRowValue().getId());
             dataTable.refresh();
         });
 
         codeColumn.setCellValueFactory(new PropertyValueFactory<>("code"));
-        codeColumn.setCellFactory(TextFieldTableCell.<Suplier>forTableColumn());
+        codeColumn.setCellFactory(TextFieldTableCell.<Supplier>forTableColumn());
         codeColumn.setOnEditCommit(event -> {
             final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
-            ((Suplier) event.getTableView().getItems().get(event.getTablePosition().getRow())).setCode(data);
-            suplierDAO.updateData("code", data, event.getRowValue().getId());
+            ((Supplier) event.getTableView().getItems().get(event.getTablePosition().getRow())).setCode(data);
+            supplierDAO.updateData("code", data, event.getRowValue().getId());
             dataTable.refresh();
         });
 
-        dataTable.setRowFactory((TableView<Suplier> tableView) -> {
-            final TableRow<Suplier> row = new TableRow<>();
+        dataTable.setRowFactory((TableView<Supplier> tableView) -> {
+            final TableRow<Supplier> row = new TableRow<>();
 
             final ContextMenu contextMenu = new ContextMenu();
             final MenuItem viewItem = new MenuItem("Chi tiết");
@@ -362,20 +362,20 @@ public class SuplierController implements Initializable {
             final MenuItem removeItem = new MenuItem("Xóa dòng");
 
             viewItem.setOnAction((ActionEvent event) -> {
-                Suplier suplier = dataTable.getSelectionModel().getSelectedItem();
+                Supplier supplier = dataTable.getSelectionModel().getSelectedItem();
                 int rowIndex = dataTable.getSelectionModel().getSelectedIndex();
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Chi tiết Nhà Cung Cấp");
-                alert.setHeaderText(suplier.getName());
+                alert.setHeaderText(supplier.getName());
                 alert.setContentText(
-                        "Mã NCC: " + suplier.getCode() + "\n" +
-                        "Tên NCC: " + suplier.getName() + "\n" +
-                        "Địa chỉ: " + suplier.getAddress() + "\n" +
-                        "Email: " + suplier.getEmail() + "\n" +
-                        "Đại diện: " + suplier.getDeputy() + "\n" +
-                        "Điện thoại: " + suplier.getPhone() + "\n" +
-                        "Fax: " + suplier.getFax() + "\n"
+                        "Mã NCC: " + supplier.getCode() + "\n" +
+                        "Tên NCC: " + supplier.getName() + "\n" +
+                        "Địa chỉ: " + supplier.getAddress() + "\n" +
+                        "Email: " + supplier.getEmail() + "\n" +
+                        "Đại diện: " + supplier.getDeputy() + "\n" +
+                        "Điện thoại: " + supplier.getPhone() + "\n" +
+                        "Fax: " + supplier.getFax() + "\n"
                 );
 
                 alert.showAndWait();
@@ -390,14 +390,14 @@ public class SuplierController implements Initializable {
             contextMenu.getItems().add(viewItem);
 
             editItem.setOnAction((ActionEvent event) -> {
-                Suplier suplier = dataTable.getSelectionModel().getSelectedItem();
-                getSuplier(suplier.getName(), suplier.getAddress(), suplier.getEmail(), suplier.getDeputy(), suplier.getPhone(), suplier.getFax(), suplier.getCode(), suplier.getId());
+                Supplier supplier = dataTable.getSelectionModel().getSelectedItem();
+                getSuplier(supplier.getName(), supplier.getAddress(), supplier.getEmail(), supplier.getDeputy(), supplier.getPhone(), supplier.getFax(), supplier.getCode(), supplier.getId());
             });
             contextMenu.getItems().add(editItem);
 
             removeItem.setOnAction((ActionEvent event) -> {
-                Suplier suplier = dataTable.getSelectionModel().getSelectedItem();
-                suplierDAO.delete(suplier.getId());
+                Supplier supplier = dataTable.getSelectionModel().getSelectedItem();
+                supplierDAO.delete(supplier.getId());
                 reload();
             });
             contextMenu.getItems().add(removeItem);

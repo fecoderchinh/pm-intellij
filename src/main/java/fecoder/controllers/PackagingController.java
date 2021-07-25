@@ -1,10 +1,10 @@
 package fecoder.controllers;
 
 import fecoder.DAO.PackagingDAO;
-import fecoder.DAO.SuplierDAO;
+import fecoder.DAO.SupplierDAO;
 import fecoder.DAO.TypeDAO;
 import fecoder.models.Packaging;
-import fecoder.models.Suplier;
+import fecoder.models.Supplier;
 import fecoder.models.Type;
 import fecoder.utils.AutoFill.AutoFillTextBox;
 import fecoder.utils.Utils;
@@ -40,7 +40,7 @@ public class PackagingController implements Initializable {
     public TextField specificationField;
     public TextField dimensionField;
     public ComboBox<Type> typeComboBox;
-    public ComboBox<Suplier> suplierComboBox;
+    public ComboBox<Supplier> suplierComboBox;
     public TextField minimumField;
     public TextField codeField;
     public TextField priceField;
@@ -69,7 +69,7 @@ public class PackagingController implements Initializable {
     public TableColumn<Packaging, String> noteColumn;
 
     private final TypeDAO typeDAO = new TypeDAO();
-    private final SuplierDAO suplierDAO = new SuplierDAO();
+    private final SupplierDAO supplierDAO = new SupplierDAO();
     private final PackagingDAO packagingDAO = new PackagingDAO();
     public Label anchorLabel;
     public Label anchorData;
@@ -79,7 +79,7 @@ public class PackagingController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         typeComboBox.getItems().addAll(FXCollections.observableArrayList(typeDAO.getList()));
-        suplierComboBox.getItems().addAll(FXCollections.observableArrayList(suplierDAO.getList()));
+        suplierComboBox.getItems().addAll(FXCollections.observableArrayList(supplierDAO.getList()));
         loadView();
     }
 
@@ -183,8 +183,8 @@ public class PackagingController implements Initializable {
 //        suplierComboBox.getItems().addAll(FXCollections.observableArrayList(suplierDAO.getSupliers()));
         suplierComboBox.setOnKeyReleased(event -> {
             if (event.getCode().equals(KeyCode.ENTER)) {
-                Suplier suplier = suplierComboBox.getSelectionModel().getSelectedItem();
-                System.out.println(suplier.getId());
+                Supplier supplier = suplierComboBox.getSelectionModel().getSelectedItem();
+                System.out.println(supplier.getId());
             }
         });
 
@@ -574,7 +574,7 @@ public class PackagingController implements Initializable {
             return cell ;
         });
 
-        ObservableList<Suplier> suplierObservableList = FXCollections.observableArrayList(suplierDAO.getList());
+        ObservableList<Supplier> supplierObservableList = FXCollections.observableArrayList(supplierDAO.getList());
         suplierColumn.setCellValueFactory(new PropertyValueFactory<>("suplier"));
         suplierColumn.setCellFactory(TextFieldTableCell.<Packaging, Integer>forTableColumn(new IntegerStringConverter()));
         suplierColumn.setCellFactory(tc -> {
@@ -582,7 +582,7 @@ public class PackagingController implements Initializable {
             TableCell<Packaging, Integer> cell = new TableCell<>();
 
             Text text = new Text();
-            AutoFillTextBox<Suplier> box = new AutoFillTextBox<Suplier>(suplierObservableList);
+            AutoFillTextBox<Supplier> box = new AutoFillTextBox<Supplier>(supplierObservableList);
             cell.setGraphic(text);
             cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
             text.wrappingWidthProperty().bind(suplierColumn.widthProperty());
@@ -592,7 +592,7 @@ public class PackagingController implements Initializable {
                 protected String computeValue() {
 //                    return cell.itemProperty().getValue() != null ? cell.itemProperty().getValue()+"" : "";
                     if(cell.itemProperty().getValue() != null) {
-                        Suplier dataByID = suplierDAO.getDataByID(cell.itemProperty().getValue());
+                        Supplier dataByID = supplierDAO.getDataByID(cell.itemProperty().getValue());
                         return dataByID.getCode();
                     } else {
                         return "";
@@ -609,7 +609,7 @@ public class PackagingController implements Initializable {
                     box.getTextbox().setPromptText("Nhập mã NCC");
 
                     box.getTextbox().setOnKeyReleased(event -> {
-                        if(event.getCode() == KeyCode.ENTER && !suplierDAO.hasName(box.getTextbox().textProperty().getValue())) {
+                        if(event.getCode() == KeyCode.ENTER && !supplierDAO.hasName(box.getTextbox().textProperty().getValue())) {
                             Alert alert = new Alert(Alert.AlertType.ERROR);
                             alert.setTitle("Lỗi!");
                             alert.setHeaderText("Đã có lỗi xảy ra!");
@@ -630,11 +630,11 @@ public class PackagingController implements Initializable {
                     box.getTextbox().setOnAction(new EventHandler<ActionEvent>() {
                         @Override
                         public void handle(ActionEvent actionEvent) {
-                            Suplier dataByName = suplierDAO.getDataByName(box.getTextbox().textProperty().getValue());
+                            Supplier dataByName = supplierDAO.getDataByName(box.getTextbox().textProperty().getValue());
 
                             int newPackagingSuplierID = dataByName.getId();
 
-                            if (suplierDAO.hasName(box.getTextbox().textProperty().getValue())) {
+                            if (supplierDAO.hasName(box.getTextbox().textProperty().getValue())) {
                                 packagingDAO.updateDataInteger("suplier", newPackagingSuplierID, selectedRow);
                                 dataTable.refresh();
                                 reload();
@@ -674,14 +674,14 @@ public class PackagingController implements Initializable {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Chi tiết bao bì");
                 alert.setHeaderText(packaging.getName());
-                Suplier suplier = suplierDAO.getDataByID(packaging.getSuplier());
+                Supplier supplier = supplierDAO.getDataByID(packaging.getSuplier());
                 Type type = typeDAO.getDataByID(packaging.getType());
                 String packagingCode = packaging.getCode() != null ? packaging.getCode() : "Không qui định";
                 String stampStatus = packaging.isStamped() ? "In sẵn (Thông tin theo lô)" : "Không in";
                 String mainStatus = packaging.isMain() ? "Bao gói chính" : "Bao bì bên trong";
                 alert.setContentText(
                         "Mã bao bì: " + packagingCode + "\n" +
-                        "Nhà cung cấp: " + suplier.getName() + "\n" +
+                        "Nhà cung cấp: " + supplier.getName() + "\n" +
                         "Tên bao bì: " + packaging.getName() + "\n" +
                         "Qui cách: " + packaging.getSpecifications() + "\n" +
                         "Kích thước: " + packaging.getDimension() + "\n" +

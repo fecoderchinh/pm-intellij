@@ -1,6 +1,6 @@
 package fecoder.models;
 
-public class Suplier {
+public class Supplier {
     private int id;
     private String name;
     private String address;
@@ -10,9 +10,9 @@ public class Suplier {
     private String fax;
     private String code;
 
-    public Suplier(){}
+    public Supplier(){}
 
-    public Suplier(int id, String name, String address, String email, String deputy, String phone, String fax, String code) {
+    public Supplier(int id, String name, String address, String email, String deputy, String phone, String fax, String code) {
         this.id = id;
         this.name = name;
         this.address = address;
