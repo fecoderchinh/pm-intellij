@@ -6,7 +6,7 @@ This repo is working perfectly with **IntelliJ IDEA**
 1. Clone source
 2. Press `Ctrl + Shift + Alt + S`
     - At `Project` tab, config your `Project compiler output`
-    - At `Libraries` tab, press `+` and add `javafx-sdk` version
+    - At `Libraries` tab, press `+` and link to `/bin` folder in your `javafx-sdk` version
     - Then press `Apply > OK`
 3. Choose `Run > Edit Configurations...`
 4. Paste the below code into `VM options`   
