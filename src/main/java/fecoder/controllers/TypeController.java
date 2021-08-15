@@ -2,6 +2,7 @@ package fecoder.controllers;
 
 import fecoder.DAO.TypeDAO;
 import fecoder.models.Type;
+import fecoder.utils.Utils;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -20,27 +21,35 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class TypeController implements Initializable {
+
+    public TableView<Type> dataTable;
+    public TableColumn<Type, Integer> idColumn;
+    public TableColumn<Type, String> nameColumn;
+    public TableColumn<Type, String> unitColumn;
+
     public Button insertButton;
     public Button updateButton;
     public Button clearButton;
     public TextField nameField;
     public TextField searchField;
     public Button reloadData;
-    public TableView<Type> dataTable;
-    public TableColumn<Type, Integer> idColumn;
-    public TableColumn<Type, String> nameColumn;
-    public TableColumn<Type, String> unitColumn;
     public Label anchorLabel;
     public Label anchorData;
-
-    private final TypeDAO typeDAO = new TypeDAO();
     public TextField unitField;
 
+    private final TypeDAO typeDAO = new TypeDAO();
+
+    /**
+     * All needed to start controller
+     * */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         loadView();
     }
 
+    /**
+     * Inserting button action
+     * */
     @FXML
     public void insertButton(ActionEvent actionEvent) {
         typeDAO.insert(nameField.getText(), unitField.getText());
@@ -48,6 +57,9 @@ public class TypeController implements Initializable {
         reload();
     }
 
+    /**
+     * Updating button action
+     * */
     @FXML
     public void updateButton(ActionEvent actionEvent) {
         typeDAO.update(nameField.getText(), unitField.getText(), Integer.parseInt(anchorData.getText()));
@@ -55,16 +67,25 @@ public class TypeController implements Initializable {
         reload();
     }
 
+    /**
+     * Handle event on clearing all inputs
+     * */
     @FXML
     public void clearButton(ActionEvent actionEvent) {
         clearFields();
     }
 
+    /**
+     * Handle event on reloading Window
+     * */
     public void reloadData(ActionEvent actionEvent) {
         reload();
     }
 
-    public void loadView() {
+    /**
+     * Handle on searching data
+     * */
+    public void setSearchField() {
         ObservableList<Type> list = FXCollections.observableArrayList(typeDAO.getList());
         FilteredList<Type> filteredList = new FilteredList<>(list, p -> true);
 
@@ -82,8 +103,13 @@ public class TypeController implements Initializable {
         SortedList<Type> sortedList = new SortedList<>(filteredList);
         sortedList.comparatorProperty().bind(dataTable.comparatorProperty());
 
-        dataTable.setEditable(true);
+        dataTable.setItems(sortedList);
+    }
 
+    /**
+     * Getting current row on click
+     * */
+    public void getCurrentRow() {
         TableView.TableViewSelectionModel<Type> selectionModel = dataTable.getSelectionModel();
         selectionModel.setSelectionMode(SelectionMode.SINGLE);
 
@@ -95,6 +121,21 @@ public class TypeController implements Initializable {
 //                System.out.println("Selection changed: " + change.getList());
             }
         });
+    }
+
+    /**
+     * Load the current view resources.
+     * <br>
+     * Contains: <br>
+     * - getCurrentRow() <br>
+     * - setSearchField() <br>
+     * - Controlling columns view and actions <br>
+     * - Implementing contextMenu on right click <br>
+     * */
+    public void loadView() {
+        dataTable.setEditable(true);
+
+        getCurrentRow();
 
         idColumn.setSortable(false);
         idColumn.setCellValueFactory(column -> new ReadOnlyObjectWrapper<Integer>(dataTable.getItems().indexOf(column.getValue())+1));
@@ -162,14 +203,24 @@ public class TypeController implements Initializable {
             return row;
         });
 
-        dataTable.setItems(sortedList);
+        setSearchField();
     }
 
+    /**
+     * Reloading method
+     * */
     private void reload() {
         loadView();
         clearFields();
     }
 
+    /**
+     * Setting data for inputs
+     *
+     * @param name - the record's name
+     * @param unit - the record's unit
+     * @param id - the record's id
+     * */
     private void getItem(String name, String unit, int id) {
         nameField.setText(name);
         unitField.setText(unit);
@@ -177,6 +228,9 @@ public class TypeController implements Initializable {
         anchorData.setText(""+id);
     }
 
+    /**
+     * Handle on clearing specific inputs
+     * */
     private void clearFields() {
         nameField.setText(null);
         unitField.setText(null);
