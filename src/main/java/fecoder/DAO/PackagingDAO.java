@@ -2,7 +2,6 @@ package fecoder.DAO;
 
 import fecoder.connection.ConnectionUtils;
 import fecoder.models.Packaging;
-import fecoder.models.Type;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -10,6 +9,14 @@ import java.util.List;
 
 public class PackagingDAO {
 
+    private final String tableName = "packaging";
+
+    /**
+     * Representing a database
+     *
+     * @param resultSet - A table of data representing a database result set
+     * @return data
+     * */
     private Packaging createData(ResultSet resultSet) {
         Packaging data = new Packaging();
         try {
@@ -31,12 +38,17 @@ public class PackagingDAO {
         return data;
     }
 
+    /**
+     * Getting all records of table
+     *
+     * @return list
+     * */
     public List<Packaging> getList() {
         List<Packaging> list = new ArrayList<>();
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             Statement statement = conn.createStatement();
-            String selectAll = "select * from packaging";
+            String selectAll = "select * from "+tableName;
             ResultSet resultSet = statement.executeQuery(selectAll);
             while(resultSet.next()) {
                 Packaging data = createData(resultSet);
@@ -51,12 +63,17 @@ public class PackagingDAO {
         return list;
     }
 
+    /**
+     * Retrieving raw data
+     *
+     * @return data
+     * */
     public Packaging getListRaw() {
         Packaging data = new Packaging();
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             Statement statement = conn.createStatement();
-            String selectAll = "select * from packaging";
+            String selectAll = "select * from "+tableName;
             ResultSet resultSet = statement.executeQuery(selectAll);
             while(resultSet.next()) {
                 data = createData(resultSet);
@@ -70,12 +87,18 @@ public class PackagingDAO {
         return data;
     }
 
-    public Packaging getDataByID(int value) {
+    /**
+     * Getting record data by its ID
+     *
+     * @param id - record id
+     * @return data
+     * */
+    public Packaging getDataByID(int id) {
         Packaging data = new Packaging();
         try {
             Connection conn = ConnectionUtils.getMyConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement("select * from packaging where id=?");
-            preparedStatement.setInt(1, value);
+            PreparedStatement preparedStatement = conn.prepareStatement("select * from "+ tableName +" where id=?");
+            preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
                 data = createData(resultSet);
@@ -89,11 +112,17 @@ public class PackagingDAO {
         return data;
     }
 
+    /**
+     * Getting record data by its name
+     *
+     * @param value - record's name
+     * @return data
+     * */
     public Packaging getDataByName(String value) {
         Packaging data = new Packaging();
         try {
             Connection conn = ConnectionUtils.getMyConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement("select * from packaging where name=?");
+            PreparedStatement preparedStatement = conn.prepareStatement("select * from "+ tableName +" where name=?");
             preparedStatement.setString(1, value);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
@@ -108,10 +137,17 @@ public class PackagingDAO {
         return data;
     }
 
-    public boolean has(String column, String value) {
+    /**
+     * Retrieving the data from specific column and string value
+     *
+     * @param column - the specific column
+     * @param value - the value to lookup
+     * @return boolean
+     * */
+    public boolean getDataByString(String column, String value) {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement("select * from packaging where "+column+"=?");
+            PreparedStatement preparedStatement = conn.prepareStatement("select * from "+ tableName +" where "+column+"=?");
             preparedStatement.setString(1, value);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
@@ -126,36 +162,115 @@ public class PackagingDAO {
         return false;
     }
 
+    /**
+     * Updating record string data
+     *
+     * @param column - table's column
+     * @param value - column's new value
+     * @param id - record's id
+     * */
     public void updateData(String column, String value, int id) {
-        jdbcDAO.updateSingleData("packaging", column, value, id);
+        jdbcDAO.updateSingleData(tableName, column, value, id);
     }
 
+    /**
+     * Updating record integer data
+     *
+     * @param column - table's column
+     * @param value - column's new value
+     * @param id - record's id
+     * */
     public void updateDataInteger(String column, int value, int id) {
-        jdbcDAO.updateSingleDataInteger("packaging", column, value, id);
+        jdbcDAO.updateSingleDataInteger(tableName, column, value, id);
     }
 
+    /**
+     * Updating record float data
+     *
+     * @param column - table's column
+     * @param value - column's new value
+     * @param id - record's id
+     * */
     public void updateDataFloat(String column, float value, int id) {
-        jdbcDAO.updateSingleDataFloat("packaging", column, value, id);
+        jdbcDAO.updateSingleDataFloat(tableName, column, value, id);
     }
 
+    /**
+     * Updating record boolean data
+     *
+     * @param column - table's column
+     * @param value - column's new value
+     * @param id - record's id
+     * */
     public void updateDataBoolean(String column, boolean value, int id) {
-        jdbcDAO.updateSingleDataBoolean("packaging", column, value, id);
+        jdbcDAO.updateSingleDataBoolean(tableName, column, value, id);
     }
 
+    /**
+     * Deleting record data
+     *
+     * @param id - record's id
+     * */
     public void delete(int id) {
-        jdbcDAO.delete("packaging", id);
+        jdbcDAO.delete(tableName, id);
     }
 
+    /**
+     * Updating all columns
+     *
+     * @param name - column name
+     * @param specifications - column specifications
+     * @param dimension - column dimension
+     * @param suplier - column suplier
+     * @param type - column type
+     * @param minimum_order - column minimum_order
+     * @param stamped - column stamped
+     * @param code - column code
+     * @param main - column main
+     * @param note - column note
+     * @param price - column price
+     * @param id - column id
+     * */
     public void update(String name, String specifications, String dimension, int suplier, int type, int minimum_order, boolean stamped, String code, boolean main, String note, float price, int id) {
-        String updateQuery = "update packaging set name=?, specifications=?, dimension=?, suplier=?, type=?, minimum_order=?, stamped=?, code=?, main=?, note=?, price=? where id=?";
+        String updateQuery = "update "+ tableName +" set name=?, specifications=?, dimension=?, suplier=?, type=?, minimum_order=?, stamped=?, code=?, main=?, note=?, price=? where id=?";
         preparedUpdateQuery(updateQuery, name, specifications, dimension, suplier, type, minimum_order, stamped, code, main, note, price, id);
     }
 
+    /**
+     * Inserting all columns
+     *
+     * @param name - column name
+     * @param specifications - column specifications
+     * @param dimension - column dimension
+     * @param suplier - column suplier
+     * @param type - column type
+     * @param minimum_order - column minimum_order
+     * @param stamped - column stamped
+     * @param code - column code
+     * @param main - column main
+     * @param note - column note
+     * @param price - column price
+     * */
     public void insert(String name, String specifications, String dimension, int suplier, int type, int minimum_order, boolean stamped, String code, boolean main, String note, float price) {
-        String insertQuery = "insert into packaging (name, specifications, dimension, suplier, type, minimum_order, stamped, code, main, note, price) values(?,?,?,?,?,?,?,?,?,?,?)";
+        String insertQuery = "insert into "+ tableName +" (name, specifications, dimension, suplier, type, minimum_order, stamped, code, main, note, price) values(?,?,?,?,?,?,?,?,?,?,?)";
         preparedInsertQuery(insertQuery, name, specifications, dimension, suplier, type, minimum_order, stamped, code, main, note, price);
     }
 
+    /**
+     * Preparing Insert Query before action
+     *
+     * @param name - column name
+     * @param specifications - column specifications
+     * @param dimension - column dimension
+     * @param suplier - column suplier
+     * @param type - column type
+     * @param minimum_order - column minimum_order
+     * @param stamped - column stamped
+     * @param code - column code
+     * @param main - column main
+     * @param note - column note
+     * @param price - column price
+     * */
     public void preparedInsertQuery(String query, String name, String specifications, String dimension, int suplier, int type, int minimum_order, boolean stamped, String code, boolean main, String note, float price) {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
@@ -182,6 +297,22 @@ public class PackagingDAO {
         }
     }
 
+    /**
+     * Preparing Update Query before action
+     *
+     * @param name - column name
+     * @param specifications - column specifications
+     * @param dimension - column dimension
+     * @param suplier - column suplier
+     * @param type - column type
+     * @param minimum_order - column minimum_order
+     * @param stamped - column stamped
+     * @param code - column code
+     * @param main - column main
+     * @param note - column note
+     * @param price - column price
+     * @param id - column id
+     * */
     public void preparedUpdateQuery(String query, String name, String specifications, String dimension, int suplier, int type, int minimum_order, boolean stamped, String code, boolean main, String note, float price, int id) {
         try {
             Connection conn = ConnectionUtils.getMyConnection();

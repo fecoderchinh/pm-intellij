@@ -51,17 +51,19 @@ public class PackagingController implements Initializable {
     public ComboBox<String> searchComboBox;
     public TextField searchField;
     public Button reloadData;
-    public TableView<Packaging> dataTable;
-    public TableColumn<Packaging, Integer> idColumn;
     public CheckBox stampedField;
     public CheckBox mainField;
+    public Label anchorLabel;
+    public Label anchorData;
+
+    public TableView<Packaging> dataTable;
+    public TableColumn<Packaging, Integer> idColumn;
     public TableColumn<Packaging, Boolean> stampedColumn;
     public TableColumn<Packaging, Boolean> mainColumn;
     public TableColumn<Packaging, String> nameColumn;
     public TableColumn<Packaging, String> specificationColumn;
     public TableColumn<Packaging, String> dimensionColumn;
     public TableColumn<Packaging, Integer> minimumColumn;
-//    public TableColumn<Packaging, Type> typeColumn;
     public TableColumn<Packaging, Integer> typeColumn;
     public TableColumn<Packaging, Integer> suplierColumn;
     public TableColumn<Packaging, String> codeColumn;
@@ -71,11 +73,14 @@ public class PackagingController implements Initializable {
     private final TypeDAO typeDAO = new TypeDAO();
     private final SupplierDAO supplierDAO = new SupplierDAO();
     private final PackagingDAO packagingDAO = new PackagingDAO();
-    public Label anchorLabel;
-    public Label anchorData;
 
+    private int currentRow;
+    private String currentCell;
     private final Utils utils = new Utils();
 
+    /**
+     * All needed to start controller
+     * */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         typeComboBox.getItems().addAll(FXCollections.observableArrayList(typeDAO.getList()));
@@ -83,6 +88,9 @@ public class PackagingController implements Initializable {
         loadView();
     }
 
+    /**
+     * Inserting button action
+     * */
     public void insertButton(ActionEvent actionEvent) {
         packagingDAO.insert(
                 nameField.getText(),
@@ -101,6 +109,9 @@ public class PackagingController implements Initializable {
         reload();
     }
 
+    /**
+     * Updating button action
+     * */
     public void updateButton(ActionEvent actionEvent) {
         packagingDAO.update(
                 nameField.getText(),
@@ -120,28 +131,38 @@ public class PackagingController implements Initializable {
         reload();
     }
 
+    /**
+     * Handle event on clearing all inputs
+     * */
     public void clearButton(ActionEvent actionEvent) {
         clearFields();
     }
 
+    /**
+     * Handle event on reloading Window
+     * */
     public void reloadData(ActionEvent actionEvent) {
         reload();
     }
 
+    /**
+     * Reloading method
+     * */
     private void reload() {
         clearFields();
         loadView();
     }
 
+    /**
+     * Handle event on clearing all inputs
+     * */
     private void clearFields() {
         nameField.setText(null);
         specificationField.setText(null);
         dimensionField.setText(null);
-//        suplierComboBox.setValue(null);
         if(!suplierComboBox.getItems().isEmpty()) {
             suplierComboBox.getSelectionModel().clearSelection();
         }
-//        typeComboBox.setValue(null);
         if(!typeComboBox.getItems().isEmpty()) {
             typeComboBox.getSelectionModel().clearSelection();
         }
@@ -155,39 +176,55 @@ public class PackagingController implements Initializable {
         anchorData.setText(null);
     }
 
-    private void getPackaging(Packaging p) {
-        nameField.setText(p.getName());
-        specificationField.setText(p.getSpecifications());
-        dimensionField.setText(p.getDimension());
-        suplierComboBox.getSelectionModel().select(p.getSuplier());
-        typeComboBox.getSelectionModel().select(p.getType());
-        minimumField.setText(p.getMinimum_order()+"");
-        stampedField.selectedProperty().bindBidirectional(new SimpleBooleanProperty(p.isStamped()));
-        codeField.setText(p.getCode());
-//        mainField.setSelected(p.getMain() == 1);
-        mainField.selectedProperty().bindBidirectional(new SimpleBooleanProperty(p.isMain()));
-        noteField.setText(p.getNote());
-        priceField.setText(p.getPrice()+"");
+    /**
+     * Setting data for inputs
+     *
+     * @param packaging - the packaging data
+     * */
+    private void getPackaging(Packaging packaging) {
+        nameField.setText(packaging.getName());
+        specificationField.setText(packaging.getSpecifications());
+        dimensionField.setText(packaging.getDimension());
+        suplierComboBox.getSelectionModel().select(packaging.getSuplier());
+        typeComboBox.getSelectionModel().select(packaging.getType());
+        minimumField.setText(packaging.getMinimum_order()+"");
+        stampedField.selectedProperty().bindBidirectional(new SimpleBooleanProperty(packaging.isStamped()));
+        codeField.setText(packaging.getCode());
+        mainField.selectedProperty().bindBidirectional(new SimpleBooleanProperty(packaging.isMain()));
+        noteField.setText(packaging.getNote());
+        priceField.setText(packaging.getPrice()+"");
         anchorLabel.setText("Current ID: ");
-        anchorData.setText(""+p.getId());
+        anchorData.setText(""+packaging.getId());
     }
 
-    public void loadView(){
-//        typeComboBox.getItems().addAll(FXCollections.observableArrayList(typeDAO.getTypes()));
+    /**
+     * Set an event for typeComboBox
+     * */
+    public void setTypeComboBoxEvent() {
         typeComboBox.setOnKeyReleased(event -> {
             if (event.getCode().equals(KeyCode.ENTER)) {
                 Type type = typeComboBox.getSelectionModel().getSelectedItem();
                 System.out.println(type.getId());
             }
         });
-//        suplierComboBox.getItems().addAll(FXCollections.observableArrayList(suplierDAO.getSupliers()));
+    }
+
+    /**
+     * Set an event for suplierComboBox
+     * */
+    public void setSuplierComboBoxEvent() {
         suplierComboBox.setOnKeyReleased(event -> {
             if (event.getCode().equals(KeyCode.ENTER)) {
                 Supplier supplier = suplierComboBox.getSelectionModel().getSelectedItem();
                 System.out.println(supplier.getId());
             }
         });
+    }
 
+    /**
+     * Handle on searching data
+     * */
+    public void setSearchField() {
         ObservableList<Packaging> packagingObservableList = FXCollections.observableArrayList(packagingDAO.getList());
         FilteredList<Packaging> packagingFilteredList = new FilteredList<>(packagingObservableList, p -> true);
 
@@ -233,8 +270,13 @@ public class PackagingController implements Initializable {
         SortedList<Packaging> packagingSortedList = new SortedList<>(packagingFilteredList);
         packagingSortedList.comparatorProperty().bind(dataTable.comparatorProperty());
 
-        dataTable.setEditable(true);
+        dataTable.setItems(packagingSortedList);
+    }
 
+    /**
+     * Getting current row on click
+     * */
+    public void getCurrentRow() {
         TableView.TableViewSelectionModel<Packaging> packagingTableViewSelectionModel = dataTable.getSelectionModel();
         packagingTableViewSelectionModel.setSelectionMode(SelectionMode.SINGLE);
 
@@ -246,6 +288,26 @@ public class PackagingController implements Initializable {
 //                System.out.println("Selection changed: " + change.getList());
             }
         });
+    }
+
+    /**
+     * Load the current view resources.
+     * <br>
+     * Contains: <br>
+     * - getCurrentRow() <br>
+     * - setSearchField() <br>
+     * - Controlling columns view and actions <br>
+     * - Implementing contextMenu on right click <br>
+     * */
+    public void loadView(){
+
+        setTypeComboBoxEvent();
+
+        setSuplierComboBoxEvent();
+
+        dataTable.setEditable(true);
+
+        getCurrentRow();
 
         idColumn.setSortable(false);
         idColumn.setCellValueFactory(column -> new ReadOnlyObjectWrapper<Integer>(dataTable.getItems().indexOf(column.getValue())+1));
@@ -255,11 +317,13 @@ public class PackagingController implements Initializable {
 
             TableCell<Packaging, String> cell = new TableCell<>();
 
+            currentRow = cell.getIndex();
+            currentCell = cell.getText();
+
             Text text = new Text();
             cell.setGraphic(text);
             cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
             text.wrappingWidthProperty().bind(nameColumn.widthProperty());
-//            text.textProperty().bind(cell.itemProperty());
             text.textProperty().bind(new StringBinding() {
                 { bind(cell.itemProperty()); }
                 @Override
@@ -292,6 +356,9 @@ public class PackagingController implements Initializable {
         specificationColumn.setCellFactory(tc -> {
 
             TableCell<Packaging, String> cell = new TableCell<>();
+
+            currentRow = cell.getIndex();
+            currentCell = cell.getText();
 
             Text text = new Text();
             cell.setGraphic(text);
@@ -354,6 +421,9 @@ public class PackagingController implements Initializable {
         noteColumn.setCellFactory(tc -> {
 
             TableCell<Packaging, String> cell = new TableCell<>();
+
+            currentRow = cell.getIndex();
+            currentCell = cell.getText();
 
             Text text = new Text();
             cell.setGraphic(text);
@@ -502,6 +572,9 @@ public class PackagingController implements Initializable {
 
             TableCell<Packaging, Integer> cell = new TableCell<>();
 
+            currentRow = cell.getIndex();
+            currentCell = cell.getText();
+
             Text text = new Text();
             AutoFillTextBox<Type> box = new AutoFillTextBox<Type>(typeObservableList);
             cell.setGraphic(text);
@@ -580,6 +653,9 @@ public class PackagingController implements Initializable {
         suplierColumn.setCellFactory(tc -> {
 
             TableCell<Packaging, Integer> cell = new TableCell<>();
+
+            currentRow = cell.getIndex();
+            currentCell = cell.getText();
 
             Text text = new Text();
             AutoFillTextBox<Supplier> box = new AutoFillTextBox<Supplier>(supplierObservableList);
@@ -734,6 +810,7 @@ public class PackagingController implements Initializable {
             return row ;
         });
 
-        dataTable.setItems(packagingSortedList);
+        utils.updateTableOnChanged(dataTable, currentRow, currentCell);
+        setSearchField();
     }
 }

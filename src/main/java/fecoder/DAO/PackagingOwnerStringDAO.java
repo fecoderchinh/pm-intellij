@@ -11,6 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PackagingOwnerStringDAO {
+
+    /**
+     * Representing a database
+     *
+     * @param resultSet - A table of data representing a database result set
+     * @return data
+     * */
     private PackagingOwnerString createData(ResultSet resultSet) {
         PackagingOwnerString data = new PackagingOwnerString();
         try {
@@ -25,6 +32,11 @@ public class PackagingOwnerStringDAO {
         return data;
     }
 
+    /**
+     * Getting all records of table
+     *
+     * @return list
+     * */
     public List<PackagingOwnerString> getList() {
         List<PackagingOwnerString> list = new ArrayList<>();
         try {

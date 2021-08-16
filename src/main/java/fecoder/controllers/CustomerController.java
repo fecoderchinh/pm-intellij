@@ -26,45 +26,71 @@ public class CustomerController implements Initializable {
     public Button clearButton;
     public TextField searchField;
     public Button reloadData;
+    public Label anchorLabel;
+    public Label anchorData;
+
     public TableView<Customer> dataTable;
     public TableColumn<Customer, Integer> idColumn;
     public TableColumn<Customer, String> nameColumn;
     public TableColumn<Customer, String> noteColumn;
-    public Label anchorLabel;
-    public Label anchorData;
 
     private final CustomerDAO DAO = new CustomerDAO();
 
+    /**
+     * All needed to start controller
+     * */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         loadView();
     }
 
+    /**
+     * Inserting button action
+     * */
     public void insertButton(ActionEvent actionEvent) {
         DAO.insert(nameField.getText(), noteField.getText());
         clearFields();
         reload();
     }
 
+    /**
+     * Updating button action
+     * */
     public void updateButton(ActionEvent actionEvent) {
         DAO.update(nameField.getText(), noteField.getText(), Integer.parseInt(anchorData.getText()));
         clearFields();
         reload();
     }
 
+    /**
+     * Handle event on clearing all inputs
+     * */
     public void clearButton(ActionEvent actionEvent) {
         clearFields();
     }
 
+    /**
+     * Handle event on reloading Window
+     * */
     public void reloadData(ActionEvent actionEvent) {
         reload();
     }
 
+    /**
+     * Reloading method
+     * */
     private void reload() {
         loadView();
         clearFields();
     }
 
+    /**
+     * Setting data for inputs
+     *
+     * @param name - the record's name
+     * @param note - the record's note
+     * @param id - the record's id
+     * */
     private void getItem(String name, String note, int id) {
         nameField.setText(name);
         noteField.setText(note);
@@ -72,6 +98,9 @@ public class CustomerController implements Initializable {
         anchorData.setText(""+id);
     }
 
+    /**
+     * Handle on clearing specific inputs
+     * */
     private void clearFields() {
         nameField.setText(null);
         noteField.setText(null);
@@ -79,7 +108,10 @@ public class CustomerController implements Initializable {
         anchorData.setText(null);
     }
 
-    public void loadView() {
+    /**
+     * Handle on searching data
+     * */
+    public void setSearchField() {
         ObservableList<Customer> list = FXCollections.observableArrayList(DAO.getList());
         FilteredList<Customer> filteredList = new FilteredList<>(list, p -> true);
 
@@ -97,8 +129,13 @@ public class CustomerController implements Initializable {
         SortedList<Customer> sortedList = new SortedList<>(filteredList);
         sortedList.comparatorProperty().bind(dataTable.comparatorProperty());
 
-        dataTable.setEditable(true);
+        dataTable.setItems(sortedList);
+    }
 
+    /**
+     * Getting current row on click
+     * */
+    public void getCurrentRow() {
         TableView.TableViewSelectionModel<Customer> selectionModel = dataTable.getSelectionModel();
         selectionModel.setSelectionMode(SelectionMode.SINGLE);
 
@@ -110,6 +147,21 @@ public class CustomerController implements Initializable {
 //                System.out.println("Selection changed: " + change.getList());
             }
         });
+    }
+
+    /**
+     * Load the current view resources.
+     * <br>
+     * Contains: <br>
+     * - getCurrentRow() <br>
+     * - setSearchField() <br>
+     * - Controlling columns view and actions <br>
+     * - Implementing contextMenu on right click <br>
+     * */
+    public void loadView() {
+        dataTable.setEditable(true);
+
+        getCurrentRow();
 
         idColumn.setSortable(false);
         idColumn.setCellValueFactory(column -> new ReadOnlyObjectWrapper<Integer>(dataTable.getItems().indexOf(column.getValue())+1));
@@ -177,6 +229,6 @@ public class CustomerController implements Initializable {
             return row;
         });
 
-        dataTable.setItems(sortedList);
+        setSearchField();
     }
 }

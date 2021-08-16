@@ -9,6 +9,14 @@ import java.util.List;
 
 public class YearDAO {
 
+    private final String tableName = "years";
+
+    /**
+     * Representing a database
+     *
+     * @param resultSet - A table of data representing a database result set
+     * @return data
+     * */
     private Year createData(ResultSet resultSet) {
         Year data = new Year();
         try {
@@ -20,12 +28,17 @@ public class YearDAO {
         return data;
     }
 
+    /**
+     * Getting all records of table
+     *
+     * @return list
+     * */
     public List<Year> getList() {
         List<Year> list = new ArrayList<>();
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             Statement statement = conn.createStatement();
-            String selectAll = "select * from years";
+            String selectAll = "select * from "+tableName;
             ResultSet resultSet = statement.executeQuery(selectAll);
             while(resultSet.next()) {
                 Year data = createData(resultSet);
@@ -40,24 +53,53 @@ public class YearDAO {
         return list;
     }
 
+    /**
+     * Updating record data
+     *
+     * @param column - table's column
+     * @param year - column's new year
+     * @param id - record's id
+     * */
     public void updateData(String column, String year, int id) {
-        jdbcDAO.updateSingleData("years", column, year, id);
+        jdbcDAO.updateSingleData(tableName, column, year, id);
     }
 
+    /**
+     * Deleting record data
+     *
+     * @param id - record's id
+     * */
     public void delete(int id) {
-        jdbcDAO.delete("years", id);
+        jdbcDAO.delete(tableName, id);
     }
 
+    /**
+     * Updating all columns
+     *
+     * @param year - column year
+     * @param id - column id
+     * */
     public void update(String year, int id) {
-        String updateQuery = "update years set year=? where id=?";
+        String updateQuery = "update "+ tableName +" set year=? where id=?";
         preparedUpdateQuery(updateQuery, year, id);
     }
 
+    /**
+     * Inserting all columns
+     *
+     * @param year - column year
+     * */
     public void insert(String year) {
-        String insertQuery = "insert into years (year) values(?)";
+        String insertQuery = "insert into "+ tableName +" (year) values(?)";
         preparedInsertQuery(insertQuery, year);
     }
 
+    /**
+     * Preparing Insert Query before action
+     *
+     * @param query - SQL query
+     * @param year - column year
+     * */
     public void preparedInsertQuery(String query, String year) {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
@@ -74,6 +116,13 @@ public class YearDAO {
         }
     }
 
+    /**
+     * Preparing Update Query before action
+     *
+     * @param query - SQL query
+     * @param year - column year
+     * @param id - column id
+     * */
     public void preparedUpdateQuery(String query, String year, int id) {
         try {
             Connection conn = ConnectionUtils.getMyConnection();

@@ -2,6 +2,7 @@ package fecoder.controllers;
 
 import fecoder.DAO.ProductDAO;
 import fecoder.models.Product;
+import fecoder.utils.Utils;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -11,23 +12,14 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.Window;
 
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.function.Consumer;
 
 public class ProductController implements Initializable {
     public TextField nameField;
@@ -40,17 +32,33 @@ public class ProductController implements Initializable {
     public ComboBox<String> searchComboBox;
     public TextField searchField;
     public Button reloadData;
+    public Label anchorLabel;
+    public Label anchorData;
+
     public TableView<Product> dataTable;
     public TableColumn<Product, Integer> idColumn;
     public TableColumn<Product, String> nameColumn;
     public TableColumn<Product, String> descriptionColumn;
     public TableColumn<Product, String> specificationColumn;
     public TableColumn<Product, String> noteColumn;
-    public Label anchorLabel;
-    public Label anchorData;
 
     private final ProductDAO productDAO = new ProductDAO();
 
+    private int currentRow;
+    private String currentCell;
+    private final Utils utils = new Utils();
+
+    /**
+     * All needed to start controller
+     * */
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        loadView();
+    }
+
+    /**
+     * Inserting button action
+     * */
     public void insertButton(ActionEvent actionEvent) {
         productDAO.insert(
                 nameField.getText(),
@@ -62,6 +70,9 @@ public class ProductController implements Initializable {
         reload();
     }
 
+    /**
+     * Updating button action
+     * */
     public void updateButton(ActionEvent actionEvent) {
         productDAO.update(
                 nameField.getText(),
@@ -74,19 +85,31 @@ public class ProductController implements Initializable {
         reload();
     }
 
+    /**
+     * Handle event on clearing all inputs
+     * */
     public void clearButton(ActionEvent actionEvent) {
         clearFields();
     }
 
+    /**
+     * Handle event on reloading Window
+     * */
     public void reloadData(ActionEvent actionEvent) {
         reload();
     }
 
+    /**
+     * Reloading method
+     * */
     private void reload() {
         clearFields();
         loadView();
     }
 
+    /**
+     * Handle event on clearing all inputs
+     * */
     private void clearFields() {
         nameField.setText(null);
         descriptionField.setText(null);
@@ -96,51 +119,24 @@ public class ProductController implements Initializable {
         anchorData.setText(null);
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        loadView();
-    }
-
-    private void getData(Product p) {
-        nameField.setText(p.getName());
-        descriptionField.setText(p.getDescription());
-        specificationField.setText(p.getSpecification());
-        noteField.setText(p.getNote());
+    /**
+     * Setting data for inputs
+     *
+     * @param product - the product data
+     * */
+    private void getData(Product product) {
+        nameField.setText(product.getName());
+        descriptionField.setText(product.getDescription());
+        specificationField.setText(product.getSpecification());
+        noteField.setText(product.getNote());
         anchorLabel.setText("Current ID: ");
-        anchorData.setText(""+p.getId());
+        anchorData.setText(""+product.getId());
     }
 
-    private void showEditingWindow(Window owner, String currentValue, Consumer<String> commitHandler, String title) {
-        Stage stage = new Stage();
-        stage.initOwner(owner);
-        stage.initModality(Modality.APPLICATION_MODAL);
-
-        TextArea textArea = new TextArea(currentValue);
-
-        Button okButton = new Button("ÁP DỤNG");
-        okButton.setDefaultButton(true);
-        okButton.setOnAction(e -> {
-            commitHandler.accept(textArea.getText());
-            stage.hide();
-        });
-
-        Button cancelButton = new Button("HỦY BỎ");
-        cancelButton.setCancelButton(true);
-        cancelButton.setOnAction(e -> stage.hide());
-
-        HBox buttons = new HBox(5, okButton, cancelButton);
-        buttons.setAlignment(Pos.CENTER);
-        buttons.setPadding(new Insets(5));
-
-        BorderPane root = new BorderPane(textArea, null, null, buttons, null);
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.setTitle(title);
-        stage.setResizable(false);
-        stage.show();
-    }
-
-    private void loadView() {
+    /**
+     * Handle on searching data
+     * */
+    public void setSearchField() {
         ObservableList<Product> productObservableList = FXCollections.observableArrayList(productDAO.getList());
         FilteredList<Product> productFilteredList = new FilteredList<>(productObservableList, p -> true);
 
@@ -186,8 +182,13 @@ public class ProductController implements Initializable {
         SortedList<Product> productSortedList = new SortedList<>(productFilteredList);
         productSortedList.comparatorProperty().bind(dataTable.comparatorProperty());
 
-        dataTable.setEditable(true);
+        dataTable.setItems(productSortedList);
+    }
 
+    /**
+     * Getting current row on click
+     * */
+    public void getCurrentRow() {
         TableView.TableViewSelectionModel<Product> productTableViewSelectionModel = dataTable.getSelectionModel();
         productTableViewSelectionModel.setSelectionMode(SelectionMode.SINGLE);
 
@@ -199,6 +200,21 @@ public class ProductController implements Initializable {
 //                System.out.println("Selection changed: " + change.getList());
             }
         });
+    }
+
+    /**
+     * Load the current view resources.
+     * <br>
+     * Contains: <br>
+     * - getCurrentRow() <br>
+     * - setSearchField() <br>
+     * - Controlling columns view and actions <br>
+     * - Implementing contextMenu on right click <br>
+     * */
+    private void loadView() {
+        dataTable.setEditable(true);
+
+        getCurrentRow();
 
         idColumn.setSortable(false);
         idColumn.setCellValueFactory(column -> new ReadOnlyObjectWrapper<Integer>(dataTable.getItems().indexOf(column.getValue())+1));
@@ -217,7 +233,7 @@ public class ProductController implements Initializable {
 //            EDIT IN NEW WINDOW
             cell.setOnMouseClicked(e -> {
                 if (e.getClickCount() == 2 && ! cell.isEmpty()) {
-                    showEditingWindow(dataTable.getScene().getWindow(), cell.getItem(), newValue -> {
+                    utils.openTextareaWindow(dataTable.getScene().getWindow(), cell.getItem(), newValue -> {
                         Product item = dataTable.getItems().get(cell.getIndex());
                         item.setName(newValue);
                         productDAO.updateData("name", newValue, item.getId());
@@ -243,7 +259,7 @@ public class ProductController implements Initializable {
 //            EDIT IN NEW WINDOW
             cell.setOnMouseClicked(e -> {
                 if (e.getClickCount() == 2 && ! cell.isEmpty()) {
-                    showEditingWindow(dataTable.getScene().getWindow(), cell.getItem(), newValue -> {
+                    utils.openTextareaWindow(dataTable.getScene().getWindow(), cell.getItem(), newValue -> {
                         Product item = dataTable.getItems().get(cell.getIndex());
                         item.setDescription(newValue);
                         productDAO.updateData("description", newValue, item.getId());
@@ -269,7 +285,7 @@ public class ProductController implements Initializable {
 //            EDIT IN NEW WINDOW
             cell.setOnMouseClicked(e -> {
                 if (e.getClickCount() == 2 && ! cell.isEmpty()) {
-                    showEditingWindow(dataTable.getScene().getWindow(), cell.getItem(), newValue -> {
+                    utils.openTextareaWindow(dataTable.getScene().getWindow(), cell.getItem(), newValue -> {
                         Product item = dataTable.getItems().get(cell.getIndex());
                         item.setSpecification(newValue);
                         productDAO.updateData("specification", newValue, item.getId());
@@ -295,7 +311,7 @@ public class ProductController implements Initializable {
 //            EDIT IN NEW WINDOW
             cell.setOnMouseClicked(e -> {
                 if (e.getClickCount() == 2 && ! cell.isEmpty()) {
-                    showEditingWindow(dataTable.getScene().getWindow(), cell.getItem(), newValue -> {
+                    utils.openTextareaWindow(dataTable.getScene().getWindow(), cell.getItem(), newValue -> {
                         Product item = dataTable.getItems().get(cell.getIndex());
                         item.setNote(newValue);
                         productDAO.updateData("note", newValue, item.getId());
@@ -374,6 +390,7 @@ public class ProductController implements Initializable {
             return row ;
         });
 
-        dataTable.setItems(productSortedList);
+        utils.updateTableOnChanged(dataTable, currentRow, currentCell);
+        setSearchField();
     }
 }

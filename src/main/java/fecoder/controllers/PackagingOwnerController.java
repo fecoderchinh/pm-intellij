@@ -35,11 +35,19 @@ public class PackagingOwnerController implements Initializable {
     public ComboBox<String> searchComboBox;
     public TextField searchField;
     public Button reloadData;
-    public TableView<PackagingOwnerString> dataTable;
-    public TableColumn<PackagingOwnerString, Integer> idColumn;
-
     public Label anchorLabel;
     public Label anchorData;
+    public ComboBox<Product> productComboBox;
+    public ComboBox<Size> sizeComboBox;
+    public ComboBox<Packaging> packagingComboBox;
+    public TextField packQtyField;
+
+    public TableView<PackagingOwnerString> dataTable;
+    public TableColumn<PackagingOwnerString, Integer> idColumn;
+    public TableColumn<PackagingOwnerString, String> productColumn;
+    public TableColumn<PackagingOwnerString, Size> sizeColumn;
+    public TableColumn<PackagingOwnerString, String> packagingColumn;
+    public TableColumn<PackagingOwnerString, Integer> packingQtyColumn;
 
     private final PackagingOwnerDAO packagingOwnerDAO = new PackagingOwnerDAO();
     private final ProductDAO productDAO = new ProductDAO();
@@ -47,25 +55,29 @@ public class PackagingOwnerController implements Initializable {
     private final PackagingDAO packagingDAO = new PackagingDAO();
     private final PackagingOwnerStringDAO packagingOwnerStringDAO = new PackagingOwnerStringDAO();
 
-    public ComboBox<Product> productComboBox;
-    public ComboBox<Size> sizeComboBox;
-    public ComboBox<Packaging> packagingComboBox;
-    public TextField packQtyField;
-    public TableColumn<PackagingOwnerString, String> productColumn;
-    public TableColumn<PackagingOwnerString, Size> sizeColumn;
-    public TableColumn<PackagingOwnerString, String> packagingColumn;
-    public TableColumn<PackagingOwnerString, Integer> packingQtyColumn;
-
-    private boolean isEditableComboBox = false;
-    private boolean isUpdating = false;
-    private int currentRow;
-    private String currentCell;
-
     private final ObservableList<Product> productObservableList = FXCollections.observableArrayList(productDAO.getList());
     private final ObservableList<Size> sizeObservableList = FXCollections.observableArrayList(sizeDAO.getList());
     private final ObservableList<Packaging> packagingObservableList = FXCollections.observableArrayList(packagingDAO.getList());
+
+    private boolean isEditableComboBox = false;
+    private boolean isUpdating = false;
+
+    private int currentRow;
+    private String currentCell;
     private final Utils utils = new Utils();
 
+    /**
+     * All needed to start controller
+     * */
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        this.filterComboBox(true);
+        loadView();
+    }
+
+    /**
+     * Inserting button action
+     * */
     public void insertButton(ActionEvent actionEvent) {
         Product productInsertData = productDAO.getDataByName(productComboBox.getEditor().getText());
         Size sizeInsertData = sizeDAO.getDataByName(sizeComboBox.getEditor().getText());
@@ -83,6 +95,9 @@ public class PackagingOwnerController implements Initializable {
         }
     }
 
+    /**
+     * Updating button action
+     * */
     public void updateButton(ActionEvent actionEvent) {
         Product productInsertData = productDAO.getDataByName(productComboBox.getEditor().getText());
         Size sizeInsertData = sizeDAO.getDataByName(sizeComboBox.getEditor().getText());
@@ -100,19 +115,31 @@ public class PackagingOwnerController implements Initializable {
         }
     }
 
+    /**
+     * Handle event on clearing all inputs
+     * */
     public void clearButton(ActionEvent actionEvent) {
         clearFields();
     }
 
+    /**
+     * Handle event on reloading Window
+     * */
     public void reloadData(ActionEvent actionEvent) {
         reload();
     }
 
+    /**
+     * Reloading method
+     * */
     private void reload() {
         clearFields();
         loadView();
     }
 
+    /**
+     * Handle on clearing specific inputs
+     * */
     private void clearFields() {
         clearComboBox();
         packQtyField.setText(null);
@@ -120,6 +147,9 @@ public class PackagingOwnerController implements Initializable {
         anchorData.setText(null);
     }
 
+    /**
+     * Handle on clearing comnbobox
+     * */
     private void clearComboBox() {
         if(isEditableComboBox) {
             this.clearEditableComboBox(productComboBox);
@@ -130,36 +160,41 @@ public class PackagingOwnerController implements Initializable {
         }
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        this.filterComboBox(true);
-        loadView();
-    }
-
-    private void getData(PackagingOwner p) {
+    /**
+     * Setting data for inputs
+     *
+     * @param packagingOwner - the packaging data
+     * */
+    private void getData(PackagingOwner packagingOwner) {
         if(!isEditableComboBox) {
-            productComboBox.getSelectionModel().select(p.getProduct_id());
-            sizeComboBox.getSelectionModel().select(p.getSize_id());
-            packagingComboBox.getSelectionModel().select(p.getPackaging_id());
+            productComboBox.getSelectionModel().select(packagingOwner.getProduct_id());
+            sizeComboBox.getSelectionModel().select(packagingOwner.getSize_id());
+            packagingComboBox.getSelectionModel().select(packagingOwner.getPackaging_id());
         } else {
-            Product productData = productDAO.getDataByID(p.getProduct_id());
+            Product productData = productDAO.getDataByID(packagingOwner.getProduct_id());
             productComboBox.getEditor().setText(productData.getName());
-            Size sizeData = sizeDAO.getDataByID(p.getSize_id());
+            Size sizeData = sizeDAO.getDataByID(packagingOwner.getSize_id());
             sizeComboBox.getEditor().setText(sizeData.getSize());
-            Packaging packagingData = packagingDAO.getDataByID(p.getPackaging_id());
+            Packaging packagingData = packagingDAO.getDataByID(packagingOwner.getPackaging_id());
             packagingComboBox.getEditor().setText(packagingData.getName());
         }
-        packQtyField.setText(p.getPack_qty()+"");
+        packQtyField.setText(packagingOwner.getPack_qty()+"");
         anchorLabel.setText("Current ID: ");
-        anchorData.setText(""+p.getId());
+        anchorData.setText(""+packagingOwner.getId());
         this.isUpdating = true;
     }
 
+    /**
+     * Handle on clearing editable comnbobox
+     * */
     private void clearEditableComboBox(ComboBox comboBox) {
         comboBox.getEditor().setText(null);
         comboBox.hide();
     }
 
+    /**
+     * Handle on clearing non-editable comnbobox
+     * */
     private void clearNonEditableComboBox() {
         //        Product defaultComboBoxData = new Product(0, "Chưa chọn", "", "", "");
 //        productComboBox.valueProperty().set(defaultComboBoxData);
@@ -181,6 +216,9 @@ public class PackagingOwnerController implements Initializable {
         }
     }
 
+    /**
+     * Determine the combobox is editable or not.
+     * */
     private void isEditableComboBox(boolean isEditable) {
         if(isEditable) {
             productComboBox.setEditable(isEditable);
@@ -191,6 +229,9 @@ public class PackagingOwnerController implements Initializable {
         this.isEditableComboBox = isEditable;
     }
 
+    /**
+     * Enable/Disable the filter for Combobox
+     * */
     private void filterComboBox(boolean filter) {
         this.isEditableComboBox(filter);
         if(isEditableComboBox) {
@@ -203,6 +244,9 @@ public class PackagingOwnerController implements Initializable {
         packagingComboBox.getItems().addAll(packagingObservableList);
     }
 
+    /**
+     * Hiding the Combobox while on updating stage.
+     * */
     private void hideComboBoxForUpdatingData() {
         if(isUpdating) {
             productComboBox.hide();
@@ -211,6 +255,9 @@ public class PackagingOwnerController implements Initializable {
         }
     }
 
+    /**
+     * Handle on filter Product Combobox
+     * */
     private void productComboBoxFilter(ComboBox comboBox) {
         // Create the listener to filter the list as user enters search terms
         FilteredList<Product> dataFilteredList = new FilteredList<>(productObservableList, p-> true);
@@ -255,6 +302,9 @@ public class PackagingOwnerController implements Initializable {
         });
     }
 
+    /**
+     * Handle on filter Size Combobox
+     * */
     private void sizeComboBoxFilter(ComboBox comboBox) {
         // Create the listener to filter the list as user enters search terms
         FilteredList<Size> dataFilteredList = new FilteredList<>(sizeObservableList, p-> true);
@@ -299,6 +349,9 @@ public class PackagingOwnerController implements Initializable {
         });
     }
 
+    /**
+     * Handle on filter Packaging Combobox
+     * */
     private void packagingComboBoxFilter(TextField textField) {
         // Create the listener to filter the list as user enters search terms
         FilteredList<Packaging> dataFilteredList = new FilteredList<>(packagingObservableList, p-> true);
@@ -343,8 +396,10 @@ public class PackagingOwnerController implements Initializable {
         });
     }
 
-    private void loadView() {
-
+    /**
+     * Handle on searching data
+     * */
+    public void setSearchField() {
         ObservableList<PackagingOwnerString> modelObservableList = FXCollections.observableArrayList(packagingOwnerStringDAO.getList());
         FilteredList<PackagingOwnerString> modelFilteredList = new FilteredList<>(modelObservableList, p -> true);
 
@@ -373,8 +428,13 @@ public class PackagingOwnerController implements Initializable {
         SortedList<PackagingOwnerString> modelSortedList = new SortedList<>(modelFilteredList);
         modelSortedList.comparatorProperty().bind(dataTable.comparatorProperty());
 
-        dataTable.setEditable(true);
+        dataTable.setItems(modelSortedList);
+    }
 
+    /**
+     * Getting current row on click
+     * */
+    public void getCurrentRow() {
         TableView.TableViewSelectionModel<PackagingOwnerString> modelTableViewSelectionModel = dataTable.getSelectionModel();
         modelTableViewSelectionModel.setSelectionMode(SelectionMode.SINGLE);
 
@@ -386,6 +446,21 @@ public class PackagingOwnerController implements Initializable {
 //                System.out.println("Selection changed: " + change.getList());
             }
         });
+    }
+
+    /**
+     * Load the current view resources.
+     * <br>
+     * Contains: <br>
+     * - getCurrentRow() <br>
+     * - setSearchField() <br>
+     * - Controlling columns view and actions <br>
+     * - Implementing contextMenu on right click <br>
+     * */
+    private void loadView() {
+        dataTable.setEditable(true);
+
+        getCurrentRow();
 
         idColumn.setSortable(false);
         idColumn.setCellValueFactory(column -> new ReadOnlyObjectWrapper<Integer>(dataTable.getItems().indexOf(column.getValue())+1));
@@ -482,6 +557,9 @@ public class PackagingOwnerController implements Initializable {
         packagingColumn.setCellFactory(tc -> {
 
             TableCell<PackagingOwnerString, String> cell = new TableCell<>();
+
+            currentRow = cell.getIndex();
+            currentCell = cell.getText();
 
             Text text = new Text();
             ComboBox<Packaging> packagingComboBoxTableCell = new ComboBox<>();
@@ -612,6 +690,6 @@ public class PackagingOwnerController implements Initializable {
 
         utils.updateTableOnChanged(dataTable, currentRow, currentCell);
 
-        dataTable.setItems(modelSortedList);
+        setSearchField();
     }
 }

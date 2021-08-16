@@ -2,7 +2,6 @@ package fecoder.controllers;
 
 import fecoder.DAO.TypeDAO;
 import fecoder.models.Type;
-import fecoder.utils.Utils;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;

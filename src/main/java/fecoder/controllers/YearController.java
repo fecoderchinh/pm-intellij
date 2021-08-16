@@ -25,57 +25,88 @@ public class YearController implements Initializable {
     public Button clearButton;
     public TextField searchField;
     public Button reloadData;
-    public TableView<Year> dataTable;
-    public TableColumn<Year, Integer> idColumn;
-    public TableColumn<Year, String> yearColumn;
     public Label anchorLabel;
     public Label anchorData;
 
+    public TableView<Year> dataTable;
+    public TableColumn<Year, Integer> idColumn;
+    public TableColumn<Year, String> yearColumn;
+
     private final YearDAO yearDAO = new YearDAO();
 
+    /**
+     * All needed to start controller
+     * */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         loadView();
     }
 
+    /**
+     * Inserting button action
+     * */
     public void insertButton(ActionEvent actionEvent) {
         yearDAO.insert(yearField.getText());
         clearFields();
         reload();
     }
 
+    /**
+     * Updating button action
+     * */
     public void updateButton(ActionEvent actionEvent) {
         yearDAO.update(yearField.getText(), Integer.parseInt(anchorData.getText()));
         clearFields();
         reload();
     }
 
+    /**
+     * Handle event on clearing all inputs
+     * */
     public void clearButton(ActionEvent actionEvent) {
         clearFields();
     }
 
+    /**
+     * Handle event on reloading Window
+     * */
     public void reloadData(ActionEvent actionEvent) {
         reload();
     }
 
+    /**
+     * Reloading method
+     * */
     private void reload() {
         loadView();
         clearFields();
     }
 
+    /**
+     * Setting data for inputs
+     *
+     * @param year - the record's year
+     * @param id - the record's id
+     * */
     private void getItem(String year, int id) {
         yearField.setText(year);
         anchorLabel.setText("Current ID: ");
         anchorData.setText(""+id);
     }
 
+    /**
+     * Handle on clearing specific inputs
+     * */
     private void clearFields() {
         yearField.setText(null);
         anchorLabel.setText(null);
         anchorData.setText(null);
     }
 
-    public void loadView() {
+    /**
+     * Handle on searching data
+     * */
+    public void setSearchField() {
         ObservableList<Year> list = FXCollections.observableArrayList(yearDAO.getList());
         FilteredList<Year> filteredList = new FilteredList<>(list, p -> true);
 
@@ -93,8 +124,13 @@ public class YearController implements Initializable {
         SortedList<Year> sortedList = new SortedList<>(filteredList);
         sortedList.comparatorProperty().bind(dataTable.comparatorProperty());
 
-        dataTable.setEditable(true);
+        dataTable.setItems(sortedList);
+    }
 
+    /**
+     * Getting current row on click
+     * */
+    public void getCurrentRow(){
         TableView.TableViewSelectionModel<Year> selectionModel = dataTable.getSelectionModel();
         selectionModel.setSelectionMode(SelectionMode.SINGLE);
 
@@ -106,6 +142,21 @@ public class YearController implements Initializable {
 //                System.out.println("Selection changed: " + change.getList());
             }
         });
+    }
+
+    /**
+     * Load the current view resources.
+     * <br>
+     * Contains: <br>
+     * - getCurrentRow() <br>
+     * - setSearchField() <br>
+     * - Controlling columns view and actions <br>
+     * - Implementing contextMenu on right click <br>
+     * */
+    public void loadView() {
+        dataTable.setEditable(true);
+
+        getCurrentRow();
 
         idColumn.setSortable(false);
         idColumn.setCellValueFactory(column -> new ReadOnlyObjectWrapper<Integer>(dataTable.getItems().indexOf(column.getValue())+1));
@@ -163,6 +214,6 @@ public class YearController implements Initializable {
             return row;
         });
 
-        dataTable.setItems(sortedList);
+        setSearchField();
     }
 }
