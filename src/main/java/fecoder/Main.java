@@ -13,6 +13,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         Scene scene = new Scene(new StackPane());
+        scene.getStylesheets().add("style.css");
 
         LoginManager loginManager = new LoginManager(scene);
         loginManager.showLoginScreen();
