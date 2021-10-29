@@ -54,6 +54,80 @@ public class YearDAO {
     }
 
     /**
+     * Getting record data by its ID
+     *
+     * @param id - record id
+     * @return data
+     * */
+    public Year getDataByID(int id) {
+        Year data = new Year();
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement("select * from "+ tableName +" where id=?");
+            preparedStatement.setInt(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                data = createData(resultSet);
+            }
+            resultSet.close();
+            conn.close();
+        } catch (ClassNotFoundException | SQLException ex) {
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
+        }
+        return data;
+    }
+
+    /**
+     * Getting record data by its varchar
+     *
+     * @param year - record value
+     * @return data
+     * */
+    public Year getYear(String year) {
+        Year data = new Year();
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement("select * from "+ tableName +" where year=?");
+            preparedStatement.setString(1, year);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                data = createData(resultSet);
+            }
+            resultSet.close();
+            conn.close();
+        } catch (ClassNotFoundException | SQLException ex) {
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
+        }
+        return data;
+    }
+
+    /**
+     * Check if year exist
+     *
+     * @param value - the record's value
+     * @return boolean
+     * */
+    public boolean has(String value) {
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement("select * from "+ tableName +" where year=?");
+            preparedStatement.setString(1, value);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                return true;
+            }
+            resultSet.close();
+            conn.close();
+        } catch (ClassNotFoundException | SQLException ex) {
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
+        }
+        return false;
+    }
+
+    /**
      * Updating record data
      *
      * @param column - table's column

@@ -173,7 +173,9 @@ create table commands (
 drop tables commands;
 
 insert into commands (name, lot_number, po_number, year, customer_id, send_date, shipping_date, destination, note)
-values ('LSX 301', '125', '', 1, 1, '2021-05-14', '2021-07-10', 'Sydney, Úc', '' );
+values ('LSX 301', '125', '', 1, 1, str_to_date('14-05-2021','%d-%m-%Y'), str_to_date('10-07-2021','%d-%m-%Y'), 'Sydney, Úc', '' );
+
+update commands set name='LSX 301', lot_number='125', po_number='', year='1', customer_id='1', send_date=str_to_date('14-05-2021','%d-%m-%Y'), shipping_date=str_to_date('10-07-2021','%d-%m-%Y'), destination='Sydney, Úc', note='' where id=1;
 
 select * from commands;
 

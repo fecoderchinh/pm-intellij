@@ -7,15 +7,17 @@ public class PackagingOwnerString {
     private String size;
     private String packagingName;
     private int pack_qty;
+    private String unit;
 
     public PackagingOwnerString(){}
 
-    public PackagingOwnerString(int id, String productName, String size, String packagingName, int pack_qty){
+    public PackagingOwnerString(int id, String productName, String size, String packagingName, int pack_qty, String unit){
         this.id = id;
         this.productName = productName;
         this.size = size;
         this.packagingName = packagingName;
         this.pack_qty = pack_qty;
+        this.unit = unit;
     }
 
     public int getId() { return this.id; }
@@ -32,4 +34,7 @@ public class PackagingOwnerString {
 
     public int getPack_qty() { return this.pack_qty; }
     public void setPack_qty(int value) { this.pack_qty = value; }
+
+    public String getUnit() { return this.unit; }
+    public void setUnit(String value) { this.unit = value; }
 }

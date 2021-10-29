@@ -431,7 +431,7 @@ public class SupplierController implements Initializable {
         });
 
 //        suplierTable.setItems(list);
-        utils.updateTableOnChanged(dataTable, currentRow, currentCell);
+        utils.reloadTableViewOnChange(dataTable, currentRow, currentCell);
         setSearchField();
     }
 }

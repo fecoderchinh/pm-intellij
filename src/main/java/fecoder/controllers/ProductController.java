@@ -390,7 +390,7 @@ public class ProductController implements Initializable {
             return row ;
         });
 
-        utils.updateTableOnChanged(dataTable, currentRow, currentCell);
+        utils.reloadTableViewOnChange(dataTable, currentRow, currentCell);
         setSearchField();
     }
 }

@@ -16,6 +16,7 @@
                 <Button id="packagingManage" fx:id="packagingManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="BAO BÌ" />
                 <Button id="productManage" fx:id="productManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="MẶT HÀNG" />
                 <Button id="packagingOwner" fx:id="packagingOwner" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="QUẢN LÝ BAO BÌ" />
+                <Button id="commands" fx:id="commands" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="LỆNH SẢN XUẤT" />
             </children>
             <padding>
                 <Insets bottom="10" />

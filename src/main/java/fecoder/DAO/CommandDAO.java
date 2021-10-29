@@ -1,15 +1,15 @@
 package fecoder.DAO;
 
 import fecoder.connection.ConnectionUtils;
-import fecoder.models.Supplier;
+import fecoder.models.Command;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SupplierDAO {
-
-    private final String tableName = "supliers";
+public class CommandDAO {
+    
+    private final String tableName = "commands";
 
     /**
      * Representing a database
@@ -17,17 +17,19 @@ public class SupplierDAO {
      * @param resultSet - A table of data representing a database result set
      * @return data
      * */
-    private static Supplier createData(ResultSet resultSet) {
-        Supplier data = new Supplier();
+    private static Command createData(ResultSet resultSet) {
+        Command data = new Command();
         try {
             data.setId(resultSet.getInt("id"));
             data.setName(resultSet.getString("name"));
-            data.setAddress(resultSet.getString("address"));
-            data.setEmail(resultSet.getString("email"));
-            data.setDeputy(resultSet.getString("deputy"));
-            data.setPhone(resultSet.getString("phone"));
-            data.setFax(resultSet.getString("fax"));
-            data.setCode(resultSet.getString("code"));
+            data.setLotNumber(resultSet.getString("lot_number"));
+            data.setPurchaseOrder(resultSet.getString("po_number"));
+            data.setYear(resultSet.getInt("year"));
+            data.setCustomerId(resultSet.getInt("customer_id"));
+            data.setSendDate(resultSet.getString("send_date"));
+            data.setShippingDate(resultSet.getString("shipping_date"));
+            data.setDestination(resultSet.getString("destination"));
+            data.setNote(resultSet.getString("note"));
         } catch (SQLException ex) {
             jdbcDAO.printSQLException(ex);
         }
@@ -39,15 +41,15 @@ public class SupplierDAO {
      *
      * @return list
      * */
-    public List<Supplier> getList() {
-        List<Supplier> list = new ArrayList<>();
+    public List<Command> getList() {
+        List<Command> list = new ArrayList<>();
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             Statement statement = conn.createStatement();
             String selectAll = "Select * from "+tableName;
             ResultSet resultSet = statement.executeQuery(selectAll);
             while (resultSet.next()) {
-                Supplier data = createData(resultSet);
+                Command data = createData(resultSet);
                 list.add(data);
             }
             resultSet.close();
@@ -66,8 +68,8 @@ public class SupplierDAO {
      * @param id - record id
      * @return data
      * */
-    public Supplier getDataByID(int id) {
-        Supplier data = new Supplier();
+    public Command getDataByID(int id) {
+        Command data = new Command();
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             PreparedStatement preparedStatement = conn.prepareStatement("select * from "+ tableName +" where id=?");
@@ -91,8 +93,8 @@ public class SupplierDAO {
      * @param value - record's name
      * @return data
      * */
-    public Supplier getDataByName(String value) {
-        Supplier data = new Supplier();
+    public Command getDataByName(String value) {
+        Command data = new Command();
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             PreparedStatement preparedStatement = conn.prepareStatement("select * from "+ tableName +" where name=?");
@@ -136,13 +138,24 @@ public class SupplierDAO {
 
     /**
      * Updating record data
-     *
+     * 
      * @param column - table's column
      * @param value - column's new value
      * @param id - record's id
      * */
     public void updateData(String column, String value, int id) {
         jdbcDAO.updateSingleData(tableName, column, value, id);
+    }
+
+    /**
+     * Updating record integer data
+     *
+     * @param column - table's column
+     * @param value - column's new value
+     * @param id - record's id
+     * */
+    public void updateDataInteger(String column, int value, int id) {
+        jdbcDAO.updateSingleDataInteger(tableName, column, value, id);
     }
 
     /**
@@ -160,16 +173,16 @@ public class SupplierDAO {
      * @param id - the record's id
      * @return list
      * */
-    public List<Supplier> getRow(int id) {
+    public List<Command> getRow(int id) {
         String query = "select * from "+ tableName +" where id=?";
-        List<Supplier> list = new ArrayList<>();
+        List<Command> list = new ArrayList<>();
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
-                Supplier data = createData(resultSet);
+                Command data = createData(resultSet);
                 list.add(data);
             }
             resultSet.close();
@@ -185,58 +198,65 @@ public class SupplierDAO {
      * Updating all columns
      *
      * @param name - column name
-     * @param address - column address
-     * @param email - column email
-     * @param deputy - column deputy
-     * @param phone - column phone
-     * @param fax - column fax
-     * @param code - column code
+     * @param lotNumber - column lotNumber
+     * @param purchaseOrder - column purchaseOrder
+     * @param year - column year
+     * @param customerId - column customerId
+     * @param sendDate - column sendDate
+     * @param shippingDate - column shippingDate
+     * @param destination - column destination
+     * @param note - column note
      * @param id - column id
      * */
-    public void update(String name, String address, String email, String deputy, String phone, String fax, String code, int id) {
-        String updateQuery = "update "+ tableName +" set name=?, address=?, email=?, deputy=?, phone=?, fax=?, code=? where id=?";
-        preparedUpdateQuery(updateQuery, name, address, email, deputy, phone, fax, code, id);
+    public void update(String name, String lotNumber, String purchaseOrder, int year, int customerId, String sendDate, String shippingDate, String destination, String note, int id) {
+        String updateQuery = "update "+ tableName +" set name=?, lot_number=?, po_number=?, year=?, customer_id=?, send_date=str_to_date(?,'%d-%m-%Y'), shipping_date=str_to_date(?,'%d-%m-%Y'), destination=?, note=? where id=?";
+        preparedUpdateQuery(updateQuery, name, lotNumber, purchaseOrder, year, customerId, sendDate, shippingDate, destination, note, id);
     }
 
     /**
      * Inserting all columns
      *
      * @param name - column name
-     * @param address - column address
-     * @param email - column email
-     * @param deputy - column deputy
-     * @param phone - column phone
-     * @param fax - column fax
-     * @param code - column code
+     * @param lotNumber - column lotNumber
+     * @param purchaseOrder - column purchaseOrder
+     * @param year - column year
+     * @param customerId - column customerId
+     * @param sendDate - column sendDate
+     * @param shippingDate - column shippingDate
+     * @param destination - column destination
+     * @param note - column note
      * */
-    public void insert(String name, String address, String email, String deputy, String phone, String fax, String code) {
-        String insertQuery = "insert into "+ tableName +" (name, address, email, deputy, phone, fax, code) values(?,?,?,?,?,?,?)";
-        preparedInsertQuery(insertQuery, name, address, email, deputy, phone, fax, code);
+    public void insert(String name, String lotNumber, String purchaseOrder, int year, int customerId, String sendDate, String shippingDate, String destination, String note) {
+        String insertQuery = "insert into "+ tableName +" (name, lot_number, po_number, year, customer_id, send_date, shipping_date, destination, note) values(?,?,?,?,?,str_to_date(?,'%d-%m-%Y'),str_to_date(?,'%d-%m-%Y'),?,?)";
+        preparedInsertQuery(insertQuery, name, lotNumber, purchaseOrder, year, customerId, sendDate, shippingDate, destination, note);
     }
 
     /**
      * Preparing Insert Query before action
      *
-     * @param query - SQL query
      * @param name - column name
-     * @param address - column address
-     * @param email - column email
-     * @param deputy - column deputy
-     * @param phone - column phone
-     * @param fax - column fax
-     * @param code - column code
+     * @param lotNumber - column lotNumber
+     * @param purchaseOrder - column purchaseOrder
+     * @param year - column year
+     * @param customerId - column customerId
+     * @param sendDate - column sendDate
+     * @param shippingDate - column shippingDate
+     * @param destination - column destination
+     * @param note - column note
      * */
-    public void preparedInsertQuery(String query, String name, String address, String email, String deputy, String phone, String fax, String code) {
+    public void preparedInsertQuery(String query, String name, String lotNumber, String purchaseOrder, int year, int customerId, String sendDate, String shippingDate, String destination, String note) {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, name);
-            preparedStatement.setString(2, address);
-            preparedStatement.setString(3, email);
-            preparedStatement.setString(4, deputy);
-            preparedStatement.setString(5, phone);
-            preparedStatement.setString(6, fax);
-            preparedStatement.setString(7, code);
+            preparedStatement.setString(2, lotNumber);
+            preparedStatement.setString(3, purchaseOrder);
+            preparedStatement.setInt(4, year);
+            preparedStatement.setInt(5, customerId);
+            preparedStatement.setString(6, sendDate);
+            preparedStatement.setString(7, shippingDate);
+            preparedStatement.setString(8, destination);
+            preparedStatement.setString(9, note);
 
             preparedStatement.executeUpdate();
 
@@ -251,28 +271,31 @@ public class SupplierDAO {
     /**
      * Preparing Update Query before action
      *
-     * @param query - SQL query
      * @param name - column name
-     * @param address - column address
-     * @param email - column email
-     * @param deputy - column deputy
-     * @param phone - column phone
-     * @param fax - column fax
-     * @param code - column code
+     * @param lotNumber - column lotNumber
+     * @param purchaseOrder - column purchaseOrder
+     * @param year - column year
+     * @param customerId - column customerId
+     * @param sendDate - column sendDate
+     * @param shippingDate - column shippingDate
+     * @param destination - column destination
+     * @param note - column note
      * @param id - column id
      * */
-    public void preparedUpdateQuery(String query, String name, String address, String email, String deputy, String phone, String fax, String code, int id) {
+    public void preparedUpdateQuery(String query, String name, String lotNumber, String purchaseOrder, int year, int customerId, String sendDate, String shippingDate, String destination, String note, int id) {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, name);
-            preparedStatement.setString(2, address);
-            preparedStatement.setString(3, email);
-            preparedStatement.setString(4, deputy);
-            preparedStatement.setString(5, phone);
-            preparedStatement.setString(6, fax);
-            preparedStatement.setString(7, code);
-            preparedStatement.setInt(8, id);
+            preparedStatement.setString(2, lotNumber);
+            preparedStatement.setString(3, purchaseOrder);
+            preparedStatement.setInt(4, year);
+            preparedStatement.setInt(5, customerId);
+            preparedStatement.setString(6, sendDate);
+            preparedStatement.setString(7, shippingDate);
+            preparedStatement.setString(8, destination);
+            preparedStatement.setString(9, note);
+            preparedStatement.setInt(10, id);
 
             preparedStatement.executeUpdate();
 

@@ -10,15 +10,16 @@ public class MySQLConnUtils {
     public static Connection getMySQLConnection() throws SQLException,
             ClassNotFoundException {
         String hostName = "localhost";
+        String port = "3306";
 
         String dbName = "pmdb";
         String userName = "root";
-        String password = "root";
+        String password = "";
 
-        return getMySQLConnection(hostName, dbName, userName, password);
+        return getMySQLConnection(hostName, port, dbName, userName, password);
     }
 
-    public static Connection getMySQLConnection(String hostName, String dbName,
+    public static Connection getMySQLConnection(String hostName, String port, String dbName,
                                                 String userName, String password) throws SQLException,
             ClassNotFoundException {
         // Khai báo class Driver cho DB MySQL
@@ -29,7 +30,7 @@ public class MySQLConnUtils {
 
         // Cấu trúc URL Connection dành cho Oracle
         // Ví dụ: jdbc:mysql://localhost:3306/simplehr
-        String connectionURL = "jdbc:mysql://" + hostName + ":3306/" + dbName + "?characterEncoding=UTF-8&autoReconnect=true&useSSL=false";
+        String connectionURL = "jdbc:mysql://" + hostName + ":" + port + "/" + dbName + "?characterEncoding=UTF-8&autoReconnect=true&useSSL=false";
 
         return DriverManager.getConnection(connectionURL, userName,
                 password);

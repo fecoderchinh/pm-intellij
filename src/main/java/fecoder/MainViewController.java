@@ -24,6 +24,7 @@ public class MainViewController {
     public Button packagingManage;
     public Button productManage;
     public Button packagingOwner;
+    public Button commands;
     @FXML private Button logoutButton;
     @FXML private Label sessionLabel;
 
@@ -67,6 +68,10 @@ public class MainViewController {
 
         packagingOwner.setOnMouseClicked((event) -> {
             loadScene("/fxml/packaging_owner.fxml", "Quản lý bao bì trong mặt hàng");
+        });
+
+        commands.setOnMouseClicked((event) -> {
+            loadScene("/fxml/commands.fxml", "Lệnh sản xuất");
         });
     }
 
