@@ -1,8 +1,16 @@
+/*
+ * Đọc thêm:
+ * - Các mối quan hệ:
+ *   https://medium0.com/@emekadc/how-to-implement-one-to-one-one-to-many-and-many-to-many-relationships-when-designing-a-database-9da2de684710
+ * */
+
 show databases;
 
 create database pmdb character set = 'utf8';
 
 use pmdb;
+
+# drop database pmdb;
 
 show tables;
 
@@ -46,7 +54,7 @@ CREATE TABLE supliers
  unique key (code)
 );
 
-drop table supliers;
+# drop table supliers;
 
 insert into supliers (name, address, email, deputy, phone, fax, code)
 values (N'Công Ty TNHH SX-TM Tân Thuận Thành', N'Lô 43A, Đường số 2, KCN Tân Tạo, Quận Bình Tân, TP HCM', 'tanthuanthanh1@gmail.com', N'Mr. Trung', '0933 202 188', '', 'TTT'),
@@ -68,7 +76,7 @@ create table types (
 	unique key (name)
 );
 
-drop table types;
+-- drop table types;
 
 insert into types (name, unit)
 values (N'Thùng Carton', 'Cái'),
@@ -81,7 +89,9 @@ select * from types;
 
 /*
 =================================================
-table bao bì
+table mối quan hệ giữa bao bì, nhà cung cấp, loại
+- Bao bì chỉ thuộc 1 loại (Túi, Thùng, Hộp, ...)
+- Bao bì thuộc 1 nhà cung cấp, được phân biệt bằng code (mã bao bì mà nhà cung cấp qui định)
 */
 create table packaging(
 	id bigint unsigned not null auto_increment,
@@ -97,12 +107,12 @@ create table packaging(
 	note longtext,
 	price float,
 	primary key(id),
-	unique key(name, code),
+	unique key(code, type, suplier),
 	foreign key (suplier) references supliers(id),
 	foreign key (type) references types(id)
 );
 
-drop table packaging;
+-- drop table packaging;
 
 insert into packaging (name, specifications, dimension, suplier, type, minimum_order, stamped, code, main, note, price)
 values ('Túi PA trắng 20 x 33 rider 7.5', 'PAPE, dày 100mic, hàn biên 1cm, đuôi rider 7.5 cm (bao gồm đường hàn)', '20 x 33', 4, 3, 0, 0, '', 0, '', 752),
@@ -125,7 +135,7 @@ create table customers (
 	unique key (name)
 );
 
-drop table customers;
+-- drop table customers;
 
 insert into customers (name, note)
 values ('KB Seafood Company PTY LTD', '');
@@ -143,7 +153,7 @@ create table years(
 	unique key(year)
 );
 
-drop table years;
+-- drop table years;
 
 insert into years(year)
 values ('2020'), ('2021');
@@ -152,7 +162,10 @@ select * from years;
 
 /*
 =================================================
-table lệnh sản xuất
+table mối quan hệ giữa lệnh sản xuất, năm, khách hàng
+- Số lệnh sản xuất là duy nhất theo từng năm.
+- Một lệnh sản xuất chỉ thuộc về một khách hàng.
+- Khách hàng có thể yêu cầu một hoặc nhiều lệnh sản xuất.
 */
 create table commands (
 	id bigint unsigned not null auto_increment,
@@ -166,11 +179,12 @@ create table commands (
 	destination varchar(250),
 	note longtext,
 	primary key (id),
+	unique key(year, customer_id),
 	foreign key (year) references years(id),
 	foreign key (customer_id) references customers(id)
 );
 
-drop tables commands;
+-- drop tables commands;
 
 insert into commands (name, lot_number, po_number, year, customer_id, send_date, shipping_date, destination, note)
 values ('LSX 301', '125', '', 1, 1, str_to_date('14-05-2021','%d-%m-%Y'), str_to_date('10-07-2021','%d-%m-%Y'), 'Sydney, Úc', '' );
@@ -181,7 +195,7 @@ select * from commands;
 
 /*
 =================================================
-table size tôm
+table sizes
 */
 create table sizes(
 	id bigint unsigned not null auto_increment,
@@ -190,7 +204,7 @@ create table sizes(
 	unique key (size)
 );
 
-drop table sizes;
+-- drop table sizes;
 
 insert into sizes(size)
 values ('Không phân biệt'), ('61/70'), ('16/20'), ('31/40');
@@ -199,7 +213,9 @@ select * from sizes;
 
 /*
 =================================================
-table size tôm bao bì
+table mối quan hệ giữa size và bao bì đóng gói
+- Bao bì có thể đóng gói một hoặc nhiều size
+- Size cũng thuộc một hoặc nhiều loại bao bì
 */
 create table size_packaging (
 	id bigint unsigned not null auto_increment,
@@ -210,7 +226,7 @@ create table size_packaging (
 	foreign key (packaging_id) references packaging(id)
 );
 
-drop table size_packaging;
+-- drop table size_packaging;
 
 /*
 =================================================
@@ -225,7 +241,7 @@ create table products(
 	primary key (id)
 );
 
-drop table products;
+-- drop table products;
 
 insert into products (name, description, specification, note)
 values ('Tôm Thẻ CPD Xiên Que Tỏi 250g x 20 - SGM', 'Tôm Vannamei PD Xiên Que, Tẩm Marinade Tỏi, Luộc', '72% tôm : 28% marinade', 'mô tả ngắn');
@@ -234,7 +250,11 @@ select * from products;
 
 /*
 =================================================
-table mặt hàng và size
+table mối quan hệ giữa bao bì, mặt hàng, size
+- Một mặt hàng có 1 hoặc nhiều size
+- Một size cũng thuộc 1 hoặc nhiều mặt hàng
+- Một loại bao bì có thể thuộc 1 hoặc nhiều mặt hàng
+- Một mặt hàng có thể có 1 hoặc nhiều loại bao bì
 */
 create table packaging_product_size (
 	id bigint unsigned not null auto_increment,
@@ -248,22 +268,26 @@ create table packaging_product_size (
 	foreign key (packaging_id) references packaging(id)
 );
 
-drop table packaging_product_size;
-
-select * from packaging_product_size;
+-- drop table packaging_product_size;
 
 insert into packaging_product_size (product_id, size_id, packaging_id, pack_qty)
 values (1, 2, 1, 20), (1, 2, 2, 100), (1, 2, 3, 20), (1, 2, 4, 1);
 
 select * from packaging_product_size;
 
+/*
+ * Đoạn dưới dùng cho packagingOwner 
+ * (chuyển đổi dữ liệu thành string để tiện cho việc quản lý trên hệ thống)
+ * */
 select a.id as id, b.name as packagingName, c.name as productName, d.size as size, a.pack_qty as pack_qty
 from packaging_product_size a, packaging b, products c, sizes d
 where a.packaging_id = b.id and a.product_id = c.id and a.size_id = d.id
 order by c.name;
 /*
 =================================================
-table số lượng đặt
+table mối quan hệ giữa mặt hàng và lệnh sản xuất
+- Một mặt hàng có thuộc nhiều lệnh sản xuất
+- Một lệnh sản xuất cũng có thể gồm nhiều mặt hàng
 */
 create table quantity(
 	id bigint unsigned not null auto_increment,
@@ -275,7 +299,7 @@ create table quantity(
 	foreign key (command_id) references commands(id)
 );
 
-drop table quantity;
+-- drop table quantity;
 
 insert into quantity (qty, product_id, command_id)
 values (105, 1, 1);

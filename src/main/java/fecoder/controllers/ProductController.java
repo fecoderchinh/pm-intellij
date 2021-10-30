@@ -1,6 +1,7 @@
 package fecoder.controllers;
 
 import fecoder.DAO.ProductDAO;
+import fecoder.Main;
 import fecoder.models.Product;
 import fecoder.utils.Utils;
 import javafx.beans.binding.Bindings;
@@ -16,6 +17,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.Optional;
@@ -212,6 +214,7 @@ public class ProductController implements Initializable {
      * - Implementing contextMenu on right click <br>
      * */
     private void loadView() {
+
         dataTable.setEditable(true);
 
         getCurrentRow();
@@ -335,6 +338,7 @@ public class ProductController implements Initializable {
             final ContextMenu contextMenu = new ContextMenu();
             final MenuItem viewItem = new MenuItem("Chi tiết");
             final MenuItem editItem = new MenuItem("Cập nhật");
+            final MenuItem managePackaging = new MenuItem("Chi tiết bao bì");
             final MenuItem removeItem = new MenuItem("Xóa dòng");
 
             viewItem.setOnAction((ActionEvent event) -> {
@@ -366,6 +370,12 @@ public class ProductController implements Initializable {
                 getData(product);
             });
             contextMenu.getItems().add(editItem);
+
+            managePackaging.setOnAction((ActionEvent event) -> {
+                Product product = dataTable.getSelectionModel().getSelectedItem();
+                utils.loadSingleProductScene("/fxml/packaging_owner.fxml", product.getName(), product);
+            });
+            contextMenu.getItems().add(managePackaging);
 
             removeItem.setOnAction((ActionEvent event) -> {
                 Product product = dataTable.getSelectionModel().getSelectedItem();

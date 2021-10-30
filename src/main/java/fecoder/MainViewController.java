@@ -1,18 +1,11 @@
 package fecoder;
 
 import fecoder.login.LoginManager;
+import fecoder.utils.Utils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class MainViewController {
     public Button newWindowButton;
@@ -28,6 +21,8 @@ public class MainViewController {
     @FXML private Button logoutButton;
     @FXML private Label sessionLabel;
 
+    Utils utils = new Utils();
+
     public void initialize() {}
 
     public void initSessionID(final LoginManager loginManager, String sessionID) {
@@ -39,60 +34,39 @@ public class MainViewController {
         });
 
         suplierManage.setOnMouseClicked((event) -> {
-            loadScene("/fxml/suplier.fxml", "Quản Lý Danh Sách Nhà Cung Cấp");
+            utils.loadScene("/fxml/suplier.fxml", "Quản Lý Danh Sách Nhà Cung Cấp");
         });
 
         packagingTypeManage.setOnMouseClicked((event) -> {
-            loadScene("/fxml/type.fxml", "Quản Lý Loại Bao Bì");
+            utils.loadScene("/fxml/type.fxml", "Quản Lý Loại Bao Bì");
         });
 
         yearManage.setOnMouseClicked((event) -> {
-            loadScene("/fxml/year.fxml", "Quản Lý Loại Kích Thước");
+            utils.loadScene("/fxml/year.fxml", "Quản Lý Loại Kích Thước");
         });
 
         sizeManage.setOnMouseClicked((event) -> {
-            loadScene("/fxml/size.fxml", "Quản lý size tôm");
+            utils.loadScene("/fxml/size.fxml", "Quản lý size tôm");
         });
 
         customerManage.setOnMouseClicked((event) -> {
-            loadScene("/fxml/customer.fxml", "Quản lý khách hàng");
+            utils.loadScene("/fxml/customer.fxml", "Quản lý khách hàng");
         });
 
         packagingManage.setOnMouseClicked((event) -> {
-            loadScene("/fxml/packaging.fxml", "Quản lý bao bì");
+            utils.loadScene("/fxml/packaging.fxml", "Quản lý bao bì");
         });
 
         productManage.setOnMouseClicked((event) -> {
-            loadScene("/fxml/product.fxml", "Quản lý mặt hàng");
+            utils.loadScene("/fxml/product.fxml", "Quản lý mặt hàng");
         });
 
         packagingOwner.setOnMouseClicked((event) -> {
-            loadScene("/fxml/packaging_owner.fxml", "Quản lý bao bì trong mặt hàng");
+            utils.loadScene("/fxml/packaging_owner.fxml", "Quản lý bao bì trong mặt hàng");
         });
 
         commands.setOnMouseClicked((event) -> {
-            loadScene("/fxml/commands.fxml", "Lệnh sản xuất");
+            utils.loadScene("/fxml/commands.fxml", "Lệnh sản xuất");
         });
-    }
-
-    private void loadScene(String resource, String title) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource(resource));
-            /*
-             * if "fx:controller" is not set in fxml
-             * fxmlLoader.setController(NewWindowController);
-             */
-            Scene scene = new Scene(fxmlLoader.load());
-            Stage stage = new Stage();
-            stage.setTitle(title);
-            stage.setScene(scene);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setResizable(false);
-            stage.show();
-        } catch (IOException e) {
-            Logger logger = Logger.getLogger(getClass().getName());
-            logger.log(Level.SEVERE, "Failed to create new Window.", e);
-        }
     }
 }

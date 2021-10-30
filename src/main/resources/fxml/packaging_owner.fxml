@@ -7,12 +7,12 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fecoder.controllers.PackagingOwnerController">
+<BorderPane fx:id="packagingOwnerBorderPane" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fecoder.controllers.PackagingOwnerController">
 
     <top>
         <VBox spacing="10">
             <HBox spacing="10">
-                <Label text="QUẢN LÝ BAO BÌ CỦA TỪNG MẶT HÀNG">
+                <Label fx:id="mainLabel" text="QUẢN LÝ BAO BÌ CỦA TỪNG MẶT HÀNG">
                     <font>
                         <Font size="28.0" />
                     </font>

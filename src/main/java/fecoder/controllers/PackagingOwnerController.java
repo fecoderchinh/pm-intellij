@@ -13,15 +13,20 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.util.Callback;
+import javafx.util.converter.IntegerStringConverter;
 
 import java.net.URL;
 import java.util.Optional;
@@ -37,6 +42,7 @@ public class PackagingOwnerController implements Initializable {
     public Button reloadData;
     public Label anchorLabel;
     public Label anchorData;
+    public Label mainLabel;
     public ComboBox<Product> productComboBox;
     public ComboBox<Size> sizeComboBox;
     public ComboBox<Packaging> packagingComboBox;
@@ -65,6 +71,8 @@ public class PackagingOwnerController implements Initializable {
     private int currentRow;
     private String currentCell;
     private final Utils utils = new Utils();
+
+    private Product product;
 
     /**
      * All needed to start controller
@@ -448,6 +456,14 @@ public class PackagingOwnerController implements Initializable {
         });
     }
 
+    /*
+    * Passing data between Product Controller and PackagingController
+    * */
+    public void setProductData(Product product) {
+        this.product = product;
+        System.out.println(this.product.getId());
+    }
+
     /**
      * Load the current view resources.
      * <br>
@@ -458,6 +474,7 @@ public class PackagingOwnerController implements Initializable {
      * - Implementing contextMenu on right click <br>
      * */
     private void loadView() {
+
         dataTable.setEditable(true);
 
         getCurrentRow();
@@ -622,6 +639,15 @@ public class PackagingOwnerController implements Initializable {
             });
 
             return cell ;
+        });
+
+        packingQtyColumn.setCellValueFactory(new PropertyValueFactory<>("pack_qty"));
+        packingQtyColumn.setCellFactory(TextFieldTableCell.<PackagingOwnerString, Integer>forTableColumn(new IntegerStringConverter()));
+        packingQtyColumn.setOnEditCommit(event -> {
+            final Integer data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
+            ((PackagingOwnerString) event.getTableView().getItems().get(event.getTablePosition().getRow())).setPack_qty(data);
+            packagingOwnerDAO.updateDataInteger("pack_qty", data, event.getRowValue().getId());
+            dataTable.refresh();
         });
 
         dataTable.setRowFactory((TableView<PackagingOwnerString> tableView) -> {
