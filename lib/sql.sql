@@ -207,7 +207,7 @@ create table sizes(
 -- drop table sizes;
 
 insert into sizes(size)
-values ('Không phân biệt'), ('61/70'), ('16/20'), ('31/40');
+values ('61/70'), ('16/20'), ('31/40');
 
 select * from sizes;
 
@@ -285,23 +285,26 @@ where a.packaging_id = b.id and a.product_id = c.id and a.size_id = d.id
 order by c.name;
 /*
 =================================================
-table mối quan hệ giữa mặt hàng và lệnh sản xuất
-- Một mặt hàng có thuộc nhiều lệnh sản xuất
-- Một lệnh sản xuất cũng có thể gồm nhiều mặt hàng
+table mối quan hệ giữa lệnh sản xuất, đơn hàng, mặt hàng
+- Một đơn hàng có thể gồm 1 hoặc nhiều lệnh sản xuất
+- Một lệnh sản xuất thuộc 1 hoặc nhiều đơn hàng
+- Một đơn hàng gồm 1 hoặc nhiều mặt hàng
 */
-create table quantity(
+create table command_product_order(
 	id bigint unsigned not null auto_increment,
-	qty int not null default 0,
-	product_id bigint unsigned,
+	order_name varchar(250) not null,
 	command_id bigint unsigned,
+	product_id bigint unsigned,
+	qty int not null default 0,
+	note longtext,
 	primary key (id),
 	foreign key (product_id) references products(id),
 	foreign key (command_id) references commands(id)
 );
 
--- drop table quantity;
+drop table command_product_order;
 
-insert into quantity (qty, product_id, command_id)
-values (105, 1, 1);
+insert into command_product_order (order_name, command_id, product_id, qty, note)
+values ("LAN 1", 1, 1, 500, );
 
 select * from quantity;

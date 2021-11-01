@@ -60,4 +60,34 @@ public class PackagingOwnerStringDAO {
         }
         return list;
     }
+
+    /**
+     * Getting all records of table
+     *
+     * @param productName the name of product
+     *
+     * @return list
+     * */
+    public List<PackagingOwnerString> getListByName(String productName) {
+        List<PackagingOwnerString> list = new ArrayList<>();
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            Statement statement = conn.createStatement();
+            String selectAll =  "select a.id as id, b.name as packagingName, c.name as productName, d.size as size, a.pack_qty as pack_qty, e.unit as unit " +
+                    "from packaging_product_size a, packaging b, products c, sizes d, types e " +
+                    "where a.packaging_id = b.id and a.product_id = c.id and a.size_id = d.id and b.type = e.id  and c.name = '" + productName +"' " +
+                    "order by c.name";
+            ResultSet resultSet = statement.executeQuery(selectAll);
+            while(resultSet.next()) {
+                PackagingOwnerString data = createData(resultSet);
+                list.add(data);
+            }
+            resultSet.close();
+            conn.close();
+        } catch (ClassNotFoundException | SQLException ex) {
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
+        }
+        return list;
+    }
 }

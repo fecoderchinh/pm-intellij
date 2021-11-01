@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fecoder.controllers.PackagingOwnerController">
+<BorderPane prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fecoder.controllers.ProductPackagingController">
 
     <top>
         <VBox spacing="10">
@@ -28,11 +28,6 @@
         <VBox prefHeight="668.0" prefWidth="284.0" spacing="10">
             <HBox prefWidth="340" spacing="10">
                 <VBox spacing="14">
-                    <Label text="Mặt hàng">
-                        <font>
-                            <Font size="14.0" />
-                        </font>
-                    </Label>
                     <Label text="Size">
                         <font>
                             <Font size="14.0" />
@@ -50,11 +45,6 @@
                     </Label>
                 </VBox>
                 <VBox prefHeight="4.0" prefWidth="154.0" spacing="10">
-                    <ComboBox fx:id="productComboBox" prefHeight="26.0" prefWidth="184.0">
-                        <items>
-                            <FXCollections fx:factory="observableArrayList"/>
-                        </items>
-                    </ComboBox>
                     <ComboBox fx:id="sizeComboBox" prefHeight="26.0" prefWidth="355.0">
                         <items>
                             <FXCollections fx:factory="observableArrayList"/>
@@ -88,26 +78,24 @@
                     <ComboBox fx:id="searchComboBox">
                         <items>
                             <FXCollections fx:factory="observableArrayList">
-                                <String fx:value="Tên mặt hàng" />
                                 <String fx:value="Size" />
                                 <String fx:value="Bao bì" />
                             </FXCollections>
                         </items>
                         <value>
-                            <String fx:value="Tên mặt hàng" />
+                            <String fx:value="Bao bì" />
                         </value>
                     </ComboBox>
                     <TextField fx:id="searchField" />
                 </HBox>
                 <HBox alignment="BASELINE_RIGHT" prefWidth="290" spacing="10">
-                    <Button id="reloadData" fx:id="reloadData" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#reloadData" text="TẢI LẠI TRANG" />
+                    <Button id="reloadData" onAction="#reloadData" fx:id="reloadData" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="TẢI LẠI TRANG" />
                 </HBox>
             </HBox>
             <ScrollPane prefHeight="655.0" prefWidth="770.0">
                 <TableView fx:id="dataTable" editable="true" maxWidth="1.7976931348623157E308" prefHeight="652.0" prefWidth="854.0">
                     <columns>
                         <TableColumn fx:id="idColumn" prefWidth="50.0" text="STT" />
-                        <TableColumn fx:id="productColumn" prefWidth="200.0" text="Tên mặt hàng" />
                         <TableColumn fx:id="sizeColumn" prefWidth="200.0" text="Size" />
                         <TableColumn fx:id="packagingColumn" prefWidth="250.0" text="Bao bì" />
                         <TableColumn fx:id="packingQtyColumn" prefWidth="250.0" text="Số lượng /thùng" />

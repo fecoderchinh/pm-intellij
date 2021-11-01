@@ -87,7 +87,7 @@ public class SizeDAO {
         Size data = new Size();
         try {
             Connection conn = ConnectionUtils.getMyConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement("select * from "+ tableName +" where id=?");
+            PreparedStatement preparedStatement = conn.prepareStatement("select id,size from "+ tableName +" where id=?");
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {

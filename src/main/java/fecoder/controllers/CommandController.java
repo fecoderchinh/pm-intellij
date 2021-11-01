@@ -385,7 +385,7 @@ public class CommandController implements Initializable {
 
             removeItem.setOnAction((ActionEvent event) -> {
                 Command command = dataTable.getSelectionModel().getSelectedItem();
-                Alert alert = utils.alert("del", Alert.AlertType.CONFIRMATION, command.getName());
+                Alert alert = utils.alert("del", Alert.AlertType.CONFIRMATION, "Xóa: "+command.getName(), null);
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (alert.getAlertType() == Alert.AlertType.CONFIRMATION && result.get() == ButtonType.OK){

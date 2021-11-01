@@ -1,6 +1,7 @@
 package fecoder.utils;
 
 import fecoder.controllers.PackagingOwnerController;
+import fecoder.controllers.ProductPackagingController;
 import fecoder.models.Product;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -152,6 +153,19 @@ public class Utils {
             comboBox.getSelectionModel().select(value);
         }
         comboBox.hide();
+    }
+
+    /**
+     * Handle on getting ComboBox value
+     *
+     * @param comboBox ComboBox id
+     * */
+    public String getComboBoxValue(ComboBox comboBox) {
+        if(comboBox.isEditable()) {
+            return comboBox.getEditor().getText();
+        } else {
+            return comboBox.getValue()+"";
+        }
     }
 
     /**
@@ -332,33 +346,43 @@ public class Utils {
      *
      * @param type type of alert
      * @param alertType style of alert (such as: CONFIRMATION, ERROR, etc)
-     * @param data string data
+     * @param alertLabel alert title
+     * @param alertDesc alert description
      * */
-    public Alert alert(String type, Alert.AlertType alertType, String data) {
+    public Alert alert(String type, Alert.AlertType alertType, String alertLabel, String alertDesc) {
         Alert alert;
         String typeLabel = null, typeDesc = null;
 
         switch (type) {
             case "del":
             case "delete":
-                typeLabel = "Xóa ";
-                typeDesc = "Lưu ý: Dữ liệu sẽ không thể khôi phục lại sau khi xóa, bạn có chắc muốn tiếp tục?";
+                typeLabel = alertLabel != null ? alertLabel : "Xóa ";
+                typeDesc = alertDesc != null ? alertDesc : "Lưu ý: Dữ liệu sẽ không thể khôi phục lại sau khi xóa, bạn có chắc muốn tiếp tục?";
                 alert = new Alert(alertType);
                 alert.setTitle("Thông báo!");
-                alert.setHeaderText(typeLabel+data);
+                alert.setHeaderText(typeLabel);
                 alert.setContentText(typeDesc);
                                 break;
             case "update":
             case "edit":
-                typeLabel = "Cập nhật thông tin cho ";
-                typeDesc = "Nhấn OK để xác nhận thực hiện hành động.";
+                typeLabel = alertLabel != null ? alertLabel : "Cập nhật thông tin cho ";
+                typeDesc = alertDesc != null ? alertDesc : "Nhấn OK để xác nhận thực hiện hành động.";
                 alert = new Alert(alertType);
                 alert.setTitle("Thông báo!");
-                alert.setHeaderText(typeLabel+data);
+                alert.setHeaderText(typeLabel);
+                alert.setContentText(typeDesc);
+                break;
+            case "err":
+            case "error":
+                typeLabel = alertLabel != null ? alertLabel : "Đã xảy ra lỗi!";
+                typeDesc = alertDesc != null ? alertDesc : "Đã xảy ra lỗi trong quá trình nhập.";
+                alert = new Alert(alertType);
+                alert.setTitle("Lỗi!");
+                alert.setHeaderText(typeLabel);
                 alert.setContentText(typeDesc);
                 break;
             default:
-                typeLabel = "Không xác định được hành động.";
+                typeLabel = alertLabel != null ? alertLabel : "Không xác định được hành động.";
                 alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Thông báo!");
                 alert.setHeaderText(typeLabel);
@@ -390,37 +414,6 @@ public class Utils {
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setResizable(false);
             stage.show();
-
-        } catch (IOException e) {
-            Logger logger = Logger.getLogger(getClass().getName());
-            logger.log(Level.SEVERE, "Failed to create new Window.", e);
-        }
-    }
-
-    /**
-     * Loading scene utility
-     *
-     * @param resource resource path
-     * @param title scene title
-     * @param product product data
-     * */
-    public void loadSingleProductScene(String resource, String title, Product product) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource(resource));
-            /*
-             * if "fx:controller" is not set in fxml
-             * fxmlLoader.setController(NewWindowController);
-             */
-            Scene scene = new Scene(fxmlLoader.load());
-            Stage stage = new Stage();
-            stage.setTitle(title);
-            stage.setScene(scene);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setResizable(false);
-            stage.show();
-            PackagingOwnerController packagingOwnerController = fxmlLoader.<PackagingOwnerController>getController();
-            packagingOwnerController.setProductData(product);
 
         } catch (IOException e) {
             Logger logger = Logger.getLogger(getClass().getName());

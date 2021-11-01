@@ -12,16 +12,22 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ProductController implements Initializable {
     public TextField nameField;
@@ -205,6 +211,37 @@ public class ProductController implements Initializable {
     }
 
     /**
+     * Loading scene utility
+     *
+     * @param resource resource path
+     * @param title scene title
+     * @param product product data
+     * */
+    private void loadSingleProductScene(String resource, String title, Product product) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource(resource));
+            /*
+             * if "fx:controller" is not set in fxml
+             * fxmlLoader.setController(NewWindowController);
+             */
+            Scene scene = new Scene(fxmlLoader.load());
+            Stage stage = new Stage();
+            stage.setTitle(title);
+            stage.setScene(scene);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setResizable(false);
+            stage.show();
+            ProductPackagingController productPackagingController = fxmlLoader.<ProductPackagingController>getController();
+            productPackagingController.setProductData(product);
+
+        } catch (IOException e) {
+            Logger logger = Logger.getLogger(getClass().getName());
+            logger.log(Level.SEVERE, "Failed to create new Window.", e);
+        }
+    }
+
+    /**
      * Load the current view resources.
      * <br>
      * Contains: <br>
@@ -338,7 +375,7 @@ public class ProductController implements Initializable {
             final ContextMenu contextMenu = new ContextMenu();
             final MenuItem viewItem = new MenuItem("Chi tiết");
             final MenuItem editItem = new MenuItem("Cập nhật");
-            final MenuItem managePackaging = new MenuItem("Chi tiết bao bì");
+            final MenuItem managePackaging = new MenuItem("List bao bì");
             final MenuItem removeItem = new MenuItem("Xóa dòng");
 
             viewItem.setOnAction((ActionEvent event) -> {
@@ -373,7 +410,7 @@ public class ProductController implements Initializable {
 
             managePackaging.setOnAction((ActionEvent event) -> {
                 Product product = dataTable.getSelectionModel().getSelectedItem();
-                utils.loadSingleProductScene("/fxml/packaging_owner.fxml", product.getName(), product);
+                loadSingleProductScene("/fxml/product_packaging.fxml", "Bao bì cho: "+product.getName(), product);
             });
             contextMenu.getItems().add(managePackaging);
 

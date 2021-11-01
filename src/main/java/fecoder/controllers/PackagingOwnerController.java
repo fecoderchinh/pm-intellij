@@ -456,7 +456,7 @@ public class PackagingOwnerController implements Initializable {
         });
     }
 
-    /*
+    /**
     * Passing data between Product Controller and PackagingController
     * */
     public void setProductData(Product product) {
