@@ -66,7 +66,7 @@ public class MainViewController {
         });
 
         commands.setOnMouseClicked((event) -> {
-            utils.loadScene("/fxml/commands.fxml", "Lệnh sản xuất");
+            utils.loadScene("/fxml/work_order.fxml", "Lệnh sản xuất");
         });
     }
 }

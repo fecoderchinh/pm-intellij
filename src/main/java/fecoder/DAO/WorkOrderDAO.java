@@ -1,15 +1,15 @@
 package fecoder.DAO;
 
 import fecoder.connection.ConnectionUtils;
-import fecoder.models.Command;
+import fecoder.models.WorkOrder;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommandDAO {
+public class WorkOrderDAO {
     
-    private final String tableName = "commands";
+    private final String tableName = "work_order";
 
     /**
      * Representing a database
@@ -17,8 +17,8 @@ public class CommandDAO {
      * @param resultSet - A table of data representing a database result set
      * @return data
      * */
-    private static Command createData(ResultSet resultSet) {
-        Command data = new Command();
+    private static WorkOrder createData(ResultSet resultSet) {
+        WorkOrder data = new WorkOrder();
         try {
             data.setId(resultSet.getInt("id"));
             data.setName(resultSet.getString("name"));
@@ -41,15 +41,15 @@ public class CommandDAO {
      *
      * @return list
      * */
-    public List<Command> getList() {
-        List<Command> list = new ArrayList<>();
+    public List<WorkOrder> getList() {
+        List<WorkOrder> list = new ArrayList<>();
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             Statement statement = conn.createStatement();
             String selectAll = "Select * from "+tableName;
             ResultSet resultSet = statement.executeQuery(selectAll);
             while (resultSet.next()) {
-                Command data = createData(resultSet);
+                WorkOrder data = createData(resultSet);
                 list.add(data);
             }
             resultSet.close();
@@ -68,8 +68,8 @@ public class CommandDAO {
      * @param id - record id
      * @return data
      * */
-    public Command getDataByID(int id) {
-        Command data = new Command();
+    public WorkOrder getDataByID(int id) {
+        WorkOrder data = new WorkOrder();
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             PreparedStatement preparedStatement = conn.prepareStatement("select * from "+ tableName +" where id=?");
@@ -93,8 +93,8 @@ public class CommandDAO {
      * @param value - record's name
      * @return data
      * */
-    public Command getDataByName(String value) {
-        Command data = new Command();
+    public WorkOrder getDataByName(String value) {
+        WorkOrder data = new WorkOrder();
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             PreparedStatement preparedStatement = conn.prepareStatement("select * from "+ tableName +" where name=?");
@@ -173,16 +173,16 @@ public class CommandDAO {
      * @param id - the record's id
      * @return list
      * */
-    public List<Command> getRow(int id) {
+    public List<WorkOrder> getRow(int id) {
         String query = "select * from "+ tableName +" where id=?";
-        List<Command> list = new ArrayList<>();
+        List<WorkOrder> list = new ArrayList<>();
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
-                Command data = createData(resultSet);
+                WorkOrder data = createData(resultSet);
                 list.add(data);
             }
             resultSet.close();

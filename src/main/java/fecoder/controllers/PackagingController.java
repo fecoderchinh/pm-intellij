@@ -55,6 +55,7 @@ public class PackagingController implements Initializable {
     public CheckBox mainField;
     public Label anchorLabel;
     public Label anchorData;
+    public TextField stockField;
 
     public TableView<Packaging> dataTable;
     public TableColumn<Packaging, Integer> idColumn;
@@ -69,6 +70,7 @@ public class PackagingController implements Initializable {
     public TableColumn<Packaging, String> codeColumn;
     public TableColumn<Packaging, Float> priceColumn;
     public TableColumn<Packaging, String> noteColumn;
+    public TableColumn<Packaging, Float> stockColumn;
 
     private final TypeDAO typeDAO = new TypeDAO();
     private final SupplierDAO supplierDAO = new SupplierDAO();
@@ -103,7 +105,8 @@ public class PackagingController implements Initializable {
                 codeField.getText(),
                 mainField.isSelected(),
                 noteField.getText(),
-                Float.parseFloat(priceField.getText())
+                Float.parseFloat(priceField.getText()),
+                Float.parseFloat(stockField.getText())
         );
         clearFields();
         reload();
@@ -125,6 +128,7 @@ public class PackagingController implements Initializable {
                 mainField.isSelected(),
                 noteField.getText(),
                 Float.parseFloat(priceField.getText()),
+                Float.parseFloat(stockField.getText()),
                 Integer.parseInt(anchorData.getText())
         );
         clearFields();
@@ -157,21 +161,22 @@ public class PackagingController implements Initializable {
      * Handle event on clearing all inputs
      * */
     private void clearFields() {
-        nameField.setText(null);
-        specificationField.setText(null);
-        dimensionField.setText(null);
+        nameField.setText("");
+        specificationField.setText("");
+        dimensionField.setText("");
         if(!suplierComboBox.getItems().isEmpty()) {
             suplierComboBox.getSelectionModel().clearSelection();
         }
         if(!typeComboBox.getItems().isEmpty()) {
             typeComboBox.getSelectionModel().clearSelection();
         }
-        minimumField.setText(null);
+        minimumField.setText("");
         stampedField.setSelected(false);
-        codeField.setText(null);
+        codeField.setText("");
         mainField.setSelected(false);
-        noteField.setText(null);
-        priceField.setText(null);
+        noteField.setText("");
+        priceField.setText("");
+        stockField.setText("");
         anchorLabel.setText(null);
         anchorData.setText(null);
     }
@@ -193,6 +198,7 @@ public class PackagingController implements Initializable {
         mainField.selectedProperty().bindBidirectional(new SimpleBooleanProperty(packaging.isMain()));
         noteField.setText(packaging.getNote());
         priceField.setText(packaging.getPrice()+"");
+        stockField.setText(packaging.getStock()+"");
         anchorLabel.setText("Current ID: ");
         anchorData.setText(""+packaging.getId());
     }
@@ -263,7 +269,7 @@ public class PackagingController implements Initializable {
 
         searchComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if(newVal != null) {
-                searchField.setText(null);
+                searchField.setText("");
             }
         });
 
@@ -414,6 +420,15 @@ public class PackagingController implements Initializable {
             final float data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
             ((Packaging) event.getTableView().getItems().get(event.getTablePosition().getRow())).setPrice(data);
             packagingDAO.updateDataFloat("price", data, event.getRowValue().getId());
+            dataTable.refresh();
+        });
+
+        stockColumn.setCellValueFactory(new PropertyValueFactory<>("stock"));
+        stockColumn.setCellFactory(TextFieldTableCell.<Packaging, Float>forTableColumn(new FloatStringConverter()));
+        stockColumn.setOnEditCommit(event -> {
+            final float data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
+            ((Packaging) event.getTableView().getItems().get(event.getTablePosition().getRow())).setStock(data);
+            packagingDAO.updateDataFloat("stock", data, event.getRowValue().getId());
             dataTable.refresh();
         });
 
@@ -766,6 +781,7 @@ public class PackagingController implements Initializable {
                         "Loại in: " + stampStatus + "\n" +
                         "Loại đóng gói: " + mainStatus + "\n" +
                         "Đặt tối thiểu: " + packaging.getMinimum_order() + "\n" +
+                        "Còn tồn: " + packaging.getStock() + "\n" +
                         "Đơn giá: " + packaging.getPrice() + "\n" +
                         "Ghi chú: " + packaging.getNote() + "\n"
                 );

@@ -78,6 +78,11 @@
                             <Font size="14.0" />
                         </font>
                     </Label>
+                    <Label text="Tồn kho">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </Label>
                     <Label text="Lưu ý">
                         <font>
                             <Font size="14.0" />
@@ -113,6 +118,7 @@
                     <TextField fx:id="codeField" />
                     <CheckBox fx:id="mainField" />
                     <TextField fx:id="priceField" />
+                    <TextField fx:id="stockField" />
                     <TextField fx:id="noteField" />
                 </VBox>
             </HBox>
@@ -164,6 +170,7 @@
                         <TableColumn fx:id="typeColumn" prefWidth="150.0" text="Loại bao bì" />
                         <TableColumn fx:id="suplierColumn" prefWidth="70.0" text="Nhà cung cấp" />
                         <TableColumn fx:id="codeColumn" prefWidth="70.0" text="Mã bao bì" />
+                        <TableColumn fx:id="stockColumn" prefWidth="70.0" text="Tồn kho" />
                         <TableColumn fx:id="priceColumn" prefWidth="70.0" text="Đơn giá" />
                         <TableColumn fx:id="noteColumn" prefWidth="200.0" text="Lưu ý" />
                     </columns>

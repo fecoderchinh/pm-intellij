@@ -4,6 +4,8 @@
  *   https://medium0.com/@emekadc/how-to-implement-one-to-one-one-to-many-and-many-to-many-relationships-when-designing-a-database-9da2de684710
  * */
 
+-- drop database pmdb;
+
 show databases;
 
 create database pmdb character set = 'utf8';
@@ -54,7 +56,7 @@ CREATE TABLE supliers
  unique key (code)
 );
 
-# drop table supliers;
+--  drop table supliers;
 
 insert into supliers (name, address, email, deputy, phone, fax, code)
 values (N'Công Ty TNHH SX-TM Tân Thuận Thành', N'Lô 43A, Đường số 2, KCN Tân Tạo, Quận Bình Tân, TP HCM', 'tanthuanthanh1@gmail.com', N'Mr. Trung', '0933 202 188', '', 'TTT'),
@@ -106,6 +108,7 @@ create table packaging(
 	main bit not null default 0,
 	note longtext,
 	price float,
+	stock float,
 	primary key(id),
 	unique key(code, type, suplier),
 	foreign key (suplier) references supliers(id),
@@ -114,11 +117,11 @@ create table packaging(
 
 -- drop table packaging;
 
-insert into packaging (name, specifications, dimension, suplier, type, minimum_order, stamped, code, main, note, price)
-values ('Túi PA trắng 20 x 33 rider 7.5', 'PAPE, dày 100mic, hàn biên 1cm, đuôi rider 7.5 cm (bao gồm đường hàn)', '20 x 33', 4, 3, 0, 0, '', 0, '', 752),
-	   (N'Que tre', 'Dài 20.5 cm, cờ 3.5 cm, đuờng kính 2.5 mm, canh trên bo tròn', '20.5 - 3.5', 3, 4, 0, 0, '', 0, '', 239),
-	   (N'Rider KAILISBROS Cooked Prawn SGM 250g (New Ingredient)', 'Giấy C230, in Offset, 02 mặt khác nhau', '17.5 x 5', 1, 5, 0, 0, 'N742', 0, '', 170),
-	   ('Thùng KAILISBROS Cooked Prawn SGM 250g x 20 (New COO)', 'Thùng giấy carton, 05 lớp, sóng EB, chống thấm 02 mặt, in Flexo 01 màu', '36.5 x 22 x 14', 1, 1, 0, 0, 'T556', 1, '', 6300);
+insert into packaging (name, specifications, dimension, suplier, type, minimum_order, stamped, code, main, note, price, stock)
+values ('Túi PA trắng 20 x 33 rider 7.5', 'PAPE, dày 100mic, hàn biên 1cm, đuôi rider 7.5 cm (bao gồm đường hàn)', '20 x 33', 4, 3, 0, 0, '', 0, '', 752, 0.0),
+	   (N'Que tre', 'Dài 20.5 cm, cờ 3.5 cm, đuờng kính 2.5 mm, canh trên bo tròn', '20.5 - 3.5', 3, 4, 0, 0, '', 0, '', 239, 0.0),
+	   (N'Rider KAILISBROS Cooked Prawn SGM 250g (New Ingredient)', 'Giấy C230, in Offset, 02 mặt khác nhau', '17.5 x 5', 1, 5, 0, 0, 'N742', 0, '', 170, 0.0),
+	   ('Thùng KAILISBROS Cooked Prawn SGM 250g x 20 (New COO)', 'Thùng giấy carton, 05 lớp, sóng EB, chống thấm 02 mặt, in Flexo 01 màu', '36.5 x 22 x 14', 1, 1, 0, 0, 'T556', 1, '', 6300, 0.0);
 
 select * from packaging;
 
@@ -167,7 +170,7 @@ table mối quan hệ giữa lệnh sản xuất, năm, khách hàng
 - Một lệnh sản xuất chỉ thuộc về một khách hàng.
 - Khách hàng có thể yêu cầu một hoặc nhiều lệnh sản xuất.
 */
-create table commands (
+create table work_order (
 	id bigint unsigned not null auto_increment,
 	name varchar(250) not null,
 	lot_number varchar(100),
@@ -184,14 +187,14 @@ create table commands (
 	foreign key (customer_id) references customers(id)
 );
 
--- drop tables commands;
+-- drop tables work_order;
 
-insert into commands (name, lot_number, po_number, year, customer_id, send_date, shipping_date, destination, note)
+insert into work_order (name, lot_number, po_number, year, customer_id, send_date, shipping_date, destination, note)
 values ('LSX 301', '125', '', 1, 1, str_to_date('14-05-2021','%d-%m-%Y'), str_to_date('10-07-2021','%d-%m-%Y'), 'Sydney, Úc', '' );
 
-update commands set name='LSX 301', lot_number='125', po_number='', year='1', customer_id='1', send_date=str_to_date('14-05-2021','%d-%m-%Y'), shipping_date=str_to_date('10-07-2021','%d-%m-%Y'), destination='Sydney, Úc', note='' where id=1;
+update work_order set name='LSX 301', lot_number='125', po_number='', year='1', customer_id='1', send_date=str_to_date('14-05-2021','%d-%m-%Y'), shipping_date=str_to_date('10-07-2021','%d-%m-%Y'), destination='Sydney, Úc', note='' where id=1;
 
-select * from commands;
+select * from work_order;
 
 /*
 =================================================
@@ -290,21 +293,60 @@ table mối quan hệ giữa lệnh sản xuất, đơn hàng, mặt hàng
 - Một lệnh sản xuất thuộc 1 hoặc nhiều đơn hàng
 - Một đơn hàng gồm 1 hoặc nhiều mặt hàng
 */
-create table command_product_order(
+create table work_order_product(
 	id bigint unsigned not null auto_increment,
-	order_name varchar(250) not null,
-	command_id bigint unsigned,
+	work_order_id bigint unsigned,
+	ordinal_num int not null,
 	product_id bigint unsigned,
-	qty int not null default 0,
+	qty float not null default 0,
 	note longtext,
 	primary key (id),
 	foreign key (product_id) references products(id),
-	foreign key (command_id) references commands(id)
+	foreign key (work_order_id) references work_order(id)
 );
 
-drop table command_product_order;
+drop table work_order_product;
 
-insert into command_product_order (order_name, command_id, product_id, qty, note)
-values ("LAN 1", 1, 1, 500, );
+insert into work_order_product (work_order_id, ordinal_num, product_id, qty, note)
+values (1, 1, 1, 500, "");
 
-select * from quantity;
+select * from work_order_product;
+
+/*
+=================================================
+table số lượng đơn hàng
+*/
+create table work_order_product_quantity(
+	id bigint unsigned not null auto_increment,
+	wop_id bigint unsigned, -- get the qty of work_order_product
+	pps_id bigint unsigned, -- get the pack_qty of packaging_product_size
+	product_id bigint unsigned,
+	packaging_id bigint unsigned,
+	work_order_qty float,
+	stock float,
+	actual_qty float,
+	residual_qty float,
+	note longtext,
+	primary key (id),
+	foreign key (wop_id) references work_order_product(id),
+	foreign key (pps_id) references packaging_product_size(id),
+	foreign key (product_id) references products(id),
+	foreign key (packaging_id) references packaging(id)
+);
+
+-- drop table work_order_product_quantity;
+
+insert into work_order_product_quantity (wop_id, pps_id, product_id, packaging_id, work_order_qty, stock, actual_qty, residual_qty, note)
+values (1, 1, 1, 1, 10000, 500, 9500, 300, "Tồn của LSX XXX");
+
+select * from work_order_product_quantity;
+
+/*
+=================================================
+table mối quan hệ giữa command_product và order (kết hợp số lượng tồn và số lượng đặt)
+- CHƯA XONG
+*/
+select wop.ordinal_num as ordinalNumbers, wo.name as workOrderName, p2.name as productName, p.name as packagingName, p.specifications as packagingSpecification, p.dimension as packagingDimension, p.suplier as packagingSuplier, p.code as packagingCode, t.unit as unit, p.stamped as printStatus
+from work_order wo, work_order_product wop, packaging_product_size pps, packaging p, products p2, types t
+where wo.id = wop.work_order_id and wop.product_id = p2.id and pps.product_id = p2.id and pps.packaging_id = p.id and p.`type` = t.id
+order by wop.ordinal_num;

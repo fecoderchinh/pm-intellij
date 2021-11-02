@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fecoder.controllers.CommandController">
+<BorderPane prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fecoder.controllers.WorkOrderController">
 
     <top>
         <VBox spacing="10">
@@ -75,23 +75,23 @@
                     </Label>
                 </VBox>
                 <VBox prefHeight="4.0" prefWidth="154.0" spacing="10">
-                    <TextField fx:id="commandName" />
-                    <TextField fx:id="commandLotNumber" />
-                    <TextField fx:id="commandPONumber" />
-                    <ComboBox fx:id="commandYear" prefHeight="26.0" prefWidth="184.0">
+                    <TextField fx:id="workOrderName" />
+                    <TextField fx:id="workOrderLotNumber" />
+                    <TextField fx:id="workOrderPONumber" />
+                    <ComboBox fx:id="workOrderYear" prefHeight="26.0" prefWidth="184.0">
                         <items>
                             <FXCollections fx:factory="observableArrayList"/>
                         </items>
                     </ComboBox>
-                    <ComboBox fx:id="commandCustomer" prefHeight="26.0" prefWidth="355.0">
+                    <ComboBox fx:id="workOrderCustomer" prefHeight="26.0" prefWidth="355.0">
                         <items>
                             <FXCollections fx:factory="observableArrayList"/>
                         </items>
                     </ComboBox>
-                    <DatePicker fx:id="commandSendDate" prefHeight="26.0" prefWidth="355.0"/>
-                    <DatePicker fx:id="commandShippingDate" prefHeight="26.0" prefWidth="355.0"/>
-                    <TextField fx:id="commandDestination" />
-                    <TextField fx:id="commandNote" />
+                    <DatePicker fx:id="workOrderSendDate" prefHeight="26.0" prefWidth="355.0"/>
+                    <DatePicker fx:id="workOrderShippingDate" prefHeight="26.0" prefWidth="355.0"/>
+                    <TextField fx:id="workOrderDestination" />
+                    <TextField fx:id="workOrderNote" />
                 </VBox>
             </HBox>
             <HBox spacing="10">
@@ -135,15 +135,15 @@
                 <TableView fx:id="dataTable" editable="true" maxWidth="1.7976931348623157E308" prefHeight="652.0" prefWidth="1350.0">
                     <columns>
                         <TableColumn fx:id="idColumn" prefWidth="50.0" text="STT" />
-                        <TableColumn fx:id="commandSendDateColumn" prefWidth="150.0" text="Ngày gửi" />
-                        <TableColumn fx:id="commandNumberColumn" prefWidth="100.0" text="Số lệnh" />
-                        <TableColumn fx:id="commandLotColumn" prefWidth="100.0" text="Số LOT" />
-                        <TableColumn fx:id="commandPOColumn" prefWidth="100.0" text="Số PO" />
-                        <TableColumn fx:id="commandYearColumn" prefWidth="100.0" text="Năm phát hành" />
-                        <TableColumn fx:id="commandCustomerColumn" prefWidth="200.0" text="Khách hàng" />
-                        <TableColumn fx:id="commandShippingDateColumn" prefWidth="150.0" text="Ngày xuất" />
-                        <TableColumn fx:id="commandDestinationColumn" prefWidth="200.0" text="Cảng đến" />
-                        <TableColumn fx:id="commandNoteColumn" prefWidth="200.0" text="Ghi chú" />
+                        <TableColumn fx:id="workOrderSendDateColumn" prefWidth="150.0" text="Ngày gửi" />
+                        <TableColumn fx:id="workOrderNumberColumn" prefWidth="100.0" text="Số lệnh" />
+                        <TableColumn fx:id="workOrderLotColumn" prefWidth="100.0" text="Số LOT" />
+                        <TableColumn fx:id="workOrderPOColumn" prefWidth="100.0" text="Số PO" />
+                        <TableColumn fx:id="workOrderYearColumn" prefWidth="100.0" text="Năm phát hành" />
+                        <TableColumn fx:id="workOrderCustomerColumn" prefWidth="200.0" text="Khách hàng" />
+                        <TableColumn fx:id="workOrderShippingDateColumn" prefWidth="150.0" text="Ngày xuất" />
+                        <TableColumn fx:id="workOrderDestinationColumn" prefWidth="200.0" text="Cảng đến" />
+                        <TableColumn fx:id="workOrderNoteColumn" prefWidth="200.0" text="Ghi chú" />
                     </columns>
                 </TableView>
             </ScrollPane>

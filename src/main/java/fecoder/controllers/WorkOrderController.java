@@ -1,9 +1,9 @@
 package fecoder.controllers;
 
-import fecoder.DAO.CommandDAO;
+import fecoder.DAO.WorkOrderDAO;
 import fecoder.DAO.CustomerDAO;
 import fecoder.DAO.YearDAO;
-import fecoder.models.Command;
+import fecoder.models.WorkOrder;
 import fecoder.models.Customer;
 import fecoder.models.Year;
 import fecoder.utils.Utils;
@@ -31,17 +31,17 @@ import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-public class CommandController implements Initializable {
+public class WorkOrderController implements Initializable {
 
-    public TextField commandName;
-    public TextField commandLotNumber;
-    public TextField commandPONumber;
-    public ComboBox<Year> commandYear;
-    public ComboBox<Customer> commandCustomer;
-    public DatePicker commandSendDate;
-    public DatePicker commandShippingDate;
-    public TextField commandDestination;
-    public TextField commandNote;
+    public TextField workOrderName;
+    public TextField workOrderLotNumber;
+    public TextField workOrderPONumber;
+    public ComboBox<Year> workOrderYear;
+    public ComboBox<Customer> workOrderCustomer;
+    public DatePicker workOrderSendDate;
+    public DatePicker workOrderShippingDate;
+    public TextField workOrderDestination;
+    public TextField workOrderNote;
     public Button insertButton;
     public Button updateButton;
     public Button clearButton;
@@ -51,17 +51,17 @@ public class CommandController implements Initializable {
     public Label anchorLabel;
     public Label anchorData;
 
-    public TableView<Command> dataTable;
-    public TableColumn<Command, Integer> idColumn;
-    public TableColumn<Command, String> commandSendDateColumn;
-    public TableColumn<Command, String> commandNumberColumn;
-    public TableColumn<Command, String> commandLotColumn;
-    public TableColumn<Command, String> commandPOColumn;
-    public TableColumn<Command, Integer> commandYearColumn;
-    public TableColumn<Command, Integer> commandCustomerColumn;
-    public TableColumn<Command, String> commandShippingDateColumn;
-    public TableColumn<Command, String> commandDestinationColumn;
-    public TableColumn<Command, String> commandNoteColumn;
+    public TableView<WorkOrder> dataTable;
+    public TableColumn<WorkOrder, Integer> idColumn;
+    public TableColumn<WorkOrder, String> workOrderSendDateColumn;
+    public TableColumn<WorkOrder, String> workOrderNumberColumn;
+    public TableColumn<WorkOrder, String> workOrderLotColumn;
+    public TableColumn<WorkOrder, String> workOrderPOColumn;
+    public TableColumn<WorkOrder, Integer> workOrderYearColumn;
+    public TableColumn<WorkOrder, Integer> workOrderCustomerColumn;
+    public TableColumn<WorkOrder, String> workOrderShippingDateColumn;
+    public TableColumn<WorkOrder, String> workOrderDestinationColumn;
+    public TableColumn<WorkOrder, String> workOrderNoteColumn;
 
     private int currentRow;
     private String currentCell;
@@ -70,22 +70,22 @@ public class CommandController implements Initializable {
     private boolean isEditableComboBox = false;
     private boolean isUpdating = false;
 
-    private final CommandDAO commandDAO = new CommandDAO();
+    private final WorkOrderDAO workOrderDAO = new WorkOrderDAO();
     private final YearDAO yearDAO = new YearDAO();
     private final CustomerDAO customerDAO = new CustomerDAO();
 
     private final ObservableList<Year> yearObservableList = FXCollections.observableArrayList(yearDAO.getList());
     private final ObservableList<Customer> customerObservableList = FXCollections.observableArrayList(customerDAO.getList());
-    private final ObservableList<Command> commandObservableList = FXCollections.observableArrayList(commandDAO.getList());
+    private final ObservableList<WorkOrder> workOrderObservableList = FXCollections.observableArrayList(workOrderDAO.getList());
 
     /**
      * All needed to start controller
      * */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        commandYear.getItems().addAll(yearObservableList);
+        workOrderYear.getItems().addAll(yearObservableList);
         yearComboBoxFilter();
-        commandCustomer.getItems().addAll(customerObservableList);
+        workOrderCustomer.getItems().addAll(customerObservableList);
         customerComboBoxFilter();
         loadView();
     }
@@ -95,16 +95,16 @@ public class CommandController implements Initializable {
      * */
     public void insertButton(ActionEvent actionEvent) {
         try {
-            commandDAO.insert(
-                    commandName.getText(),
-                    commandLotNumber.getText(),
-                    commandPONumber.getText(),
-                    yearDAO.getYear(commandYear.getValue()+"").getId(),
-                    customerDAO.getCustomer(commandCustomer.getValue()+"").getId(),
-                    commandSendDate.getEditor().getText(),
-                    commandShippingDate.getEditor().getText(),
-                    commandDestination.getText(),
-                    commandNote.getText()
+            workOrderDAO.insert(
+                    workOrderName.getText(),
+                    workOrderLotNumber.getText(),
+                    workOrderPONumber.getText(),
+                    yearDAO.getYear(workOrderYear.getValue()+"").getId(),
+                    customerDAO.getCustomer(workOrderCustomer.getValue()+"").getId(),
+                    workOrderSendDate.getEditor().getText(),
+                    workOrderShippingDate.getEditor().getText(),
+                    workOrderDestination.getText(),
+                    workOrderNote.getText()
             );
             reload();
         } catch (Exception ex) {
@@ -117,16 +117,16 @@ public class CommandController implements Initializable {
      * */
     public void updateButton(ActionEvent actionEvent) {
         try {
-            commandDAO.update(
-                    commandName.getText(),
-                    commandLotNumber.getText(),
-                    commandPONumber.getText(),
-                    yearDAO.getYear(commandYear.getValue()+"").getId(),
-                    customerDAO.getCustomer(commandCustomer.getValue()+"").getId(),
-                    commandSendDate.getEditor().getText(),
-                    commandShippingDate.getEditor().getText(),
-                    commandDestination.getText(),
-                    commandNote.getText(),
+            workOrderDAO.update(
+                    workOrderName.getText(),
+                    workOrderLotNumber.getText(),
+                    workOrderPONumber.getText(),
+                    yearDAO.getYear(workOrderYear.getValue()+"").getId(),
+                    customerDAO.getCustomer(workOrderCustomer.getValue()+"").getId(),
+                    workOrderSendDate.getEditor().getText(),
+                    workOrderShippingDate.getEditor().getText(),
+                    workOrderDestination.getText(),
+                    workOrderNote.getText(),
                     Integer.parseInt(anchorData.getText())
             );
             reload();
@@ -166,13 +166,13 @@ public class CommandController implements Initializable {
         anchorLabel.setText("");
         anchorData.setText("");
 
-        commandName.setText("");
-        commandLotNumber.setText("");
-        commandPONumber.setText("");
-        commandSendDate.setValue(null);
-        commandShippingDate.setValue(null);
-        commandDestination.setText("");
-        commandNote.setText("");
+        workOrderName.setText("");
+        workOrderLotNumber.setText("");
+        workOrderPONumber.setText("");
+        workOrderSendDate.setValue(null);
+        workOrderShippingDate.setValue(null);
+        workOrderDestination.setText("");
+        workOrderNote.setText("");
 
         searchField.setText("");
     }
@@ -182,10 +182,10 @@ public class CommandController implements Initializable {
      * */
     private void resetComboBox() {
         Year yearData = yearDAO.getDataByID(1);
-        utils.setComboBoxValue(commandYear, yearData.getYear());
+        utils.setComboBoxValue(workOrderYear, yearData.getYear());
 
         Customer customerData = customerDAO.getDataByID(1);
-        utils.setComboBoxValue(commandCustomer, customerData.getName());
+        utils.setComboBoxValue(workOrderCustomer, customerData.getName());
     }
 
     /**
@@ -218,14 +218,14 @@ public class CommandController implements Initializable {
         FilteredList<Customer> dataFilteredList = new FilteredList<>(customerObservableList, p-> true);
 
         // Add listener to our ComboBox textfield to filter the list
-        commandCustomer.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
+        workOrderCustomer.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
             dataFilteredList.setPredicate(item -> {
 
                 this.isUpdating = false;
 
                 // Check if the search term is contained anywhere in our list
                 if (item.getName().toLowerCase().contains(newValue.toLowerCase().trim()) && !isUpdating) {
-                    commandCustomer.show();
+                    workOrderCustomer.show();
                     return true;
                 }
 
@@ -235,8 +235,8 @@ public class CommandController implements Initializable {
 
         });
 
-        commandCustomer.getItems().removeAll(customerObservableList);
-        commandCustomer.getItems().addAll(dataFilteredList);
+        workOrderCustomer.getItems().removeAll(customerObservableList);
+        workOrderCustomer.getItems().addAll(dataFilteredList);
     }
 
     /**
@@ -248,15 +248,15 @@ public class CommandController implements Initializable {
     /**
      * Setting data for inputs
      *
-     * @param command - the product data
+     * @param workOrder - the product data
      * */
-    private void getData(Command command) {
+    private void getData(WorkOrder workOrder) {
         clearFields();
-        commandName.setText(command.getName());
-        commandLotNumber.setText(command.getLotNumber());
-        commandPONumber.setText(command.getPurchaseOrder());
-        commandSendDate.setValue(utils.getDate(command.getSendDate()));
-        commandShippingDate.setValue(utils.getDate(command.getShippingDate()));
+        workOrderName.setText(workOrder.getName());
+        workOrderLotNumber.setText(workOrder.getLotNumber());
+        workOrderPONumber.setText(workOrder.getPurchaseOrder());
+        workOrderSendDate.setValue(utils.getDate(workOrder.getSendDate()));
+        workOrderShippingDate.setValue(utils.getDate(workOrder.getShippingDate()));
 
 //        Year yearData = yearDAO.getDataByID(command.getYear());
 //        utils.setComboBoxValue(commandYear, yearData.getYear());
@@ -264,11 +264,11 @@ public class CommandController implements Initializable {
 //        Customer customerData = customerDAO.getDataByID(command.getCustomerId());
 //        utils.setComboBoxValue(commandCustomer, customerData.getName());
 
-        commandDestination.setText(command.getDestination());
-        commandNote.setText(command.getNote());
+        workOrderDestination.setText(workOrder.getDestination());
+        workOrderNote.setText(workOrder.getNote());
 
         anchorLabel.setText("Current ID: ");
-        anchorData.setText(""+command.getId());
+        anchorData.setText(""+ workOrder.getId());
 
         isUpdating = true;
     }
@@ -277,8 +277,8 @@ public class CommandController implements Initializable {
      * Handle on searching data
      * */
     public void setSearchField() {
-        ObservableList<Command> list = FXCollections.observableArrayList(commandDAO.getList());
-        FilteredList<Command> filteredList = new FilteredList<>(list, p -> true);
+        ObservableList<WorkOrder> list = FXCollections.observableArrayList(workOrderDAO.getList());
+        FilteredList<WorkOrder> filteredList = new FilteredList<>(list, p -> true);
 
         searchField.textProperty()
                 .addListener((observable, oldValue, newValue) -> {
@@ -337,7 +337,7 @@ public class CommandController implements Initializable {
             }
         });
 
-        SortedList<Command> sortedList = new SortedList<>(filteredList);
+        SortedList<WorkOrder> sortedList = new SortedList<>(filteredList);
         sortedList.comparatorProperty().bind(dataTable.comparatorProperty());
 
         dataTable.setItems(sortedList);
@@ -353,8 +353,8 @@ public class CommandController implements Initializable {
      * Setting context menu for table row
      * */
     private void setContextMenu() {
-        dataTable.setRowFactory((TableView<Command> tableView) -> {
-            final TableRow<Command> row = new TableRow<>();
+        dataTable.setRowFactory((TableView<WorkOrder> tableView) -> {
+            final TableRow<WorkOrder> row = new TableRow<>();
 
             final ContextMenu contextMenu = new ContextMenu();
             final MenuItem viewItem = new MenuItem("Chi tiết");
@@ -362,14 +362,14 @@ public class CommandController implements Initializable {
             final MenuItem removeItem = new MenuItem("Xóa dòng");
 
             viewItem.setOnAction((ActionEvent event) -> {
-                Command command = dataTable.getSelectionModel().getSelectedItem();
+                WorkOrder workOrder = dataTable.getSelectionModel().getSelectedItem();
                 int rowIndex = dataTable.getSelectionModel().getSelectedIndex();
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Chi tiết Lệnh sản xuất");
-                alert.setHeaderText(command.getName());
+                alert.setHeaderText(workOrder.getName());
                 alert.setContentText(
-                        "Số LSX: " + command.getName() + "\n"
+                        "Số LSX: " + workOrder.getName() + "\n"
                 );
 
                 alert.showAndWait();
@@ -377,19 +377,19 @@ public class CommandController implements Initializable {
             contextMenu.getItems().add(viewItem);
 
             editItem.setOnAction((ActionEvent event) -> {
-                Command command = dataTable.getSelectionModel().getSelectedItem();
-                getData(command);
+                WorkOrder workOrder = dataTable.getSelectionModel().getSelectedItem();
+                getData(workOrder);
                 hideComboBoxForUpdatingData();
             });
             contextMenu.getItems().add(editItem);
 
             removeItem.setOnAction((ActionEvent event) -> {
-                Command command = dataTable.getSelectionModel().getSelectedItem();
-                Alert alert = utils.alert("del", Alert.AlertType.CONFIRMATION, "Xóa: "+command.getName(), null);
+                WorkOrder workOrder = dataTable.getSelectionModel().getSelectedItem();
+                Alert alert = utils.alert("del", Alert.AlertType.CONFIRMATION, "Xóa: "+ workOrder.getName(), null);
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (alert.getAlertType() == Alert.AlertType.CONFIRMATION && result.get() == ButtonType.OK){
-                    commandDAO.delete(command.getId());
+                    workOrderDAO.delete(workOrder.getId());
                     reload();
                 }
             });
@@ -408,8 +408,8 @@ public class CommandController implements Initializable {
      * Formatting date time
      * */
     private void formatDate() {
-        utils.formatDate(commandSendDate, "dd-MM-yyyy");
-        utils.formatDate(commandShippingDate, "dd-MM-yyyy");
+        utils.formatDate(workOrderSendDate, "dd-MM-yyyy");
+        utils.formatDate(workOrderShippingDate, "dd-MM-yyyy");
     }
 
     /**
@@ -417,17 +417,17 @@ public class CommandController implements Initializable {
      * This will handle an enter event and mouse leave for these Nodes
      * */
     private void resetFields() {
-        utils.disableKeyEnterOnTextField(commandName);
-        utils.disableKeyEnterOnTextField(commandLotNumber);
-        utils.disableKeyEnterOnTextField(commandPONumber);
-        utils.disableKeyEnterOnTextFieldDatePicker(commandSendDate);
-        utils.disableKeyEnterOnTextFieldDatePicker(commandShippingDate);
+        utils.disableKeyEnterOnTextField(workOrderName);
+        utils.disableKeyEnterOnTextField(workOrderLotNumber);
+        utils.disableKeyEnterOnTextField(workOrderPONumber);
+        utils.disableKeyEnterOnTextFieldDatePicker(workOrderSendDate);
+        utils.disableKeyEnterOnTextFieldDatePicker(workOrderShippingDate);
 
-        utils.disableKeyEnterOnTextFieldComboBox(commandYear, false);
-        utils.disableKeyEnterOnTextFieldComboBox(commandCustomer, true);
+        utils.disableKeyEnterOnTextFieldComboBox(workOrderYear, false);
+        utils.disableKeyEnterOnTextFieldComboBox(workOrderCustomer, true);
 
-        utils.disableKeyEnterOnTextField(commandDestination);
-        utils.disableKeyEnterOnTextField(commandNote);
+        utils.disableKeyEnterOnTextField(workOrderDestination);
+        utils.disableKeyEnterOnTextField(workOrderNote);
     }
 
     /**
@@ -456,38 +456,38 @@ public class CommandController implements Initializable {
         idColumn.setSortable(false);
         idColumn.setCellValueFactory(column -> new ReadOnlyObjectWrapper<Integer>(dataTable.getItems().indexOf(column.getValue())+1));
 
-        commandNumberColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        commandNumberColumn.setCellFactory(TextFieldTableCell.<Command>forTableColumn());
-        commandNumberColumn.setOnEditCommit(event -> {
+        workOrderNumberColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        workOrderNumberColumn.setCellFactory(TextFieldTableCell.<WorkOrder>forTableColumn());
+        workOrderNumberColumn.setOnEditCommit(event -> {
             final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
-            ((Command) event.getTableView().getItems().get(event.getTablePosition().getRow())).setName(data);
-            commandDAO.updateData("name", data, event.getRowValue().getId());
+            ((WorkOrder) event.getTableView().getItems().get(event.getTablePosition().getRow())).setName(data);
+            workOrderDAO.updateData("name", data, event.getRowValue().getId());
             dataTable.refresh();
         });
 
-        commandLotColumn.setCellValueFactory(new PropertyValueFactory<>("lotNumber"));
-        commandLotColumn.setCellFactory(TextFieldTableCell.<Command>forTableColumn());
-        commandLotColumn.setOnEditCommit(event -> {
+        workOrderLotColumn.setCellValueFactory(new PropertyValueFactory<>("lotNumber"));
+        workOrderLotColumn.setCellFactory(TextFieldTableCell.<WorkOrder>forTableColumn());
+        workOrderLotColumn.setOnEditCommit(event -> {
             final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
-            ((Command) event.getTableView().getItems().get(event.getTablePosition().getRow())).setLotNumber(data);
-            commandDAO.updateData("lot_number", data, event.getRowValue().getId());
+            ((WorkOrder) event.getTableView().getItems().get(event.getTablePosition().getRow())).setLotNumber(data);
+            workOrderDAO.updateData("lot_number", data, event.getRowValue().getId());
             dataTable.refresh();
         });
 
-        commandPOColumn.setCellValueFactory(new PropertyValueFactory<>("purchaseOrder"));
-        commandPOColumn.setCellFactory(TextFieldTableCell.<Command>forTableColumn());
-        commandPOColumn.setOnEditCommit(event -> {
+        workOrderPOColumn.setCellValueFactory(new PropertyValueFactory<>("purchaseOrder"));
+        workOrderPOColumn.setCellFactory(TextFieldTableCell.<WorkOrder>forTableColumn());
+        workOrderPOColumn.setOnEditCommit(event -> {
             final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
-            ((Command) event.getTableView().getItems().get(event.getTablePosition().getRow())).setPurchaseOrder(data);
-            commandDAO.updateData("po_number", data, event.getRowValue().getId());
+            ((WorkOrder) event.getTableView().getItems().get(event.getTablePosition().getRow())).setPurchaseOrder(data);
+            workOrderDAO.updateData("po_number", data, event.getRowValue().getId());
             dataTable.refresh();
         });
 
-        commandYearColumn.setCellValueFactory(new PropertyValueFactory<>("year"));
-        commandYearColumn.setCellFactory(TextFieldTableCell.<Command, Integer>forTableColumn(new IntegerStringConverter()));
-        commandYearColumn.setCellFactory(tc -> {
+        workOrderYearColumn.setCellValueFactory(new PropertyValueFactory<>("year"));
+        workOrderYearColumn.setCellFactory(TextFieldTableCell.<WorkOrder, Integer>forTableColumn(new IntegerStringConverter()));
+        workOrderYearColumn.setCellFactory(tc -> {
 
-            TableCell<Command, Integer> cell = new TableCell<>();
+            TableCell<WorkOrder, Integer> cell = new TableCell<>();
 
             currentRow = cell.getIndex();
             currentCell = cell.getText();
@@ -496,7 +496,7 @@ public class CommandController implements Initializable {
             ComboBox<Year> commandComboBoxTableCell = new ComboBox<>();
             cell.setGraphic(text);
             cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
-            text.wrappingWidthProperty().bind(commandYearColumn.widthProperty());
+            text.wrappingWidthProperty().bind(workOrderYearColumn.widthProperty());
             text.textProperty().bind(new StringBinding() {
                 { bind(cell.itemProperty()); }
                 @Override
@@ -528,7 +528,7 @@ public class CommandController implements Initializable {
                         public void changed(ObservableValue<? extends Year> observableValue, Year year, Year t1) {
                             TablePosition pos = (TablePosition) dataTable.getSelectionModel().getSelectedCells().get(0);
                             int selectedRow = dataTable.getItems().get(pos.getRow()).getId();
-                            commandDAO.updateDataInteger("year", t1.getId(), selectedRow);
+                            workOrderDAO.updateDataInteger("year", t1.getId(), selectedRow);
                             clearFields();
                             reload();
                         }
@@ -539,11 +539,11 @@ public class CommandController implements Initializable {
             return cell ;
         });
 
-        commandCustomerColumn.setCellValueFactory(new PropertyValueFactory<>("customerId"));
-        commandCustomerColumn.setCellFactory(TextFieldTableCell.<Command, Integer>forTableColumn(new IntegerStringConverter()));
-        commandCustomerColumn.setCellFactory(tc -> {
+        workOrderCustomerColumn.setCellValueFactory(new PropertyValueFactory<>("customerId"));
+        workOrderCustomerColumn.setCellFactory(TextFieldTableCell.<WorkOrder, Integer>forTableColumn(new IntegerStringConverter()));
+        workOrderCustomerColumn.setCellFactory(tc -> {
 
-            TableCell<Command, Integer> cell = new TableCell<>();
+            TableCell<WorkOrder, Integer> cell = new TableCell<>();
 
             currentRow = cell.getIndex();
             currentCell = cell.getText();
@@ -552,7 +552,7 @@ public class CommandController implements Initializable {
             ComboBox<Customer> commandComboBoxTableCell = new ComboBox<>();
             cell.setGraphic(text);
             cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
-            text.wrappingWidthProperty().bind(commandCustomerColumn.widthProperty());
+            text.wrappingWidthProperty().bind(workOrderCustomerColumn.widthProperty());
             text.textProperty().bind(new StringBinding() {
                 { bind(cell.itemProperty()); }
                 @Override
@@ -623,7 +623,7 @@ public class CommandController implements Initializable {
                                 alert.setContentText("Dữ liệu: "+ commandComboBoxTableCell.getEditor().getText() +" không tồn tài");
                                 alert.showAndWait();
                             } else {
-                                commandDAO.updateDataInteger("customer_id", getCustomerFromName.getId(), selectedRow);
+                                workOrderDAO.updateDataInteger("customer_id", getCustomerFromName.getId(), selectedRow);
                                 clearFields();
                                 reload();
                             }
@@ -635,39 +635,39 @@ public class CommandController implements Initializable {
             return cell ;
         });
 
-        commandSendDateColumn.setCellValueFactory(new PropertyValueFactory<>("sendDate"));
-        commandSendDateColumn.setCellFactory(TextFieldTableCell.<Command>forTableColumn());
-        commandSendDateColumn.setOnEditCommit(event -> {
+        workOrderSendDateColumn.setCellValueFactory(new PropertyValueFactory<>("sendDate"));
+        workOrderSendDateColumn.setCellFactory(TextFieldTableCell.<WorkOrder>forTableColumn());
+        workOrderSendDateColumn.setOnEditCommit(event -> {
             final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
-            ((Command) event.getTableView().getItems().get(event.getTablePosition().getRow())).setSendDate(data);
-            commandDAO.updateData("send_date", data, event.getRowValue().getId());
+            ((WorkOrder) event.getTableView().getItems().get(event.getTablePosition().getRow())).setSendDate(data);
+            workOrderDAO.updateData("send_date", data, event.getRowValue().getId());
             dataTable.refresh();
         });
 
-        commandShippingDateColumn.setCellValueFactory(new PropertyValueFactory<>("shippingDate"));
-        commandShippingDateColumn.setCellFactory(TextFieldTableCell.<Command>forTableColumn());
-        commandShippingDateColumn.setOnEditCommit(event -> {
+        workOrderShippingDateColumn.setCellValueFactory(new PropertyValueFactory<>("shippingDate"));
+        workOrderShippingDateColumn.setCellFactory(TextFieldTableCell.<WorkOrder>forTableColumn());
+        workOrderShippingDateColumn.setOnEditCommit(event -> {
             final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
-            ((Command) event.getTableView().getItems().get(event.getTablePosition().getRow())).setShippingDate(data);
-            commandDAO.updateData("shipping_date", data, event.getRowValue().getId());
+            ((WorkOrder) event.getTableView().getItems().get(event.getTablePosition().getRow())).setShippingDate(data);
+            workOrderDAO.updateData("shipping_date", data, event.getRowValue().getId());
             dataTable.refresh();
         });
 
-        commandDestinationColumn.setCellValueFactory(new PropertyValueFactory<>("destination"));
-        commandDestinationColumn.setCellFactory(TextFieldTableCell.<Command>forTableColumn());
-        commandDestinationColumn.setOnEditCommit(event -> {
+        workOrderDestinationColumn.setCellValueFactory(new PropertyValueFactory<>("destination"));
+        workOrderDestinationColumn.setCellFactory(TextFieldTableCell.<WorkOrder>forTableColumn());
+        workOrderDestinationColumn.setOnEditCommit(event -> {
             final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
-            ((Command) event.getTableView().getItems().get(event.getTablePosition().getRow())).setDestination(data);
-            commandDAO.updateData("destination", data, event.getRowValue().getId());
+            ((WorkOrder) event.getTableView().getItems().get(event.getTablePosition().getRow())).setDestination(data);
+            workOrderDAO.updateData("destination", data, event.getRowValue().getId());
             dataTable.refresh();
         });
 
-        commandNoteColumn.setCellValueFactory(new PropertyValueFactory<>("note"));
-        commandNoteColumn.setCellFactory(TextFieldTableCell.<Command>forTableColumn());
-        commandNoteColumn.setOnEditCommit(event -> {
+        workOrderNoteColumn.setCellValueFactory(new PropertyValueFactory<>("note"));
+        workOrderNoteColumn.setCellFactory(TextFieldTableCell.<WorkOrder>forTableColumn());
+        workOrderNoteColumn.setOnEditCommit(event -> {
             final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
-            ((Command) event.getTableView().getItems().get(event.getTablePosition().getRow())).setNote(data);
-            commandDAO.updateData("note", data, event.getRowValue().getId());
+            ((WorkOrder) event.getTableView().getItems().get(event.getTablePosition().getRow())).setNote(data);
+            workOrderDAO.updateData("note", data, event.getRowValue().getId());
             dataTable.refresh();
         });
 

@@ -13,6 +13,7 @@ public class Packaging {
     private String code;
     private String note;
     private float price;
+    private float stock;
 
     public Packaging(){}
 
@@ -27,7 +28,8 @@ public class Packaging {
                      String code,
                      boolean main,
                      String note,
-                     float price){
+                     float price,
+                     float stock){
         this.id = id;
         this.suplier = suplier;
         this.type = type;
@@ -40,6 +42,7 @@ public class Packaging {
         this.code = code;
         this.note = note;
         this.price = price;
+        this.stock = stock;
     }
 
     public int getId() { return this.id; }
@@ -77,6 +80,9 @@ public class Packaging {
 
     public float getPrice() { return this.price; }
     public void setPrice(float price) { this.price = price; }
+
+    public float getStock() { return this.stock; }
+    public void setStock(float value) { this.stock = value; }
 
     @Override
     public String toString() {

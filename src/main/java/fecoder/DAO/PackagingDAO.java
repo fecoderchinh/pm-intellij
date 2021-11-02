@@ -32,6 +32,7 @@ public class PackagingDAO {
             data.setMain(resultSet.getBoolean("main"));
             data.setCode(resultSet.getString("code"));
             data.setPrice(resultSet.getFloat("price"));
+            data.setStock(resultSet.getFloat("stock"));
         } catch (SQLException ex) {
             jdbcDAO.printSQLException(ex);
         }
@@ -231,9 +232,9 @@ public class PackagingDAO {
      * @param price - column price
      * @param id - column id
      * */
-    public void update(String name, String specifications, String dimension, int suplier, int type, int minimum_order, boolean stamped, String code, boolean main, String note, float price, int id) {
-        String updateQuery = "update "+ tableName +" set name=?, specifications=?, dimension=?, suplier=?, type=?, minimum_order=?, stamped=?, code=?, main=?, note=?, price=? where id=?";
-        preparedUpdateQuery(updateQuery, name, specifications, dimension, suplier, type, minimum_order, stamped, code, main, note, price, id);
+    public void update(String name, String specifications, String dimension, int suplier, int type, int minimum_order, boolean stamped, String code, boolean main, String note, float price, float stock, int id) {
+        String updateQuery = "update "+ tableName +" set name=?, specifications=?, dimension=?, suplier=?, type=?, minimum_order=?, stamped=?, code=?, main=?, note=?, price=?, stock=? where id=?";
+        preparedUpdateQuery(updateQuery, name, specifications, dimension, suplier, type, minimum_order, stamped, code, main, note, price, stock, id);
     }
 
     /**
@@ -250,10 +251,11 @@ public class PackagingDAO {
      * @param main - column main
      * @param note - column note
      * @param price - column price
+     * @param stock - column stock
      * */
-    public void insert(String name, String specifications, String dimension, int suplier, int type, int minimum_order, boolean stamped, String code, boolean main, String note, float price) {
-        String insertQuery = "insert into "+ tableName +" (name, specifications, dimension, suplier, type, minimum_order, stamped, code, main, note, price) values(?,?,?,?,?,?,?,?,?,?,?)";
-        preparedInsertQuery(insertQuery, name, specifications, dimension, suplier, type, minimum_order, stamped, code, main, note, price);
+    public void insert(String name, String specifications, String dimension, int suplier, int type, int minimum_order, boolean stamped, String code, boolean main, String note, float price, float stock) {
+        String insertQuery = "insert into "+ tableName +" (name, specifications, dimension, suplier, type, minimum_order, stamped, code, main, note, price, stock) values(?,?,?,?,?,?,?,?,?,?,?,?)";
+        preparedInsertQuery(insertQuery, name, specifications, dimension, suplier, type, minimum_order, stamped, code, main, note, price, stock);
     }
 
     /**
@@ -270,8 +272,9 @@ public class PackagingDAO {
      * @param main - column main
      * @param note - column note
      * @param price - column price
+     * @param stock - column stock
      * */
-    public void preparedInsertQuery(String query, String name, String specifications, String dimension, int suplier, int type, int minimum_order, boolean stamped, String code, boolean main, String note, float price) {
+    public void preparedInsertQuery(String query, String name, String specifications, String dimension, int suplier, int type, int minimum_order, boolean stamped, String code, boolean main, String note, float price, float stock) {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
@@ -286,6 +289,7 @@ public class PackagingDAO {
             preparedStatement.setBoolean(9, main);
             preparedStatement.setString(10, note);
             preparedStatement.setFloat(11, price);
+            preparedStatement.setFloat(12, stock);
 
             preparedStatement.executeUpdate();
 
@@ -313,7 +317,7 @@ public class PackagingDAO {
      * @param price - column price
      * @param id - column id
      * */
-    public void preparedUpdateQuery(String query, String name, String specifications, String dimension, int suplier, int type, int minimum_order, boolean stamped, String code, boolean main, String note, float price, int id) {
+    public void preparedUpdateQuery(String query, String name, String specifications, String dimension, int suplier, int type, int minimum_order, boolean stamped, String code, boolean main, String note, float price, float stock, int id) {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
@@ -328,7 +332,8 @@ public class PackagingDAO {
             preparedStatement.setBoolean(9, main);
             preparedStatement.setString(10, note);
             preparedStatement.setFloat(11, price);
-            preparedStatement.setInt(12, id);
+            preparedStatement.setFloat(12, stock);
+            preparedStatement.setInt(13, id);
 
             preparedStatement.executeUpdate();
 
