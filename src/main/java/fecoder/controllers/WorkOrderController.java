@@ -3,9 +3,7 @@ package fecoder.controllers;
 import fecoder.DAO.WorkOrderDAO;
 import fecoder.DAO.CustomerDAO;
 import fecoder.DAO.YearDAO;
-import fecoder.models.WorkOrder;
-import fecoder.models.Customer;
-import fecoder.models.Year;
+import fecoder.models.*;
 import fecoder.utils.Utils;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
@@ -18,18 +16,25 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.converter.IntegerStringConverter;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class WorkOrderController implements Initializable {
 
@@ -359,6 +364,7 @@ public class WorkOrderController implements Initializable {
             final ContextMenu contextMenu = new ContextMenu();
             final MenuItem viewItem = new MenuItem("Chi tiết");
             final MenuItem editItem = new MenuItem("Cập nhật");
+            final MenuItem manage = new MenuItem("List mặt hàng");
             final MenuItem removeItem = new MenuItem("Xóa dòng");
 
             viewItem.setOnAction((ActionEvent event) -> {
@@ -383,6 +389,12 @@ public class WorkOrderController implements Initializable {
             });
             contextMenu.getItems().add(editItem);
 
+            manage.setOnAction((ActionEvent event) -> {
+                WorkOrder workOrder = dataTable.getSelectionModel().getSelectedItem();
+                loadSingleProductScene("/fxml/work_order_product.fxml", workOrder.getName(), workOrder);
+            });
+            contextMenu.getItems().add(manage);
+
             removeItem.setOnAction((ActionEvent event) -> {
                 WorkOrder workOrder = dataTable.getSelectionModel().getSelectedItem();
                 Alert alert = utils.alert("del", Alert.AlertType.CONFIRMATION, "Xóa: "+ workOrder.getName(), null);
@@ -402,6 +414,37 @@ public class WorkOrderController implements Initializable {
             );
             return row ;
         });
+    }
+
+    /**
+     * Loading scene utility
+     *
+     * @param resource resource path
+     * @param title scene title
+     * @param workProduction data
+     * */
+    private void loadSingleProductScene(String resource, String title, WorkOrder workOrder) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource(resource));
+            /*
+             * if "fx:controller" is not set in fxml
+             * fxmlLoader.setController(NewWindowController);
+             */
+            Scene scene = new Scene(fxmlLoader.load());
+            Stage stage = new Stage();
+            stage.setTitle(title);
+            stage.setScene(scene);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setResizable(false);
+            stage.show();
+            WorkOrderProductController controller = fxmlLoader.<WorkOrderProductController>getController();
+            controller.setData(workOrder);
+
+        } catch (IOException e) {
+            Logger logger = Logger.getLogger(getClass().getName());
+            logger.log(Level.SEVERE, "Failed to create new Window.", e);
+        }
     }
 
     /**

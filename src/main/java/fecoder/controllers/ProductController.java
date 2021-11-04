@@ -1,7 +1,6 @@
 package fecoder.controllers;
 
 import fecoder.DAO.ProductDAO;
-import fecoder.Main;
 import fecoder.models.Product;
 import fecoder.utils.Utils;
 import javafx.beans.binding.Bindings;
@@ -233,7 +232,7 @@ public class ProductController implements Initializable {
             stage.setResizable(false);
             stage.show();
             ProductPackagingController productPackagingController = fxmlLoader.<ProductPackagingController>getController();
-            productPackagingController.setProductData(product);
+            productPackagingController.setData(product);
 
         } catch (IOException e) {
             Logger logger = Logger.getLogger(getClass().getName());

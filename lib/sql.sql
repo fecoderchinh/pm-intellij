@@ -110,7 +110,7 @@ create table packaging(
 	price float,
 	stock float,
 	primary key(id),
-	unique key(code, type, suplier),
+	unique key `packaging_unique_keys`(code, type, suplier),
 	foreign key (suplier) references supliers(id),
 	foreign key (type) references types(id)
 );
@@ -182,7 +182,7 @@ create table work_order (
 	destination varchar(250),
 	note longtext,
 	primary key (id),
-	unique key(year, customer_id),
+	unique key `work_order_unique_keys`(year, customer_id),
 	foreign key (year) references years(id),
 	foreign key (customer_id) references customers(id)
 );
@@ -203,7 +203,7 @@ table sizes
 create table sizes(
 	id bigint unsigned not null auto_increment,
 	size varchar(100) not null,
-	primary key(id),
+	primary key `size_unique_keys`(id),
 	unique key (size)
 );
 
@@ -213,23 +213,6 @@ insert into sizes(size)
 values ('61/70'), ('16/20'), ('31/40');
 
 select * from sizes;
-
-/*
-=================================================
-table mối quan hệ giữa size và bao bì đóng gói
-- Bao bì có thể đóng gói một hoặc nhiều size
-- Size cũng thuộc một hoặc nhiều loại bao bì
-*/
-create table size_packaging (
-	id bigint unsigned not null auto_increment,
-	size_id bigint unsigned,
-	packaging_id bigint unsigned,
-	primary key(id),
-	foreign key (size_id) references sizes(id),
-	foreign key (packaging_id) references packaging(id)
-);
-
--- drop table size_packaging;
 
 /*
 =================================================
@@ -266,9 +249,9 @@ create table packaging_product_size (
 	packaging_id bigint unsigned,
 	pack_qty int not null,
 	primary key (id),
-	foreign key (product_id) references products(id),
-	foreign key (size_id) references sizes(id),
-	foreign key (packaging_id) references packaging(id)
+	foreign key (product_id) references products(id) on delete cascade,
+	foreign key (size_id) references sizes(id) on delete cascade,
+	foreign key (packaging_id) references packaging(id) on delete cascade
 );
 
 -- drop table packaging_product_size;
@@ -296,57 +279,80 @@ table mối quan hệ giữa lệnh sản xuất, đơn hàng, mặt hàng
 create table work_order_product(
 	id bigint unsigned not null auto_increment,
 	work_order_id bigint unsigned,
-	ordinal_num int not null,
+	ordinal_num varchar(100) not null default "#",
 	product_id bigint unsigned,
 	qty float not null default 0,
 	note longtext,
 	primary key (id),
-	foreign key (product_id) references products(id),
-	foreign key (work_order_id) references work_order(id)
+	foreign key (product_id) references products(id) on delete cascade,
+	foreign key (work_order_id) references work_order(id) on delete cascade
 );
 
-drop table work_order_product;
+-- drop table work_order_product;
 
 insert into work_order_product (work_order_id, ordinal_num, product_id, qty, note)
-values (1, 1, 1, 500, "");
+values (1, "1", 1, 500, "");
 
 select * from work_order_product;
 
 /*
-=================================================
-table số lượng đơn hàng
-*/
-create table work_order_product_quantity(
+ * work_order_product_packaging
+ * */
+create table work_order_product_packaging (
 	id bigint unsigned not null auto_increment,
-	wop_id bigint unsigned, -- get the qty of work_order_product
-	pps_id bigint unsigned, -- get the pack_qty of packaging_product_size
+	work_order_id bigint unsigned,
 	product_id bigint unsigned,
 	packaging_id bigint unsigned,
-	work_order_qty float,
-	stock float,
-	actual_qty float,
-	residual_qty float,
-	note longtext,
+	work_order_qty float not null default 0, -- new
+	stock float not null default 0, -- new
+	actual_qty float not null default 0, -- new
+	residual_qty float not null default 0, -- new
 	primary key (id),
-	foreign key (wop_id) references work_order_product(id),
-	foreign key (pps_id) references packaging_product_size(id),
-	foreign key (product_id) references products(id),
-	foreign key (packaging_id) references packaging(id)
+	foreign key (work_order_id) references work_order(id) on delete cascade,
+	foreign key (product_id) references products(id) on delete cascade,
+	foreign key (packaging_id) references packaging(id) on delete cascade
 );
 
--- drop table work_order_product_quantity;
-
-insert into work_order_product_quantity (wop_id, pps_id, product_id, packaging_id, work_order_qty, stock, actual_qty, residual_qty, note)
-values (1, 1, 1, 1, 10000, 500, 9500, 300, "Tồn của LSX XXX");
-
-select * from work_order_product_quantity;
+-- drop table work_order_product_packaging;
 
 /*
 =================================================
 table mối quan hệ giữa command_product và order (kết hợp số lượng tồn và số lượng đặt)
 - CHƯA XONG
 */
-select wop.ordinal_num as ordinalNumbers, wo.name as workOrderName, p2.name as productName, p.name as packagingName, p.specifications as packagingSpecification, p.dimension as packagingDimension, p.suplier as packagingSuplier, p.code as packagingCode, t.unit as unit, p.stamped as printStatus
-from work_order wo, work_order_product wop, packaging_product_size pps, packaging p, products p2, types t
-where wo.id = wop.work_order_id and wop.product_id = p2.id and pps.product_id = p2.id and pps.packaging_id = p.id and p.`type` = t.id
+select 
+	wop.ordinal_num as ordinalNumbers, 
+	wo.name as workOrderName, 
+	p2.name as productName, 
+	p.name as packagingName, 
+	p.specifications as packagingSpecification, 
+	p.dimension as packagingDimension, 
+	p.suplier as packagingSuplier, 
+	p.code as packagingCode, 
+	t.unit as unit, 
+	p.stamped as printStatus, 
+	pps.pack_qty as packQuantity,
+	(pps.pack_qty * wop.qty) as workOrderQuantity, 
+	wopp.stock as Stock, 
+	wopp.actual_qty as actualQuantity, 
+	wopp.residual_qty as residualQuantity,
+	(wopp.actual_qty - wopp.residual_qty - wopp.stock - (pps.pack_qty * wop.qty)) as totalResidualQuantity,
+	wop.note as noteProduct
+from 
+	work_order wo, 
+	work_order_product wop, 
+	packaging_product_size pps, 
+	packaging p, 
+	products p2, 
+	types t,
+	work_order_product_packaging wopp
+where 
+	wo.id = wop.work_order_id 
+	and wop.product_id = p2.id 
+	and pps.product_id = p2.id 
+	and pps.packaging_id = p.id 
+	and p.`type` = t.id
+	and wopp.work_order_id = wo.id 
+	and wopp.product_id = p2.id 
+	and wopp.packaging_id = p.id 
 order by wop.ordinal_num;

@@ -25,7 +25,6 @@ import javafx.util.Callback;
 import javafx.util.converter.IntegerStringConverter;
 
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -213,7 +212,7 @@ public class ProductPackagingController implements Initializable {
 
         searchField.setText("");
 
-        setProductData(this.product);
+        setData(this.product);
     }
 
     /**
@@ -321,7 +320,7 @@ public class ProductPackagingController implements Initializable {
     /**
      * Passing data between ProductController and ProductPackagingController
      * */
-    public void setProductData(Product product) {
+    public void setData(Product product) {
         this.product = product;
         mainLabel.setText("List bao bì: "+this.product.getName());
         setSearchField(this.product.getName());
