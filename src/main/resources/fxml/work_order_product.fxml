@@ -43,6 +43,11 @@
                             <Font size="14.0" />
                         </font>
                     </Label>
+                    <Label text="Ghi chú">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </Label>
                 </VBox>
                 <VBox prefHeight="4.0" prefWidth="154.0" spacing="10">
                     <TextField fx:id="ordinalNumberField" />
@@ -52,6 +57,7 @@
                         </items>
                     </ComboBox>
                     <TextField fx:id="qtyField" />
+                    <TextField fx:id="noteField" />
                 </VBox>
             </HBox>
             <HBox spacing="10">
@@ -63,10 +69,10 @@
            <content>
              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="516.0" prefWidth="276.0">
                   <children>
-                     <TableView fx:id="productTableView" prefHeight="516.0" prefWidth="278.0">
+                     <TableView fx:id="productTableView" prefHeight="516.0" prefWidth="500.0">
                        <columns>
-                         <TableColumn prefWidth="50.0" fx:id="productIdColumn" text="STT" />
-                         <TableColumn prefWidth="228.0" fx:id="productNameColumn" text="Tên mặt hàng" />
+                         <TableColumn prefWidth="35.0" fx:id="productIdColumn" text="STT" />
+                         <TableColumn prefWidth="365.0" fx:id="productNameColumn" text="Tên mặt hàng" />
                        </columns>
                      </TableView>
                   </children>

@@ -22,7 +22,7 @@ public class WorkProductionDAO {
     private WorkProduction createData(ResultSet resultSet) {
         WorkProduction data = new WorkProduction();
         try {
-            data.setOrdinalNumbers(resultSet.getString("ordinalNumbers"));
+            data.setId(resultSet.getInt("id"));
             data.setWorkOrderName(resultSet.getString("workOrderName"));
             data.setProductName(resultSet.getString("productName"));
             data.setPackagingName(resultSet.getString("packagingName"));
@@ -55,8 +55,9 @@ public class WorkProductionDAO {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             Statement statement = conn.createStatement();
-            String selectAll =  "select" +
-                    "wop.ordinal_num as ordinalNumbers," +
+            String selectAll =  "select " +
+                    "wopp.id as id, " +
+                    "wop.ordinal_num as ordinalNumbers, " +
                     "wo.name as workOrderName, " +
                     "p2.name as productName, " +
                     "p.name as packagingName, " +
@@ -66,31 +67,95 @@ public class WorkProductionDAO {
                     "p.code as packagingCode, " +
                     "t.unit as unit, " +
                     "p.stamped as printStatus, " +
-                    "pps.pack_qty as packQuantity," +
+                    "pps.pack_qty as packQuantity, " +
                     "(pps.pack_qty * wop.qty) as workOrderQuantity, " +
                     "wopp.stock as Stock, " +
                     "wopp.actual_qty as actualQuantity, " +
-                    "wopp.residual_qty as residualQuantity," +
-                    "(wopp.actual_qty - wopp.residual_qty - wopp.stock - (pps.pack_qty * wop.qty)) as totalResidualQuantity," +
-                    "wop.note as noteProduct" +
+                    "wopp.residual_qty as residualQuantity, " +
+                    "(wopp.actual_qty - wopp.residual_qty - wopp.stock - (pps.pack_qty * wop.qty)) as totalResidualQuantity, " +
+                    "wop.note as noteProduct " +
                     "from " +
                     "work_order wo, " +
                     "work_order_product wop, " +
                     "packaging_product_size pps, " +
                     "packaging p, " +
                     "products p2, " +
-                    "types t," +
-                    "work_order_product_packaging wopp" +
+                    "types t, " +
+                    "work_order_product_packaging wopp " +
                     "where " +
                     "wo.id = wop.work_order_id " +
                     "and wop.product_id = p2.id " +
                     "and pps.product_id = p2.id " +
                     "and pps.packaging_id = p.id " +
-                    "and p.`type` = t.id" +
+                    "and p.`type` = t.id " +
                     "and wopp.work_order_id = wo.id " +
                     "and wopp.product_id = p2.id " +
                     "and wopp.packaging_id = p.id " +
-                    "order by wop.ordinal_num;";
+                    "order by wop.ordinal_num";
+            ResultSet resultSet = statement.executeQuery(selectAll);
+            while(resultSet.next()) {
+                WorkProduction data = createData(resultSet);
+                list.add(data);
+            }
+            resultSet.close();
+            conn.close();
+        } catch (ClassNotFoundException | SQLException ex) {
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
+        }
+        return list;
+    }
+
+    /**
+     * Getting all records of table
+     *
+     * @param workOrderID the id of work order
+     *
+     * @return list
+     * */
+    public List<WorkProduction> getListByID(int workOrderID) {
+        List<WorkProduction> list = new ArrayList<>();
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            Statement statement = conn.createStatement();
+            String selectAll =  "select " +
+                    "wopp.id as id, " +
+                    "wop.ordinal_num as ordinalNumbers, " +
+                    "wo.name as workOrderName, " +
+                    "p2.name as productName, " +
+                    "p.name as packagingName, " +
+                    "p.specifications as packagingSpecification, " +
+                    "p.dimension as packagingDimension, " +
+                    "p.suplier as packagingSuplier, " +
+                    "p.code as packagingCode, " +
+                    "t.unit as unit, " +
+                    "p.stamped as printStatus, " +
+                    "pps.pack_qty as packQuantity, " +
+                    "(pps.pack_qty * wop.qty) as workOrderQuantity, " +
+                    "wopp.stock as Stock, " +
+                    "wopp.actual_qty as actualQuantity, " +
+                    "wopp.residual_qty as residualQuantity, " +
+                    "(wopp.actual_qty - wopp.residual_qty - wopp.stock - (pps.pack_qty * wop.qty)) as totalResidualQuantity, " +
+                    "wop.note as noteProduct " +
+                    "from " +
+                    "work_order wo, " +
+                    "work_order_product wop, " +
+                    "packaging_product_size pps, " +
+                    "packaging p, " +
+                    "products p2, " +
+                    "types t, " +
+                    "work_order_product_packaging wopp " +
+                    "where " +
+                    "wo.id = wop.work_order_id " +
+                    "and wop.product_id = p2.id " +
+                    "and pps.product_id = p2.id " +
+                    "and pps.packaging_id = p.id " +
+                    "and p.`type` = t.id " +
+                    "and wopp.work_order_id = wo.id " +
+                    "and wopp.product_id = p2.id " +
+                    "and wopp.packaging_id = p.id " +
+                    "and wo.id = "+workOrderID +
+                    " order by wop.ordinal_num";
             ResultSet resultSet = statement.executeQuery(selectAll);
             while(resultSet.next()) {
                 WorkProduction data = createData(resultSet);

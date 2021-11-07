@@ -2,6 +2,7 @@ package fecoder.models;
 
 public class WorkOrderProductPackaging {
     int id;
+    int wop_id;
     int work_order_id;
     int product_id;
     int packaging_id;
@@ -11,6 +12,14 @@ public class WorkOrderProductPackaging {
     float residual_qty;
 
     public WorkOrderProductPackaging() {}
+
+    public int getWop_id() {
+        return wop_id;
+    }
+
+    public void setWop_id(int wop_id) {
+        this.wop_id = wop_id;
+    }
 
     public int getId() {
         return id;

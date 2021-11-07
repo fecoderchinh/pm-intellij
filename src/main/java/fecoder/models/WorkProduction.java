@@ -1,6 +1,7 @@
 package fecoder.models;
 
 public class WorkProduction {
+    int id;
     String ordinalNumbers;
     String workOrderName;
     String productName;
@@ -20,6 +21,14 @@ public class WorkProduction {
     String noteProduct;
 
     public WorkProduction() {}
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getOrdinalNumbers() {
         return ordinalNumbers;
@@ -158,6 +167,7 @@ public class WorkProduction {
     }
 
     public WorkProduction(
+            int id,
             String ordinalNumbers,
             String workOrderName,
             String productName,
@@ -176,6 +186,7 @@ public class WorkProduction {
             float totalResidualQuantity,
             String noteProduct
     ) {
+        this.id = id;
         this.ordinalNumbers = ordinalNumbers;
         this.workOrderName = workOrderName;
         this.productName = productName;

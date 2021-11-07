@@ -110,7 +110,6 @@ create table packaging(
 	price float,
 	stock float,
 	primary key(id),
-	unique key `packaging_unique_keys`(code, type, suplier),
 	foreign key (suplier) references supliers(id),
 	foreign key (type) references types(id)
 );
@@ -182,7 +181,6 @@ create table work_order (
 	destination varchar(250),
 	note longtext,
 	primary key (id),
-	unique key `work_order_unique_keys`(year, customer_id),
 	foreign key (year) references years(id),
 	foreign key (customer_id) references customers(id)
 );
@@ -190,10 +188,13 @@ create table work_order (
 -- drop tables work_order;
 
 insert into work_order (name, lot_number, po_number, year, customer_id, send_date, shipping_date, destination, note)
-values ('LSX 301', '125', '', 1, 1, str_to_date('14-05-2021','%d-%m-%Y'), str_to_date('10-07-2021','%d-%m-%Y'), 'Sydney, Úc', '' );
+values 
+	('LSX 301', '125', '', 1, 1, str_to_date('14-05-2021','%d-%m-%Y'), str_to_date('10-07-2021','%d-%m-%Y'), 'Sydney, Úc', '' ),
+	('LSX 303', '126', '', 2, 1, str_to_date('14-05-2021','%d-%m-%Y'), str_to_date('10-07-2021','%d-%m-%Y'), 'Sydney, Úc', '' );
 
 update work_order set name='LSX 301', lot_number='125', po_number='', year='1', customer_id='1', send_date=str_to_date('14-05-2021','%d-%m-%Y'), shipping_date=str_to_date('10-07-2021','%d-%m-%Y'), destination='Sydney, Úc', note='' where id=1;
 
+ALTER TABLE work_order AUTO_INCREMENT = 1;
 select * from work_order;
 
 /*
@@ -203,11 +204,12 @@ table sizes
 create table sizes(
 	id bigint unsigned not null auto_increment,
 	size varchar(100) not null,
-	primary key `size_unique_keys`(id),
-	unique key (size)
+	primary key (id),
+	unique key `size_unique_keys` (size)
 );
 
 -- drop table sizes;
+ALTER TABLE sizes AUTO_INCREMENT = 1;
 
 insert into sizes(size)
 values ('61/70'), ('16/20'), ('31/40');
@@ -230,7 +232,9 @@ create table products(
 -- drop table products;
 
 insert into products (name, description, specification, note)
-values ('Tôm Thẻ CPD Xiên Que Tỏi 250g x 20 - SGM', 'Tôm Vannamei PD Xiên Que, Tẩm Marinade Tỏi, Luộc', '72% tôm : 28% marinade', 'mô tả ngắn');
+values 
+	('Tôm Thẻ CPD Xiên Que Tỏi 250g x 20 - SGM', 'Tôm Vannamei PD Xiên Que, Tẩm Marinade Tỏi, Luộc', '72% tôm : 28% marinade', 'mô tả ngắn'),
+	('Tôm Sú CPD Tẩm Tỏi Bơ - GM (Coles)', 'Tôm Vannamei PD Xiên Que, Tẩm Marinade Tỏi, Luộc', '72% tôm : 28% marinade', 'mô tả ngắn');
 
 select * from products;
 
@@ -257,7 +261,11 @@ create table packaging_product_size (
 -- drop table packaging_product_size;
 
 insert into packaging_product_size (product_id, size_id, packaging_id, pack_qty)
-values (1, 2, 1, 20), (1, 2, 2, 100), (1, 2, 3, 20), (1, 2, 4, 1);
+values 
+	(1, 2, 1, 20), (1, 2, 2, 100), (1, 2, 3, 20), (1, 2, 4, 1),
+	(2, 3, 1, 20), (2, 3, 2, 50), (2, 3, 3, 20), (2, 3, 4, 1);
+
+ALTER TABLE packaging_product_size AUTO_INCREMENT = 1;
 
 select * from packaging_product_size;
 
@@ -293,13 +301,22 @@ create table work_order_product(
 insert into work_order_product (work_order_id, ordinal_num, product_id, qty, note)
 values (1, "1", 1, 500, "");
 
+-- delete from work_order_product where id=3;
+
 select * from work_order_product;
+
+select wop.id as id, wo.name as workOrderName, p.name as productName, wop.ordinal_num as productOrdinalNumber, wop.qty as productQuantity, wop.note as productNote
+from work_order_product wop, products p, work_order wo 
+where wop.work_order_id  = wo.id and wop.product_id = p.id
+order by wop.ordinal_num;
 
 /*
  * work_order_product_packaging
+ * -- mối quan hệ giữa LSX, Mặt hàng và Bao bì
  * */
 create table work_order_product_packaging (
 	id bigint unsigned not null auto_increment,
+	wop_id bigint unsigned,
 	work_order_id bigint unsigned,
 	product_id bigint unsigned,
 	packaging_id bigint unsigned,
@@ -308,6 +325,7 @@ create table work_order_product_packaging (
 	actual_qty float not null default 0, -- new
 	residual_qty float not null default 0, -- new
 	primary key (id),
+	foreign key (wop_id) references work_order_product(id) on delete cascade,
 	foreign key (work_order_id) references work_order(id) on delete cascade,
 	foreign key (product_id) references products(id) on delete cascade,
 	foreign key (packaging_id) references packaging(id) on delete cascade
@@ -315,10 +333,42 @@ create table work_order_product_packaging (
 
 -- drop table work_order_product_packaging;
 
+select * from work_order_product_packaging;
+
+/*
+ * Các thao tác bên dưới có thể được thực hiện trong cùng 1 hành động duy nhất (Thêm, sửa xóa giữa 2 bảng work_order_product và work_order_product_packaging)
+ * */
+
+-- bước 1: ví dụ thêm số lượng thùng cần đặt cho mặt hàng
+insert into work_order_product (work_order_id, ordinal_num, product_id, qty, note)
+values (1, "1", 2, 120, "");
+
+-- bước 2: áp dụng số lượng thùng cho nhóm bao bì thuộc mặt hàng đó
+insert into work_order_product_packaging(wop_id, work_order_id, product_id, packaging_id, work_order_qty, stock, actual_qty, residual_qty)
+select (select id from work_order_product where id = (SELECT LAST_INSERT_ID())), 1, 2, pps.packaging_id, pps.pack_qty *150,0,0,0
+from packaging_product_size pps
+where pps.product_id = 2;
+
+-- cập nhật số lượng cho từng loại bao bì khi thay đổi số lượng thùng trên
+update work_order_product_packaging wopp
+join (
+	select pps.packaging_id as _id, pps.pack_qty as _pack_qty
+	from packaging_product_size pps
+	where pps.product_id=2
+) pps on wopp.packaging_id = pps._id
+set wopp.work_order_qty = pps._pack_qty * 600;
+
+-- khi xóa mặt hàng từ work_order_product, sẽ kết hợp xóa tất cả bao bì có quan hệ product_id liên quan trong bảng work_order_product_packaging
+delete from work_order_product_packaging where id in (
+	select id
+	from work_order_product_packaging wopp
+	where wopp.product_id = 2
+);
+
 /*
 =================================================
-table mối quan hệ giữa command_product và order (kết hợp số lượng tồn và số lượng đặt)
-- CHƯA XONG
+table hiển thị thông tin số lượng nhập/xuất, có thể dùng để theo dõi/thống kê số liệu trong tương lai
+- CHƯA TEST THỰC TẾ
 */
 select 
 	wop.ordinal_num as ordinalNumbers, 
@@ -355,4 +405,5 @@ where
 	and wopp.work_order_id = wo.id 
 	and wopp.product_id = p2.id 
 	and wopp.packaging_id = p.id 
+-- 	and wo.id = 1
 order by wop.ordinal_num;

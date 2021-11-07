@@ -59,8 +59,12 @@ public class Utils {
             @Override
             public void onChanged(Change change) {
                 for (TablePosition pos : selectedCells) {
-                    if(pos.getRow() != currentRow || !pos.getTableColumn().getText().equals(currentCell)) {
-                        tableView.refresh();
+                    try {
+                        if(pos.getRow() != currentRow || !pos.getTableColumn().getText().equals(currentCell)) {
+                            tableView.refresh();
+                        }
+                    } catch (NullPointerException ex) {
+//                        System.err.println(ex.getMessage());
                     }
                 }
             }
@@ -381,6 +385,15 @@ public class Utils {
                 alert.setHeaderText(typeLabel);
                 alert.setContentText(typeDesc);
                 break;
+            case "info":
+            case "success":
+                typeLabel = alertLabel != null ? alertLabel : "Chúc mừng!";
+                typeDesc = alertDesc != null ? alertDesc : "Thao tác thành công, nhấn OK và kiểm tra kết quả!";
+                alert = new Alert(alertType);
+                alert.setTitle("Thông báo!");
+                alert.setHeaderText(typeLabel);
+                alert.setContentText(typeDesc);
+                break;
             default:
                 typeLabel = alertLabel != null ? alertLabel : "Không xác định được hành động.";
                 alert = new Alert(Alert.AlertType.INFORMATION);
@@ -419,5 +432,21 @@ public class Utils {
             Logger logger = Logger.getLogger(getClass().getName());
             logger.log(Level.SEVERE, "Failed to create new Window.", e);
         }
+    }
+
+    /**
+     * Force the field to be numeric only
+     *
+     * @param textField text field id
+     * */
+    public void inputNumberOnly(TextField textField) {
+        textField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d{0,7}([\\.]\\d{0,4})?")) {
+                    textField.setText(oldValue);
+                }
+            }
+        });
     }
 }

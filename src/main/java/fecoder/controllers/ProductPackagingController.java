@@ -84,7 +84,7 @@ public class ProductPackagingController implements Initializable {
             clearFields();
             reload();
         } catch (NumberFormatException e) {
-            utils.alert("err", Alert.AlertType.ERROR, "Đã xảy ra lỗi!", "Số lượng đóng gói không được để trống hoặc nhỏ hơn 1");
+            utils.alert("err", Alert.AlertType.ERROR, "Đã xảy ra lỗi!", "Số lượng đóng gói không được để trống hoặc nhỏ hơn 1").showAndWait();
         }
     }
 
