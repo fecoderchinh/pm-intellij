@@ -1,24 +1,26 @@
 package fecoder.controllers;
 
+import com.sun.source.tree.Tree;
 import fecoder.DAO.*;
 import fecoder.models.*;
+import fecoder.utils.TreeTableUtil;
 import fecoder.utils.Utils;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.css.PseudoClass;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
 import java.net.URL;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class WorkOrderProductController implements Initializable {
     public Label mainLabel;
@@ -37,22 +39,7 @@ public class WorkOrderProductController implements Initializable {
     public TableColumn<WorkOrderProductString, String> productIdColumn;
     public TableColumn<WorkOrderProductString, String> productNameColumn;
 
-    public TableView<WorkProduction> dataTable;
-    public TableColumn<WorkProduction, Integer> idColumn;
-    public TableColumn<WorkProduction, String> packagingNameColumn;
-    public TableColumn<WorkProduction, String> packagingSpecificationColumn;
-    public TableColumn<WorkProduction, String> packagingDimensionColumn;
-    public TableColumn<WorkProduction, String> packagingSuplierColumn;
-    public TableColumn<WorkProduction, String> packagingCodeColumn;
-    public TableColumn<WorkProduction, String> unitColumn;
-    public TableColumn<WorkProduction, String> printStatusColumn;
-    public TableColumn<WorkProduction, Integer> packQuantityColumn;
-    public TableColumn<WorkProduction, Float> workOrderQuantityColumn;
-    public TableColumn<WorkProduction, Float> stockColumn;
-    public TableColumn<WorkProduction, Float> actualQuantityColumn;
-    public TableColumn<WorkProduction, Float> residualQuantityColumn;
-    public TableColumn<WorkProduction, Float> totalResidualQuantityColumn;
-    public TableColumn<WorkProduction, String> noteProductColumn;
+    public TreeTableView<WorkProduction> dataTable;
     
     public Label anchorLabel;
     public Label anchorData;
@@ -221,7 +208,8 @@ public class WorkOrderProductController implements Initializable {
      * Reloading method
      * */
     private void reload() {
-        utils.reloadTableViewOnChange(dataTable, currentRow, currentCell);
+        utils.reloadTreeTableViewOnChange(dataTable, currentRow, currentCell);
+        utils.reloadTableViewOnChange(productTableView, currentRow, currentCell);
         clearFields();
         loadView();
     }
@@ -364,9 +352,9 @@ public class WorkOrderProductController implements Initializable {
         });
 
         SortedList<WorkProduction> sortedList = new SortedList<>(filteredList);
-        sortedList.comparatorProperty().bind(dataTable.comparatorProperty());
-
-        dataTable.setItems(sortedList);
+//        sortedList.comparatorProperty().bind(dataTable.comparatorProperty());
+//
+//        dataTable.setItems(sortedList);
     }
 
     /**
@@ -385,19 +373,70 @@ public class WorkOrderProductController implements Initializable {
 
         resetComboBox();
 
-        dataTable.setEditable(true);
+//        dataTable.setEditable(true);
 
-        idColumn.setSortable(false);
-        idColumn.setCellValueFactory(column -> new ReadOnlyObjectWrapper<Integer>(dataTable.getItems().indexOf(column.getValue())+1));
+//        ObservableList<WorkProduction> workOrderList = FXCollections.observableArrayList(workProductionDAO.getWorkOrderList(workOrderDAO.getDataByName(mainLabel.getText()).getId()));
+//        for (WorkProduction _workOrder : workOrderList) {
+//            System.out.println(_workOrder.getWorkOrderName());
+//            if(_workOrder.getWorkOrderName() != null) {
+//                ObservableList<WorkProduction> productList = FXCollections.observableArrayList(workProductionDAO.getProductList(workOrderDAO.getDataByName(_workOrder.getWorkOrderName()).getId()));
+//                for (WorkProduction _product : productList) {
+//                    System.out.println(_product.getProductName());
+//                    ObservableList<WorkProduction> packagingList = FXCollections.observableArrayList(workProductionDAO.getPackagingList(productDAO.getDataByName(_product.getProductName()).getId()));
+//                    for (WorkProduction _packaging : packagingList) {
+//                        System.out.println(_packaging.getPackagingName() + " | " + _packaging.getPackagingSuplier());
+//                    }
+//                }
+//            }
+//        }
 
-        packagingNameColumn.setCellValueFactory(new PropertyValueFactory<>("packagingName"));
-        packagingNameColumn.setCellValueFactory(new PropertyValueFactory<>("packagingName"));
+        TreeItem<WorkProduction> root = TreeTableUtil.getModel(mainLabel.getText());
+        root.setExpanded(true);
+
+        dataTable.setRoot(root);
+
+        dataTable.getColumns().clear();
+
+//        dataTable.getColumns().add(TreeTableUtil.getIdColumn());
+        dataTable.getColumns().add(TreeTableUtil.getWorkOrderNameColumn());
+//        dataTable.getColumns().add(TreeTableUtil.getOrdinalNumberColumn());
+//        dataTable.getColumns().add(TreeTableUtil.getProductNameColumn());
+        dataTable.getColumns().add(TreeTableUtil.getPackagingNameColumn(dataTable));
+//        dataTable.getColumns().add(TreeTableUtil.getPackagingSpecificationColumn(dataTable));
+        dataTable.getColumns().add(TreeTableUtil.getPackagingDimensionColumn(dataTable));
+        dataTable.getColumns().add(TreeTableUtil.getPackagingSuplierColumn());
+        dataTable.getColumns().add(TreeTableUtil.getPackagingCodeColumn());
+        dataTable.getColumns().add(TreeTableUtil.getUnitColumn());
+//        dataTable.getColumns().add(TreeTableUtil.getPrintStatusColumn());
+//        dataTable.getColumns().add(TreeTableUtil.getPackQuantityColumn());
+        dataTable.getColumns().add(TreeTableUtil.getWorkOrderQuantityColumn());
+        dataTable.getColumns().add(TreeTableUtil.getStockColumn());
+        dataTable.getColumns().add(TreeTableUtil.getActualQuantityColumn());
+        dataTable.getColumns().add(TreeTableUtil.getResidualQuantityColumn());
+        dataTable.getColumns().add(TreeTableUtil.getTotalResidualQuantityColumn());
+        dataTable.getColumns().add(TreeTableUtil.getNoteProductColumn());
 
 //        setContextMenu();
 
-        utils.reloadTableViewOnChange(dataTable, currentRow, currentCell);
+        final PseudoClass topNode = PseudoClass.getPseudoClass("top-node");
+        dataTable.setRowFactory(t -> {
+            final TreeTableRow<WorkProduction> row = new TreeTableRow<>();
 
-        setSearchField();
+            // every time the TreeItem changes, check, if the new item is a
+            // child of the root and set the pseudoclass accordingly
+            row.treeItemProperty().addListener((o, oldValue, newValue) -> {
+                boolean tn = false;
+                if (newValue != null) {
+                    tn = newValue.getParent() == root;
+                }
+                row.pseudoClassStateChanged(topNode, tn);
+            });
+            return row;
+        });
+
+        utils.reloadTreeTableViewOnChange(dataTable, currentRow, currentCell);
+
+//        setSearchField();
     }
 
     public void setData(WorkOrder workOrder) {

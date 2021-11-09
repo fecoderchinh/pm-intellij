@@ -433,6 +433,7 @@ public class WorkOrderController implements Initializable {
              */
             Scene scene = new Scene(fxmlLoader.load());
             Stage stage = new Stage();
+            scene.getStylesheets().add("style.css");
             stage.setTitle(title);
             stage.setScene(scene);
             stage.initModality(Modality.APPLICATION_MODAL);

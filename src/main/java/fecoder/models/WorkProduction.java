@@ -2,13 +2,13 @@ package fecoder.models;
 
 public class WorkProduction {
     int id;
-    String ordinalNumbers;
+    float ordinalNumbers;
     String workOrderName;
     String productName;
     String packagingName;
     String packagingSpecification;
     String packagingDimension;
-    String packagingSuplier;
+    int packagingSuplier;
     String packagingCode;
     String unit;
     String printStatus;
@@ -19,8 +19,51 @@ public class WorkProduction {
     float residualQuantity;
     float totalResidualQuantity;
     String noteProduct;
+    String year;
 
     public WorkProduction() {}
+
+    public WorkProduction(
+            int id,
+            float ordinalNumbers,
+            String workOrderName,
+            String productName,
+            String packagingName,
+            String packagingSpecification,
+            String packagingDimension,
+            int packagingSuplier,
+            String packagingCode,
+            String unit,
+            String printStatus,
+            int packQuantity,
+            float workOrderQuantity,
+            float Stock,
+            float actualQuantity,
+            float residualQuantity,
+            float totalResidualQuantity,
+            String noteProduct,
+            String year
+    ) {
+        this.id = id;
+        this.ordinalNumbers = ordinalNumbers;
+        this.workOrderName = workOrderName;
+        this.productName = productName;
+        this.packagingName = packagingName;
+        this.packagingSpecification = packagingSpecification;
+        this.packagingDimension = packagingDimension;
+        this.packagingSuplier = packagingSuplier;
+        this.packagingCode = packagingCode;
+        this.unit = unit;
+        this.printStatus = printStatus;
+        this.packQuantity = packQuantity;
+        this.workOrderQuantity = workOrderQuantity;
+        this.Stock = Stock;
+        this.actualQuantity = actualQuantity;
+        this.residualQuantity = residualQuantity;
+        this.totalResidualQuantity = totalResidualQuantity;
+        this.noteProduct = noteProduct;
+        this.year = year;
+    }
 
     public int getId() {
         return id;
@@ -30,11 +73,11 @@ public class WorkProduction {
         this.id = id;
     }
 
-    public String getOrdinalNumbers() {
+    public float getOrdinalNumbers() {
         return ordinalNumbers;
     }
 
-    public void setOrdinalNumbers(String ordinalNumbers) {
+    public void setOrdinalNumbers(float ordinalNumbers) {
         this.ordinalNumbers = ordinalNumbers;
     }
 
@@ -78,11 +121,11 @@ public class WorkProduction {
         this.packagingDimension = packagingDimension;
     }
 
-    public String getPackagingSuplier() {
+    public int getPackagingSuplier() {
         return packagingSuplier;
     }
 
-    public void setPackagingSuplier(String packagingSuplier) {
+    public void setPackagingSuplier(int packagingSuplier) {
         this.packagingSuplier = packagingSuplier;
     }
 
@@ -166,43 +209,11 @@ public class WorkProduction {
         this.noteProduct = noteProduct;
     }
 
-    public WorkProduction(
-            int id,
-            String ordinalNumbers,
-            String workOrderName,
-            String productName,
-            String packagingName,
-            String packagingSpecification,
-            String packagingDimension,
-            String packagingSuplier,
-            String packagingCode,
-            String unit,
-            String printStatus,
-            int packQuantity,
-            float workOrderQuantity,
-            float Stock,
-            float actualQuantity,
-            float residualQuantity,
-            float totalResidualQuantity,
-            String noteProduct
-    ) {
-        this.id = id;
-        this.ordinalNumbers = ordinalNumbers;
-        this.workOrderName = workOrderName;
-        this.productName = productName;
-        this.packagingName = packagingName;
-        this.packagingSpecification = packagingSpecification;
-        this.packagingDimension = packagingDimension;
-        this.packagingSuplier = packagingSuplier;
-        this.packagingCode = packagingCode;
-        this.unit = unit;
-        this.printStatus = printStatus;
-        this.packQuantity = packQuantity;
-        this.workOrderQuantity = workOrderQuantity;
-        this.Stock = Stock;
-        this.actualQuantity = actualQuantity;
-        this.residualQuantity = residualQuantity;
-        this.totalResidualQuantity = totalResidualQuantity;
-        this.noteProduct = noteProduct;
+    public String getYear() {
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
     }
 }

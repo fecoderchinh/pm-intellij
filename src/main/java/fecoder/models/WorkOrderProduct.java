@@ -3,7 +3,7 @@ package fecoder.models;
 public class WorkOrderProduct {
     int id;
     int work_order_id;
-    String ordinal_num;
+    float ordinal_num;
     int product_id;
     float qty;
     String note;
@@ -13,7 +13,7 @@ public class WorkOrderProduct {
     public WorkOrderProduct(
             int id,
             int work_order_id,
-            String ordinal_num,
+            float ordinal_num,
             int product_id,
             float qty,
             String note
@@ -42,11 +42,11 @@ public class WorkOrderProduct {
         this.work_order_id = work_order_id;
     }
 
-    public String getOrdinal_num() {
+    public float getOrdinal_num() {
         return ordinal_num;
     }
 
-    public void setOrdinal_num(String ordinal_num) {
+    public void setOrdinal_num(float ordinal_num) {
         this.ordinal_num = ordinal_num;
     }
 

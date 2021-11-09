@@ -301,7 +301,7 @@ create table work_order_product(
 insert into work_order_product (work_order_id, ordinal_num, product_id, qty, note)
 values (1, "1", 1, 500, "");
 
--- delete from work_order_product where id=3;
+-- delete from work_order_product;
 
 select * from work_order_product;
 
@@ -335,6 +335,11 @@ create table work_order_product_packaging (
 
 select * from work_order_product_packaging;
 
+SELECT wopp.product_id
+FROM work_order_product_packaging wopp
+WHERE wopp.work_order_id = 1
+group by wopp.product_id;
+
 /*
  * Các thao tác bên dưới có thể được thực hiện trong cùng 1 hành động duy nhất (Thêm, sửa xóa giữa 2 bảng work_order_product và work_order_product_packaging)
  * */
@@ -345,7 +350,7 @@ values (1, "1", 2, 120, "");
 
 -- bước 2: áp dụng số lượng thùng cho nhóm bao bì thuộc mặt hàng đó
 insert into work_order_product_packaging(wop_id, work_order_id, product_id, packaging_id, work_order_qty, stock, actual_qty, residual_qty)
-select (select id from work_order_product where id = (SELECT LAST_INSERT_ID())), 1, 2, pps.packaging_id, pps.pack_qty *150,0,0,0
+select (select id from work_order_product order by id desc limit 1), 1, 2, pps.packaging_id, pps.pack_qty *150,0,0,0
 from packaging_product_size pps
 where pps.product_id = 2;
 
@@ -370,7 +375,8 @@ delete from work_order_product_packaging where id in (
 table hiển thị thông tin số lượng nhập/xuất, có thể dùng để theo dõi/thống kê số liệu trong tương lai
 - CHƯA TEST THỰC TẾ
 */
-select 
+select
+	wopp.id as id,
 	wop.ordinal_num as ordinalNumbers, 
 	wo.name as workOrderName, 
 	p2.name as productName, 
@@ -387,7 +393,8 @@ select
 	wopp.actual_qty as actualQuantity, 
 	wopp.residual_qty as residualQuantity,
 	(wopp.actual_qty - wopp.residual_qty - wopp.stock - (pps.pack_qty * wop.qty)) as totalResidualQuantity,
-	wop.note as noteProduct
+	wop.note as noteProduct,
+	y.year as year
 from 
 	work_order wo, 
 	work_order_product wop, 
@@ -395,7 +402,8 @@ from
 	packaging p, 
 	products p2, 
 	types t,
-	work_order_product_packaging wopp
+	work_order_product_packaging wopp,
+	years y
 where 
 	wo.id = wop.work_order_id 
 	and wop.product_id = p2.id 
@@ -405,5 +413,8 @@ where
 	and wopp.work_order_id = wo.id 
 	and wopp.product_id = p2.id 
 	and wopp.packaging_id = p.id 
--- 	and wo.id = 1
+	and wo.`year`  = y.id
+	and wop.work_order_id = 1
+	and wop.product_id = 2
+	and wop.ordinal_num = 3
 order by wop.ordinal_num;

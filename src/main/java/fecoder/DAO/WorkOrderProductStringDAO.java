@@ -91,4 +91,33 @@ public class WorkOrderProductStringDAO {
         }
         return list;
     }
+
+    /**
+     * Getting all records of table
+     *
+     * @param workOrderName the name of work_order
+     *
+     * @return list
+     * */
+    public WorkOrderProductString getDataByName(String workOrderName) {
+        WorkOrderProductString data = new WorkOrderProductString();
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            Statement statement = conn.createStatement();
+            String selectAll =  "select wop.id as id, wo.name as workOrderName, p.name as productName, wop.ordinal_num as productOrdinalNumber, wop.qty as productQuantity, wop.note as productNote" +
+                    " from work_order_product wop, products p, work_order wo" +
+                    " where wop.work_order_id  = wo.id and wop.product_id = p.id and wo.name = '"+ workOrderName +"'"+
+                    " order by wop.ordinal_num";
+            ResultSet resultSet = statement.executeQuery(selectAll);
+            while(resultSet.next()) {
+                data = createData(resultSet);
+            }
+            resultSet.close();
+            conn.close();
+        } catch (ClassNotFoundException | SQLException ex) {
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
+        }
+        return data;
+    }
 }

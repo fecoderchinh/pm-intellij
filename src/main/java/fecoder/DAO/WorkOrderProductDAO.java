@@ -22,7 +22,7 @@ public class WorkOrderProductDAO {
         try {
             data.setId(resultSet.getInt("id"));
             data.setWork_order_id(resultSet.getInt("work_order_id"));
-            data.setOrdinal_num(resultSet.getNString("ordinal_num"));
+            data.setOrdinal_num(resultSet.getFloat("ordinal_num"));
             data.setProduct_id(resultSet.getInt("product_id"));
             data.setQty(resultSet.getInt("qty"));
             data.setNote(resultSet.getString("note"));
@@ -59,6 +59,34 @@ public class WorkOrderProductDAO {
     }
 
     /**
+     * Getting all records of table
+     *
+     * @param work_order_id from work_order_product.work_order_id
+     *
+     * @return list
+     * */
+    public List<WorkOrderProduct> getListByID(int work_order_id) {
+        List<WorkOrderProduct> list = new ArrayList<>();
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            Statement statement = conn.createStatement();
+            String selectAll = "Select * from "+tableName+" where work_order_id="+work_order_id;
+            ResultSet resultSet = statement.executeQuery(selectAll);
+            while (resultSet.next()) {
+                WorkOrderProduct data = createData(resultSet);
+                list.add(data);
+            }
+            resultSet.close();
+            conn.close();
+        } catch (ClassNotFoundException | SQLException ex) {
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
+        }
+
+        return list;
+    }
+
+    /**
      * Getting record data by its ID
      *
      * @param id - record id
@@ -70,6 +98,31 @@ public class WorkOrderProductDAO {
             Connection conn = ConnectionUtils.getMyConnection();
             PreparedStatement preparedStatement = conn.prepareStatement("select * from "+ tableName +" where id=?");
             preparedStatement.setInt(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                data = createData(resultSet);
+            }
+            resultSet.close();
+            conn.close();
+        } catch (ClassNotFoundException | SQLException ex) {
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
+        }
+        return data;
+    }
+
+    /**
+     * Getting record data by its ID
+     *
+     * @param id - record id
+     * @return data
+     * */
+    public WorkOrderProduct getDataByOrdinalNumber(String id) {
+        WorkOrderProduct data = new WorkOrderProduct();
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement("select * from "+ tableName +" where ordinal_num=?");
+            preparedStatement.setString(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
                 data = createData(resultSet);

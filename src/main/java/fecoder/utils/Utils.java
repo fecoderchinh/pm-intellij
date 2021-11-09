@@ -73,6 +73,42 @@ public class Utils {
 
     /**
      *
+     * Handle the way how to escape from "click outside" event
+     * whenever click on the other row or cell either
+     * This method also support for "F5" and "ESC" KeyCode
+     *
+     * @param treeTableView - TreeTableView ID
+     * @param currentRow - current row for comparison
+     * @param currentCell - current cell for comparison
+     *
+     * (this mean there are currentRow and currentCell in the controller)
+     *
+     * */
+    public void reloadTreeTableViewOnChange(TreeTableView treeTableView, int currentRow, String currentCell) {
+        treeTableView.setOnKeyPressed(event -> {
+            if(event.getCode() == KeyCode.ESCAPE || event.getCode() == KeyCode.F5) {
+                treeTableView.refresh();
+            }
+        });
+        ObservableList<TreeTablePosition> selectedCells = treeTableView.getSelectionModel().getSelectedCells();
+        selectedCells.addListener(new ListChangeListener<TreeTablePosition>() {
+            @Override
+            public void onChanged(Change change) {
+                for (TreeTablePosition pos : selectedCells) {
+                    try {
+                        if(pos.getRow() != currentRow || !pos.getTableColumn().getText().equals(currentCell)) {
+                            treeTableView.refresh();
+                        }
+                    } catch (NullPointerException ex) {
+//                        System.err.println(ex.getMessage());
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     *
      * Handle an event for opening new Window with a Textarea
      *
      * @param owner the parent Window
@@ -421,6 +457,7 @@ public class Utils {
              * fxmlLoader.setController(NewWindowController);
              */
             Scene scene = new Scene(fxmlLoader.load());
+            scene.getStylesheets().add("style.css");
             Stage stage = new Stage();
             stage.setTitle(title);
             stage.setScene(scene);

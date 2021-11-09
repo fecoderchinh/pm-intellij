@@ -110,25 +110,7 @@
                 </HBox>
             </HBox>
             <ScrollPane prefHeight="655.0" prefWidth="770.0">
-                <TableView fx:id="dataTable" editable="true" maxWidth="1.7976931348623157E308" prefHeight="652.0" prefWidth="1500.0">
-                    <columns>
-                        <TableColumn fx:id="idColumn" prefWidth="50.0" text="STT" />
-                        <TableColumn fx:id="packagingNameColumn" prefWidth="150.0" text="Tên bao bì" />
-                        <TableColumn fx:id="packagingSpecificationColumn" prefWidth="150.0" text="Qui cách" />
-                        <TableColumn fx:id="packagingDimensionColumn" prefWidth="70.0" text="Kích thước" />
-                        <TableColumn fx:id="packagingSuplierColumn" prefWidth="70.0" text="NCC" />
-                        <TableColumn fx:id="packagingCodeColumn" prefWidth="70.0" text="Mã BB" />
-                        <TableColumn fx:id="unitColumn" prefWidth="70.0" text="ĐVT" />
-                        <TableColumn fx:id="printStatusColumn" prefWidth="70.0" text="In sẵn" />
-                        <TableColumn fx:id="packQuantityColumn" prefWidth="70.0" text="Đóng gói /thùng" />
-                        <TableColumn fx:id="workOrderQuantityColumn" prefWidth="200.0" text="SL cần" />
-                        <TableColumn fx:id="stockColumn" prefWidth="200.0" text="SL Tồn" />
-                        <TableColumn fx:id="actualQuantityColumn" prefWidth="200.0" text="SL Đặt" />
-                        <TableColumn fx:id="residualQuantityColumn" prefWidth="200.0" text="Hao hụt" />
-                        <TableColumn fx:id="totalResidualQuantityColumn" prefWidth="200.0" text="Tổng đặt" />
-                        <TableColumn fx:id="noteProductColumn" prefWidth="200.0" text="Lưu ý" />
-                    </columns>
-                </TableView>
+                <TreeTableView fx:id="dataTable" maxWidth="1.7976931348623157E308" prefHeight="652.0" prefWidth="1500.0"/>
             </ScrollPane>
         </VBox>
     </center>

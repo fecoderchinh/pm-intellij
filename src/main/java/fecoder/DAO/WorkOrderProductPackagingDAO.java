@@ -106,7 +106,7 @@ public class WorkOrderProductPackagingDAO {
      * */
     public void insertBasedOnWOPLatestData(int work_order_id, int product_id, float wop_qty) {
         String query = "insert into work_order_product_packaging(wop_id, work_order_id, product_id, packaging_id, work_order_qty, stock, actual_qty, residual_qty)" +
-                " select (select id from work_order_product where id = (SELECT LAST_INSERT_ID())), ?, ?, pps.packaging_id, pps.pack_qty * ?,0,0,0" +
+                " select (select id from work_order_product order by id desc limit 1), ?, ?, pps.packaging_id, pps.pack_qty * ?,0,0,0" +
                 " from packaging_product_size pps" +
                 " where pps.product_id = ?";
         preparedInsertQueryBasedOnWOPData(query, work_order_id, product_id, wop_qty);
