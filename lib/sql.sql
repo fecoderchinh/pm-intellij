@@ -6,15 +6,13 @@
 
 -- drop database pmdb;
 
-show databases;
+-- show databases;
 
 create database pmdb character set = 'utf8';
 
 use pmdb;
 
-# drop database pmdb;
-
-show tables;
+-- show tables;
 
 /*
 =================================================
@@ -36,7 +34,7 @@ insert into users
 values (1, 'Admin', 'admin', 'secret', 1),
 	   (2, 'User', 'user', 'secret', 2);
 
-select * from users;
+-- select * from users;
 
 /*
 =================================================
@@ -64,7 +62,7 @@ values (N'Công Ty TNHH SX-TM Tân Thuận Thành', N'Lô 43A, Đường số 2,
 	   (N'Công Ty TNHH Một Thành Viên Trung Tre', '108/49 KP.5, P. Định Hoà, Thủ Dầu Một, T. Bình Dương', 'kinhdoanh@trungtre.com', 'Mr. Trung', '0650 3 884 700', '0650 3 884580', 'TTR'),
 	   (N'Công Ty TNHH Hải Nam - CN Cần Thơ', 'K35, Đường số 3, Khu ĐTM Hưng Phú, P. Hưng Thạnh, Q. Cái Răng, Tp. Cần Thơ', '', 'Mr. Giang', '02923 733 399', '02923 753 399', 'HN');
 	   
-select * from supliers;
+-- select * from supliers;
 
 /*
 =================================================
@@ -87,7 +85,7 @@ values (N'Thùng Carton', 'Cái'),
 	   (N'Que tre', 'Que'),
 	   (N'Rider', 'Tờ');
 	   
-select * from types;
+-- select * from types;
 
 /*
 =================================================
@@ -122,7 +120,7 @@ values ('Túi PA trắng 20 x 33 rider 7.5', 'PAPE, dày 100mic, hàn biên 1cm,
 	   (N'Rider KAILISBROS Cooked Prawn SGM 250g (New Ingredient)', 'Giấy C230, in Offset, 02 mặt khác nhau', '17.5 x 5', 1, 5, 0, 0, 'N742', 0, '', 170, 0.0),
 	   ('Thùng KAILISBROS Cooked Prawn SGM 250g x 20 (New COO)', 'Thùng giấy carton, 05 lớp, sóng EB, chống thấm 02 mặt, in Flexo 01 màu', '36.5 x 22 x 14', 1, 1, 0, 0, 'T556', 1, '', 6300, 0.0);
 
-select * from packaging;
+-- select * from packaging;
 
 /*
 =================================================
@@ -142,7 +140,7 @@ create table customers (
 insert into customers (name, note)
 values ('KB Seafood Company PTY LTD', '');
 
-select * from customers;
+-- select * from customers;
 
 /*
 =================================================
@@ -160,7 +158,7 @@ create table years(
 insert into years(year)
 values ('2020'), ('2021');
 
-select * from years;
+-- select * from years;
 
 /*
 =================================================
@@ -192,10 +190,10 @@ values
 	('LSX 301', '125', '', 1, 1, str_to_date('14-05-2021','%d-%m-%Y'), str_to_date('10-07-2021','%d-%m-%Y'), 'Sydney, Úc', '' ),
 	('LSX 303', '126', '', 2, 1, str_to_date('14-05-2021','%d-%m-%Y'), str_to_date('10-07-2021','%d-%m-%Y'), 'Sydney, Úc', '' );
 
-update work_order set name='LSX 301', lot_number='125', po_number='', year='1', customer_id='1', send_date=str_to_date('14-05-2021','%d-%m-%Y'), shipping_date=str_to_date('10-07-2021','%d-%m-%Y'), destination='Sydney, Úc', note='' where id=1;
+-- update work_order set name='LSX 301', lot_number='125', po_number='', year='1', customer_id='1', send_date=str_to_date('14-05-2021','%d-%m-%Y'), shipping_date=str_to_date('10-07-2021','%d-%m-%Y'), destination='Sydney, Úc', note='' where id=1;
 
-ALTER TABLE work_order AUTO_INCREMENT = 1;
-select * from work_order;
+-- ALTER TABLE work_order AUTO_INCREMENT = 1;
+-- select * from work_order;
 
 /*
 =================================================
@@ -209,12 +207,12 @@ create table sizes(
 );
 
 -- drop table sizes;
-ALTER TABLE sizes AUTO_INCREMENT = 1;
+-- ALTER TABLE sizes AUTO_INCREMENT = 1;
 
 insert into sizes(size)
 values ('61/70'), ('16/20'), ('31/40');
 
-select * from sizes;
+-- select * from sizes;
 
 /*
 =================================================
@@ -236,7 +234,7 @@ values
 	('Tôm Thẻ CPD Xiên Que Tỏi 250g x 20 - SGM', 'Tôm Vannamei PD Xiên Que, Tẩm Marinade Tỏi, Luộc', '72% tôm : 28% marinade', 'mô tả ngắn'),
 	('Tôm Sú CPD Tẩm Tỏi Bơ - GM (Coles)', 'Tôm Vannamei PD Xiên Que, Tẩm Marinade Tỏi, Luộc', '72% tôm : 28% marinade', 'mô tả ngắn');
 
-select * from products;
+-- select * from products;
 
 /*
 =================================================
@@ -265,18 +263,22 @@ values
 	(1, 2, 1, 20), (1, 2, 2, 100), (1, 2, 3, 20), (1, 2, 4, 1),
 	(2, 3, 1, 20), (2, 3, 2, 50), (2, 3, 3, 20), (2, 3, 4, 1);
 
-ALTER TABLE packaging_product_size AUTO_INCREMENT = 1;
+-- ALTER TABLE packaging_product_size AUTO_INCREMENT = 1;
 
-select * from packaging_product_size;
+-- select * from packaging_product_size;
 
 /*
  * Đoạn dưới dùng cho packagingOwner 
  * (chuyển đổi dữ liệu thành string để tiện cho việc quản lý trên hệ thống)
  * */
+/*
+ * 
 select a.id as id, b.name as packagingName, c.name as productName, d.size as size, a.pack_qty as pack_qty
 from packaging_product_size a, packaging b, products c, sizes d
 where a.packaging_id = b.id and a.product_id = c.id and a.size_id = d.id
 order by c.name;
+ * 
+ * */
 /*
 =================================================
 table mối quan hệ giữa lệnh sản xuất, đơn hàng, mặt hàng
@@ -287,7 +289,7 @@ table mối quan hệ giữa lệnh sản xuất, đơn hàng, mặt hàng
 create table work_order_product(
 	id bigint unsigned not null auto_increment,
 	work_order_id bigint unsigned,
-	ordinal_num varchar(100) not null default "#",
+	ordinal_num varchar(100),
 	product_id bigint unsigned,
 	qty float not null default 0,
 	note longtext,
@@ -296,19 +298,21 @@ create table work_order_product(
 	foreign key (work_order_id) references work_order(id) on delete cascade
 );
 
+-- ALTER TABLE work_order_product MODIFY ordinal_num float not null default 0;
+
 -- drop table work_order_product;
 
-insert into work_order_product (work_order_id, ordinal_num, product_id, qty, note)
-values (1, "1", 1, 500, "");
+/*insert into work_order_product (work_order_id, ordinal_num, product_id, qty, note)
+values (1, 1.0, 1, 500, "");*/
 
 -- delete from work_order_product;
 
-select * from work_order_product;
+-- select * from work_order_product;
 
-select wop.id as id, wo.name as workOrderName, p.name as productName, wop.ordinal_num as productOrdinalNumber, wop.qty as productQuantity, wop.note as productNote
+/*select wop.id as id, wo.name as workOrderName, p.name as productName, wop.ordinal_num as productOrdinalNumber, wop.qty as productQuantity, wop.note as productNote
 from work_order_product wop, products p, work_order wo 
 where wop.work_order_id  = wo.id and wop.product_id = p.id
-order by wop.ordinal_num;
+order by wop.ordinal_num;*/
 
 /*
  * work_order_product_packaging
@@ -333,49 +337,56 @@ create table work_order_product_packaging (
 
 -- drop table work_order_product_packaging;
 
-select * from work_order_product_packaging;
+-- select * from work_order_product_packaging;
 
-SELECT wopp.product_id
+-- delete from work_order_product_packaging;
+
+/*SELECT wopp.product_id
 FROM work_order_product_packaging wopp
 WHERE wopp.work_order_id = 1
-group by wopp.product_id;
+group by wopp.product_id;*/
 
 /*
  * Các thao tác bên dưới có thể được thực hiện trong cùng 1 hành động duy nhất (Thêm, sửa xóa giữa 2 bảng work_order_product và work_order_product_packaging)
  * */
 
 -- bước 1: ví dụ thêm số lượng thùng cần đặt cho mặt hàng
-insert into work_order_product (work_order_id, ordinal_num, product_id, qty, note)
-values (1, "1", 2, 120, "");
+/*insert into work_order_product (work_order_id, ordinal_num, product_id, qty, note)
+values (1, 3.0, 1, 150, "");*/
 
 -- bước 2: áp dụng số lượng thùng cho nhóm bao bì thuộc mặt hàng đó
-insert into work_order_product_packaging(wop_id, work_order_id, product_id, packaging_id, work_order_qty, stock, actual_qty, residual_qty)
-select (select id from work_order_product order by id desc limit 1), 1, 2, pps.packaging_id, pps.pack_qty *150,0,0,0
+/*insert into work_order_product_packaging(wop_id, work_order_id, product_id, packaging_id, work_order_qty, stock, actual_qty, residual_qty)
+select (select id from work_order_product order by id desc limit 1), 1, 1, pps.packaging_id, pps.pack_qty *150,0,0,0
 from packaging_product_size pps
-where pps.product_id = 2;
+where pps.product_id = 1;*/
 
 -- cập nhật số lượng cho từng loại bao bì khi thay đổi số lượng thùng trên
-update work_order_product_packaging wopp
+/*update work_order_product_packaging wopp
 join (
 	select pps.packaging_id as _id, pps.pack_qty as _pack_qty
 	from packaging_product_size pps
-	where pps.product_id=2
+	where pps.product_id=1
 ) pps on wopp.packaging_id = pps._id
-set wopp.work_order_qty = pps._pack_qty * 600;
+join (
+	select wop.id as id
+	from work_order_product wop
+	where wop.product_id = 1 and wop.id = 1
+) wop on wopp.wop_id = wop.id
+set wopp.work_order_qty = pps._pack_qty * 234;*/
 
--- khi xóa mặt hàng từ work_order_product, sẽ kết hợp xóa tất cả bao bì có quan hệ product_id liên quan trong bảng work_order_product_packaging
-delete from work_order_product_packaging where id in (
+-- khi xóa mặt hàng từ work_order_product, sẽ kết hợp xóa tất cả bao bì có quan hệ wop_id liên quan trong bảng work_order_product_packaging
+/*delete from work_order_product_packaging where id in (
 	select id
 	from work_order_product_packaging wopp
-	where wopp.product_id = 2
-);
+	where wopp.wop_id = 2
+);*/
 
 /*
 =================================================
 table hiển thị thông tin số lượng nhập/xuất, có thể dùng để theo dõi/thống kê số liệu trong tương lai
 - CHƯA TEST THỰC TẾ
 */
-select
+/*select 
 	wopp.id as id,
 	wop.ordinal_num as ordinalNumbers, 
 	wo.name as workOrderName, 
@@ -389,10 +400,12 @@ select
 	p.stamped as printStatus, 
 	pps.pack_qty as packQuantity,
 	(pps.pack_qty * wop.qty) as workOrderQuantity, 
+-- 	wopp.work_order_qty as workOrderQuantity, -- based on above formula
 	wopp.stock as Stock, 
 	wopp.actual_qty as actualQuantity, 
 	wopp.residual_qty as residualQuantity,
 	(wopp.actual_qty - wopp.residual_qty - wopp.stock - (pps.pack_qty * wop.qty)) as totalResidualQuantity,
+-- 	"" as totalResidualQuantity, -- based on above formula
 	wop.note as noteProduct,
 	y.year as year
 from 
@@ -414,7 +427,5 @@ where
 	and wopp.product_id = p2.id 
 	and wopp.packaging_id = p.id 
 	and wo.`year`  = y.id
-	and wop.work_order_id = 1
-	and wop.product_id = 2
-	and wop.ordinal_num = 3
-order by wop.ordinal_num;
+	and y.id = 1 and wop.work_order_id = 1 and wop.product_id =1 and wop.ordinal_num = 1.1000000238
+order by wop.ordinal_num;*/

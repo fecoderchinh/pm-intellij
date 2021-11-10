@@ -104,12 +104,44 @@ public class WorkOrderProductPackagingDAO {
      * @param product_id product id
      * @param wop_qty work_order_product quantity
      * */
-    public void insertBasedOnWOPLatestData(int work_order_id, int product_id, float wop_qty) {
+    public void insertWOPChildren(int work_order_id, int product_id, float wop_qty) {
         String query = "insert into work_order_product_packaging(wop_id, work_order_id, product_id, packaging_id, work_order_qty, stock, actual_qty, residual_qty)" +
                 " select (select id from work_order_product order by id desc limit 1), ?, ?, pps.packaging_id, pps.pack_qty * ?,0,0,0" +
                 " from packaging_product_size pps" +
                 " where pps.product_id = ?";
         preparedInsertQueryBasedOnWOPData(query, work_order_id, product_id, wop_qty);
+    }
+
+    /**
+     * Delete method, this will remove all data belong to product id
+     * Run this method immediately after deleting work_order_product.id
+     * -- do not use this method elsewhere without above action
+     *
+     * @param id work_order_product_packaging.wop_id
+     * */
+    public void deleteWOPPChildren(int id) {
+        String query = "delete from work_order_product_packaging where id in ( select id from work_order_product_packaging wopp where wopp.wop_id = ?)";
+        preparedDeleteWOPPChildren(query, id);
+    }
+
+    /**
+     * Update method, this will update all data belong to product id
+     * Run this method immediately after updating work_order_product.id
+     * -- do not use this method elsewhere without above action
+     *
+     * @param product_id product_id
+     * @param work_order_qty work_order_product.work_order_qty
+     * @param wop_id work_order_product.id
+     * */
+    public void updateWOPPChildren(int product_id, float work_order_qty, int wop_id) {
+        String query = "update work_order_product_packaging wopp" +
+                " join (" +
+                " select pps.packaging_id as _id, pps.pack_qty as _pack_qty" +
+                " from packaging_product_size pps" +
+                " where pps.product_id=?" +
+                " ) pps on wopp.packaging_id = pps._id" +
+                " set wopp.work_order_qty = pps._pack_qty * ? where wopp.wop_id = ?";
+        preparedUpdateWOPPChildren(query, product_id, work_order_qty, wop_id);
     }
 
     /**
@@ -128,6 +160,54 @@ public class WorkOrderProductPackagingDAO {
             preparedStatement.setInt(2, product_id);
             preparedStatement.setFloat(3, wop_qty);
             preparedStatement.setInt(4, product_id);
+
+            preparedStatement.executeUpdate();
+
+            preparedStatement.close();
+            conn.close();
+        } catch (Exception ex) {
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
+        }
+    }
+
+    /**
+     * Preparing Insert Query before action
+     *
+     * @param query query string
+     * @param id work_order_product_packaging.wop_id
+     * */
+    public void preparedDeleteWOPPChildren(String query, int id) {
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setInt(1, id);
+
+            preparedStatement.executeUpdate();
+
+            preparedStatement.close();
+            conn.close();
+        } catch (Exception ex) {
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
+        }
+    }
+
+    /**
+     * Preparing Insert Query before action
+     *
+     * @param query query string
+     * @param v1 work_order id
+     * @param v2 work_order_product quantity
+     * @param v3 product id
+     * */
+    public void preparedUpdateWOPPChildren(String query, int v1, float v2, int v3) {
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setInt(1, v1);
+            preparedStatement.setFloat(2, v2);
+            preparedStatement.setInt(3, v3);
 
             preparedStatement.executeUpdate();
 

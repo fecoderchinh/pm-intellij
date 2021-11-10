@@ -1,6 +1,5 @@
 package fecoder.controllers;
 
-import com.sun.source.tree.Tree;
 import fecoder.DAO.*;
 import fecoder.models.*;
 import fecoder.utils.TreeTableUtil;
@@ -15,7 +14,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
@@ -70,7 +68,7 @@ public class WorkOrderProductController implements Initializable {
         } else {
             try {
                 workOrderProductDAO.insert(workOrderInsertData.getId(), ordinalNumberField.getText()+"", productInsertInsertData.getId(), Float.parseFloat(qtyField.getText()), noteField.getText()+"");
-                workOrderProductPackagingDAO.insertBasedOnWOPLatestData(workOrderInsertData.getId(), productInsertInsertData.getId(), Float.parseFloat(qtyField.getText()));
+                workOrderProductPackagingDAO.insertWOPChildren(workOrderInsertData.getId(), productInsertInsertData.getId(), Float.parseFloat(qtyField.getText()));
                 clearFields();
                 reload();
                 utils.alert("info", Alert.AlertType.INFORMATION, null, null).showAndWait();
@@ -87,14 +85,24 @@ public class WorkOrderProductController implements Initializable {
         if(emptyFieldDetected()) {
             utils.alert("err", Alert.AlertType.ERROR, "Xảy ra lỗi!", "Không được bỏ trống các trường bắt buộc (*)").showAndWait();
         } else {
+            System.out.println(this.innerData.getId());
+            System.out.println(ordinalNumberField.getText()+"");
+            System.out.println(product.getId());
+            System.out.println(Float.parseFloat(qtyField.getText()));
+            System.out.println(workOrderProductPackaging.getWop_id());
             try {
                 workOrderProductDAO.update(
-                        this.innerData.getId(),
-                        ordinalNumberField.getText()+"",
+                        this.innerData.getId(), // work_order_product.work_order_id
+                        ordinalNumberField.getText()+"", // work_order_product.ordinal_num
+                        product.getId(), // work_order_product.product_id
+                        Float.parseFloat(qtyField.getText()), // work_order_product.qty
+                        noteField.getText()+"", // work_order_product.note
+                        Integer.parseInt(anchorData.getText()) // work_order_product.id
+                );
+                workOrderProductPackagingDAO.updateWOPPChildren(
                         product.getId(),
                         Float.parseFloat(qtyField.getText()),
-                        noteField.getText()+"",
-                        workOrderProductPackaging.getWop_id()
+                        Integer.parseInt(anchorData.getText())
                 );
                 clearFields();
                 reload();
@@ -243,7 +251,8 @@ public class WorkOrderProductController implements Initializable {
                 alert.setHeaderText(workOrderProductString.getProductName());
                 alert.setContentText(
                         "STT: " + workOrderProductString.getProductOrdinalNumber() + "\n" +
-                                "Mặt hàng: " + workOrderProductString.getProductName() + "\n"
+                                "Mặt hàng: " + workOrderProductString.getProductName() + "\n" +
+                                "Số lượng: " + workOrderProductString.getProductQuantity() + "\n"
                 );
 
                 alert.showAndWait();
@@ -265,6 +274,7 @@ public class WorkOrderProductController implements Initializable {
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == ButtonType.OK){
                     workOrderProductDAO.delete(workOrderProductString.getId());
+                    workOrderProductPackagingDAO.deleteWOPPChildren(workOrderProductString.getId());
                     reload();
                 }
             });

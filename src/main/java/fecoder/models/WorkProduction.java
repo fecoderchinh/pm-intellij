@@ -2,13 +2,13 @@ package fecoder.models;
 
 public class WorkProduction {
     int id;
-    float ordinalNumbers;
+    String ordinalNumbers;
     String workOrderName;
     String productName;
     String packagingName;
     String packagingSpecification;
     String packagingDimension;
-    int packagingSuplier;
+    String packagingSuplier;
     String packagingCode;
     String unit;
     String printStatus;
@@ -25,13 +25,13 @@ public class WorkProduction {
 
     public WorkProduction(
             int id,
-            float ordinalNumbers,
+            String ordinalNumbers,
             String workOrderName,
             String productName,
             String packagingName,
             String packagingSpecification,
             String packagingDimension,
-            int packagingSuplier,
+            String packagingSuplier,
             String packagingCode,
             String unit,
             String printStatus,
@@ -73,11 +73,11 @@ public class WorkProduction {
         this.id = id;
     }
 
-    public float getOrdinalNumbers() {
+    public String getOrdinalNumbers() {
         return ordinalNumbers;
     }
 
-    public void setOrdinalNumbers(float ordinalNumbers) {
+    public void setOrdinalNumbers(String ordinalNumbers) {
         this.ordinalNumbers = ordinalNumbers;
     }
 
@@ -121,11 +121,11 @@ public class WorkProduction {
         this.packagingDimension = packagingDimension;
     }
 
-    public int getPackagingSuplier() {
+    public String getPackagingSuplier() {
         return packagingSuplier;
     }
 
-    public void setPackagingSuplier(int packagingSuplier) {
+    public void setPackagingSuplier(String packagingSuplier) {
         this.packagingSuplier = packagingSuplier;
     }
 

@@ -23,13 +23,13 @@ public class WorkProductionDAO {
         WorkProduction data = new WorkProduction();
         try {
             data.setId(resultSet.getInt("id"));
-            data.setOrdinalNumbers(resultSet.getFloat("ordinalNumbers"));
+            data.setOrdinalNumbers(resultSet.getString("ordinalNumbers"));
             data.setWorkOrderName(resultSet.getString("workOrderName"));
             data.setProductName(resultSet.getString("productName"));
             data.setPackagingName(resultSet.getString("packagingName"));
             data.setPackagingSpecification(resultSet.getString("packagingSpecification"));
             data.setPackagingDimension(resultSet.getString("packagingDimension"));
-            data.setPackagingSuplier(resultSet.getInt("packagingSuplier"));
+            data.setPackagingSuplier(resultSet.getString("packagingSuplier"));
             data.setPackagingCode(resultSet.getString("packagingCode"));
             data.setUnit(resultSet.getString("unit"));
             data.setPrintStatus(resultSet.getString("printStatus"));
@@ -62,7 +62,7 @@ public class WorkProductionDAO {
                     "wop.ordinal_num as ordinalNumbers, " +
                     "wo.name as workOrderName, " +
                     "p2.name as productName, " +
-                    "p.name as packagingName, " +
+                    "s.code as packagingName, " +
                     "p.specifications as packagingSpecification, " +
                     "p.dimension as packagingDimension, " +
                     "p.suplier as packagingSuplier, " +
@@ -128,7 +128,7 @@ public class WorkProductionDAO {
                     "p.name as packagingName, " +
                     "p.specifications as packagingSpecification, " +
                     "p.dimension as packagingDimension, " +
-                    "p.suplier as packagingSuplier, " +
+                    "s.code as packagingSuplier, " +
                     "p.code as packagingCode, " +
                     "t.unit as unit, " +
                     "p.stamped as printStatus, " +
@@ -146,7 +146,9 @@ public class WorkProductionDAO {
                     "packaging p, " +
                     "products p2, " +
                     "types t, " +
-                    "work_order_product_packaging wopp " +
+                    "work_order_product_packaging wopp, " +
+                    "years y, " +
+                    "supliers s " +
                     "where " +
                     "wo.id = wop.work_order_id " +
                     "and wop.product_id = p2.id " +
@@ -156,6 +158,8 @@ public class WorkProductionDAO {
                     "and wopp.work_order_id = wo.id " +
                     "and wopp.product_id = p2.id " +
                     "and wopp.packaging_id = p.id " +
+                    "and wo.`year`  = y.id " +
+                    "and p.suplier = s.id " +
                     "and wo.id = "+workOrderID +
                     " order by wop.ordinal_num";
             ResultSet resultSet = statement.executeQuery(selectAll);
@@ -193,7 +197,7 @@ public class WorkProductionDAO {
                     "p.name as packagingName, " +
                     "p.specifications as packagingSpecification, " +
                     "p.dimension as packagingDimension, " +
-                    "p.suplier as packagingSuplier, " +
+                    "s.code as packagingSuplier, " +
                     "p.code as packagingCode, " +
                     "t.unit as unit, " +
                     "p.stamped as printStatus, " +
@@ -204,7 +208,9 @@ public class WorkProductionDAO {
                     "wopp.residual_qty as residualQuantity, " +
                     "(wopp.actual_qty - wopp.residual_qty - wopp.stock - (pps.pack_qty * wop.qty)) as totalResidualQuantity, " +
                     "wop.note as noteProduct, " +
-                    "y.year as year " +
+                    "y.year as year, " +
+                    "\"\" as privateNode, " +
+                    "\"\" as cbm " +
                     "from " +
                     "work_order wo, " +
                     "work_order_product wop, " +
@@ -213,7 +219,8 @@ public class WorkProductionDAO {
                     "products p2, " +
                     "types t, " +
                     "work_order_product_packaging wopp, " +
-                    "years y " +
+                    "years y, " +
+                    "supliers s " +
                     "where " +
                     "wo.id = wop.work_order_id " +
                     "and wop.product_id = p2.id " +
@@ -224,6 +231,7 @@ public class WorkProductionDAO {
                     "and wopp.product_id = p2.id " +
                     "and wopp.packaging_id = p.id " +
                     "and wo.`year`  = y.id " +
+                    "and p.suplier = s.id " +
                     "and wop.work_order_id = "+work_order_id +
                     " and y.id = "+year +
                     " group by wop.work_order_id order by wop.ordinal_num";
@@ -262,7 +270,7 @@ public class WorkProductionDAO {
                     "p.name as packagingName, " +
                     "p.specifications as packagingSpecification, " +
                     "p.dimension as packagingDimension, " +
-                    "p.suplier as packagingSuplier, " +
+                    "s.code as packagingSuplier, " +
                     "p.code as packagingCode, " +
                     "t.unit as unit, " +
                     "p.stamped as printStatus, " +
@@ -273,7 +281,9 @@ public class WorkProductionDAO {
                     "wopp.residual_qty as residualQuantity, " +
                     "(wopp.actual_qty - wopp.residual_qty - wopp.stock - (pps.pack_qty * wop.qty)) as totalResidualQuantity, " +
                     "wop.note as noteProduct, " +
-                    "y.year as year " +
+                    "y.year as year, " +
+                    "\"\" as privateNode, " +
+                    "\"\" as cbm " +
                     "from " +
                     "work_order wo, " +
                     "work_order_product wop, " +
@@ -282,7 +292,8 @@ public class WorkProductionDAO {
                     "products p2, " +
                     "types t, " +
                     "work_order_product_packaging wopp, " +
-                    "years y " +
+                    "years y, " +
+                    "supliers s " +
                     "where " +
                     "wo.id = wop.work_order_id " +
                     "and wop.product_id = p2.id " +
@@ -293,6 +304,7 @@ public class WorkProductionDAO {
                     "and wopp.product_id = p2.id " +
                     "and wopp.packaging_id = p.id " +
                     "and wo.`year`  = y.id " +
+                    "and p.suplier = s.id " +
                     "and wop.work_order_id = "+work_order_id +
                     " and y.id = "+year +
                     " group by wop.ordinal_num order by wop.ordinal_num";
@@ -320,40 +332,43 @@ public class WorkProductionDAO {
      *
      * @return list
      * */
-    public List<WorkProduction> getPackagingList(int year, int work_order_id, int product_id, float ordinal_num) {
+    public List<WorkProduction> getPackagingList(int year, int work_order_id, int product_id, String ordinal_num) {
         List<WorkProduction> list = new ArrayList<>();
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             Statement statement = conn.createStatement();
             String selectAll =  "select " +
-                    "wopp.id as id," +
+                    "wopp.id as id, " +
                     "wop.ordinal_num as ordinalNumbers, " +
                     "wo.name as workOrderName, " +
                     "p2.name as productName, " +
                     "p.name as packagingName, " +
                     "p.specifications as packagingSpecification, " +
                     "p.dimension as packagingDimension, " +
-                    "p.suplier as packagingSuplier, " +
+                    "s.code as packagingSuplier, " +
                     "p.code as packagingCode, " +
                     "t.unit as unit, " +
                     "p.stamped as printStatus, " +
-                    "pps.pack_qty as packQuantity," +
+                    "pps.pack_qty as packQuantity, " +
                     "(pps.pack_qty * wop.qty) as workOrderQuantity, " +
                     "wopp.stock as Stock, " +
                     "wopp.actual_qty as actualQuantity, " +
-                    "wopp.residual_qty as residualQuantity," +
-                    "(wopp.actual_qty - wopp.residual_qty - wopp.stock - (pps.pack_qty * wop.qty)) as totalResidualQuantity," +
-                    "wop.note as noteProduct," +
-                    "y.year as year " +
+                    "wopp.residual_qty as residualQuantity, " +
+                    "(wopp.actual_qty - wopp.residual_qty - wopp.stock - (pps.pack_qty * wop.qty)) as totalResidualQuantity, " +
+                    "wop.note as noteProduct, " +
+                    "y.year as year, " +
+                    "\"\" as privateNode, " +
+                    "\"\" as cbm " +
                     "from " +
                     "work_order wo, " +
                     "work_order_product wop, " +
                     "packaging_product_size pps, " +
                     "packaging p, " +
                     "products p2, " +
-                    "types t," +
-                    "work_order_product_packaging wopp," +
-                    "years y " +
+                    "types t, " +
+                    "work_order_product_packaging wopp, " +
+                    "years y, " +
+                    "supliers s " +
                     "where " +
                     "wo.id = wop.work_order_id " +
                     "and wop.product_id = p2.id " +
@@ -364,6 +379,7 @@ public class WorkProductionDAO {
                     "and wopp.product_id = p2.id " +
                     "and wopp.packaging_id = p.id " +
                     "and wo.`year`  = y.id " +
+                    "and p.suplier = s.id " +
                     "and y.id = " + year +
                     " and wop.work_order_id = " + work_order_id +
                     " and wop.product_id = " + product_id +

@@ -15,68 +15,6 @@ import javafx.util.Callback;
 
 public class TreeTableUtil {
 
-//    public static TreeItem<WorkProduction> getModel(String workOrderName) {
-//        ProductDAO productDAO = new ProductDAO();
-//        WorkProductionDAO workProductionDAO = new WorkProductionDAO();
-//        WorkOrderDAO workOrderDAO = new WorkOrderDAO();
-//        WorkOrderProductStringDAO workOrderProductStringDAO = new WorkOrderProductStringDAO();
-//        WorkOrderProductDAO workOrderProductDAO = new WorkOrderProductDAO();
-//        YearDAO yearDAO = new YearDAO();
-//
-//        ObservableList<WorkProduction> workOrderList = FXCollections.observableArrayList(workProductionDAO.getWorkOrderList(workOrderDAO.getDataByName(workOrderName).getId(), workOrderDAO.getDataByName(workOrderName).getYear()));
-//
-//        System.out.println(workOrderList.size());
-//        TreeItem<WorkProduction> root = new TreeItem<>();
-//        if(workOrderList.size() != 0) {
-//
-//            for (WorkProduction _workOrder : workOrderList) {
-//                System.out.println(workOrderProductDAO.getDataByID(workOrderProductStringDAO.getDataByName(_workOrder.getWorkOrderName()).getId()).getWork_order_id());
-//                System.out.println(_workOrder.getYear());
-//                System.out.println(workOrderProductDAO.getDataByID(workOrderProductStringDAO.getDataByName(_workOrder.getWorkOrderName()).getId()).getProduct_id());
-//                System.out.println(workOrderProductDAO.getDataByID(workOrderProductStringDAO.getDataByName(_workOrder.getWorkOrderName()).getId()).getOrdinal_num());
-//                TreeItem<WorkProduction> _root = new TreeItem<>(new WorkProduction(0, "", null, null, _workOrder.getWorkOrderName(), null, null, 0, null, null, null, 0, 0, 0, 0, 0, 0, "", 0));
-//                if(_workOrder.getWorkOrderName() != null) {
-//                    System.out.println(workOrderProductDAO.getDataByID(workOrderProductStringDAO.getDataByName(_workOrder.getWorkOrderName()).getId()).getWork_order_id());
-//                    System.out.println(_workOrder.getYear());
-//                    System.out.println(workOrderProductDAO.getDataByID(workOrderProductStringDAO.getDataByName(_workOrder.getWorkOrderName()).getId()).getProduct_id());
-//                    System.out.println(workOrderProductDAO.getDataByID(workOrderProductStringDAO.getDataByName(_workOrder.getWorkOrderName()).getId()).getOrdinal_num());
-//
-//
-//
-//                    ObservableList<WorkProduction> productList = FXCollections.observableArrayList(workProductionDAO.getPackagingList(
-//                            workOrderProductDAO.getDataByID(workOrderProductStringDAO.getDataByName(_workOrder.getWorkOrderName()).getId()).getWork_order_id(),
-//                            _workOrder.getYear(),
-//                            workOrderProductDAO.getDataByID(workOrderProductStringDAO.getDataByName(_workOrder.getWorkOrderName()).getId()).getProduct_id(),
-//                            workOrderProductDAO.getDataByID(workOrderProductStringDAO.getDataByName(_workOrder.getWorkOrderName()).getId()).getOrdinal_num()
-//                    ));
-//                    if(productList.size() != 0) {
-////                        System.out.println(productList.size());
-//                        for(WorkProduction _product : productList) {
-//                            TreeItem<WorkProduction> _productNode = new TreeItem<>(new WorkProduction(0, _product.getOrdinalNumbers(), null, null, _product.getProductName(), null, null, 0, null, null, null, 0, 0, 0, 0, 0, 0, "", 0));
-//                            if(_product.getProductName() != null) {
-//                                ObservableList<WorkProduction> packagingList = FXCollections.observableArrayList(workProductionDAO.getPackagingList(
-//                                        workOrderProductDAO.getDataByID(workOrderProductStringDAO.getDataByName(_workOrder.getWorkOrderName()).getId()).getWork_order_id(),
-//                                        _product.getYear(),
-//                                        workOrderProductDAO.getDataByID(workOrderProductStringDAO.getDataByName(_workOrder.getWorkOrderName()).getId()).getProduct_id(),
-//                                        workOrderProductDAO.getDataByID(workOrderProductStringDAO.getDataByName(_workOrder.getWorkOrderName()).getId()).getOrdinal_num()
-//                                ));
-//                                System.out.println(packagingList.size());
-//                                for(WorkProduction _packaging : packagingList) {
-//                                    TreeItem<WorkProduction> _packagingLeaf = new TreeItem<>(new WorkProduction(0, null, null, null, _packaging.getPackagingName(), null, null, 0, null, null, null, 0, 0, 0, 0, 0, 0, "", 0));
-//                                    _productNode.getChildren().add(_packagingLeaf);
-//                                }
-//                            }
-//                            _root.getChildren().add(_productNode);
-//                        }
-//                    }
-//                }
-//                root = _root;
-//            }
-//        }
-//
-//        return root;
-//    }
-
     public static TreeItem<WorkProduction> getModel(String workOrderName) {
         ProductDAO productDAO = new ProductDAO();
         WorkProductionDAO workProductionDAO = new WorkProductionDAO();
@@ -102,11 +40,11 @@ public class TreeTableUtil {
                                 workOrderDAO.getDataByName(_workOrder.getWorkOrderName()).getYear() // years.id
                         )
                 );
-                TreeItem<WorkProduction> _workOrderNode = new TreeItem<>(new WorkProduction(0, 0, null, null, _workOrder.getWorkOrderName(), null, null, 0, null, null, null, 0, 0, 0, 0, 0, 0, "", ""));
+                TreeItem<WorkProduction> _workOrderNode = new TreeItem<>(new WorkProduction(0, null, null, null, _workOrder.getWorkOrderName(), null, null, null, null, null, null, 0, 0, 0, 0, 0, 0, "", ""));
                 if(productList.size() > 0) {
 //                    System.out.println(productList.size());
                     for(WorkProduction _product : productList) {
-//                        System.out.println("------------------------>" + j);
+//                        System.out.println("------------------------>");
 //                        System.out.println(workOrderDAO.getDataByName(_product.getWorkOrderName()).getYear()); // years.id
 //                        System.out.println(workOrderProductDAO.getDataByID(workOrderProductStringDAO.getDataByName(_product.getWorkOrderName()).getId()).getWork_order_id()); // work_order_product.work_order_id
 //                        System.out.println(workOrderProductDAO.getDataByID(workOrderProductStringDAO.getDataByName(_product.getWorkOrderName()).getId()).getProduct_id()); // work_order_product.product_id
@@ -123,14 +61,17 @@ public class TreeTableUtil {
 //                        System.out.println(workOrderProductDAO.getDataByID(workOrderProductStringDAO.getDataByName(_workOrder.getWorkOrderName()).getId()).getWork_order_id());
 //                        System.out.println(productDAO.getDataByName(_product.getProductName()).getId());
 //                        System.out.println(_product.getOrdinalNumbers());
-                        TreeItem<WorkProduction> _productNode = new TreeItem<>(new WorkProduction(0, 0, null, null, "#"+_product.getOrdinalNumbers() + ": " + _product.getProductName(), null, null, 0, null, null, null, 0, 0, 0, 0, 0, 0, "", ""));
+                        TreeItem<WorkProduction> _productNode = new TreeItem<>(new WorkProduction(0, null, null, null, "#"+_product.getOrdinalNumbers() + ": " + _product.getProductName(), null, null, null, null, null, null, 0, packagingList.get(packagingList.size() > 1 ? packagingList.size()-1 : 0 ).getWorkOrderQuantity(), 0, 0, 0, 0, "", ""));
                         for(WorkProduction _packaging : packagingList) {
 //                            System.out.println(_packaging.getOrdinalNumbers() + "<->" +_packaging.getPackagingName());
-                            _productNode.getChildren().add(new TreeItem<>(_packaging));
+//                            _productNode.getChildren().add(new TreeItem<>(_packaging));
+                            _productNode.getChildren().add(new TreeItem<>(new WorkProduction(0, null, null, null, _packaging.getPackagingName(), null, _packaging.getPackagingDimension(), _packaging.getPackagingSuplier(), _packaging.getPackagingCode(), _packaging.getUnit(), null, 0, _packaging.getWorkOrderQuantity(), _packaging.getStock(), _packaging.getActualQuantity(), _packaging.getResidualQuantity(), _packaging.getTotalResidualQuantity(), "", "")));
+                            _productNode.setExpanded(true);
                         }
 //                        System.out.println("---------------------------------------------");
 
                         _workOrderNode.getChildren().add(_productNode);
+                        _workOrderNode.setExpanded(true);
                     }
                 }
                 root = _workOrderNode;
@@ -256,9 +197,9 @@ public class TreeTableUtil {
         return column;
     }
 
-    public static TreeTableColumn<WorkProduction, Supplier> getPackagingSuplierColumn()
+    public static TreeTableColumn<WorkProduction, String> getPackagingSuplierColumn()
     {
-        TreeTableColumn<WorkProduction, Supplier> column = new TreeTableColumn<>("NCC");
+        TreeTableColumn<WorkProduction, String> column = new TreeTableColumn<>("NCC");
         column.setCellValueFactory(new TreeItemPropertyValueFactory<>("packagingSuplier"));
         return column;
     }
