@@ -3,6 +3,7 @@ package fecoder.controllers;
 import fecoder.DAO.*;
 import fecoder.models.*;
 import fecoder.utils.TreeTableUtil;
+import fecoder.utils.UpdateDocument;
 import fecoder.utils.Utils;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
@@ -16,8 +17,17 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import org.apache.poi.util.Units;
+import org.apache.poi.wp.usermodel.HeaderFooterType;
+import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
+import org.apache.poi.xwpf.usermodel.*;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class WorkOrderProductController implements Initializable {
@@ -32,6 +42,7 @@ public class WorkOrderProductController implements Initializable {
     public ComboBox<String> searchComboBox;
     public TextField searchField;
     public Button reloadData;
+    public Button exportData;
 
     public TableView<WorkOrderProductString> productTableView;
     public TableColumn<WorkOrderProductString, String> productIdColumn;
@@ -456,5 +467,243 @@ public class WorkOrderProductController implements Initializable {
         mainLabel.setText(this.innerData.getName());
         loadViewProduct(this.innerData.getName());
         loadView();
+    }
+
+    public void exportData(ActionEvent actionEvent) throws IOException {
+        helloWord();
+        docStyle();
+        docHeader();
+        docImage();
+        docTable();
+        docRead();
+        docUpdate();
+    }
+
+    private void helloWord() {
+        String fileName = "e:\\java_platform\\helloWord.docx";
+
+        try {
+
+            XWPFDocument doc = new XWPFDocument();
+
+            // create a paragraph
+            XWPFParagraph p1 = doc.createParagraph();
+            p1.setAlignment(ParagraphAlignment.CENTER);
+
+            // set font
+            XWPFRun r1 = p1.createRun();
+            r1.setBold(true);
+            r1.setItalic(true);
+            r1.setFontSize(22);
+            r1.setFontFamily("New Roman");
+            r1.setText("I am first paragraph.");
+
+            // save it to .docx file
+            try (FileOutputStream out = new FileOutputStream(fileName)) {
+                doc.write(out);
+            }
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    private void docStyle() {
+        String fileName = "e:\\java_platform\\docStyle.docx";
+
+        try {
+
+            XWPFDocument doc = new XWPFDocument();
+
+            XWPFParagraph p1 = doc.createParagraph();
+            p1.setAlignment(ParagraphAlignment.CENTER);
+
+            // Set Text to Bold and font size to 22 for first paragraph
+            XWPFRun r1 = p1.createRun();
+            r1.setBold(true);
+            r1.setItalic(true);
+            r1.setFontSize(22);
+            r1.setText("I am first paragraph. My Text is bold, italic, Courier and capitalized");
+            r1.setFontFamily("Courier");
+
+            XWPFParagraph p2 = doc.createParagraph();
+            //Set color for second paragraph
+            XWPFRun r2 = p2.createRun();
+            r2.setText("I am second paragraph. My Text is Red in color and is embossed");
+            r2.setColor("ff0000");
+            r2.setEmbossed(true);
+
+            XWPFParagraph p3 = doc.createParagraph();
+            //Set strike for third paragraph and capitalization
+            XWPFRun r3 = p3.createRun();
+            r3.setStrikeThrough(true);
+            r3.setCapitalized(true);
+            r3.setText("I am third paragraph. My Text is strike through and is capitalized");
+
+            XWPFParagraph p4 = doc.createParagraph();
+            p4.setWordWrapped(true);
+            p4.setPageBreak(true);  // new page break
+            p4.setIndentationFirstLine(600);
+
+            XWPFRun r4 = p4.createRun();
+            r4.setFontSize(40);
+            r4.setItalic(true);
+            //r4.setTextPosition(100);
+            r4.setText("Line 1");
+            r4.addBreak();
+            r4.setText("Line 2");
+            r4.addBreak();
+            r4.setText("Line 3");
+
+            // save it to .docx file
+            try (FileOutputStream out = new FileOutputStream(fileName)) {
+                doc.write(out);
+            }
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    private void docHeader() {
+        String fileName = "e:\\java_platform\\docHeader.docx";
+
+        try {
+
+            XWPFDocument doc = new XWPFDocument();
+
+            XWPFParagraph p = doc.createParagraph();
+            XWPFRun r = p.createRun();
+            r.setBold(true);
+            r.setFontSize(30);
+            r.setText("Create document header and footer!");
+
+            // next page
+            XWPFParagraph p2 = doc.createParagraph();
+            p2.setWordWrapped(true);
+            p2.setPageBreak(true);  // new page break
+
+            XWPFRun r2 = p2.createRun();
+            r2.setFontSize(40);
+            r2.setItalic(true);
+            r2.setText("New Page");
+
+            // document header and footer
+            XWPFHeader head = doc.createHeader(HeaderFooterType.DEFAULT);
+            head.createParagraph()
+                    .createRun()
+                    .setText("This is document header");
+
+            XWPFFooter foot = doc.createFooter(HeaderFooterType.DEFAULT);
+            foot.createParagraph()
+                    .createRun()
+                    .setText("This is document footer");
+
+            // save it to .docx file
+            try (FileOutputStream out = new FileOutputStream(fileName)) {
+                doc.write(out);
+            }
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    private void docImage() {
+        String imgFile = "e:\\java_platform\\google.png";
+        String fileName = "e:\\java_platform\\docImage.docx";
+
+        try {
+
+            XWPFDocument doc = new XWPFDocument();
+
+            XWPFParagraph p = doc.createParagraph();
+            XWPFRun r = p.createRun();
+            r.setText(imgFile);
+            r.addBreak();
+
+            // add png image
+            try (FileInputStream is = new FileInputStream(imgFile)) {
+                r.addPicture(is,
+                        Document.PICTURE_TYPE_PNG,    // png file
+                        imgFile,
+                        Units.toEMU(400),
+                        Units.toEMU(200));            // 400x200 pixels
+            }
+
+            // save it to .docx file
+            try (FileOutputStream out = new FileOutputStream(fileName)) {
+                doc.write(out);
+            }
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    private void docTable() {
+        String imgFile = "e:\\java_platform\\google.png";
+        String fileName = "e:\\java_platform\\docTable.docx";
+
+        try {
+
+            XWPFDocument doc = new XWPFDocument();
+
+            XWPFTable table = doc.createTable();
+
+            //Creating first Row
+            XWPFTableRow row1 = table.getRow(0);
+            row1.getCell(0).setText("First Row, First Column");
+            row1.addNewTableCell().setText("First Row, Second Column");
+            row1.addNewTableCell().setText("First Row, Third Column");
+
+            //Creating second Row
+            XWPFTableRow row2 = table.createRow();
+            row2.getCell(0).setText("Second Row, First Column");
+            row2.getCell(1).setText("Second Row, Second Column");
+            row2.getCell(2).setText("Second Row, Third Column");
+
+            //create third row
+            XWPFTableRow row3 = table.createRow();
+            row3.getCell(0).setText("Third Row, First Column");
+            row3.getCell(1).setText("Third Row, Second Column");
+            row3.getCell(2).setText("Third Row, Third Column");
+
+            // save it to .docx file
+            try (FileOutputStream out = new FileOutputStream(fileName)) {
+                doc.write(out);
+            }
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    private void docRead() {
+        String fileName = "e:\\java_platform\\test.docx";
+
+        try (XWPFDocument doc = new XWPFDocument(
+                Files.newInputStream(Paths.get(fileName)))) {
+
+            XWPFWordExtractor xwpfWordExtractor = new XWPFWordExtractor(doc);
+            String docText = xwpfWordExtractor.getText();
+            System.out.println(docText);
+
+            // find number of words in the document
+            long count = Arrays.stream(docText.split("\\s+")).count();
+            System.out.println("Total words: " + count);
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    private void docUpdate() throws IOException {
+        UpdateDocument obj = new UpdateDocument();
+
+        obj.updateDocument(
+                "e:\\java_platform\\test_input.docx",
+                "e:\\java_platform\\test_output.docx",
+                new String[]{"chinh", "123", "aaa"});
     }
 }

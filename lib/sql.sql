@@ -401,10 +401,10 @@ table hiển thị thông tin số lượng nhập/xuất, có thể dùng để
 	pps.pack_qty as packQuantity,
 	(pps.pack_qty * wop.qty) as workOrderQuantity, 
 -- 	wopp.work_order_qty as workOrderQuantity, -- based on above formula
-	wopp.stock as Stock, 
+	wopp.stock as stock, 
 	wopp.actual_qty as actualQuantity, 
 	wopp.residual_qty as residualQuantity,
-	(wopp.actual_qty - wopp.residual_qty - wopp.stock - (pps.pack_qty * wop.qty)) as totalResidualQuantity,
+	(wopp.actual_qty + wopp.stock - wopp.residual_qty - (pps.pack_qty * wop.qty)) as totalResidualQuantity,
 -- 	"" as totalResidualQuantity, -- based on above formula
 	wop.note as noteProduct,
 	y.year as year,
@@ -433,3 +433,37 @@ where
 	and p.suplier = s.id
 -- 	and y.id = 1 and wop.work_order_id = 1 and wop.product_id =1 and wop.ordinal_num = 1.1000000238
 order by wop.ordinal_num;*/
+
+
+/*tính số khối*/
+select 
+	p.name, 
+	p.dimension, 
+	(SELECT SUBSTRING_INDEX(p.dimension , 'x', 1)) as length, 
+	(SELECT SUBSTRING_INDEX((SELECT SUBSTRING_INDEX(p.dimension , 'x', 2)) , 'x', -1)) as width, 
+	(SELECT SUBSTRING_INDEX(p.dimension , 'x', -1)) as height,
+	((SELECT SUBSTRING_INDEX(p.dimension , 'x', 1))*(SELECT SUBSTRING_INDEX((SELECT SUBSTRING_INDEX(p.dimension , 'x', 2)) , 'x', -1))*(SELECT SUBSTRING_INDEX(p.dimension , 'x', -1))*wop.qty) as CBM
+from packaging p, products p2, work_order_product wop, work_order_product_packaging wopp 
+where wop.product_id = p2.id and wopp.packaging_id = p.id and wop.product_id = 1 and type=1;
+
+/*list đề nghị)*/
+select distinct (@count := @count + 1) AS rowNumber, p.name, p.dimension, t.unit, wopp.actual_qty, if((wopp.actual_qty - wopp.residual_qty + wopp.stock - wopp.work_order_qty) > 0, (wopp.actual_qty - wopp.residual_qty + wopp.stock - wopp.work_order_qty), "") as totalResidualQuantity
+from 
+	work_order_product_packaging wopp, 
+	packaging p, 
+	supliers s,
+	years y,
+	work_order wo,
+	types t,
+	packaging_product_size pps,
+	work_order_product wop 
+CROSS JOIN (SELECT @count := 0) AS dummy
+where 
+	wopp.packaging_id = p.id
+	and wopp.work_order_id = wo.id
+	and wo.`year` = y.id
+	and p.suplier = s.id
+	and p.`type` = t.id 
+	and pps.product_id = wopp.product_id
+	and wopp.wop_id = wop.id
+	and wopp.actual_qty > 0;

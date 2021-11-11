@@ -106,6 +106,7 @@
                     <TextField fx:id="searchField" />
                 </HBox>
                 <HBox alignment="BASELINE_RIGHT" prefWidth="290" spacing="10">
+                    <Button id="exportData" onAction="#exportData" fx:id="exportData" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="XUẤT ĐƠN HÀNG" />
                     <Button id="reloadData" onAction="#reloadData" fx:id="reloadData" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="TẢI LẠI TRANG" />
                 </HBox>
             </HBox>
