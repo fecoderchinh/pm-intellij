@@ -218,4 +218,26 @@ public class WorkOrderProductPackagingDAO {
             jdbcDAO.printSQLException((SQLException) ex);
         }
     }
+
+    /**
+     * Updating record string data
+     *
+     * @param column - table's column
+     * @param value - column's new value
+     * @param id - record's id
+     * */
+    public void updateQuantity(String column, float value, int id) {
+        jdbcDAO.updateSingleDataFloat(tableName, column, value, id);
+    }
+
+    /**
+     * Updating record string data
+     *
+     * @param column - table's column
+     * @param value - column's new value
+     * @param id - record's id
+     * */
+    public void updateData(String column, String value, int id) {
+        jdbcDAO.updateSingleData(tableName, column, value, id);
+    }
 }

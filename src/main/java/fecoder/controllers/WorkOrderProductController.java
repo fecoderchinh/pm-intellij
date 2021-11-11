@@ -402,12 +402,14 @@ public class WorkOrderProductController implements Initializable {
 
         TreeItem<WorkProduction> root = TreeTableUtil.getModel(mainLabel.getText());
         root.setExpanded(true);
+        dataTable.setTableMenuButtonVisible(true);
 
         dataTable.setRoot(root);
+        dataTable.setEditable(true);
 
         dataTable.getColumns().clear();
 
-//        dataTable.getColumns().add(TreeTableUtil.getIdColumn());
+        dataTable.getColumns().add(TreeTableUtil.getIdColumn());
         dataTable.getColumns().add(TreeTableUtil.getWorkOrderNameColumn());
 //        dataTable.getColumns().add(TreeTableUtil.getOrdinalNumberColumn());
 //        dataTable.getColumns().add(TreeTableUtil.getProductNameColumn());
@@ -420,10 +422,10 @@ public class WorkOrderProductController implements Initializable {
 //        dataTable.getColumns().add(TreeTableUtil.getPrintStatusColumn());
 //        dataTable.getColumns().add(TreeTableUtil.getPackQuantityColumn());
         dataTable.getColumns().add(TreeTableUtil.getWorkOrderQuantityColumn());
-        dataTable.getColumns().add(TreeTableUtil.getStockColumn());
-        dataTable.getColumns().add(TreeTableUtil.getActualQuantityColumn());
-        dataTable.getColumns().add(TreeTableUtil.getResidualQuantityColumn());
-        dataTable.getColumns().add(TreeTableUtil.getTotalResidualQuantityColumn());
+        dataTable.getColumns().add(TreeTableUtil.getStockColumn(dataTable));
+        dataTable.getColumns().add(TreeTableUtil.getActualQuantityColumn(dataTable));
+        dataTable.getColumns().add(TreeTableUtil.getResidualQuantityColumn(dataTable));
+        dataTable.getColumns().add(TreeTableUtil.getTotalResidualQuantityColumn(dataTable));
         dataTable.getColumns().add(TreeTableUtil.getNoteProductColumn());
 
 //        setContextMenu();

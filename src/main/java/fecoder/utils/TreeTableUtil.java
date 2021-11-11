@@ -1,14 +1,12 @@
 package fecoder.utils;
 
 import fecoder.DAO.*;
-import fecoder.models.Supplier;
-import fecoder.models.WorkOrderProduct;
 import fecoder.models.WorkProduction;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.TextFieldTreeTableCell;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
@@ -40,7 +38,7 @@ public class TreeTableUtil {
                                 workOrderDAO.getDataByName(_workOrder.getWorkOrderName()).getYear() // years.id
                         )
                 );
-                TreeItem<WorkProduction> _workOrderNode = new TreeItem<>(new WorkProduction(0, null, null, null, _workOrder.getWorkOrderName(), null, null, null, null, null, null, 0, 0, 0, 0, 0, 0, "", ""));
+                TreeItem<WorkProduction> _workOrderNode = new TreeItem<>(new WorkProduction(0, null, null, null, _workOrder.getWorkOrderName(), null, null, null, null, null, null, 0, 0, null, null, null, null, "", ""));
                 if(productList.size() > 0) {
 //                    System.out.println(productList.size());
                     for(WorkProduction _product : productList) {
@@ -61,11 +59,11 @@ public class TreeTableUtil {
 //                        System.out.println(workOrderProductDAO.getDataByID(workOrderProductStringDAO.getDataByName(_workOrder.getWorkOrderName()).getId()).getWork_order_id());
 //                        System.out.println(productDAO.getDataByName(_product.getProductName()).getId());
 //                        System.out.println(_product.getOrdinalNumbers());
-                        TreeItem<WorkProduction> _productNode = new TreeItem<>(new WorkProduction(0, null, null, null, "#"+_product.getOrdinalNumbers() + ": " + _product.getProductName(), null, null, null, null, null, null, 0, packagingList.get(packagingList.size() > 1 ? packagingList.size()-1 : 0 ).getWorkOrderQuantity(), 0, 0, 0, 0, "", ""));
+                        TreeItem<WorkProduction> _productNode = new TreeItem<>(new WorkProduction(0, null, null, null, "#"+_product.getOrdinalNumbers() + ": " + _product.getProductName(), null, null, null, null, null, null, 0, packagingList.get(packagingList.size() > 1 ? packagingList.size()-1 : 0 ).getWorkOrderQuantity(), null, (Float.parseFloat(packagingList.get(packagingList.size() > 1 ? packagingList.size()-1 : 0 ).getActualQuantity()) + Float.parseFloat(packagingList.get(packagingList.size() > 1 ? packagingList.size()-1 : 0 ).getResidualQuantity()))+"", null, null, "", ""));
                         for(WorkProduction _packaging : packagingList) {
 //                            System.out.println(_packaging.getOrdinalNumbers() + "<->" +_packaging.getPackagingName());
 //                            _productNode.getChildren().add(new TreeItem<>(_packaging));
-                            _productNode.getChildren().add(new TreeItem<>(new WorkProduction(0, null, null, null, _packaging.getPackagingName(), null, _packaging.getPackagingDimension(), _packaging.getPackagingSuplier(), _packaging.getPackagingCode(), _packaging.getUnit(), null, 0, _packaging.getWorkOrderQuantity(), _packaging.getStock(), _packaging.getActualQuantity(), _packaging.getResidualQuantity(), _packaging.getTotalResidualQuantity(), "", "")));
+                            _productNode.getChildren().add(new TreeItem<>(new WorkProduction(_packaging.getId(), null, null, null, _packaging.getPackagingName(), _packaging.getPackagingSpecification(), _packaging.getPackagingDimension(), _packaging.getPackagingSuplier(), _packaging.getPackagingCode(), _packaging.getUnit(), _packaging.getPrintStatus(), _packaging.getPackQuantity(), _packaging.getWorkOrderQuantity(), _packaging.getStock(), _packaging.getActualQuantity(), _packaging.getResidualQuantity(), _packaging.getTotalResidualQuantity(), _packaging.getNoteProduct(), _packaging.getYear())));
                             _productNode.setExpanded(true);
                         }
 //                        System.out.println("---------------------------------------------");
@@ -85,19 +83,19 @@ public class TreeTableUtil {
     {
         TreeTableColumn<WorkProduction, Integer> column = new TreeTableColumn<>("id");
         column.setCellValueFactory(new TreeItemPropertyValueFactory<>("id"));
-        column.setCellFactory(new Callback<TreeTableColumn<WorkProduction, Integer>, TreeTableCell<WorkProduction, Integer>>() {
-            @Override
-            public TreeTableCell<WorkProduction, Integer> call(TreeTableColumn<WorkProduction, Integer> workProductionIntegerTreeTableColumn) {
-                return new TreeTableCell<WorkProduction, Integer>() {
-                    @Override
-                    protected void updateItem(Integer integer, boolean b) {
-                        if (integer != null) {
-                            super.setText(integer == 0?"":integer.toString());
-                        }
-                    }
-                };
-            }
-        });
+//        column.setCellFactory(new Callback<TreeTableColumn<WorkProduction, Integer>, TreeTableCell<WorkProduction, Integer>>() {
+//            @Override
+//            public TreeTableCell<WorkProduction, Integer> call(TreeTableColumn<WorkProduction, Integer> workProductionIntegerTreeTableColumn) {
+//                return new TreeTableCell<WorkProduction, Integer>() {
+//                    @Override
+//                    protected void updateItem(Integer integer, boolean b) {
+//                        if (integer != null) {
+//                            super.setText(integer == 0?"":integer.toString());
+//                        }
+//                    }
+//                };
+//            }
+//        });
         return column;
     }
 
@@ -115,10 +113,11 @@ public class TreeTableUtil {
         return column;
     }
 
-    public static TreeTableColumn<WorkProduction, String> getProductNameColumn()
+    public static TreeTableColumn<WorkProduction, String> getProductNameColumn(TreeTableView table)
     {
         TreeTableColumn<WorkProduction, String> column = new TreeTableColumn<>("Mặt hàng");
         column.setCellValueFactory(new TreeItemPropertyValueFactory<>("productName"));
+        column.prefWidthProperty().bind(table.widthProperty().multiply(0.3));
         column.setCellFactory(new Callback<TreeTableColumn<WorkProduction, String>, TreeTableCell<WorkProduction, String>>() {
             @Override
             public TreeTableCell<WorkProduction, String> call(TreeTableColumn<WorkProduction, String> workProductionStringTreeTableColumn) {
@@ -277,81 +276,136 @@ public class TreeTableUtil {
         return column;
     }
 
-    public static TreeTableColumn<WorkProduction, Float> getStockColumn()
+//    public static TreeTableColumn<WorkProduction, Float> getStockColumn(TreeTableView table)
+//    {
+//        TreeTableColumn<WorkProduction, Float> column = new TreeTableColumn<>("Tồn");
+//        column.setCellValueFactory(new TreeItemPropertyValueFactory<>("stock"));
+//        column.setCellFactory(new Callback<TreeTableColumn<WorkProduction, Float>, TreeTableCell<WorkProduction, Float>>() {
+//            @Override
+//            public TreeTableCell<WorkProduction, Float> call(TreeTableColumn<WorkProduction, Float> workProductionFloatTreeTableColumn) {
+//                return new TextFieldTreeTableCell<>();
+//            }
+//        });
+//        column.setCellFactory(TextFieldTreeTableCell.<WorkProduction, Float>forTreeTableColumn(new FloatStringConverter()));
+//        column.setOnEditCommit(new EventHandler<TreeTableColumn.CellEditEvent<WorkProduction, Float>>() {
+//            @Override
+//            public void handle(TreeTableColumn.CellEditEvent<WorkProduction, Float> workProductionFloatCellEditEvent) {
+//                TreeItem<WorkProduction> workProductionTreeItem = (TreeItem<WorkProduction>) table.getSelectionModel().getSelectedItem();
+////                System.out.println(workProductionTreeItem.getValue().getId());
+//
+//                TreeItem<WorkProduction> currentEditingWorkProductionTreeItem =  table.getTreeItem(workProductionFloatCellEditEvent.getTreeTablePosition().getRow());
+////                System.out.println(workProductionFloatCellEditEvent.getNewValue());
+//                currentEditingWorkProductionTreeItem.getValue().setStock(workProductionFloatCellEditEvent.getNewValue());
+//                WorkOrderProductPackagingDAO workOrderProductPackagingDAO = new WorkOrderProductPackagingDAO();
+//                workOrderProductPackagingDAO.updateQuantity("stock", workProductionFloatCellEditEvent.getNewValue(), workProductionTreeItem.getValue().getId());
+//            }
+//        });
+//        return column;
+//    }
+
+    public static TreeTableColumn<WorkProduction, String> getStockColumn(TreeTableView table)
     {
-        TreeTableColumn<WorkProduction, Float> column = new TreeTableColumn<>("Tồn");
-        column.setCellValueFactory(new TreeItemPropertyValueFactory<>("Stock"));
-        column.setCellFactory(new Callback<TreeTableColumn<WorkProduction, Float>, TreeTableCell<WorkProduction, Float>>() {
+        TreeTableColumn<WorkProduction, String> column = new TreeTableColumn<>("Tồn");
+        column.setCellValueFactory(new TreeItemPropertyValueFactory<>("stock"));
+        column.setCellFactory(new Callback<TreeTableColumn<WorkProduction, String>, TreeTableCell<WorkProduction, String>>() {
             @Override
-            public TreeTableCell<WorkProduction, Float> call(TreeTableColumn<WorkProduction, Float> workProductionIntegerTreeTableColumn) {
-                return new TreeTableCell<WorkProduction, Float>() {
-                    @Override
-                    protected void updateItem(Float value, boolean b) {
-                        if (value != null) {
-                            super.setText(value == 0?"":value.toString());
-                        }
-                    }
-                };
+            public TreeTableCell<WorkProduction, String> call(TreeTableColumn<WorkProduction, String> workProductionStringTreeTableColumn) {
+                return new TextFieldTreeTableCell<>();
+            }
+        });
+        column.setCellFactory(TextFieldTreeTableCell.forTreeTableColumn());
+        column.setOnEditCommit(new EventHandler<TreeTableColumn.CellEditEvent<WorkProduction, String>>() {
+            @Override
+            public void handle(TreeTableColumn.CellEditEvent<WorkProduction, String> workProductionStringCellEditEvent) {
+                TreeItem<WorkProduction> workProductionTreeItem = (TreeItem<WorkProduction>) table.getSelectionModel().getSelectedItem();
+//                System.out.println(workProductionTreeItem.getValue().getId());
+
+                TreeItem<WorkProduction> currentEditingWorkProductionTreeItem =  table.getTreeItem(workProductionStringCellEditEvent.getTreeTablePosition().getRow());
+//                System.out.println(workProductionFloatCellEditEvent.getNewValue());
+                currentEditingWorkProductionTreeItem.getValue().setStock(workProductionStringCellEditEvent.getNewValue());
+                WorkOrderProductPackagingDAO workOrderProductPackagingDAO = new WorkOrderProductPackagingDAO();
+                workOrderProductPackagingDAO.updateQuantity("stock", Float.parseFloat(workProductionStringCellEditEvent.getNewValue()), workProductionTreeItem.getValue().getId());
             }
         });
         return column;
     }
 
-    public static TreeTableColumn<WorkProduction, Float> getActualQuantityColumn()
+    public static TreeTableColumn<WorkProduction, String> getActualQuantityColumn(TreeTableView table)
     {
-        TreeTableColumn<WorkProduction, Float> column = new TreeTableColumn<>("Thực đặt");
+        TreeTableColumn<WorkProduction, String> column = new TreeTableColumn<>("Thực đặt");
         column.setCellValueFactory(new TreeItemPropertyValueFactory<>("actualQuantity"));
-        column.setCellFactory(new Callback<TreeTableColumn<WorkProduction, Float>, TreeTableCell<WorkProduction, Float>>() {
+        column.setCellFactory(new Callback<TreeTableColumn<WorkProduction, String>, TreeTableCell<WorkProduction, String>>() {
             @Override
-            public TreeTableCell<WorkProduction, Float> call(TreeTableColumn<WorkProduction, Float> workProductionIntegerTreeTableColumn) {
-                return new TreeTableCell<WorkProduction, Float>() {
-                    @Override
-                    protected void updateItem(Float value, boolean b) {
-                        if (value != null) {
-                            super.setText(value == 0?"":value.toString());
-                        }
-                    }
-                };
+            public TreeTableCell<WorkProduction, String> call(TreeTableColumn<WorkProduction, String> workProductionStringTreeTableColumn) {
+                return new TextFieldTreeTableCell<>();
+            }
+        });
+        column.setCellFactory(TextFieldTreeTableCell.forTreeTableColumn());
+        column.setOnEditCommit(new EventHandler<TreeTableColumn.CellEditEvent<WorkProduction, String>>() {
+            @Override
+            public void handle(TreeTableColumn.CellEditEvent<WorkProduction, String> workProductionStringCellEditEvent) {
+                TreeItem<WorkProduction> workProductionTreeItem = (TreeItem<WorkProduction>) table.getSelectionModel().getSelectedItem();
+//                System.out.println(workProductionTreeItem.getValue().getId());
+
+                TreeItem<WorkProduction> currentEditingWorkProductionTreeItem =  table.getTreeItem(workProductionStringCellEditEvent.getTreeTablePosition().getRow());
+//                System.out.println(workProductionFloatCellEditEvent.getNewValue());
+                currentEditingWorkProductionTreeItem.getValue().setActualQuantity(workProductionStringCellEditEvent.getNewValue());
+                WorkOrderProductPackagingDAO workOrderProductPackagingDAO = new WorkOrderProductPackagingDAO();
+                workOrderProductPackagingDAO.updateQuantity("actual_qty", Float.parseFloat(workProductionStringCellEditEvent.getNewValue()), workProductionTreeItem.getValue().getId());
             }
         });
         return column;
     }
 
-    public static TreeTableColumn<WorkProduction, Float> getResidualQuantityColumn()
+    public static TreeTableColumn<WorkProduction, String> getResidualQuantityColumn(TreeTableView table)
     {
-        TreeTableColumn<WorkProduction, Float> column = new TreeTableColumn<>("Hao hụt");
+        TreeTableColumn<WorkProduction, String> column = new TreeTableColumn<>("Hao hụt");
         column.setCellValueFactory(new TreeItemPropertyValueFactory<>("residualQuantity"));
-        column.setCellFactory(new Callback<TreeTableColumn<WorkProduction, Float>, TreeTableCell<WorkProduction, Float>>() {
+        column.setCellFactory(new Callback<TreeTableColumn<WorkProduction, String>, TreeTableCell<WorkProduction, String>>() {
             @Override
-            public TreeTableCell<WorkProduction, Float> call(TreeTableColumn<WorkProduction, Float> workProductionIntegerTreeTableColumn) {
-                return new TreeTableCell<WorkProduction, Float>() {
-                    @Override
-                    protected void updateItem(Float value, boolean b) {
-                        if (value != null) {
-                            super.setText(value == 0?"":value.toString());
-                        }
-                    }
-                };
+            public TreeTableCell<WorkProduction, String> call(TreeTableColumn<WorkProduction, String> workProductionStringTreeTableColumn) {
+                return new TextFieldTreeTableCell<>();
+            }
+        });
+        column.setCellFactory(TextFieldTreeTableCell.forTreeTableColumn());
+        column.setOnEditCommit(new EventHandler<TreeTableColumn.CellEditEvent<WorkProduction, String>>() {
+            @Override
+            public void handle(TreeTableColumn.CellEditEvent<WorkProduction, String> workProductionStringCellEditEvent) {
+                TreeItem<WorkProduction> workProductionTreeItem = (TreeItem<WorkProduction>) table.getSelectionModel().getSelectedItem();
+//                System.out.println(workProductionTreeItem.getValue().getId());
+
+                TreeItem<WorkProduction> currentEditingWorkProductionTreeItem =  table.getTreeItem(workProductionStringCellEditEvent.getTreeTablePosition().getRow());
+//                System.out.println(workProductionFloatCellEditEvent.getNewValue());
+                currentEditingWorkProductionTreeItem.getValue().setResidualQuantity(workProductionStringCellEditEvent.getNewValue());
+                WorkOrderProductPackagingDAO workOrderProductPackagingDAO = new WorkOrderProductPackagingDAO();
+                workOrderProductPackagingDAO.updateQuantity("residual_qty", Float.parseFloat(workProductionStringCellEditEvent.getNewValue()), workProductionTreeItem.getValue().getId());
             }
         });
         return column;
     }
 
-    public static TreeTableColumn<WorkProduction, Float> getTotalResidualQuantityColumn()
+    public static TreeTableColumn<WorkProduction, String> getTotalResidualQuantityColumn(TreeTableView table)
     {
-        TreeTableColumn<WorkProduction, Float> column = new TreeTableColumn<>("Tổng đặt");
+        TreeTableColumn<WorkProduction, String> column = new TreeTableColumn<>("Còn dư");
         column.setCellValueFactory(new TreeItemPropertyValueFactory<>("totalResidualQuantity"));
-        column.setCellFactory(new Callback<TreeTableColumn<WorkProduction, Float>, TreeTableCell<WorkProduction, Float>>() {
+        column.setCellFactory(new Callback<TreeTableColumn<WorkProduction, String>, TreeTableCell<WorkProduction, String>>() {
             @Override
-            public TreeTableCell<WorkProduction, Float> call(TreeTableColumn<WorkProduction, Float> workProductionIntegerTreeTableColumn) {
-                return new TreeTableCell<WorkProduction, Float>() {
-                    @Override
-                    protected void updateItem(Float value, boolean b) {
-                        if (value != null) {
-                            super.setText(value == 0?"":value.toString());
-                        }
-                    }
-                };
+            public TreeTableCell<WorkProduction, String> call(TreeTableColumn<WorkProduction, String> workProductionStringTreeTableColumn) {
+                return new TextFieldTreeTableCell<>();
+            }
+        });
+        column.setCellFactory(TextFieldTreeTableCell.forTreeTableColumn());
+        column.setOnEditCommit(new EventHandler<TreeTableColumn.CellEditEvent<WorkProduction, String>>() {
+            @Override
+            public void handle(TreeTableColumn.CellEditEvent<WorkProduction, String> workProductionStringCellEditEvent) {
+                TreeItem<WorkProduction> workProductionTreeItem = (TreeItem<WorkProduction>) table.getSelectionModel().getSelectedItem();
+//                System.out.println(workProductionTreeItem.getValue().getId());
+
+                TreeItem<WorkProduction> currentEditingWorkProductionTreeItem =  table.getTreeItem(workProductionStringCellEditEvent.getTreeTablePosition().getRow());
+//                System.out.println(workProductionFloatCellEditEvent.getNewValue());
+                currentEditingWorkProductionTreeItem.getValue().setTotalResidualQuantity(
+                        (Float.parseFloat(workProductionTreeItem.getValue().getActualQuantity()) + Float.parseFloat(workProductionTreeItem.getValue().getStock()) - Float.parseFloat(workProductionTreeItem.getValue().getResidualQuantity()) - (workProductionTreeItem.getValue().getPackQuantity() * workProductionTreeItem.getValue().getWorkOrderQuantity())) +""
+                );
             }
         });
         return column;
@@ -366,7 +420,7 @@ public class TreeTableUtil {
 
     public static TreeTableColumn<WorkProduction, Integer> getYearColumn()
     {
-        TreeTableColumn<WorkProduction, Integer> column = new TreeTableColumn<>("Ghi chú");
+        TreeTableColumn<WorkProduction, Integer> column = new TreeTableColumn<>("Năm");
         column.setCellValueFactory(new TreeItemPropertyValueFactory<>("year"));
         return column;
     }

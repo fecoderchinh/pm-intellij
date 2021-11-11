@@ -14,10 +14,10 @@ public class WorkProduction {
     String printStatus;
     int packQuantity;
     float workOrderQuantity;
-    float Stock;
-    float actualQuantity;
-    float residualQuantity;
-    float totalResidualQuantity;
+    String Stock;
+    String actualQuantity;
+    String residualQuantity;
+    String totalResidualQuantity;
     String noteProduct;
     String year;
 
@@ -37,10 +37,10 @@ public class WorkProduction {
             String printStatus,
             int packQuantity,
             float workOrderQuantity,
-            float Stock,
-            float actualQuantity,
-            float residualQuantity,
-            float totalResidualQuantity,
+            String Stock,
+            String actualQuantity,
+            String residualQuantity,
+            String totalResidualQuantity,
             String noteProduct,
             String year
     ) {
@@ -169,35 +169,35 @@ public class WorkProduction {
         this.workOrderQuantity = workOrderQuantity;
     }
 
-    public float getStock() {
+    public String getStock() {
         return Stock;
     }
 
-    public void setStock(float stock) {
+    public void setStock(String stock) {
         Stock = stock;
     }
 
-    public float getActualQuantity() {
+    public String getActualQuantity() {
         return actualQuantity;
     }
 
-    public void setActualQuantity(float actualQuantity) {
+    public void setActualQuantity(String actualQuantity) {
         this.actualQuantity = actualQuantity;
     }
 
-    public float getResidualQuantity() {
+    public String getResidualQuantity() {
         return residualQuantity;
     }
 
-    public void setResidualQuantity(float residualQuantity) {
+    public void setResidualQuantity(String residualQuantity) {
         this.residualQuantity = residualQuantity;
     }
 
-    public float getTotalResidualQuantity() {
+    public String getTotalResidualQuantity() {
         return totalResidualQuantity;
     }
 
-    public void setTotalResidualQuantity(float totalResidualQuantity) {
+    public void setTotalResidualQuantity(String totalResidualQuantity) {
         this.totalResidualQuantity = totalResidualQuantity;
     }
 

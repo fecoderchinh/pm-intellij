@@ -421,7 +421,7 @@ public class WorkOrderController implements Initializable {
      *
      * @param resource resource path
      * @param title scene title
-     * @param workProduction data
+     * @param workOrder data
      * */
     private void loadSingleProductScene(String resource, String title, WorkOrder workOrder) {
         try {

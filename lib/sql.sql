@@ -394,7 +394,7 @@ table hiển thị thông tin số lượng nhập/xuất, có thể dùng để
 	p.name as packagingName, 
 	p.specifications as packagingSpecification, 
 	p.dimension as packagingDimension, 
-	p.suplier as packagingSuplier, 
+	s.code as packagingSuplier, 
 	p.code as packagingCode, 
 	t.unit as unit, 
 	p.stamped as printStatus, 
@@ -407,7 +407,9 @@ table hiển thị thông tin số lượng nhập/xuất, có thể dùng để
 	(wopp.actual_qty - wopp.residual_qty - wopp.stock - (pps.pack_qty * wop.qty)) as totalResidualQuantity,
 -- 	"" as totalResidualQuantity, -- based on above formula
 	wop.note as noteProduct,
-	y.year as year
+	y.year as year,
+	"" as privateNode,
+	"" as cbm
 from 
 	work_order wo, 
 	work_order_product wop, 
@@ -416,7 +418,8 @@ from
 	products p2, 
 	types t,
 	work_order_product_packaging wopp,
-	years y
+	years y,
+	supliers s
 where 
 	wo.id = wop.work_order_id 
 	and wop.product_id = p2.id 
@@ -427,5 +430,6 @@ where
 	and wopp.product_id = p2.id 
 	and wopp.packaging_id = p.id 
 	and wo.`year`  = y.id
-	and y.id = 1 and wop.work_order_id = 1 and wop.product_id =1 and wop.ordinal_num = 1.1000000238
+	and p.suplier = s.id
+-- 	and y.id = 1 and wop.work_order_id = 1 and wop.product_id =1 and wop.ordinal_num = 1.1000000238
 order by wop.ordinal_num;*/

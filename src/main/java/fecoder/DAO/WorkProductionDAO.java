@@ -35,10 +35,14 @@ public class WorkProductionDAO {
             data.setPrintStatus(resultSet.getString("printStatus"));
             data.setPackQuantity(resultSet.getInt("packQuantity"));
             data.setWorkOrderQuantity(resultSet.getFloat("workOrderQuantity"));
-            data.setStock(resultSet.getFloat("Stock"));
-            data.setActualQuantity(resultSet.getFloat("actualQuantity"));
-            data.setResidualQuantity(resultSet.getFloat("residualQuantity"));
-            data.setTotalResidualQuantity(resultSet.getFloat("totalResidualQuantity"));
+//            data.setStock(resultSet.getFloat("stock"));
+            data.setStock(resultSet.getString("stock"));
+//            data.setActualQuantity(resultSet.getFloat("actualQuantity"));
+            data.setActualQuantity(resultSet.getString("actualQuantity"));
+//            data.setResidualQuantity(resultSet.getFloat("residualQuantity"));
+            data.setResidualQuantity(resultSet.getString("residualQuantity"));
+//            data.setTotalResidualQuantity(resultSet.getFloat("totalResidualQuantity"));
+            data.setTotalResidualQuantity(resultSet.getString("totalResidualQuantity"));
             data.setNoteProduct(resultSet.getString("noteProduct"));
             data.setYear(resultSet.getString("year"));
         } catch (SQLException ex) {
@@ -71,10 +75,10 @@ public class WorkProductionDAO {
                     "p.stamped as printStatus, " +
                     "pps.pack_qty as packQuantity, " +
                     "(pps.pack_qty * wop.qty) as workOrderQuantity, " +
-                    "wopp.stock as Stock, " +
+                    "wopp.stock as stock, " +
                     "wopp.actual_qty as actualQuantity, " +
                     "wopp.residual_qty as residualQuantity, " +
-                    "(wopp.actual_qty - wopp.residual_qty - wopp.stock - (pps.pack_qty * wop.qty)) as totalResidualQuantity, " +
+                    "(wopp.actual_qty + wopp.stock - wopp.residual_qty - (pps.pack_qty * wop.qty)) as totalResidualQuantity, " +
                     "wop.note as noteProduct " +
                     "from " +
                     "work_order wo, " +
@@ -134,10 +138,10 @@ public class WorkProductionDAO {
                     "p.stamped as printStatus, " +
                     "pps.pack_qty as packQuantity, " +
                     "(pps.pack_qty * wop.qty) as workOrderQuantity, " +
-                    "wopp.stock as Stock, " +
+                    "wopp.stock as stock, " +
                     "wopp.actual_qty as actualQuantity, " +
                     "wopp.residual_qty as residualQuantity, " +
-                    "(wopp.actual_qty - wopp.residual_qty - wopp.stock - (pps.pack_qty * wop.qty)) as totalResidualQuantity, " +
+                    "(wopp.actual_qty + wopp.stock - wopp.residual_qty - (pps.pack_qty * wop.qty)) as totalResidualQuantity, " +
                     "wop.note as noteProduct " +
                     "from " +
                     "work_order wo, " +
@@ -203,14 +207,12 @@ public class WorkProductionDAO {
                     "p.stamped as printStatus, " +
                     "pps.pack_qty as packQuantity, " +
                     "(pps.pack_qty * wop.qty) as workOrderQuantity, " +
-                    "wopp.stock as Stock, " +
+                    "wopp.stock as stock, " +
                     "wopp.actual_qty as actualQuantity, " +
                     "wopp.residual_qty as residualQuantity, " +
-                    "(wopp.actual_qty - wopp.residual_qty - wopp.stock - (pps.pack_qty * wop.qty)) as totalResidualQuantity, " +
+                    "(wopp.actual_qty + wopp.stock - wopp.residual_qty - (pps.pack_qty * wop.qty)) as totalResidualQuantity, " +
                     "wop.note as noteProduct, " +
-                    "y.year as year, " +
-                    "\"\" as privateNode, " +
-                    "\"\" as cbm " +
+                    "y.year as year " +
                     "from " +
                     "work_order wo, " +
                     "work_order_product wop, " +
@@ -276,14 +278,12 @@ public class WorkProductionDAO {
                     "p.stamped as printStatus, " +
                     "pps.pack_qty as packQuantity, " +
                     "(pps.pack_qty * wop.qty) as workOrderQuantity, " +
-                    "wopp.stock as Stock, " +
+                    "wopp.stock as stock, " +
                     "wopp.actual_qty as actualQuantity, " +
                     "wopp.residual_qty as residualQuantity, " +
-                    "(wopp.actual_qty - wopp.residual_qty - wopp.stock - (pps.pack_qty * wop.qty)) as totalResidualQuantity, " +
+                    "(wopp.actual_qty + wopp.stock - wopp.residual_qty - (pps.pack_qty * wop.qty)) as totalResidualQuantity, " +
                     "wop.note as noteProduct, " +
-                    "y.year as year, " +
-                    "\"\" as privateNode, " +
-                    "\"\" as cbm " +
+                    "y.year as year " +
                     "from " +
                     "work_order wo, " +
                     "work_order_product wop, " +
@@ -351,14 +351,12 @@ public class WorkProductionDAO {
                     "p.stamped as printStatus, " +
                     "pps.pack_qty as packQuantity, " +
                     "(pps.pack_qty * wop.qty) as workOrderQuantity, " +
-                    "wopp.stock as Stock, " +
+                    "wopp.stock as stock, " +
                     "wopp.actual_qty as actualQuantity, " +
                     "wopp.residual_qty as residualQuantity, " +
-                    "(wopp.actual_qty - wopp.residual_qty - wopp.stock - (pps.pack_qty * wop.qty)) as totalResidualQuantity, " +
+                    "(wopp.actual_qty + wopp.stock - wopp.residual_qty - (pps.pack_qty * wop.qty)) as totalResidualQuantity, " +
                     "wop.note as noteProduct, " +
-                    "y.year as year, " +
-                    "\"\" as privateNode, " +
-                    "\"\" as cbm " +
+                    "y.year as year " +
                     "from " +
                     "work_order wo, " +
                     "work_order_product wop, " +
