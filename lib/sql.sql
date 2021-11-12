@@ -447,7 +447,7 @@ from packaging p, products p2, work_order_product wop, work_order_product_packag
 where wop.product_id = p2.id and wopp.packaging_id = p.id and wop.product_id = 1 and type=1;
 
 /*list đề nghị)*/
-select distinct (@count := @count + 1) AS rowNumber, p.name, p.dimension, t.unit, wopp.actual_qty, if((wopp.actual_qty - wopp.residual_qty + wopp.stock - wopp.work_order_qty) > 0, (wopp.actual_qty - wopp.residual_qty + wopp.stock - wopp.work_order_qty), "") as totalResidualQuantity
+select distinct (@count := @count + 1) AS rowNumber, p.name as packagingName,  p.specifications as specs,  p.dimension as dimension, t.unit as unit, wopp.actual_qty as total, if((wopp.actual_qty - wopp.residual_qty + wopp.stock - wopp.work_order_qty) > 0, (wopp.actual_qty - wopp.residual_qty + wopp.stock - wopp.work_order_qty), "") as totalResidualQuantity
 from 
 	work_order_product_packaging wopp, 
 	packaging p, 
@@ -466,4 +466,6 @@ where
 	and p.`type` = t.id 
 	and pps.product_id = wopp.product_id
 	and wopp.wop_id = wop.id
-	and wopp.actual_qty > 0;
+	and y.id = 1 and wopp.work_order_id = 1
+	and wopp.actual_qty > 0
+	group by wopp.id;
