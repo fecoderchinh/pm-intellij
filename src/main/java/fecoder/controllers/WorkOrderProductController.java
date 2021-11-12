@@ -13,15 +13,20 @@ import javafx.collections.transformation.SortedList;
 import javafx.css.PseudoClass;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 import org.apache.poi.util.Units;
 import org.apache.poi.wp.usermodel.HeaderFooterType;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.*;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -473,7 +478,7 @@ public class WorkOrderProductController implements Initializable {
     }
 
     public void exportData(ActionEvent actionEvent) throws IOException {
-        data2Doc();
+        data2Doc((Stage)((Node) actionEvent.getSource()).getScene().getWindow());
     }
 
     private void helloWord() {
@@ -704,8 +709,7 @@ public class WorkOrderProductController implements Initializable {
                 new String[]{"chinh", "123", "aaa"});
     }
 
-    private void data2Doc() {
-        String fileName = "e:\\java_platform\\data2doc.docx";
+    private void data2Doc(Window window) {
         String imgFile = "e:\\java_platform\\docs-data\\logo.jpg";
         String _fontFamily = "Arial";
 
@@ -863,11 +867,18 @@ public class WorkOrderProductController implements Initializable {
             setHeaderRowforSingleCell(row.getCell(0), "Phòng Kinh Doanh", false, ParagraphAlignment.LEFT);
             setHeaderRowforSingleCell(row.getCell(1), "Người Lập Biểu", false, ParagraphAlignment.RIGHT);
 
+            FileChooser fileChooser = new FileChooser();
+            FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("Word document (*.docx)", "*.docx");
+            fileChooser.getExtensionFilters().add(extensionFilter);
 
-            // save it to .docx file
-            try (FileOutputStream out = new FileOutputStream(fileName)) {
-                doc.write(out);
-                utils.alert("info", Alert.AlertType.INFORMATION, "Xuất file thành công!", "File đã được lưu vào ổ đĩa!").showAndWait();
+            File file = fileChooser.showSaveDialog(window);
+
+            if(file != null) {
+                // save it to .docx file
+                try (FileOutputStream out = new FileOutputStream(file.getPath())) {
+                    doc.write(out);
+                    utils.alert("info", Alert.AlertType.INFORMATION, "Xuất file thành công!", "File đã được lưu vào ổ đĩa!").showAndWait();
+                }
             }
 
         } catch (Exception e) {
