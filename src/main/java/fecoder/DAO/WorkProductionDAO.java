@@ -307,7 +307,7 @@ public class WorkProductionDAO {
                     "and p.suplier = s.id " +
                     "and wop.work_order_id = "+work_order_id +
                     " and y.id = "+year +
-                    " group by wop.ordinal_num order by wop.ordinal_num";
+                    " group by wop.product_id order by wop.ordinal_num";
             ResultSet resultSet = statement.executeQuery(selectAll);
             while(resultSet.next()) {
                 WorkProduction data = createData(resultSet);

@@ -18,6 +18,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -353,6 +354,63 @@ public class WorkOrderProductController implements Initializable {
     }
 
     /**
+     * Loading Work Order TreeTableView
+     *
+     * @param workOrderID work_order.id
+     * */
+    private void loadViewWOPP(int workOrderID) {
+        TreeItem<WorkProduction> root = TreeTableUtil.getModel(workOrderID);
+        root.setExpanded(true);
+        dataTable.setTableMenuButtonVisible(true);
+
+        dataTable.setRoot(root);
+        dataTable.setEditable(true);
+
+        dataTable.getColumns().clear();
+
+        dataTable.getColumns().add(TreeTableUtil.getIdColumn());
+        dataTable.getColumns().add(TreeTableUtil.getWorkOrderNameColumn());
+//        dataTable.getColumns().add(TreeTableUtil.getOrdinalNumberColumn());
+//        dataTable.getColumns().add(TreeTableUtil.getProductNameColumn());
+        dataTable.getColumns().add(TreeTableUtil.getPackagingNameColumn(dataTable));
+//        dataTable.getColumns().add(TreeTableUtil.getPackagingSpecificationColumn(dataTable));
+        dataTable.getColumns().add(TreeTableUtil.getPackagingDimensionColumn(dataTable));
+        dataTable.getColumns().add(TreeTableUtil.getPackagingSuplierColumn());
+        dataTable.getColumns().add(TreeTableUtil.getPackagingCodeColumn());
+        dataTable.getColumns().add(TreeTableUtil.getUnitColumn());
+//        dataTable.getColumns().add(TreeTableUtil.getPrintStatusColumn());
+//        dataTable.getColumns().add(TreeTableUtil.getPackQuantityColumn());
+        dataTable.getColumns().add(TreeTableUtil.getWorkOrderQuantityColumn());
+        dataTable.getColumns().add(TreeTableUtil.getStockColumn(dataTable));
+        dataTable.getColumns().add(TreeTableUtil.getActualQuantityColumn(dataTable));
+        dataTable.getColumns().add(TreeTableUtil.getResidualQuantityColumn(dataTable));
+        dataTable.getColumns().add(TreeTableUtil.getTotalResidualQuantityColumn(dataTable));
+        dataTable.getColumns().add(TreeTableUtil.getNoteProductColumn());
+
+//        setContextMenu();
+
+        final PseudoClass topNode = PseudoClass.getPseudoClass("top-node");
+        dataTable.setRowFactory(t -> {
+            final TreeTableRow<WorkProduction> row = new TreeTableRow<>();
+
+            // every time the TreeItem changes, check, if the new item is a
+            // child of the root and set the pseudoclass accordingly
+            row.treeItemProperty().addListener((o, oldValue, newValue) -> {
+                boolean tn = false;
+                if (newValue != null) {
+                    tn = newValue.getParent() == root;
+                }
+                row.pseudoClassStateChanged(topNode, tn);
+            });
+            return row;
+        });
+
+        utils.reloadTreeTableViewOnChange(dataTable, currentRow, currentCell);
+
+//        setSearchField();
+    }
+
+    /**
      * Handle on searching data
      * */
     public void setSearchField() {
@@ -418,63 +476,13 @@ public class WorkOrderProductController implements Initializable {
 //                }
 //            }
 //        }
-
-        TreeItem<WorkProduction> root = TreeTableUtil.getModel(mainLabel.getText());
-        root.setExpanded(true);
-        dataTable.setTableMenuButtonVisible(true);
-
-        dataTable.setRoot(root);
-        dataTable.setEditable(true);
-
-        dataTable.getColumns().clear();
-
-        dataTable.getColumns().add(TreeTableUtil.getIdColumn());
-        dataTable.getColumns().add(TreeTableUtil.getWorkOrderNameColumn());
-//        dataTable.getColumns().add(TreeTableUtil.getOrdinalNumberColumn());
-//        dataTable.getColumns().add(TreeTableUtil.getProductNameColumn());
-        dataTable.getColumns().add(TreeTableUtil.getPackagingNameColumn(dataTable));
-//        dataTable.getColumns().add(TreeTableUtil.getPackagingSpecificationColumn(dataTable));
-        dataTable.getColumns().add(TreeTableUtil.getPackagingDimensionColumn(dataTable));
-        dataTable.getColumns().add(TreeTableUtil.getPackagingSuplierColumn());
-        dataTable.getColumns().add(TreeTableUtil.getPackagingCodeColumn());
-        dataTable.getColumns().add(TreeTableUtil.getUnitColumn());
-//        dataTable.getColumns().add(TreeTableUtil.getPrintStatusColumn());
-//        dataTable.getColumns().add(TreeTableUtil.getPackQuantityColumn());
-        dataTable.getColumns().add(TreeTableUtil.getWorkOrderQuantityColumn());
-        dataTable.getColumns().add(TreeTableUtil.getStockColumn(dataTable));
-        dataTable.getColumns().add(TreeTableUtil.getActualQuantityColumn(dataTable));
-        dataTable.getColumns().add(TreeTableUtil.getResidualQuantityColumn(dataTable));
-        dataTable.getColumns().add(TreeTableUtil.getTotalResidualQuantityColumn(dataTable));
-        dataTable.getColumns().add(TreeTableUtil.getNoteProductColumn());
-
-//        setContextMenu();
-
-        final PseudoClass topNode = PseudoClass.getPseudoClass("top-node");
-        dataTable.setRowFactory(t -> {
-            final TreeTableRow<WorkProduction> row = new TreeTableRow<>();
-
-            // every time the TreeItem changes, check, if the new item is a
-            // child of the root and set the pseudoclass accordingly
-            row.treeItemProperty().addListener((o, oldValue, newValue) -> {
-                boolean tn = false;
-                if (newValue != null) {
-                    tn = newValue.getParent() == root;
-                }
-                row.pseudoClassStateChanged(topNode, tn);
-            });
-            return row;
-        });
-
-        utils.reloadTreeTableViewOnChange(dataTable, currentRow, currentCell);
-
-//        setSearchField();
     }
 
     public void setData(WorkOrder workOrder) {
         this.innerData = workOrder;
         mainLabel.setText(this.innerData.getName());
         loadViewProduct(this.innerData.getName());
-        loadView();
+        loadViewWOPP(this.innerData.getId());
     }
 
     public void exportData(ActionEvent actionEvent) throws IOException {
@@ -871,11 +879,17 @@ public class WorkOrderProductController implements Initializable {
             FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("Word document (*.docx)", "*.docx");
             fileChooser.getExtensionFilters().add(extensionFilter);
 
-            File file = fileChooser.showSaveDialog(window);
+            DirectoryChooser directoryChooser = new DirectoryChooser();
+            directoryChooser.setTitle("Select folder");
+
+//            File file = fileChooser.showSaveDialog(window);
+            File file = directoryChooser.showDialog(window);
 
             if(file != null) {
                 // save it to .docx file
-                try (FileOutputStream out = new FileOutputStream(file.getPath())) {
+//                try (FileOutputStream out = new FileOutputStream(file.getPath())) // for fileChooser
+                try (FileOutputStream out = new FileOutputStream(file.getPath()+"/DE NGHI BB "+ this.innerData.getName() +".docx"))
+                {
                     doc.write(out);
                     utils.alert("info", Alert.AlertType.INFORMATION, "Xuất file thành công!", "File đã được lưu vào ổ đĩa!").showAndWait();
                 }

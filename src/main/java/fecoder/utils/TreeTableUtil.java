@@ -1,6 +1,7 @@
 package fecoder.utils;
 
 import fecoder.DAO.*;
+import fecoder.models.WorkOrder;
 import fecoder.models.WorkProduction;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,7 +14,7 @@ import javafx.util.Callback;
 
 public class TreeTableUtil {
 
-    public static TreeItem<WorkProduction> getModel(String workOrderName) {
+    public static TreeItem<WorkProduction> getModel(int workOrderID) {
         ProductDAO productDAO = new ProductDAO();
         WorkProductionDAO workProductionDAO = new WorkProductionDAO();
         WorkOrderDAO workOrderDAO = new WorkOrderDAO();
@@ -21,7 +22,7 @@ public class TreeTableUtil {
         WorkOrderProductDAO workOrderProductDAO = new WorkOrderProductDAO();
         YearDAO yearDAO = new YearDAO();
 
-        ObservableList<WorkProduction> workOrderList = FXCollections.observableArrayList(workProductionDAO.getWorkOrderList(workOrderDAO.getDataByName(workOrderName).getId(), workOrderDAO.getDataByName(workOrderName).getYear()));
+        ObservableList<WorkProduction> workOrderList = FXCollections.observableArrayList(workProductionDAO.getWorkOrderList(workOrderID, workOrderDAO.getDataByID(workOrderID).getYear()));
 
 //        System.out.println(workOrderList.size());
         TreeItem<WorkProduction> root = new TreeItem<>();
@@ -34,8 +35,8 @@ public class TreeTableUtil {
 //                System.out.println(workOrderDAO.getDataByName(_workOrder.getWorkOrderName()).getYear());
                 ObservableList<WorkProduction> productList = FXCollections.observableArrayList(
                         workProductionDAO.getProductList(
-                                workOrderProductDAO.getDataByID(workOrderProductStringDAO.getDataByName(_workOrder.getWorkOrderName()).getId()).getWork_order_id(), // work_order_product.work_order_id
-                                workOrderDAO.getDataByName(_workOrder.getWorkOrderName()).getYear() // years.id
+                                workOrderID, // work_order_product.work_order_id
+                                workOrderDAO.getDataByID(workOrderID).getYear() // years.id
                         )
                 );
                 TreeItem<WorkProduction> _workOrderNode = new TreeItem<>(new WorkProduction(0, null, null, null, _workOrder.getWorkOrderName(), null, null, null, null, null, null, 0, 0, null, null, null, null, "", ""));

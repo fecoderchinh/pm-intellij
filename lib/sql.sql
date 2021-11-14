@@ -386,7 +386,7 @@ set wopp.work_order_qty = pps._pack_qty * 234;*/
 table hiển thị thông tin số lượng nhập/xuất, có thể dùng để theo dõi/thống kê số liệu trong tương lai
 - CHƯA TEST THỰC TẾ
 */
-/*select 
+select 
 	wopp.id as id,
 	wop.ordinal_num as ordinalNumbers, 
 	wo.name as workOrderName, 
@@ -428,11 +428,11 @@ where
 	and p.`type` = t.id
 	and wopp.work_order_id = wo.id 
 	and wopp.product_id = p2.id 
-	and wopp.packaging_id = p.id 
+-- 	and wopp.packaging_id = p.id 
 	and wo.`year`  = y.id
 	and p.suplier = s.id
--- 	and y.id = 1 and wop.work_order_id = 1 and wop.product_id =1 and wop.ordinal_num = 1.1000000238
-order by wop.ordinal_num;*/
+	and y.id = 1 and wopp.work_order_id = 1
+group by wop.product_id order by wop.ordinal_num;
 
 
 /*tính số khối*/
