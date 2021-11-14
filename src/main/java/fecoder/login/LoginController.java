@@ -2,6 +2,7 @@ package fecoder.login;
 
 import java.sql.SQLException;
 
+import fecoder.models.User;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -66,8 +67,11 @@ public class LoginController {
     }
 
     private String authorize(String user, String pass) {
+        jdbcDAO jdbcDAO = new jdbcDAO();
+        User user1 = jdbcDAO.getDataByName(user);
         return user.equals(account.getText()) && pass.equals(password.getText())
-                ? generateSessionID()
+//                ? generateSessionID()
+                ? generateUserDetail(user1.getName())
                 : null;
     }
 
@@ -76,6 +80,10 @@ public class LoginController {
     private String generateSessionID() {
         sessionID++;
         return ""+sessionID;
+    }
+
+    private String generateUserDetail(String userName) {
+        return userName;
     }
 
     public static void infoBox(String infoMessage, String headerText, String title) {

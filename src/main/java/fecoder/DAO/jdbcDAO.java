@@ -1,17 +1,20 @@
 package fecoder.DAO;
 
 import fecoder.connection.ConnectionUtils;
+import fecoder.models.Product;
 import fecoder.models.User;
 
 import java.sql.*;
 
 public class jdbcDAO {
 
+    private final String usersTable = "users";
+
     /**
      *
      * This method is on development
      * */
-    private User createUser(ResultSet rs) {
+    private User createData(ResultSet rs) {
         User user = new User();
         try {
             user.setId(rs.getInt("id"));
@@ -22,6 +25,31 @@ public class jdbcDAO {
         } catch (SQLException ignored) {}
 
         return user;
+    }
+
+    /**
+     * Getting record data by its name
+     *
+     * @param value - record's name
+     * @return data
+     * */
+    public User getDataByName(String value) {
+        User data = new User();
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement("select * from "+ usersTable +" where account=? order by account desc limit 1");
+            preparedStatement.setString(1, value);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                data = createData(resultSet);
+            }
+            resultSet.close();
+            conn.close();
+        } catch (ClassNotFoundException | SQLException ex) {
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
+        }
+        return data;
     }
 
     /**
