@@ -2,6 +2,8 @@ package fecoder.DAO;
 
 import fecoder.connection.ConnectionUtils;
 import fecoder.models.WorkOrder;
+import fecoder.utils.Utils;
+import javafx.scene.control.Alert;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -10,6 +12,7 @@ import java.util.List;
 public class WorkOrderDAO {
     
     private final String tableName = "work_order";
+    private final Utils utils = new Utils();
 
     /**
      * Representing a database
@@ -227,7 +230,7 @@ public class WorkOrderDAO {
      * @param note - column note
      * */
     public void insert(String name, String lotNumber, String purchaseOrder, int year, int customerId, String sendDate, String shippingDate, String destination, String note) {
-        String insertQuery = "insert into "+ tableName +" (name, lot_number, po_number, year, customer_id, send_date, shipping_date, destination, note) values(?,?,?,?,?,str_to_date(?,'%d-%m-%Y'),str_to_date(?,'%d-%m-%Y'),?,?)";
+        String insertQuery = "insert into "+ tableName +" (name, lot_number, po_number, year, customer_id, send_date, shipping_date, destination, note) values(REPLACE(?, ' ', ''),?,?,?,?,str_to_date(?,'%d-%m-%Y'),str_to_date(?,'%d-%m-%Y'),?,?)";
         preparedInsertQuery(insertQuery, name, lotNumber, purchaseOrder, year, customerId, sendDate, shippingDate, destination, note);
     }
 
@@ -263,8 +266,9 @@ public class WorkOrderDAO {
             preparedStatement.close();
             conn.close();
         } catch (Exception ex) {
-            assert ex instanceof SQLException;
-            jdbcDAO.printSQLException((SQLException) ex);
+//            assert ex instanceof SQLException;
+//            jdbcDAO.printSQLException((SQLException) ex);
+            utils.alert("err", Alert.AlertType.ERROR, "Lỗi!", ex.getMessage()).showAndWait();
         }
     }
 

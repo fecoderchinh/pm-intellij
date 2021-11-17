@@ -114,6 +114,30 @@ public class WorkOrderProductDAO {
     /**
      * Getting record data by its ID
      *
+     * @return data
+     * */
+    public WorkOrderProduct getFakeAutoIncrementID() {
+        WorkOrderProduct data = new WorkOrderProduct();
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement("select * from "+ tableName +" order by id desc limit 1");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                data = createData(resultSet);
+            }
+            resultSet.close();
+            conn.close();
+        } catch (ClassNotFoundException | SQLException ex) {
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
+        }
+
+        return data;
+    }
+
+    /**
+     * Getting record data by its ID
+     *
      * @param id - record id
      * @return data
      * */
@@ -160,6 +184,21 @@ public class WorkOrderProductDAO {
     }
 
     /**
+     * Inserting all columns
+     *
+     * @param wop_id column work_order_product.id
+     * @param workOrderID column work_order_id
+     * @param ordinalNumber column ordinal_num
+     * @param productID column product_id
+     * @param quantity column qty
+     * @param note column note
+     * */
+    public void insert_wopp_children(int wop_id, int workOrderID, String ordinalNumber, int productID, float quantity, String note) {
+        String insertQuery = "{call insert_wopp_children(?, ?, ?, ?, ?, ? )}";
+        preparedInsertWOPPChildrenQuery(insertQuery, wop_id, workOrderID, ordinalNumber, productID, quantity, note);
+    }
+
+    /**
      * Preparing Insert Query before action
      *
      * @param workOrderID column work_order_id
@@ -181,6 +220,36 @@ public class WorkOrderProductDAO {
             preparedStatement.executeUpdate();
 
             preparedStatement.close();
+            conn.close();
+        } catch (Exception ex) {
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
+        }
+    }
+
+    /**
+     * Preparing Insert Query before action
+     *
+     * @param workOrderID column work_order_id
+     * @param ordinalNumber column ordinal_num
+     * @param productID column product_id
+     * @param quantity column qty
+     * @param note column note
+     * */
+    public void preparedInsertWOPPChildrenQuery(String query, int wop_id, int workOrderID, String ordinalNumber, int productID, float quantity, String note) {
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            CallableStatement callableStatement = conn.prepareCall(query);
+            callableStatement.setInt(1, wop_id);
+            callableStatement.setInt(2, workOrderID);
+            callableStatement.setString(3, ordinalNumber);
+            callableStatement.setInt(4, productID);
+            callableStatement.setFloat(5, quantity);
+            callableStatement.setString(6, note);
+
+            callableStatement.executeUpdate();
+
+            callableStatement.close();
             conn.close();
         } catch (Exception ex) {
             assert ex instanceof SQLException;

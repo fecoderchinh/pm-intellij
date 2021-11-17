@@ -187,8 +187,8 @@ create table work_order (
 
 insert into work_order (name, lot_number, po_number, year, customer_id, send_date, shipping_date, destination, note)
 values 
-	('LSX 301', '125', '', 1, 1, str_to_date('14-05-2021','%d-%m-%Y'), str_to_date('10-07-2021','%d-%m-%Y'), 'Sydney, Úc', '' ),
-	('LSX 303', '126', '', 2, 1, str_to_date('14-05-2021','%d-%m-%Y'), str_to_date('10-07-2021','%d-%m-%Y'), 'Sydney, Úc', '' );
+	(replace('LSX                  301', ' ', ''), '125', '', 1, 1, str_to_date('14-05-2021','%d-%m-%Y'), str_to_date('10-07-2021','%d-%m-%Y'), 'Sydney, Úc', '' ),
+	(replace('LSX         303', ' ', ''), '126', '', 2, 1, str_to_date('14-05-2021','%d-%m-%Y'), str_to_date('10-07-2021','%d-%m-%Y'), 'Sydney, Úc', '' );
 
 -- update work_order set name='LSX 301', lot_number='125', po_number='', year='1', customer_id='1', send_date=str_to_date('14-05-2021','%d-%m-%Y'), shipping_date=str_to_date('10-07-2021','%d-%m-%Y'), destination='Sydney, Úc', note='' where id=1;
 
@@ -287,12 +287,13 @@ table mối quan hệ giữa lệnh sản xuất, đơn hàng, mặt hàng
 - Một đơn hàng gồm 1 hoặc nhiều mặt hàng
 */
 create table work_order_product(
-	id bigint unsigned not null auto_increment,
+	id bigint unsigned not null default 0,
 	work_order_id bigint unsigned,
 	ordinal_num varchar(100),
 	product_id bigint unsigned,
 	qty float not null default 0,
 	note longtext,
+	unique(id),
 	primary key (id),
 	foreign key (product_id) references products(id) on delete cascade,
 	foreign key (work_order_id) references work_order(id) on delete cascade
@@ -301,6 +302,8 @@ create table work_order_product(
 -- ALTER TABLE work_order_product MODIFY ordinal_num float not null default 0;
 
 -- drop table work_order_product;
+
+-- select id from work_order_product order by id desc limit 1;
 
 /*insert into work_order_product (work_order_id, ordinal_num, product_id, qty, note)
 values (1, 1.0, 1, 500, "");*/
@@ -328,6 +331,8 @@ create table work_order_product_packaging (
 	stock float not null default 0, -- new
 	actual_qty float not null default 0, -- new
 	residual_qty float not null default 0, -- new
+	printed varchar(250),
+	note longtext,
 	primary key (id),
 	foreign key (wop_id) references work_order_product(id) on delete cascade,
 	foreign key (work_order_id) references work_order(id) on delete cascade,
@@ -341,6 +346,8 @@ create table work_order_product_packaging (
 
 -- delete from work_order_product_packaging;
 
+-- update work_order_product_packaging set actual_qty=2150 where wop_id=1 and packaging_id=1 and id=1;
+
 /*SELECT wopp.product_id
 FROM work_order_product_packaging wopp
 WHERE wopp.work_order_id = 1
@@ -352,11 +359,11 @@ group by wopp.product_id;*/
 
 -- bước 1: ví dụ thêm số lượng thùng cần đặt cho mặt hàng
 /*insert into work_order_product (work_order_id, ordinal_num, product_id, qty, note)
-values (1, 3.0, 1, 150, "");*/
+values (1, 1.0, 1, 150, "");*/
 
 -- bước 2: áp dụng số lượng thùng cho nhóm bao bì thuộc mặt hàng đó
 /*insert into work_order_product_packaging(wop_id, work_order_id, product_id, packaging_id, work_order_qty, stock, actual_qty, residual_qty)
-select (select id from work_order_product order by id desc limit 1), 1, 1, pps.packaging_id, pps.pack_qty *150,0,0,0
+select (select LAST_INSERT_ID() from work_order_product), 1, 1, pps.packaging_id, pps.pack_qty *150,0,0,0
 from packaging_product_size pps
 where pps.product_id = 1;*/
 
@@ -386,9 +393,58 @@ set wopp.work_order_qty = pps._pack_qty * 234;*/
 table hiển thị thông tin số lượng nhập/xuất, có thể dùng để theo dõi/thống kê số liệu trong tương lai
 - CHƯA TEST THỰC TẾ
 */
-select 
+
+select distinct 
+	wopp.id as woppID,
+	wop.ordinal_num as woOrdinalNumbers, 
+	wop.id as woID, 
+	wo.name as woName, 
+	p.name as productName, 
+	p2.name as packName, 
+	p2.specifications as packSpecs, 
+	p2.dimension as packDim, 
+	t.unit as packUnit, 
+	s.code as sCode, 
+	p2.code as packCode, 
+	pps.pack_qty as packQuantity,
+	pps.pack_qty * wop.qty as woQuantity,
+	wopp.stock as packStock,
+	wopp.actual_qty as packActualQuantity,
+	wopp.residual_qty as packResidualQuantity,
+	(wopp.actual_qty + wopp.stock - wopp.residual_qty - (pps.pack_qty * wop.qty)) as totalResidualQuantity,
+	wopp.printed as printStatus
+from 
+	work_order_product wop,
+	work_order wo,
+	products p,
+	packaging p2,
+	types t,
+	supliers s,
+	packaging_product_size pps,
+	work_order_product_packaging wopp 
+where
+	wop.work_order_id = wo.id
+	and wop.product_id = p.id
+	and p2.`type` = t.id
+	and p2.suplier = s.id 
+	and pps.product_id = p.id 
+	and pps.packaging_id = p2.id
+	and wopp.wop_id = wop.id
+	and wopp.work_order_id = wo.id
+	and wopp.product_id = p.id
+	and wopp.packaging_id = p2.id
+-- 	and wo.id = 1 -- filter by work_order.id
+-- 	and p.id = 1 -- filter by products.id
+-- 	and wop.ordinal_num = 1 -- filter by work_order_product.ordinal_num 
+group by wo.id
+order by wop.ordinal_num 
+;
+
+/*select distinct
+	(@count := @count + 1),
 	wopp.id as id,
 	wop.ordinal_num as ordinalNumbers, 
+	wopp.wop_id as wop_id,
 	wo.name as workOrderName, 
 	p2.name as productName, 
 	p.name as packagingName, 
@@ -420,6 +476,7 @@ from
 	work_order_product_packaging wopp,
 	years y,
 	supliers s
+CROSS JOIN (SELECT @count := 0) AS dummy
 where 
 	wo.id = wop.work_order_id 
 	and wop.product_id = p2.id 
@@ -431,12 +488,12 @@ where
 -- 	and wopp.packaging_id = p.id 
 	and wo.`year`  = y.id
 	and p.suplier = s.id
-	and y.id = 1 and wopp.work_order_id = 1
-group by wop.product_id order by wop.ordinal_num;
+-- 	and wopp.work_order_id = 1 and wop.product_id = 1 and wop.ordinal_num = 2
+order by wop.ordinal_num;*/
 
 
 /*tính số khối*/
-select 
+/*select 
 	p.name, 
 	p.dimension, 
 	(SELECT SUBSTRING_INDEX(p.dimension , 'x', 1)) as length, 
@@ -444,10 +501,10 @@ select
 	(SELECT SUBSTRING_INDEX(p.dimension , 'x', -1)) as height,
 	((SELECT SUBSTRING_INDEX(p.dimension , 'x', 1))*(SELECT SUBSTRING_INDEX((SELECT SUBSTRING_INDEX(p.dimension , 'x', 2)) , 'x', -1))*(SELECT SUBSTRING_INDEX(p.dimension , 'x', -1))*wop.qty) as CBM
 from packaging p, products p2, work_order_product wop, work_order_product_packaging wopp 
-where wop.product_id = p2.id and wopp.packaging_id = p.id and wop.product_id = 1 and type=1;
+where wop.product_id = p2.id and wopp.packaging_id = p.id and wop.product_id = 1 and type=1;*/
 
-/*list đề nghị)*/
-select distinct (@count := @count + 1) AS rowNumber, p.name as packagingName,  p.specifications as specs,  p.dimension as dimension, t.unit as unit, wopp.actual_qty as total, if((wopp.actual_qty - wopp.residual_qty + wopp.stock - wopp.work_order_qty) > 0, (wopp.actual_qty - wopp.residual_qty + wopp.stock - wopp.work_order_qty), "") as totalResidualQuantity
+/*list đề nghị*/
+select distinct (@count := @count + 1) AS rowNumber, wo.id as woID, wo.name as workOrderName, p.name as packagingName,  p.specifications as specs,  p.dimension as dimension, t.unit as unit, wopp.actual_qty as total, if((wopp.actual_qty - wopp.residual_qty + wopp.stock - wopp.work_order_qty) > 0, (wopp.actual_qty - wopp.residual_qty + wopp.stock - wopp.work_order_qty), "") as totalResidualQuantity
 from 
 	work_order_product_packaging wopp, 
 	packaging p, 
@@ -466,6 +523,40 @@ where
 	and p.`type` = t.id 
 	and pps.product_id = wopp.product_id
 	and wopp.wop_id = wop.id
-	and y.id = 1 and wopp.work_order_id = 1
+	and wopp.work_order_id in ("1", "2")
 	and wopp.actual_qty > 0
 	group by wopp.id;
+	
+/*đơn đặt hàng*/
+select
+	wo.id as woID,
+	group_concat(distinct wo.name separator "+") as woName, 
+	p.name as pName,
+	p.specifications as pSpecs,
+	p.dimension as pDimension,
+	t.unit as pUnit,
+	sum(wopp.work_order_qty) as pDesireQuantity,
+	sum(wopp.actual_qty) as pTotal,
+	sum(wopp.stock) as pStock,
+	sum(wopp.residual_qty) as pResidualQuantity,
+	s.code as sCode,
+	s.address as sAddress,
+	s.deputy as sDeputy,
+	s.name as sName,
+	s.phone as sPhone,
+	s.fax as sFax
+from 
+	work_order_product_packaging wopp,
+	work_order wo,
+	packaging p,
+	types t ,
+	supliers s 
+where 
+	wopp.work_order_id = wo.id
+	and wopp.packaging_id = p.id
+	and p.`type` = t.id
+	and p.suplier = s.id
+-- 	and wopp.actual_qty > 0 
+	and wopp.work_order_id in ("1", "2")
+group by 
+	wopp.packaging_id;

@@ -111,6 +111,31 @@ public class SupplierDAO {
     }
 
     /**
+     * Getting record data by its code
+     *
+     * @param code suppliers.code
+     * @return data
+     * */
+    public Supplier getDataByCode(String code) {
+        Supplier data = new Supplier();
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement("select * from "+ tableName +" where code=? order by id desc limit 1");
+            preparedStatement.setString(1, code);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                data = createData(resultSet);
+            }
+            resultSet.close();
+            conn.close();
+        } catch (ClassNotFoundException | SQLException ex) {
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
+        }
+        return data;
+    }
+
+    /**
      * Determine the name exists
      *
      * @param value - the record's value

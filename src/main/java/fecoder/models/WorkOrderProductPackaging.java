@@ -10,6 +10,7 @@ public class WorkOrderProductPackaging {
     float stock;
     float actual_qty;
     float residual_qty;
+    String printed;
 
     public WorkOrderProductPackaging() {}
 
@@ -85,17 +86,28 @@ public class WorkOrderProductPackaging {
         this.residual_qty = residual_qty;
     }
 
+    public String getPrinted() {
+        return printed;
+    }
+
+    public void setPrinted(String printed) {
+        this.printed = printed;
+    }
+
     public WorkOrderProductPackaging(
             int id,
+            int wop_id,
             int work_order_id,
             int product_id,
             int packaging_id,
             float work_order_qty,
             float stock,
             float actual_qty,
-            float residual_qty
+            float residual_qty,
+            String printed
     ) {
         this.id = id;
+        this.wop_id = wop_id;
         this.work_order_id = work_order_id;
         this.product_id = product_id;
         this.packaging_id = packaging_id;
@@ -103,5 +115,6 @@ public class WorkOrderProductPackaging {
         this.stock = stock;
         this.actual_qty = actual_qty;
         this.residual_qty = residual_qty;
+        this.printed = printed;
     }
 }

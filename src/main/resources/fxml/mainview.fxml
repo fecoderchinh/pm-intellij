@@ -6,7 +6,7 @@
 
 <BorderPane prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fecoder.MainViewController">
     <top>
-        <HBox prefWidth="200.0" BorderPane.alignment="CENTER" spacing="10">
+        <HBox prefWidth="200.0" spacing="10" BorderPane.alignment="CENTER">
             <children>
                 <Button id="suplierManage" fx:id="suplierManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="NHÀ CUNG CẤP" />
                 <Button id="packagingTypeManage" fx:id="packagingTypeManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="LOẠI BAO BÌ" />
@@ -15,7 +15,7 @@
                 <Button id="customerManage" fx:id="customerManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="KHÁCH HÀNG" />
                 <Button id="packagingManage" fx:id="packagingManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="BAO BÌ" />
                 <Button id="productManage" fx:id="productManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="MẶT HÀNG" />
-                <Button id="packagingOwner" fx:id="packagingOwner" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="QUẢN LÝ BAO BÌ" />
+<!--                <Button id="packagingOwner" fx:id="packagingOwner" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="ĐÓNG GÓI" />-->
                 <Button id="commands" fx:id="commands" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="LỆNH SẢN XUẤT" />
             </children>
             <padding>
@@ -24,26 +24,30 @@
         </HBox>
     </top>
     <center>
-      <ScrollPane fitToHeight="true" fitToWidth="true">
+      <ScrollPane id="centerContain" fitToHeight="true" fitToWidth="true">
          <content>
               <VBox spacing="10.0">
                   <children>
                       <StackPane prefHeight="-1.0" prefWidth="-1.0">
                           <children>
-                              <HBox alignment="BASELINE_RIGHT" prefHeight="0.0" prefWidth="211.0" spacing="8">
+                              <HBox alignment="BASELINE_LEFT" prefHeight="0.0" prefWidth="211.0" spacing="8">
                                   <children>
                                       <Button id="newWindowButton" fx:id="newWindowButton" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="New Window" />
                                   </children>
                               </HBox>
                           </children>
+                          <padding>
+                              <Insets bottom="10" left="10" right="10" top="10" />
+                          </padding>
                       </StackPane>
+                  <Separator prefWidth="1002.0" />
                   </children>
               </VBox>
          </content>
       </ScrollPane>
     </center>
     <bottom>
-        <HBox prefWidth="200.0" BorderPane.alignment="CENTER" alignment="BOTTOM_RIGHT" spacing="10">
+        <HBox alignment="BOTTOM_RIGHT" prefWidth="200.0" spacing="10" BorderPane.alignment="CENTER">
             <children>
                 <GridPane>
                     <children>
@@ -53,6 +57,13 @@
                     <padding>
                         <Insets top="5" />
                     </padding>
+               <columnConstraints>
+                  <ColumnConstraints />
+                  <ColumnConstraints />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints />
+               </rowConstraints>
                 </GridPane>
                 <Button id="logoutButton" fx:id="logoutButton" text="Đăng xuất" />
             </children>

@@ -6,6 +6,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 public class MainViewController {
     public Button newWindowButton;
@@ -16,7 +18,7 @@ public class MainViewController {
     public Button customerManage;
     public Button packagingManage;
     public Button productManage;
-    public Button packagingOwner;
+//    public Button packagingOwner;
     public Button commands;
     @FXML private Button logoutButton;
     @FXML private Label sessionLabel;
@@ -27,6 +29,8 @@ public class MainViewController {
 
     public void initSessionID(final LoginManager loginManager, String sessionID) {
         sessionLabel.setText(sessionID);
+        newWindowButton.setGraphic(new ImageView(new Image(getClass().getResource("/images/logo.jpg").toString())));
+        newWindowButton.setContentDisplay(ContentDisplay.TOP);
         logoutButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent event) {
                 loginManager.logout();
@@ -61,9 +65,9 @@ public class MainViewController {
             utils.loadScene("/fxml/product.fxml", "Quản lý mặt hàng");
         });
 
-        packagingOwner.setOnMouseClicked((event) -> {
-            utils.loadScene("/fxml/packaging_owner.fxml", "Quản lý bao bì trong mặt hàng");
-        });
+//        packagingOwner.setOnMouseClicked((event) -> {
+//            utils.loadScene("/fxml/packaging_owner.fxml", "Quản lý bao bì trong mặt hàng");
+//        });
 
         commands.setOnMouseClicked((event) -> {
             utils.loadScene("/fxml/work_order.fxml", "Lệnh sản xuất");

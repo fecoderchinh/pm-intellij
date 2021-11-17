@@ -3,6 +3,8 @@ package fecoder.DAO;
 import fecoder.connection.ConnectionUtils;
 import fecoder.models.WorkOrder;
 import fecoder.models.WorkOrderProductPackaging;
+import fecoder.utils.Utils;
+import javafx.scene.control.Alert;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -10,6 +12,7 @@ import java.util.List;
 
 public class WorkOrderProductPackagingDAO {
     private final String tableName = "work_order_product_packaging";
+    private final Utils utils = new Utils();
 
     /**
      * Representing a database
@@ -29,6 +32,7 @@ public class WorkOrderProductPackagingDAO {
             data.setStock(resultSet.getFloat("stock"));
             data.setActual_qty(resultSet.getFloat("actual_qty"));
             data.setResidual_qty(resultSet.getFloat("residual_qty"));
+            data.setPrinted(resultSet.getString("printed"));
         } catch (SQLException ex) {
             jdbcDAO.printSQLException(ex);
         }
@@ -106,7 +110,7 @@ public class WorkOrderProductPackagingDAO {
      * */
     public void insertWOPChildren(int work_order_id, int product_id, float wop_qty) {
         String query = "insert into work_order_product_packaging(wop_id, work_order_id, product_id, packaging_id, work_order_qty, stock, actual_qty, residual_qty)" +
-                " select (select id from work_order_product order by id desc limit 1), ?, ?, pps.packaging_id, pps.pack_qty * ?,0,0,0" +
+                " select (select last_insert_id() from work_order_product), ?, ?, pps.packaging_id, pps.pack_qty * ?,0,0,0" +
                 " from packaging_product_size pps" +
                 " where pps.product_id = ?";
         preparedInsertQueryBasedOnWOPData(query, work_order_id, product_id, wop_qty);
@@ -163,11 +167,14 @@ public class WorkOrderProductPackagingDAO {
 
             preparedStatement.executeUpdate();
 
+            System.out.println(preparedStatement);
+
             preparedStatement.close();
             conn.close();
         } catch (Exception ex) {
-            assert ex instanceof SQLException;
-            jdbcDAO.printSQLException((SQLException) ex);
+//            assert ex instanceof SQLException;
+//            jdbcDAO.printSQLException((SQLException) ex);
+            utils.alert("err", Alert.AlertType.ERROR, "Error", ex.getMessage()).showAndWait();
         }
     }
 
@@ -222,12 +229,39 @@ public class WorkOrderProductPackagingDAO {
     /**
      * Updating record string data
      *
-     * @param column - table's column
-     * @param value - column's new value
-     * @param id - record's id
+     * @param column work_order_product_packaging 's column
+     * @param value work_order_product_packaging 's column > value
+     * @param id work_order_product_packaging.id
      * */
     public void updateQuantity(String column, float value, int id) {
         jdbcDAO.updateSingleDataFloat(tableName, column, value, id);
+    }
+
+    /**
+     *
+     * Handle on updating specific Float property
+     *
+     * @param table work_order_product_packaging
+     * @param column work_order_product_packaging 's column
+     * @param value work_order_product_packaging 's column > value
+     * @param wop_id work_order_product_packaging.wop_id
+     * @param packaging_id work_order_product_packaging.packaging_id
+     * @param id work_order_product_packaging.id
+     * */
+    public static void updateQuantityPrepareStatement(String table, String column, float value, int wop_id, int packaging_id, int id) {
+        String query = "update "+ table +" set "+ column +"=? where wop_id=? and packaging_id=? and id=?";
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setFloat(1, value);
+            preparedStatement.setInt(2, wop_id);
+            preparedStatement.setInt(3, packaging_id);
+            preparedStatement.setInt(4, id);
+            preparedStatement.execute();
+        } catch (Exception ex) {
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
+        }
     }
 
     /**

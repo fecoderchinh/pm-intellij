@@ -1,7 +1,6 @@
 package fecoder.DAO;
 
 import fecoder.connection.ConnectionUtils;
-import fecoder.models.PackagingOwnerString;
 import fecoder.models.WorkProduction;
 
 import java.sql.Connection;
@@ -24,6 +23,7 @@ public class WorkProductionDAO {
         try {
             data.setId(resultSet.getInt("id"));
             data.setOrdinalNumbers(resultSet.getString("ordinalNumbers"));
+            data.setWoID(resultSet.getString("woID"));
             data.setWorkOrderName(resultSet.getString("workOrderName"));
             data.setProductName(resultSet.getString("productName"));
             data.setPackagingName(resultSet.getString("packagingName"));
@@ -35,16 +35,11 @@ public class WorkProductionDAO {
             data.setPrintStatus(resultSet.getString("printStatus"));
             data.setPackQuantity(resultSet.getInt("packQuantity"));
             data.setWorkOrderQuantity(resultSet.getFloat("workOrderQuantity"));
-//            data.setStock(resultSet.getFloat("stock"));
             data.setStock(resultSet.getString("stock"));
-//            data.setActualQuantity(resultSet.getFloat("actualQuantity"));
             data.setActualQuantity(resultSet.getString("actualQuantity"));
-//            data.setResidualQuantity(resultSet.getFloat("residualQuantity"));
             data.setResidualQuantity(resultSet.getString("residualQuantity"));
-//            data.setTotalResidualQuantity(resultSet.getFloat("totalResidualQuantity"));
             data.setTotalResidualQuantity(resultSet.getString("totalResidualQuantity"));
             data.setNoteProduct(resultSet.getString("noteProduct"));
-            data.setYear(resultSet.getString("year"));
         } catch (SQLException ex) {
             jdbcDAO.printSQLException(ex);
         }
@@ -61,43 +56,48 @@ public class WorkProductionDAO {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             Statement statement = conn.createStatement();
-            String selectAll =  "select " +
-                    "wopp.id as id, " +
-                    "wop.ordinal_num as ordinalNumbers, " +
-                    "wo.name as workOrderName, " +
-                    "p2.name as productName, " +
-                    "s.code as packagingName, " +
-                    "p.specifications as packagingSpecification, " +
-                    "p.dimension as packagingDimension, " +
-                    "p.suplier as packagingSuplier, " +
-                    "p.code as packagingCode, " +
-                    "t.unit as unit, " +
-                    "p.stamped as printStatus, " +
-                    "pps.pack_qty as packQuantity, " +
-                    "(pps.pack_qty * wop.qty) as workOrderQuantity, " +
-                    "wopp.stock as stock, " +
-                    "wopp.actual_qty as actualQuantity, " +
-                    "wopp.residual_qty as residualQuantity, " +
-                    "(wopp.actual_qty + wopp.stock - wopp.residual_qty - (pps.pack_qty * wop.qty)) as totalResidualQuantity, " +
-                    "wop.note as noteProduct " +
+            String selectAll =  "select distinct " +
+                    " wopp.id as id, " +
+                    " wop.ordinal_num as ordinalNumbers, " +
+                    " wop.id as woID, " + // new
+                    " wo.name as workOrderName, " +
+                    " p.name as productName, " +
+                    " p2.name as packagingName, " +
+                    " p2.specifications as packagingSpecification, " +
+                    " p2.dimension as packagingDimension, " +
+                    " s.code as packagingSuplier, " +
+                    " p2.code as packagingCode, " +
+                    " t.unit as unit, " +
+                    " wopp.printed as printStatus, " +
+                    " pps.pack_qty as packQuantity, " +
+                    " (pps.pack_qty * wop.qty) as workOrderQuantity, " +
+                    " wopp.stock as stock, " +
+                    " wopp.actual_qty as actualQuantity, " +
+                    " wopp.residual_qty as residualQuantity, " +
+                    " (wopp.actual_qty + wopp.stock - wopp.residual_qty - (pps.pack_qty * wop.qty)) as totalResidualQuantity, " +
+                    " wopp.note as noteProduct " +
                     "from " +
-                    "work_order wo, " +
-                    "work_order_product wop, " +
-                    "packaging_product_size pps, " +
-                    "packaging p, " +
-                    "products p2, " +
-                    "types t, " +
-                    "work_order_product_packaging wopp " +
-                    "where " +
-                    "wo.id = wop.work_order_id " +
-                    "and wop.product_id = p2.id " +
-                    "and pps.product_id = p2.id " +
-                    "and pps.packaging_id = p.id " +
-                    "and p.`type` = t.id " +
-                    "and wopp.work_order_id = wo.id " +
-                    "and wopp.product_id = p2.id " +
-                    "and wopp.packaging_id = p.id " +
-                    "order by wop.ordinal_num";
+                    " work_order_product wop," +
+                    " work_order wo," +
+                    " products p," +
+                    " packaging p2," +
+                    " types t," +
+                    " supliers s," +
+                    " packaging_product_size pps," +
+                    " work_order_product_packaging wopp " +
+                    "where" +
+                    " wop.work_order_id = wo.id" +
+                    " and wop.product_id = p.id" +
+                    " and p2.`type` = t.id" +
+                    " and p2.suplier = s.id " +
+                    " and pps.product_id = p.id " +
+                    " and pps.packaging_id = p2.id" +
+                    " and wopp.wop_id = wop.id" +
+                    " and wopp.work_order_id = wo.id" +
+                    " and wopp.product_id = p.id" +
+                    " and wopp.packaging_id = p2.id" +
+                    " group by wopp.id" +
+                    " order by wop.ordinal_num";
             ResultSet resultSet = statement.executeQuery(selectAll);
             while(resultSet.next()) {
                 WorkProduction data = createData(resultSet);
@@ -124,47 +124,48 @@ public class WorkProductionDAO {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             Statement statement = conn.createStatement();
-            String selectAll =  "select " +
-                    "wopp.id as id, " +
-                    "wop.ordinal_num as ordinalNumbers, " +
-                    "wo.name as workOrderName, " +
-                    "p2.name as productName, " +
-                    "p.name as packagingName, " +
-                    "p.specifications as packagingSpecification, " +
-                    "p.dimension as packagingDimension, " +
-                    "s.code as packagingSuplier, " +
-                    "p.code as packagingCode, " +
-                    "t.unit as unit, " +
-                    "p.stamped as printStatus, " +
-                    "pps.pack_qty as packQuantity, " +
-                    "(pps.pack_qty * wop.qty) as workOrderQuantity, " +
-                    "wopp.stock as stock, " +
-                    "wopp.actual_qty as actualQuantity, " +
-                    "wopp.residual_qty as residualQuantity, " +
-                    "(wopp.actual_qty + wopp.stock - wopp.residual_qty - (pps.pack_qty * wop.qty)) as totalResidualQuantity, " +
-                    "wop.note as noteProduct " +
+            String selectAll =  "select distinct " +
+                    " wopp.id as id, " +
+                    " wop.ordinal_num as ordinalNumbers, " +
+                    " wop.id as woID, " + // new
+                    " wo.name as workOrderName, " +
+                    " p.name as productName, " +
+                    " p2.name as packagingName, " +
+                    " p2.specifications as packagingSpecification, " +
+                    " p2.dimension as packagingDimension, " +
+                    " s.code as packagingSuplier, " +
+                    " p2.code as packagingCode, " +
+                    " t.unit as unit, " +
+                    " wopp.printed as printStatus, " +
+                    " pps.pack_qty as packQuantity, " +
+                    " (pps.pack_qty * wop.qty) as workOrderQuantity, " +
+                    " wopp.stock as stock, " +
+                    " wopp.actual_qty as actualQuantity, " +
+                    " wopp.residual_qty as residualQuantity, " +
+                    " (wopp.actual_qty + wopp.stock - wopp.residual_qty - (pps.pack_qty * wop.qty)) as totalResidualQuantity, " +
+                    " wopp.note as noteProduct " +
                     "from " +
-                    "work_order wo, " +
-                    "work_order_product wop, " +
-                    "packaging_product_size pps, " +
-                    "packaging p, " +
-                    "products p2, " +
-                    "types t, " +
-                    "work_order_product_packaging wopp, " +
-                    "years y, " +
-                    "supliers s " +
-                    "where " +
-                    "wo.id = wop.work_order_id " +
-                    "and wop.product_id = p2.id " +
-                    "and pps.product_id = p2.id " +
-                    "and pps.packaging_id = p.id " +
-                    "and p.`type` = t.id " +
-                    "and wopp.work_order_id = wo.id " +
-                    "and wopp.product_id = p2.id " +
-                    "and wopp.packaging_id = p.id " +
-                    "and wo.`year`  = y.id " +
-                    "and p.suplier = s.id " +
-                    "and wo.id = "+workOrderID +
+                    " work_order_product wop," +
+                    " work_order wo," +
+                    " products p," +
+                    " packaging p2," +
+                    " types t," +
+                    " supliers s," +
+                    " packaging_product_size pps," +
+                    " work_order_product_packaging wopp " +
+                    "where" +
+                    " wop.work_order_id = wo.id" +
+                    " and wop.product_id = p.id" +
+                    " and p2.`type` = t.id" +
+                    " and p2.suplier = s.id " +
+                    " and pps.product_id = p.id " +
+                    " and pps.packaging_id = p2.id" +
+                    " and wopp.wop_id = wop.id" +
+                    " and wopp.work_order_id = wo.id" +
+                    " and wopp.product_id = p.id" +
+                    " and wopp.packaging_id = p2.id" +
+                    " and wo.id = " + workOrderID +
+                    " group by wopp.id" +
                     " order by wop.ordinal_num";
             ResultSet resultSet = statement.executeQuery(selectAll);
             while(resultSet.next()) {
@@ -184,59 +185,57 @@ public class WorkProductionDAO {
      * Getting all records of table
      *
      * @param work_order_id the id of work_order_product.work_order_id
-     * @param year the id of years.id
      *
      * @return list
      * */
-    public List<WorkProduction> getWorkOrderList(int work_order_id, int year) {
+    public List<WorkProduction> getWorkOrderList(int work_order_id) {
         List<WorkProduction> list = new ArrayList<>();
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             Statement statement = conn.createStatement();
-            String selectAll =  "select " +
-                    "wopp.id as id, " +
-                    "wop.ordinal_num as ordinalNumbers, " +
-                    "wo.name as workOrderName, " +
-                    "p2.name as productName, " +
-                    "p.name as packagingName, " +
-                    "p.specifications as packagingSpecification, " +
-                    "p.dimension as packagingDimension, " +
-                    "s.code as packagingSuplier, " +
-                    "p.code as packagingCode, " +
-                    "t.unit as unit, " +
-                    "p.stamped as printStatus, " +
-                    "pps.pack_qty as packQuantity, " +
-                    "(pps.pack_qty * wop.qty) as workOrderQuantity, " +
-                    "wopp.stock as stock, " +
-                    "wopp.actual_qty as actualQuantity, " +
-                    "wopp.residual_qty as residualQuantity, " +
-                    "(wopp.actual_qty + wopp.stock - wopp.residual_qty - (pps.pack_qty * wop.qty)) as totalResidualQuantity, " +
-                    "wop.note as noteProduct, " +
-                    "y.year as year " +
+            String selectAll =  "select distinct " +
+                    " wopp.id as id, " +
+                    " wop.ordinal_num as ordinalNumbers, " +
+                    " wop.id as woID, " + // new
+                    " wo.name as workOrderName, " +
+                    " p.name as productName, " +
+                    " p2.name as packagingName, " +
+                    " p2.specifications as packagingSpecification, " +
+                    " p2.dimension as packagingDimension, " +
+                    " s.code as packagingSuplier, " +
+                    " p2.code as packagingCode, " +
+                    " t.unit as unit, " +
+                    " wopp.printed as printStatus, " +
+                    " pps.pack_qty as packQuantity, " +
+                    " (pps.pack_qty * wop.qty) as workOrderQuantity, " +
+                    " wopp.stock as stock, " +
+                    " wopp.actual_qty as actualQuantity, " +
+                    " wopp.residual_qty as residualQuantity, " +
+                    " (wopp.actual_qty + wopp.stock - wopp.residual_qty - (pps.pack_qty * wop.qty)) as totalResidualQuantity, " +
+                    " wopp.note as noteProduct " +
                     "from " +
-                    "work_order wo, " +
-                    "work_order_product wop, " +
-                    "packaging_product_size pps, " +
-                    "packaging p, " +
-                    "products p2, " +
-                    "types t, " +
-                    "work_order_product_packaging wopp, " +
-                    "years y, " +
-                    "supliers s " +
-                    "where " +
-                    "wo.id = wop.work_order_id " +
-                    "and wop.product_id = p2.id " +
-                    "and pps.product_id = p2.id " +
-                    "and pps.packaging_id = p.id " +
-                    "and p.`type` = t.id " +
-                    "and wopp.work_order_id = wo.id " +
-                    "and wopp.product_id = p2.id " +
-                    "and wopp.packaging_id = p.id " +
-                    "and wo.`year`  = y.id " +
-                    "and p.suplier = s.id " +
-                    "and wop.work_order_id = "+work_order_id +
-                    " and y.id = "+year +
-                    " group by wop.work_order_id order by wop.ordinal_num";
+                    " work_order_product wop," +
+                    " work_order wo," +
+                    " products p," +
+                    " packaging p2," +
+                    " types t," +
+                    " supliers s," +
+                    " packaging_product_size pps," +
+                    " work_order_product_packaging wopp " +
+                    "where" +
+                    " wop.work_order_id = wo.id" +
+                    " and wop.product_id = p.id" +
+                    " and p2.`type` = t.id" +
+                    " and p2.suplier = s.id " +
+                    " and pps.product_id = p.id " +
+                    " and pps.packaging_id = p2.id" +
+                    " and wopp.wop_id = wop.id" +
+                    " and wopp.work_order_id = wo.id" +
+                    " and wopp.product_id = p.id" +
+                    " and wopp.packaging_id = p2.id" +
+                    " and wo.id = " + work_order_id +
+                    " group by wo.id" +
+                    " order by wop.ordinal_num";
             ResultSet resultSet = statement.executeQuery(selectAll);
             while(resultSet.next()) {
                 WorkProduction data = createData(resultSet);
@@ -255,59 +254,57 @@ public class WorkProductionDAO {
      * Getting all records of table
      *
      * @param work_order_id the id of work_order_product.work_order_id
-     * @param year the id of years.id
      *
      * @return list
      * */
-    public List<WorkProduction> getProductList(int work_order_id, int year) {
+    public List<WorkProduction> getProductList(int work_order_id) {
         List<WorkProduction> list = new ArrayList<>();
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             Statement statement = conn.createStatement();
-            String selectAll =  "select " +
-                    "wopp.id as id, " +
-                    "wop.ordinal_num as ordinalNumbers, " +
-                    "wo.name as workOrderName, " +
-                    "p2.name as productName, " +
-                    "p.name as packagingName, " +
-                    "p.specifications as packagingSpecification, " +
-                    "p.dimension as packagingDimension, " +
-                    "s.code as packagingSuplier, " +
-                    "p.code as packagingCode, " +
-                    "t.unit as unit, " +
-                    "p.stamped as printStatus, " +
-                    "pps.pack_qty as packQuantity, " +
-                    "(pps.pack_qty * wop.qty) as workOrderQuantity, " +
-                    "wopp.stock as stock, " +
-                    "wopp.actual_qty as actualQuantity, " +
-                    "wopp.residual_qty as residualQuantity, " +
-                    "(wopp.actual_qty + wopp.stock - wopp.residual_qty - (pps.pack_qty * wop.qty)) as totalResidualQuantity, " +
-                    "wop.note as noteProduct, " +
-                    "y.year as year " +
+            String selectAll =  "select distinct " +
+                    " wopp.id as id, " +
+                    " wop.ordinal_num as ordinalNumbers, " +
+                    " wop.id as woID, " + // new
+                    " wo.name as workOrderName, " +
+                    " p.name as productName, " +
+                    " p2.name as packagingName, " +
+                    " p2.specifications as packagingSpecification, " +
+                    " p2.dimension as packagingDimension, " +
+                    " s.code as packagingSuplier, " +
+                    " p2.code as packagingCode, " +
+                    " t.unit as unit, " +
+                    " wopp.printed as printStatus, " +
+                    " pps.pack_qty as packQuantity, " +
+                    " (pps.pack_qty * wop.qty) as workOrderQuantity, " +
+                    " wopp.stock as stock, " +
+                    " wopp.actual_qty as actualQuantity, " +
+                    " wopp.residual_qty as residualQuantity, " +
+                    " (wopp.actual_qty + wopp.stock - wopp.residual_qty - (pps.pack_qty * wop.qty)) as totalResidualQuantity, " +
+                    " wopp.note as noteProduct " +
                     "from " +
-                    "work_order wo, " +
-                    "work_order_product wop, " +
-                    "packaging_product_size pps, " +
-                    "packaging p, " +
-                    "products p2, " +
-                    "types t, " +
-                    "work_order_product_packaging wopp, " +
-                    "years y, " +
-                    "supliers s " +
-                    "where " +
-                    "wo.id = wop.work_order_id " +
-                    "and wop.product_id = p2.id " +
-                    "and pps.product_id = p2.id " +
-                    "and pps.packaging_id = p.id " +
-                    "and p.`type` = t.id " +
-                    "and wopp.work_order_id = wo.id " +
-                    "and wopp.product_id = p2.id " +
-                    "and wopp.packaging_id = p.id " +
-                    "and wo.`year`  = y.id " +
-                    "and p.suplier = s.id " +
-                    "and wop.work_order_id = "+work_order_id +
-                    " and y.id = "+year +
-                    " group by wop.product_id order by wop.ordinal_num";
+                    " work_order_product wop," +
+                    " work_order wo," +
+                    " products p," +
+                    " packaging p2," +
+                    " types t," +
+                    " supliers s," +
+                    " packaging_product_size pps," +
+                    " work_order_product_packaging wopp " +
+                    "where" +
+                    " wop.work_order_id = wo.id" +
+                    " and wop.product_id = p.id" +
+                    " and p2.`type` = t.id" +
+                    " and p2.suplier = s.id " +
+                    " and pps.product_id = p.id " +
+                    " and pps.packaging_id = p2.id" +
+                    " and wopp.wop_id = wop.id" +
+                    " and wopp.work_order_id = wo.id" +
+                    " and wopp.product_id = p.id" +
+                    " and wopp.packaging_id = p2.id" +
+                    " and wo.id = " + work_order_id +
+                    " group by p.id" +
+                    " order by wop.ordinal_num";
             ResultSet resultSet = statement.executeQuery(selectAll);
             while(resultSet.next()) {
                 WorkProduction data = createData(resultSet);
@@ -325,64 +322,61 @@ public class WorkProductionDAO {
     /**
      * Getting all records of table
      *
-     * @param year the id of years.id
      * @param work_order_id the id of work_order_product.work_order_id
      * @param product_id the id of work_order_product.product_id
      * @param ordinal_num the id of work_order_product.ordinal_num
      *
      * @return list
      * */
-    public List<WorkProduction> getPackagingList(int year, int work_order_id, int product_id, String ordinal_num) {
+    public List<WorkProduction> getPackagingList(int work_order_id, int product_id, String ordinal_num) {
         List<WorkProduction> list = new ArrayList<>();
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             Statement statement = conn.createStatement();
-            String selectAll =  "select " +
-                    "wopp.id as id, " +
-                    "wop.ordinal_num as ordinalNumbers, " +
-                    "wo.name as workOrderName, " +
-                    "p2.name as productName, " +
-                    "p.name as packagingName, " +
-                    "p.specifications as packagingSpecification, " +
-                    "p.dimension as packagingDimension, " +
-                    "s.code as packagingSuplier, " +
-                    "p.code as packagingCode, " +
-                    "t.unit as unit, " +
-                    "p.stamped as printStatus, " +
-                    "pps.pack_qty as packQuantity, " +
-                    "(pps.pack_qty * wop.qty) as workOrderQuantity, " +
-                    "wopp.stock as stock, " +
-                    "wopp.actual_qty as actualQuantity, " +
-                    "wopp.residual_qty as residualQuantity, " +
-                    "(wopp.actual_qty + wopp.stock - wopp.residual_qty - (pps.pack_qty * wop.qty)) as totalResidualQuantity, " +
-                    "wop.note as noteProduct, " +
-                    "y.year as year " +
+            String selectAll =  "select distinct " +
+                    " wopp.id as id, " +
+                    " wop.ordinal_num as ordinalNumbers, " +
+                    " wop.id as woID, " + // new
+                    " wo.name as workOrderName, " +
+                    " p.name as productName, " +
+                    " p2.name as packagingName, " +
+                    " p2.specifications as packagingSpecification, " +
+                    " p2.dimension as packagingDimension, " +
+                    " s.code as packagingSuplier, " +
+                    " p2.code as packagingCode, " +
+                    " t.unit as unit, " +
+                    " wopp.printed as printStatus, " +
+                    " pps.pack_qty as packQuantity, " +
+                    " (pps.pack_qty * wop.qty) as workOrderQuantity, " +
+                    " wopp.stock as stock, " +
+                    " wopp.actual_qty as actualQuantity, " +
+                    " wopp.residual_qty as residualQuantity, " +
+                    " (wopp.actual_qty + wopp.stock - wopp.residual_qty - (pps.pack_qty * wop.qty)) as totalResidualQuantity, " +
+                    " wopp.note as noteProduct " +
                     "from " +
-                    "work_order wo, " +
-                    "work_order_product wop, " +
-                    "packaging_product_size pps, " +
-                    "packaging p, " +
-                    "products p2, " +
-                    "types t, " +
-                    "work_order_product_packaging wopp, " +
-                    "years y, " +
-                    "supliers s " +
-                    "where " +
-                    "wo.id = wop.work_order_id " +
-                    "and wop.product_id = p2.id " +
-                    "and pps.product_id = p2.id " +
-                    "and pps.packaging_id = p.id " +
-                    "and p.`type` = t.id " +
-                    "and wopp.work_order_id = wo.id " +
-                    "and wopp.product_id = p2.id " +
-                    "and wopp.packaging_id = p.id " +
-                    "and wo.`year`  = y.id " +
-                    "and p.suplier = s.id " +
-                    "and y.id = " + year +
-                    " and wop.work_order_id = " + work_order_id +
-                    " and wop.product_id = " + product_id +
+                    " work_order_product wop," +
+                    " work_order wo," +
+                    " products p," +
+                    " packaging p2," +
+                    " types t," +
+                    " supliers s," +
+                    " packaging_product_size pps," +
+                    " work_order_product_packaging wopp " +
+                    "where" +
+                    " wop.work_order_id = wo.id" +
+                    " and wop.product_id = p.id" +
+                    " and p2.`type` = t.id" +
+                    " and p2.suplier = s.id " +
+                    " and pps.product_id = p.id " +
+                    " and pps.packaging_id = p2.id" +
+                    " and wopp.wop_id = wop.id" +
+                    " and wopp.work_order_id = wo.id" +
+                    " and wopp.product_id = p.id" +
+                    " and wopp.packaging_id = p2.id" +
+                    " and wo.id = " + work_order_id +
+                    " and p.id = " + product_id +
                     " and wop.ordinal_num = " + ordinal_num +
-                    " group by packagingName " +
+                    " group by packagingName" +
                     " order by wop.ordinal_num";
             ResultSet resultSet = statement.executeQuery(selectAll);
             while(resultSet.next()) {

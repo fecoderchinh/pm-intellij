@@ -2,6 +2,7 @@ package fecoder.models;
 
 public class Order {
     int rowNumber;
+    String workOrderName;
     String packagingName;
     String specs;
     String dimension;
@@ -14,6 +15,7 @@ public class Order {
     public Order(
             int rowNumber,
             String packagingName,
+            String workOrderName,
             String specs,
             String dimension,
             String unit,
@@ -22,6 +24,7 @@ public class Order {
     ) {
         this.rowNumber = rowNumber;
         this.packagingName = packagingName;
+        this.workOrderName = workOrderName;
         this.specs = specs;
         this.dimension = dimension;
         this.unit = unit;
@@ -35,6 +38,14 @@ public class Order {
 
     public void setRowNumber(int rowNumber) {
         this.rowNumber = rowNumber;
+    }
+
+    public String getWorkOrderName() {
+        return workOrderName;
+    }
+
+    public void setWorkOrderName(String workOrderName) {
+        this.workOrderName = workOrderName;
     }
 
     public String getPackagingName() {

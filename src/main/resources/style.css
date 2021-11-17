@@ -1,6 +1,5 @@
-.button {
-   -fx-background-color: green;
-   -fx-text-fill: white;
+#centerContain {
+    -fx-background: orange;
 }
 
 .tree-table-row-cell:top-node {

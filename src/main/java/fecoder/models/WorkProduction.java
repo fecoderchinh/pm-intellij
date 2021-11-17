@@ -3,6 +3,7 @@ package fecoder.models;
 public class WorkProduction {
     int id;
     String ordinalNumbers;
+    String woID;
     String workOrderName;
     String productName;
     String packagingName;
@@ -19,13 +20,13 @@ public class WorkProduction {
     String residualQuantity;
     String totalResidualQuantity;
     String noteProduct;
-    String year;
 
     public WorkProduction() {}
 
     public WorkProduction(
             int id,
             String ordinalNumbers,
+            String woID,
             String workOrderName,
             String productName,
             String packagingName,
@@ -41,11 +42,11 @@ public class WorkProduction {
             String actualQuantity,
             String residualQuantity,
             String totalResidualQuantity,
-            String noteProduct,
-            String year
+            String noteProduct
     ) {
         this.id = id;
         this.ordinalNumbers = ordinalNumbers;
+        this.woID = woID;
         this.workOrderName = workOrderName;
         this.productName = productName;
         this.packagingName = packagingName;
@@ -62,7 +63,6 @@ public class WorkProduction {
         this.residualQuantity = residualQuantity;
         this.totalResidualQuantity = totalResidualQuantity;
         this.noteProduct = noteProduct;
-        this.year = year;
     }
 
     public int getId() {
@@ -79,6 +79,14 @@ public class WorkProduction {
 
     public void setOrdinalNumbers(String ordinalNumbers) {
         this.ordinalNumbers = ordinalNumbers;
+    }
+
+    public String getWoID() {
+        return woID;
+    }
+
+    public void setWoID(String woID) {
+        this.woID = woID;
     }
 
     public String getWorkOrderName() {
@@ -207,13 +215,5 @@ public class WorkProduction {
 
     public void setNoteProduct(String noteProduct) {
         this.noteProduct = noteProduct;
-    }
-
-    public String getYear() {
-        return year;
-    }
-
-    public void setYear(String year) {
-        this.year = year;
     }
 }
