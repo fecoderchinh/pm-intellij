@@ -31,6 +31,7 @@ public class OrderBySupplierDAO {
             data.setpStock(resultSet.getFloat("pStock"));
             data.setpResidualQuantity(resultSet.getFloat("pResidualQuantity"));
             data.setsCode(resultSet.getString("sCode"));
+            data.setpCode(resultSet.getString("pCode"));
             data.setsName(resultSet.getString("sName"));
             data.setsAddress(resultSet.getString("sAddress"));
             data.setsDeputy(resultSet.getString("sDeputy"));
@@ -66,6 +67,7 @@ public class OrderBySupplierDAO {
                     " sum(wopp.stock) as pStock," +
                     " sum(wopp.residual_qty) as pResidualQuantity," +
                     " s.code as sCode," +
+                    " p.code as pCode," +
                     " s.address as sAddress," +
                     " s.deputy as sDeputy," +
                     " s.name as sName," +
@@ -125,6 +127,7 @@ public class OrderBySupplierDAO {
                     " sum(wopp.stock) as pStock," +
                     " sum(wopp.residual_qty) as pResidualQuantity," +
                     " s.code as sCode," +
+                    " p.code as pCode," +
                     " s.address as sAddress," +
                     " s.deputy as sDeputy," +
                     " s.name as sName," +

@@ -12,6 +12,7 @@ public class OrderBySupllier {
     float pStock;
     float pResidualQuantity;
     String sCode;
+    String pCode;
     String sName;
     String sAddress;
     String sDeputy;
@@ -32,6 +33,7 @@ public class OrderBySupllier {
             float pStock,
             float pResidualQuantity,
             String sCode,
+            String pCode,
             String sName,
             String sAddress,
             String sDeputy,
@@ -49,6 +51,7 @@ public class OrderBySupllier {
         this.pStock = pStock;
         this.pResidualQuantity = pResidualQuantity;
         this.sCode = sCode;
+        this.pCode = pCode;
         this.sName = sName;
         this.sAddress = sAddress;
         this.sDeputy = sDeputy;
@@ -142,6 +145,14 @@ public class OrderBySupllier {
 
     public void setsCode(String sCode) {
         this.sCode = sCode;
+    }
+
+    public String getpCode() {
+        return pCode;
+    }
+
+    public void setpCode(String pCode) {
+        this.pCode = pCode;
     }
 
     public String getsName() {
