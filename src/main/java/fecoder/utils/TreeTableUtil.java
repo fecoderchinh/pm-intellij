@@ -25,7 +25,7 @@ public class TreeTableUtil {
         YearDAO yearDAO = new YearDAO();
         WorkOrderProductPackagingDAO workOrderProductPackagingDAO = new WorkOrderProductPackagingDAO();
 
-        ObservableList<WorkProduction> workOrderList = FXCollections.observableArrayList(workProductionDAO.getWorkOrderList(workOrderID));
+        ObservableList<WorkProduction> workOrderList = FXCollections.observableArrayList(workProductionDAO.getWorkOrderList(workOrderID+""));
 
 //        System.out.println(workOrderList.size());
         TreeItem<WorkProduction> root = new TreeItem<>();
@@ -38,7 +38,7 @@ public class TreeTableUtil {
 //                System.out.println(workOrderDAO.getDataByName(_workOrder.getWorkOrderName()).getYear());
                 ObservableList<WorkProduction> productList = FXCollections.observableArrayList(
                         workProductionDAO.getProductList(
-                                workOrderID // work_order_product.work_order_id
+                                workOrderID+"" // work_order_product.work_order_id
                         )
                 );
                 TreeItem<WorkProduction> _workOrderNode = new TreeItem<>(new WorkProduction(0,"", "","","",_workOrder.getWorkOrderName(),"","","","","","",0, 0,"","","","",""));
@@ -52,7 +52,7 @@ public class TreeTableUtil {
 //                        System.out.println(_product.getOrdinalNumbers()); // work_order_product.ordinal_num
                         ObservableList<WorkProduction> packagingList = FXCollections.observableArrayList(
                                 workProductionDAO.getPackagingList(
-                                        workOrderID, // work_order_product.work_order_id
+                                        workOrderID+"", // work_order_product.work_order_id
                                         workOrderProductPackagingDAO.getDataByID(_product.getId()).getProduct_id(), // work_order_product.product_id
                                         _product.getOrdinalNumbers() // work_order_product.ordinal_num
                                 )
@@ -63,7 +63,7 @@ public class TreeTableUtil {
 //                        System.out.println(_product.getOrdinalNumbers());
                         TreeItem<WorkProduction> _productNode = new TreeItem<>(new WorkProduction(0,"", "","","", _product.getProductName(),"","","","","","",0, packagingList.get(packagingList.size() > 1 ? packagingList.size()-1 : 0 ).getWorkOrderQuantity(),"","","","",""));
                         for(WorkProduction _packaging : packagingList) {
-//                            System.out.println(_packaging.getOrdinalNumbers() + " | " +_packaging.getPackagingName() + " | " + _packaging.getActualQuantity() + " | " + _packaging.getPackagingSuplier());
+//                            System.out.println(_packaging.getOrdinalNumbers() + " | " + _packaging.getProductName() + " | " +_packaging.getPackagingName() + " | " + _packaging.getActualQuantity() + " | " + _packaging.getPackagingSuplier());
 //                            _productNode.getChildren().add(new TreeItem<>(_packaging));
                             _productNode.getChildren().add(new TreeItem<>(new WorkProduction(_packaging.getId(),"", "","","",_packaging.getPackagingName(),"", _packaging.getPackagingDimension(), _packaging.getPackagingSuplier(), _packaging.getPackagingCode(), _packaging.getUnit(), _packaging.getPrintStatus(), 0, _packaging.getWorkOrderQuantity(), _packaging.getStock(), _packaging.getActualQuantity(), _packaging.getResidualQuantity(), _packaging.getTotalResidualQuantity(), _packaging.getNoteProduct())));
                             _productNode.setExpanded(true);
@@ -85,19 +85,19 @@ public class TreeTableUtil {
     {
         TreeTableColumn<WorkProduction, Integer> column = new TreeTableColumn<>("id");
         column.setCellValueFactory(new TreeItemPropertyValueFactory<>("id"));
-//        column.setCellFactory(new Callback<TreeTableColumn<WorkProduction, Integer>, TreeTableCell<WorkProduction, Integer>>() {
-//            @Override
-//            public TreeTableCell<WorkProduction, Integer> call(TreeTableColumn<WorkProduction, Integer> workProductionIntegerTreeTableColumn) {
-//                return new TreeTableCell<WorkProduction, Integer>() {
-//                    @Override
-//                    protected void updateItem(Integer integer, boolean b) {
-//                        if (integer != null) {
-//                            super.setText(integer == 0?"":integer.toString());
-//                        }
-//                    }
-//                };
-//            }
-//        });
+        column.setCellFactory(new Callback<TreeTableColumn<WorkProduction, Integer>, TreeTableCell<WorkProduction, Integer>>() {
+            @Override
+            public TreeTableCell<WorkProduction, Integer> call(TreeTableColumn<WorkProduction, Integer> workProductionIntegerTreeTableColumn) {
+                return new TreeTableCell<WorkProduction, Integer>() {
+                    @Override
+                    protected void updateItem(Integer integer, boolean b) {
+                        if (integer != null) {
+                            super.setText(integer == 0?"":integer.toString());
+                        }
+                    }
+                };
+            }
+        });
         return column;
     }
 

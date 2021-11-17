@@ -1,10 +1,13 @@
 package fecoder.utils;
 
+import fecoder.DAO.OrderDAO;
 import fecoder.controllers.PackagingOwnerController;
 import fecoder.controllers.ProductPackagingController;
+import fecoder.models.Order;
 import fecoder.models.Product;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -24,8 +27,10 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.StringConverter;
+import org.apache.poi.xwpf.usermodel.*;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
@@ -485,5 +490,66 @@ public class Utils {
                 }
             }
         });
+    }
+
+    /**
+     * setting header row for single cell
+     *
+     * @param cell XWPFTableCell
+     * @param text XWPFRun setText()
+     * @param fontsize XWPFRun setFontSize()
+     * @param addBreak XWPFRun addBreak()
+     * @param bold XWPFRun setBold()
+     * @param paragraphAlignment XWPFParagraph setAlignment()
+     * */
+    public void setHeaderRowforSingleCell(XWPFTableCell cell, String text, int fontsize, boolean addBreak, boolean bold, ParagraphAlignment paragraphAlignment) {
+        XWPFParagraph tempParagraph = cell.getParagraphs().get(0);
+        tempParagraph.setSpacingBefore(80);
+        tempParagraph.setSpacingAfter(50);
+        tempParagraph.setIndentationLeft(100);
+        tempParagraph.setIndentationRight(100);
+        tempParagraph.setAlignment(paragraphAlignment != null ? paragraphAlignment : ParagraphAlignment.LEFT);
+        XWPFRun tempRun = tempParagraph.createRun();
+        tempRun.setFontFamily("Arial");
+        tempRun.setFontSize(fontsize);
+        tempRun.setColor("000000");
+        tempRun.setBold(bold);
+        tempRun.setText(text);
+        if (addBreak) {
+            tempRun.addBreak();
+        }
+        cell.setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
+    }
+
+    /**
+     * Merging horizontal table cells
+     *
+     * @param table XWPFTable
+     * @param rowNum XWPFTable getRow()
+     * @param colNum XWPFTable getCell()
+     * @param span cells range
+     * */
+    public void spanCellsAcrossRow(XWPFTable table, int rowNum, int colNum, int span) {
+        XWPFTableCell  cell = table.getRow(rowNum).getCell(colNum);
+        if (cell.getCTTc().getTcPr() == null) cell.getCTTc().addNewTcPr();
+        cell.getCTTc().getTcPr().addNewGridSpan();
+        cell.getCTTc().getTcPr().getGridSpan().setVal(BigInteger.valueOf((long)span));
+    }
+
+    /**
+     * Getting list of work_order.name
+     *
+     * @param idList list or single id from work_order_product_packaging.work_order_id
+     */
+    public String getListWorkOrderName(String idList) {
+        OrderDAO orderDAO = new OrderDAO();
+        String listWorkOrderName = "";
+        ObservableList<Order> listOfWorkOrder = FXCollections.observableArrayList(orderDAO.getListOfWorkOrder(idList));
+        for(int i=0;i<listOfWorkOrder.size();i++) {
+            listWorkOrderName += listOfWorkOrder.get(i).getWorkOrderName();
+            listWorkOrderName += (i<listOfWorkOrder.size()-1) ? " + " : "";
+        }
+
+        return listWorkOrderName;
     }
 }

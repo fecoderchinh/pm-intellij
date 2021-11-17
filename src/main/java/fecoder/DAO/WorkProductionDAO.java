@@ -188,7 +188,7 @@ public class WorkProductionDAO {
      *
      * @return list
      * */
-    public List<WorkProduction> getWorkOrderList(int work_order_id) {
+    public List<WorkProduction> getWorkOrderList(String work_order_id) {
         List<WorkProduction> list = new ArrayList<>();
         try {
             Connection conn = ConnectionUtils.getMyConnection();
@@ -233,7 +233,7 @@ public class WorkProductionDAO {
                     " and wopp.work_order_id = wo.id" +
                     " and wopp.product_id = p.id" +
                     " and wopp.packaging_id = p2.id" +
-                    " and wo.id = " + work_order_id +
+                    " and wo.id in (" + work_order_id + ")" +
                     " group by wo.id" +
                     " order by wop.ordinal_num";
             ResultSet resultSet = statement.executeQuery(selectAll);
@@ -257,7 +257,7 @@ public class WorkProductionDAO {
      *
      * @return list
      * */
-    public List<WorkProduction> getProductList(int work_order_id) {
+    public List<WorkProduction> getProductList(String work_order_id) {
         List<WorkProduction> list = new ArrayList<>();
         try {
             Connection conn = ConnectionUtils.getMyConnection();
@@ -302,7 +302,7 @@ public class WorkProductionDAO {
                     " and wopp.work_order_id = wo.id" +
                     " and wopp.product_id = p.id" +
                     " and wopp.packaging_id = p2.id" +
-                    " and wo.id = " + work_order_id +
+                    " and wo.id in (" + work_order_id + ")" +
                     " group by p.id" +
                     " order by wop.ordinal_num";
             ResultSet resultSet = statement.executeQuery(selectAll);
@@ -328,7 +328,7 @@ public class WorkProductionDAO {
      *
      * @return list
      * */
-    public List<WorkProduction> getPackagingList(int work_order_id, int product_id, String ordinal_num) {
+    public List<WorkProduction> getPackagingList(String work_order_id, int product_id, String ordinal_num) {
         List<WorkProduction> list = new ArrayList<>();
         try {
             Connection conn = ConnectionUtils.getMyConnection();
@@ -373,10 +373,10 @@ public class WorkProductionDAO {
                     " and wopp.work_order_id = wo.id" +
                     " and wopp.product_id = p.id" +
                     " and wopp.packaging_id = p2.id" +
-                    " and wo.id = " + work_order_id +
+                    " and wo.id in (" + work_order_id + ")" +
                     " and p.id = " + product_id +
                     " and wop.ordinal_num = " + ordinal_num +
-                    " group by packagingName" +
+                    " group by wopp.id" +
                     " order by wop.ordinal_num";
             ResultSet resultSet = statement.executeQuery(selectAll);
             while(resultSet.next()) {

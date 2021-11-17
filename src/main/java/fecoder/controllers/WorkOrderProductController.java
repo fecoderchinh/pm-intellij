@@ -2,14 +2,12 @@ package fecoder.controllers;
 
 import fecoder.DAO.*;
 import fecoder.models.*;
+import fecoder.utils.ExportWordDocument;
 import fecoder.utils.TreeTableUtil;
 import fecoder.utils.UpdateDocument;
 import fecoder.utils.Utils;
 import javafx.beans.binding.Bindings;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
@@ -24,7 +22,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import org.apache.poi.util.Units;
 import org.apache.poi.wp.usermodel.HeaderFooterType;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
@@ -509,7 +506,7 @@ public class WorkOrderProductController implements Initializable {
         }
 
         WorkOrder workOrder = workOrderDAO.getDataByID(this.innerData.getId());
-        data2DocOfOrderListDraft(file, workOrder);
+        ExportWordDocument.data2DocOfOrderListDraft(file, workOrder);
 
         data2Doc(file);
 
@@ -784,12 +781,12 @@ public class WorkOrderProductController implements Initializable {
                         Units.toEMU(100),
                         Units.toEMU(45));            // 100x35 pixels
             }
-            setHeaderRowforSingleCell(row.getCell(1), "Công ty CP SEAVINA", true, ParagraphAlignment.CENTER);
-//            setHeaderRowforSingleCell(row.getCell(1), "Lô 16A-18, KCN Trà Nóc I,P.Trà Nóc, Q. Bình Thủy, TP. Cần Thơ ,Việt Nam", true, ParagraphAlignment.CENTER);
-//            setHeaderRowforSingleCell(row.getCell(1), "1801141886", true, ParagraphAlignment.CENTER);
-            setHeaderRowforSingleCell(row.getCell(1), "Tel: 0292.3744950  Fax: 0292.3743678", true, ParagraphAlignment.CENTER);
-//            setHeaderRowforSingleCell(row.getCell(1), "(Ms. Nhung: 0946.886 868, Ms Trinh: 0918.755729)", false, ParagraphAlignment.CENTER);
-            setHeaderRowforSingleCell(row.getCell(2), "TT5.6.1/ KD2-BM3", false, ParagraphAlignment.CENTER);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "Công ty CP SEAVINA", 10, true, true, ParagraphAlignment.CENTER);
+//            utils.setHeaderRowforSingleCell(row.getCell(1), "Lô 16A-18, KCN Trà Nóc I,P.Trà Nóc, Q. Bình Thủy, TP. Cần Thơ ,Việt Nam", 10, true, true, ParagraphAlignment.CENTER);
+//            utils.setHeaderRowforSingleCell(row.getCell(1), "1801141886", 10, true, true, ParagraphAlignment.CENTER);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "Tel: 0292.3744950  Fax: 0292.3743678", 10, true, true, ParagraphAlignment.CENTER);
+//            utils.setHeaderRowforSingleCell(row.getCell(1), "(Ms. Nhung: 0946.886 868, Ms Trinh: 0918.755729)", 10, false, true, ParagraphAlignment.CENTER);
+            utils.setHeaderRowforSingleCell(row.getCell(2), "TT5.6.1/ KD2-BM3", 10, false, true, ParagraphAlignment.CENTER);
 
             /*
             * Word content title
@@ -847,13 +844,13 @@ public class WorkOrderProductController implements Initializable {
             row.getCell(5).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
             row.getCell(6).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
 
-            setHeaderRowforSingleCell(row.getCell(0), "STT", false, ParagraphAlignment.CENTER);
-            setHeaderRowforSingleCell(row.getCell(1), "Tên Bao Bì", false, ParagraphAlignment.CENTER);
-            setHeaderRowforSingleCell(row.getCell(2), "Qui cách (CM)", false, ParagraphAlignment.CENTER);
-            setHeaderRowforSingleCell(row.getCell(3), "ĐVT", false, ParagraphAlignment.CENTER);
-            setHeaderRowforSingleCell(row.getCell(4), "SL Đặt", false, ParagraphAlignment.CENTER);
-            setHeaderRowforSingleCell(row.getCell(5), "Ghi chú", false, ParagraphAlignment.CENTER);
-            setHeaderRowforSingleCell(row.getCell(6), "LSX", false, ParagraphAlignment.CENTER);
+            utils.setHeaderRowforSingleCell(row.getCell(0), "STT", 10, false, true, ParagraphAlignment.CENTER);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "Tên Bao Bì", 10, false, true, ParagraphAlignment.CENTER);
+            utils.setHeaderRowforSingleCell(row.getCell(2), "Qui cách (CM)", 10, false, true, ParagraphAlignment.CENTER);
+            utils.setHeaderRowforSingleCell(row.getCell(3), "ĐVT", 10, false, true, ParagraphAlignment.CENTER);
+            utils.setHeaderRowforSingleCell(row.getCell(4), "SL Đặt", 10, false, true, ParagraphAlignment.CENTER);
+            utils.setHeaderRowforSingleCell(row.getCell(5), "Ghi chú", 10, false, true, ParagraphAlignment.CENTER);
+            utils.setHeaderRowforSingleCell(row.getCell(6), "LSX", 10, false, true, ParagraphAlignment.CENTER);
 
             DecimalFormat formatter = new DecimalFormat("#,###");
 
@@ -879,13 +876,13 @@ public class WorkOrderProductController implements Initializable {
 
                 float residualNumber = Float.parseFloat(orderObservableList.get(i).getpTotal()+"") + Float.parseFloat(orderObservableList.get(i).getpStock()+"") - Float.parseFloat(orderObservableList.get(i).getpResidualQuantity()+"") - Float.parseFloat(orderObservableList.get(i).getpDesireQuantity()+"");
 
-                setHeaderRowforSingleCell(row.getCell(0), (i+1)+"", false, ParagraphAlignment.CENTER);
-                setHeaderRowforSingleCell(row.getCell(1), orderObservableList.get(i).getpName() + " ("+ orderObservableList.get(i).getpSpecs() +")", false, ParagraphAlignment.LEFT);
-                setHeaderRowforSingleCell(row.getCell(2), orderObservableList.get(i).getpDimension(), false, ParagraphAlignment.CENTER);
-                setHeaderRowforSingleCell(row.getCell(3), orderObservableList.get(i).getpUnit(), false, ParagraphAlignment.CENTER);
-                setHeaderRowforSingleCell(row.getCell(4), formatter.format(Float.parseFloat(orderObservableList.get(i).getpTotal()+""))+"", false, ParagraphAlignment.CENTER);
-                setHeaderRowforSingleCell(row.getCell(5), residualNumber > 0 ? "Dư "+formatter.format(residualNumber) : "", false, ParagraphAlignment.CENTER);
-                setHeaderRowforSingleCell(row.getCell(6), orderObservableList.get(i).getWoName(), false, ParagraphAlignment.CENTER);
+                utils.setHeaderRowforSingleCell(row.getCell(0), (i+1)+"", 10, false, false, ParagraphAlignment.CENTER);
+                utils.setHeaderRowforSingleCell(row.getCell(1), orderObservableList.get(i).getpName() + " ("+ orderObservableList.get(i).getpSpecs() +")", 10, false, false, ParagraphAlignment.LEFT);
+                utils.setHeaderRowforSingleCell(row.getCell(2), orderObservableList.get(i).getpDimension(), 10, false, false, ParagraphAlignment.CENTER);
+                utils.setHeaderRowforSingleCell(row.getCell(3), orderObservableList.get(i).getpUnit(), 10, false, false, ParagraphAlignment.CENTER);
+                utils.setHeaderRowforSingleCell(row.getCell(4), formatter.format(Float.parseFloat(orderObservableList.get(i).getpTotal()+""))+"", 10, false, false, ParagraphAlignment.CENTER);
+                utils.setHeaderRowforSingleCell(row.getCell(5), residualNumber > 0 ? "Dư "+formatter.format(residualNumber) : "", 10, false, false, ParagraphAlignment.CENTER);
+                utils.setHeaderRowforSingleCell(row.getCell(6), orderObservableList.get(i).getWoName(), 10, false, false, ParagraphAlignment.CENTER);
             }
 
             paragraph = doc.createParagraph();
@@ -906,8 +903,8 @@ public class WorkOrderProductController implements Initializable {
             row.getCell(0).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
             row.getCell(1).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
 
-            setHeaderRowforSingleCell(row.getCell(0), "Phòng Kinh Doanh", false, ParagraphAlignment.LEFT);
-            setHeaderRowforSingleCell(row.getCell(1), "Người Lập Biểu", false, ParagraphAlignment.RIGHT);
+            utils.setHeaderRowforSingleCell(row.getCell(0), "Phòng Kinh Doanh", 10, false, true, ParagraphAlignment.LEFT);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "Người Lập Biểu", 10, false, true, ParagraphAlignment.RIGHT);
 
             if(orderObservableList.size() > 0) {
                 if(file != null) {
@@ -966,12 +963,12 @@ public class WorkOrderProductController implements Initializable {
                         Units.toEMU(100),
                         Units.toEMU(45));            // 100x35 pixels
             }
-            setHeaderRowforSingleCell(row.getCell(1), "Công ty CP SEAVINA", true, ParagraphAlignment.CENTER);
-            setHeaderRowforSingleCell(row.getCell(1), "Lô 16A-18, KCN Trà Nóc I,P.Trà Nóc, Q. Bình Thủy, TP. Cần Thơ ,Việt Nam", true, ParagraphAlignment.CENTER);
-            setHeaderRowforSingleCell(row.getCell(1), "1801141886", true, ParagraphAlignment.CENTER);
-            setHeaderRowforSingleCell(row.getCell(1), "Tel: 0292.3744950  Fax: 0292.3743678", true, ParagraphAlignment.CENTER);
-            setHeaderRowforSingleCell(row.getCell(1), "(Ms. Nhung: 0946.886 868, Ms Trinh: 0918.755729)", false, ParagraphAlignment.CENTER);
-            setHeaderRowforSingleCell(row.getCell(2), "TT5.6.1/ KD2-BM3", false, ParagraphAlignment.CENTER);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "Công ty CP SEAVINA", 10, true, true, ParagraphAlignment.CENTER);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "Lô 16A-18, KCN Trà Nóc I,P.Trà Nóc, Q. Bình Thủy, TP. Cần Thơ ,Việt Nam", 10, true, true, ParagraphAlignment.CENTER);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "1801141886", 10, true, true, ParagraphAlignment.CENTER);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "Tel: 0292.3744950  Fax: 0292.3743678", 10, true, true, ParagraphAlignment.CENTER);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "(Ms. Nhung: 0946.886 868, Ms Trinh: 0918.755729)", 10, false, true, ParagraphAlignment.CENTER);
+            utils.setHeaderRowforSingleCell(row.getCell(2), "TT5.6.1/ KD2-BM3", 10, false, true, ParagraphAlignment.CENTER);
 
             /*
              * Word content title
@@ -1016,93 +1013,100 @@ public class WorkOrderProductController implements Initializable {
             run.addBreak();
             run.setText("Công ty CP SEAVINA xin gửi ĐƠN ĐẶT HÀNG đến Quý Công Ty với chi tiết như sau:");
 
-            table = doc.createTable(1, 6);
+            table = doc.createTable(1, 7);
             table.setWidth("100%");
 
             row = table.getRow(0);
-            row.getCell(0).setWidth("10%");
-            row.getCell(1).setWidth("35%");
+            row.getCell(0).setWidth("6%");
+            row.getCell(1).setWidth("30%");
             row.getCell(2).setWidth("15%");
-            row.getCell(3).setWidth("8%");
+            row.getCell(3).setWidth("10%");
             row.getCell(4).setWidth("12%");
-            row.getCell(5).setWidth("20%");
+            row.getCell(5).setWidth("12%");
+            row.getCell(6).setWidth("15%");
             row.getCell(0).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
             row.getCell(1).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
             row.getCell(2).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
             row.getCell(3).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
             row.getCell(4).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
             row.getCell(5).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
+            row.getCell(6).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
 
-            setHeaderRowforSingleCell(row.getCell(0), "STT", false, ParagraphAlignment.CENTER);
-            setHeaderRowforSingleCell(row.getCell(1), "Tên Bao Bì", false, ParagraphAlignment.CENTER);
-            setHeaderRowforSingleCell(row.getCell(2), "Qui cách (CM)", false, ParagraphAlignment.CENTER);
-            setHeaderRowforSingleCell(row.getCell(3), "ĐVT", false, ParagraphAlignment.CENTER);
-            setHeaderRowforSingleCell(row.getCell(4), "SL Đặt", false, ParagraphAlignment.CENTER);
-            setHeaderRowforSingleCell(row.getCell(5), "LSX", false, ParagraphAlignment.CENTER);
+            utils.setHeaderRowforSingleCell(row.getCell(0), "STT", 10, false, true, ParagraphAlignment.CENTER);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "Tên Bao Bì", 10, false, true, ParagraphAlignment.CENTER);
+            utils.setHeaderRowforSingleCell(row.getCell(2), "Qui cách (CM)", 10, false, true, ParagraphAlignment.CENTER);
+            utils.setHeaderRowforSingleCell(row.getCell(3), "ĐVT", 10, false, true, ParagraphAlignment.CENTER);
+            utils.setHeaderRowforSingleCell(row.getCell(4), "SL Đặt", 10, false, true, ParagraphAlignment.CENTER);
+            utils.setHeaderRowforSingleCell(row.getCell(5), "Mã", 10, false, true, ParagraphAlignment.CENTER);
+            utils.setHeaderRowforSingleCell(row.getCell(6), "LSX", 10, false, true, ParagraphAlignment.CENTER);
 
             DecimalFormat formatter = new DecimalFormat("#,###");
 
-            table = doc.createTable(orderObservableList.size(), 6);
+            table = doc.createTable(orderObservableList.size(), 7);
             table.setWidth("100%");
 
             for(int i=0;i<orderObservableList.size();i++) {
                 row = table.getRow(i);
-                row.getCell(0).setWidth("10%");
-                row.getCell(1).setWidth("35%");
+                row.getCell(0).setWidth("6%");
+                row.getCell(1).setWidth("30%");
                 row.getCell(2).setWidth("15%");
-                row.getCell(3).setWidth("8%");
+                row.getCell(3).setWidth("10%");
                 row.getCell(4).setWidth("12%");
-                row.getCell(5).setWidth("20%");
+                row.getCell(5).setWidth("12%");
+                row.getCell(6).setWidth("15%");
                 row.getCell(0).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
                 row.getCell(1).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
                 row.getCell(2).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
                 row.getCell(3).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
                 row.getCell(4).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
                 row.getCell(5).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
+                row.getCell(6).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
 
-                setHeaderRowforSingleCell(row.getCell(0), (i+1)+"", false, ParagraphAlignment.CENTER);
-                setHeaderRowforSingleCell(row.getCell(1), orderObservableList.get(i).getpName(), true, ParagraphAlignment.LEFT);
-                setHeaderRowforSingleCell(row.getCell(1), "("+ orderObservableList.get(i).getpSpecs() +")", false, ParagraphAlignment.LEFT);
-                setHeaderRowforSingleCell(row.getCell(2), orderObservableList.get(i).getpDimension(), false, ParagraphAlignment.CENTER);
-                setHeaderRowforSingleCell(row.getCell(3), orderObservableList.get(i).getpUnit(), false, ParagraphAlignment.CENTER);
-                setHeaderRowforSingleCell(row.getCell(4), formatter.format(Float.parseFloat(orderObservableList.get(i).getpTotal()+""))+"", false, ParagraphAlignment.CENTER);
-                setHeaderRowforSingleCell(row.getCell(5), orderObservableList.get(i).getWoName(), false, ParagraphAlignment.CENTER);
+                utils.setHeaderRowforSingleCell(row.getCell(0), (i+1)+"", 10, false, false, ParagraphAlignment.CENTER);
+                utils.setHeaderRowforSingleCell(row.getCell(1), orderObservableList.get(i).getpName(), 10, false, false, ParagraphAlignment.LEFT);
+                utils.setHeaderRowforSingleCell(row.getCell(1), " ("+ orderObservableList.get(i).getpSpecs() +")", 10, false, false, ParagraphAlignment.LEFT);
+                utils.setHeaderRowforSingleCell(row.getCell(2), orderObservableList.get(i).getpDimension(), 10, false, false, ParagraphAlignment.CENTER);
+                utils.setHeaderRowforSingleCell(row.getCell(3), orderObservableList.get(i).getpUnit(), 10, false, false, ParagraphAlignment.CENTER);
+                utils.setHeaderRowforSingleCell(row.getCell(4), formatter.format(Float.parseFloat(orderObservableList.get(i).getpTotal()+""))+"", 10, false, false, ParagraphAlignment.CENTER);
+                utils.setHeaderRowforSingleCell(row.getCell(5), orderObservableList.get(i).getpCode(), 10, false, false, ParagraphAlignment.CENTER);
+                utils.setHeaderRowforSingleCell(row.getCell(6), orderObservableList.get(i).getWoName(), 10, false, false, ParagraphAlignment.CENTER);
             }
-
-            paragraph = doc.createParagraph();
-            paragraph.setAlignment(ParagraphAlignment.LEFT);
-            paragraph.setSpacingLineRule(LineSpacingRule.AUTO);
-            run = paragraph.createRun();
-            run.setFontFamily(_fontFamily);
-            run.setFontSize(10);
 
             table = doc.createTable(4, 2);
             table.setWidth("100%");
+            utils.spanCellsAcrossRow(table, 0,0,2);
+            utils.spanCellsAcrossRow(table, 0,1,6);
+            utils.spanCellsAcrossRow(table, 1,0,2);
+            utils.spanCellsAcrossRow(table, 1,1,6);
+            utils.spanCellsAcrossRow(table, 2,0,2);
+            utils.spanCellsAcrossRow(table, 2,1,6);
+            utils.spanCellsAcrossRow(table, 3,0,2);
+            utils.spanCellsAcrossRow(table, 3,1,6);
             row = table.getRow(0);
             row.getCell(0).setWidth("40%");
             row.getCell(1).setWidth("60%");
             row.getCell(0).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
             row.getCell(1).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
 
-            setHeaderRowforSingleCell(row.getCell(0), "Đặc điểm và qui cách", false, ParagraphAlignment.LEFT);
-            setHeaderRowforSingleCell(row.getCell(1), "- Chất lượng: Đảm bảo đúng chất lượng và định lượng bao bì như mẫu chào hàng.", true, ParagraphAlignment.LEFT);
-            setHeaderRowforSingleCell(row.getCell(1), "- Sản xuất theo mẫu xác nhận ngày: " + now.getDayOfMonth() + "/" + now.getMonthValue() + "/"+ now.getYear(), true, ParagraphAlignment.LEFT);
-            setHeaderRowforSingleCell(row.getCell(1), "- Bao bì phải làm đúng kích thước, màu sắc, thông tin như đã xác nhận.", true, ParagraphAlignment.LEFT);
-            setHeaderRowforSingleCell(row.getCell(1), "- Bao bì phải đạt tiêu chuẩn hàng Thủy sản xuất khẩu. Số lượng làm đủ, không thừa, không thiếu.", true, ParagraphAlignment.LEFT);
-            setHeaderRowforSingleCell(row.getCell(1), "- Chúng tôi sẽ trả lại các lô hàng làm sai qui cách và không đúng các yêu cầu trên.", true, ParagraphAlignment.LEFT);
-            setHeaderRowforSingleCell(row.getCell(1), "- Khi giao hàng vui lòng liên hệ: Mr. Duy (0932.830.900).", false, ParagraphAlignment.LEFT);
+            utils.setHeaderRowforSingleCell(row.getCell(0), "Đặc điểm và qui cách", 10, false, false, ParagraphAlignment.LEFT);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "- Chất lượng: Đảm bảo đúng chất lượng và định lượng bao bì như mẫu chào hàng.", 10, true, false, ParagraphAlignment.LEFT);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "- Sản xuất theo mẫu xác nhận ngày: " + now.getDayOfMonth() + "/" + now.getMonthValue() + "/"+ now.getYear(), 10, true, false, ParagraphAlignment.LEFT);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "- Bao bì phải làm đúng kích thước, màu sắc, thông tin như đã xác nhận.", 10, true, false, ParagraphAlignment.LEFT);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "- Bao bì phải đạt tiêu chuẩn hàng Thủy sản xuất khẩu. Số lượng làm đủ, không thừa, không thiếu.", 10, true, false, ParagraphAlignment.LEFT);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "- Chúng tôi sẽ trả lại các lô hàng làm sai qui cách và không đúng các yêu cầu trên.", 10, true, false, ParagraphAlignment.LEFT);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "- Khi giao hàng vui lòng liên hệ: Mr. Duy (0932.830.900).", 10, false, false, ParagraphAlignment.LEFT);
 
             row = table.getRow(1);
-            setHeaderRowforSingleCell(row.getCell(0), "Ngày giao hàng", false, ParagraphAlignment.LEFT);
+            utils.setHeaderRowforSingleCell(row.getCell(0), "Ngày giao hàng", 10, false, false, ParagraphAlignment.LEFT);
 
             row = table.getRow(2);
-            setHeaderRowforSingleCell(row.getCell(0), "Địa chỉ giao hàng", false, ParagraphAlignment.LEFT);
-            setHeaderRowforSingleCell(row.getCell(1), "Công ty CP SEAVINA", true, ParagraphAlignment.LEFT);
-            setHeaderRowforSingleCell(row.getCell(1), "Lô 16A-18, KCN Trà Nóc 1, P. Trà Nóc, Q. Bình Thủy, TP. Cần Thơ", false, ParagraphAlignment.LEFT);
+            utils.setHeaderRowforSingleCell(row.getCell(0), "Địa chỉ giao hàng", 10, false, false, ParagraphAlignment.LEFT);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "Công ty CP SEAVINA", 10, true, false, ParagraphAlignment.LEFT);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "Lô 16A-18, KCN Trà Nóc 1, P. Trà Nóc, Q. Bình Thủy, TP. Cần Thơ", 10, false, false, ParagraphAlignment.LEFT);
 
             row = table.getRow(3);
-            setHeaderRowforSingleCell(row.getCell(0), "Chú ý", false, ParagraphAlignment.LEFT);
-            setHeaderRowforSingleCell(row.getCell(1), "Mọi thay đổi hoặc có vấn đề gì chưa rõ phải báo lại ngay với Công Ty CP SEAVINA trước khi tiến hành.", false, ParagraphAlignment.LEFT);
+            utils.setHeaderRowforSingleCell(row.getCell(0), "Chú ý", 10, false, false, ParagraphAlignment.LEFT);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "Mọi thay đổi hoặc có vấn đề gì chưa rõ phải báo lại ngay với Công Ty CP SEAVINA trước khi tiến hành.", 10, false, false, ParagraphAlignment.LEFT);
 
             paragraph = doc.createParagraph();
             paragraph.setAlignment(ParagraphAlignment.LEFT);
@@ -1121,8 +1125,8 @@ public class WorkOrderProductController implements Initializable {
             row.getCell(0).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
             row.getCell(1).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
 
-            setHeaderRowforSingleCell(row.getCell(0), "Bên bán hàng", false, ParagraphAlignment.LEFT);
-            setHeaderRowforSingleCell(row.getCell(1), "Bên mua hàng", false, ParagraphAlignment.RIGHT);
+            utils.setHeaderRowforSingleCell(row.getCell(0), "Bên bán hàng", 10, false, true, ParagraphAlignment.LEFT);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "Bên mua hàng", 10, false, true, ParagraphAlignment.RIGHT);
 
 
             if(file != null) {
@@ -1138,159 +1142,5 @@ public class WorkOrderProductController implements Initializable {
         } catch (Exception e) {
             System.out.println(e);
         }
-    }
-
-    private void data2DocOfOrderListDraft(File file, WorkOrder workOrder) {
-        String imgFile = "e:\\java_platform\\docs-data\\logo.jpg";
-        String _fontFamily = "Arial";
-        ObservableList<WorkProduction> workProductionObservableList = FXCollections.observableArrayList(workProductionDAO.getListByID(workOrder.getId()));
-
-        try {
-            XWPFDocument doc = new XWPFDocument();
-            XWPFParagraph paragraph;
-            XWPFRun run;
-            XWPFTable table;
-            XWPFTableRow row;
-
-            /*
-             * Word Header
-             * */
-            XWPFHeader header = doc.createHeader(HeaderFooterType.DEFAULT);
-
-            table = header.createTable(1, 3);
-            table.setWidth("100%");
-            table.removeBorders();
-            row = table.getRow(0);
-            row.getCell(0).setWidth("22%");
-            row.getCell(0).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
-            row.getCell(1).setWidth("55%");
-            row.getCell(1).getParagraphs().get(0).setAlignment(ParagraphAlignment.CENTER);
-            row.getCell(2).setWidth("23%");
-            row.getCell(1).getParagraphs().get(0).setAlignment(ParagraphAlignment.RIGHT);
-
-            paragraph = row.getCell(0).getParagraphArray(0);
-            paragraph.setVerticalAlignment(TextAlignment.CENTER);
-            run = paragraph.createRun();
-            // add png image
-            try (FileInputStream is = new FileInputStream(imgFile)) {
-                run.addPicture(is,
-                        Document.PICTURE_TYPE_PNG,    // png file
-                        imgFile,
-                        Units.toEMU(100),
-                        Units.toEMU(45));            // 100x35 pixels
-            }
-            setHeaderRowforSingleCell(row.getCell(1), "Công ty CP SEAVINA", true, ParagraphAlignment.CENTER);
-//            setHeaderRowforSingleCell(row.getCell(1), "Lô 16A-18, KCN Trà Nóc I,P.Trà Nóc, Q. Bình Thủy, TP. Cần Thơ ,Việt Nam", true, ParagraphAlignment.CENTER);
-//            setHeaderRowforSingleCell(row.getCell(1), "1801141886", true, ParagraphAlignment.CENTER);
-            setHeaderRowforSingleCell(row.getCell(1), "Tel: 0292.3744950  Fax: 0292.3743678", true, ParagraphAlignment.CENTER);
-//            setHeaderRowforSingleCell(row.getCell(1), "(Ms. Nhung: 0946.886 868, Ms Trinh: 0918.755729)", false, ParagraphAlignment.CENTER);
-            setHeaderRowforSingleCell(row.getCell(2), "TT5.6.1/ KD2-BM3", false, ParagraphAlignment.CENTER);
-
-            /*
-             * Word content title
-             * */
-
-            paragraph = doc.createParagraph();
-            paragraph.setAlignment(ParagraphAlignment.RIGHT);
-            run = paragraph.createRun();
-            run.setFontFamily(_fontFamily);
-
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-            LocalDateTime now = LocalDateTime.now();
-
-            run.setText("SEAVINA, ngày " + now.getDayOfMonth() + ", tháng " + now.getMonthValue() + ", năm "+ now.getYear());
-            run.addBreak();
-
-            paragraph = doc.createParagraph();
-            paragraph.setAlignment(ParagraphAlignment.LEFT);
-            run = paragraph.createRun();
-            run.setFontFamily(_fontFamily);
-            run.setBold(true);
-            run.setFontSize(16);
-            run.setText("KIỂM TRA BAO BÌ "+workOrder.getName());
-            run.addBreak();
-
-            table = doc.createTable(1, 6);
-            table.setWidth("100%");
-
-            row = table.getRow(0);
-            row.getCell(0).setWidth("32%");
-            row.getCell(1).setWidth("15%");
-            row.getCell(2).setWidth("8%");
-            row.getCell(3).setWidth("15%");
-            row.getCell(4).setWidth("15%");
-            row.getCell(5).setWidth("15%");
-            row.getCell(0).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
-            row.getCell(1).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
-            row.getCell(2).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
-            row.getCell(3).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
-            row.getCell(4).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
-            row.getCell(5).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
-
-            setHeaderRowforSingleCell(row.getCell(0), "Tên Bao Bì", false, ParagraphAlignment.CENTER);
-            setHeaderRowforSingleCell(row.getCell(1), "Qui cách (CM)", false, ParagraphAlignment.CENTER);
-            setHeaderRowforSingleCell(row.getCell(2), "ĐVT", false, ParagraphAlignment.CENTER);
-            setHeaderRowforSingleCell(row.getCell(3), "SL Đặt", false, ParagraphAlignment.CENTER);
-            setHeaderRowforSingleCell(row.getCell(4), "Tồn", false, ParagraphAlignment.CENTER);
-            setHeaderRowforSingleCell(row.getCell(5), "Thực tế", false, ParagraphAlignment.CENTER);
-
-            DecimalFormat formatter = new DecimalFormat("#,###");
-
-            table = doc.createTable(workProductionObservableList.size(), 6);
-            table.setWidth("100%");
-
-            for(int i=0;i<workProductionObservableList.size();i++) {
-                row = table.getRow(i);
-                row.getCell(0).setWidth("32%");
-                row.getCell(1).setWidth("15%");
-                row.getCell(2).setWidth("8%");
-                row.getCell(3).setWidth("15%");
-                row.getCell(4).setWidth("15%");
-                row.getCell(5).setWidth("15%");
-                row.getCell(0).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
-                row.getCell(1).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
-                row.getCell(2).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
-                row.getCell(3).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
-                row.getCell(4).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
-                row.getCell(5).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
-
-                setHeaderRowforSingleCell(row.getCell(0), workProductionObservableList.get(i).getPackagingName(), true, ParagraphAlignment.LEFT);
-                setHeaderRowforSingleCell(row.getCell(0), "("+ workProductionObservableList.get(i).getPackagingSpecification() +")", false, ParagraphAlignment.LEFT);
-                setHeaderRowforSingleCell(row.getCell(1), workProductionObservableList.get(i).getPackagingDimension(), false, ParagraphAlignment.CENTER);
-                setHeaderRowforSingleCell(row.getCell(2), workProductionObservableList.get(i).getUnit(), false, ParagraphAlignment.CENTER);
-                setHeaderRowforSingleCell(row.getCell(3), formatter.format(Float.parseFloat(workProductionObservableList.get(i).getWorkOrderQuantity()+""))+"", false, ParagraphAlignment.CENTER);
-                setHeaderRowforSingleCell(row.getCell(4), formatter.format(Float.parseFloat(workProductionObservableList.get(i).getStock()+""))+"", false, ParagraphAlignment.CENTER);
-                setHeaderRowforSingleCell(row.getCell(5), formatter.format(Float.parseFloat(workProductionObservableList.get(i).getActualQuantity()+""))+"", false, ParagraphAlignment.CENTER);
-            }
-
-            if(file != null) {
-                // save it to .docx file
-//                try (FileOutputStream out = new FileOutputStream(file.getPath())) // for fileChooser
-                try (FileOutputStream out = new FileOutputStream(file.getPath()+"/KIEM TRA BB "+ workOrder.getName() +".docx"))
-                {
-                    doc.write(out);
-//                    utils.alert("info", Alert.AlertType.INFORMATION, "Xuất file thành công!", "File đã được lưu vào ổ đĩa!").showAndWait();
-                }
-            }
-
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-    }
-
-    private static void setHeaderRowforSingleCell(XWPFTableCell cell, String text, boolean addBreak, ParagraphAlignment paragraphAlignment) {
-        XWPFParagraph tempParagraph = cell.getParagraphs().get(0);
-        tempParagraph.setIndentationLeft(100);
-        tempParagraph.setIndentationRight(100);
-        tempParagraph.setAlignment(paragraphAlignment != null ? paragraphAlignment : ParagraphAlignment.LEFT);
-        XWPFRun tempRun = tempParagraph.createRun();
-        tempRun.setFontFamily("Arial");
-        tempRun.setFontSize(10);
-        tempRun.setColor("000000");
-        tempRun.setText(text);
-        if (addBreak) {
-            tempRun.addBreak();
-        }
-        cell.setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
     }
 }

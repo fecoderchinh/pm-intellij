@@ -433,11 +433,11 @@ where
 	and wopp.work_order_id = wo.id
 	and wopp.product_id = p.id
 	and wopp.packaging_id = p2.id
--- 	and wo.id = 1 -- filter by work_order.id
+-- 	and wo.id in ("1") -- filter by work_order.id
 -- 	and p.id = 1 -- filter by products.id
 -- 	and wop.ordinal_num = 1 -- filter by work_order_product.ordinal_num 
-group by wo.id
-order by wop.ordinal_num 
+group by wopp.id
+order by wopp.work_order_id, wop.ordinal_num 
 ;
 
 /*select distinct
@@ -557,6 +557,6 @@ where
 	and p.`type` = t.id
 	and p.suplier = s.id
 -- 	and wopp.actual_qty > 0 
-	and wopp.work_order_id in ("1", "2")
+	and wopp.work_order_id in (3)
 group by 
 	wopp.packaging_id;
