@@ -18,6 +18,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -464,6 +465,7 @@ public class Utils {
             Scene scene = new Scene(fxmlLoader.load());
             scene.getStylesheets().add("style.css");
             Stage stage = new Stage();
+            stage.getIcons().add(new Image("/images/icon.png"));
             stage.setTitle(title);
             stage.setScene(scene);
             stage.initModality(Modality.APPLICATION_MODAL);
