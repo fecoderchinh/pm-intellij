@@ -253,11 +253,11 @@ public class ExportWordDocument {
                         Units.toEMU(45));            // 100x35 pixels
             }
             utils.setHeaderRowforSingleCell(row.getCell(1), "Công ty CP SEAVINA", 10, true, true, ParagraphAlignment.CENTER);
-            utils.setHeaderRowforSingleCell(row.getCell(1), "Lô 16A-18, KCN Trà Nóc I,P.Trà Nóc, Q. Bình Thủy, TP. Cần Thơ ,Việt Nam", 10, true, true, ParagraphAlignment.CENTER);
-            utils.setHeaderRowforSingleCell(row.getCell(1), "1801141886", 10, true, true, ParagraphAlignment.CENTER);
-            utils.setHeaderRowforSingleCell(row.getCell(1), "Tel: 0292.3744950  Fax: 0292.3743678", 10, true, true, ParagraphAlignment.CENTER);
-            utils.setHeaderRowforSingleCell(row.getCell(1), "(Ms. Nhung: 0946.886 868, Ms Trinh: 0918.755729)", 10, true, true, ParagraphAlignment.CENTER);
-            utils.setHeaderRowforSingleCell(row.getCell(2), "TT5.6.1/ KD2-BM3", 10, true, true, ParagraphAlignment.CENTER);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "Lô 16A-18, KCN Trà Nóc I,P.Trà Nóc, Q. Bình Thủy, TP. Cần Thơ ,Việt Nam", 10, true, false, ParagraphAlignment.CENTER);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "1801141886", 10, true, false, ParagraphAlignment.CENTER);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "Tel: 0292.3744950  Fax: 0292.3743678", 10, true, false, ParagraphAlignment.CENTER);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "(Ms. Nhung: 0946.886 868, Ms Trinh: 0918.755729)", 10, true, false, ParagraphAlignment.CENTER);
+            utils.setHeaderRowforSingleCell(row.getCell(2), "TT5.6.1/ KD2-BM3", 10, false, false, ParagraphAlignment.CENTER);
 
             /*
              * Word content title
@@ -404,15 +404,9 @@ public class ExportWordDocument {
             utils.setHeaderRowforSingleCell(row.getCell(0), "Chú ý", 10, false, false, ParagraphAlignment.LEFT);
             utils.setHeaderRowforSingleCell(row.getCell(1), "Mọi thay đổi hoặc có vấn đề gì chưa rõ phải báo lại ngay với Công Ty CP SEAVINA trước khi tiến hành.", 10, false, false, ParagraphAlignment.LEFT);
 
-            paragraph = doc.createParagraph();
-            paragraph.setAlignment(ParagraphAlignment.LEFT);
-            paragraph.setSpacingLineRule(LineSpacingRule.AUTO);
-            run = paragraph.createRun();
-            run.setFontFamily(_fontFamily);
-            run.setFontSize(10);
-            run.addBreak();
-
             table = doc.createTable(1, 2);
+            utils.spanCellsAcrossRow(table, 0,0,3);
+            utils.spanCellsAcrossRow(table, 0,1,6);
             table.setWidth("100%");
             table.removeBorders();
             row = table.getRow(0);
@@ -487,12 +481,12 @@ public class ExportWordDocument {
                         Units.toEMU(100),
                         Units.toEMU(45));            // 100x35 pixels
             }
-            utils.setHeaderRowforSingleCell(row.getCell(1), "Công ty CP SEAVINA", 10, true, true, ParagraphAlignment.CENTER);
-//            utils.setHeaderRowforSingleCell(row.getCell(1), "Lô 16A-18, KCN Trà Nóc I,P.Trà Nóc, Q. Bình Thủy, TP. Cần Thơ ,Việt Nam", true, ParagraphAlignment.CENTER);
-//            utils.setHeaderRowforSingleCell(row.getCell(1), "1801141886", true, ParagraphAlignment.CENTER);
-            utils.setHeaderRowforSingleCell(row.getCell(1), "Tel: 0292.3744950  Fax: 0292.3743678", 10, true, true, ParagraphAlignment.CENTER);
-//            utils.setHeaderRowforSingleCell(row.getCell(1), "(Ms. Nhung: 0946.886 868, Ms Trinh: 0918.755729)", false, ParagraphAlignment.CENTER);
-            utils.setHeaderRowforSingleCell(row.getCell(2), "TT5.6.1/ KD2-BM3", 10, false, true, ParagraphAlignment.CENTER);
+            run.setText("Tel: 0292.3744950");
+            run.addBreak();
+            run.setText("Fax: 0292.3743678");
+            utils.setHeaderRowforSingleCell(row.getCell(1), "CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM", 10, true, true, ParagraphAlignment.CENTER);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "Độc lập - Tự do - Hạnh Phúc", 10, false, true, ParagraphAlignment.CENTER);
+            utils.setHeaderRowforSingleCell(row.getCell(2), "", 10, false, false, ParagraphAlignment.CENTER);
 
             /*
              * Word content title
@@ -599,7 +593,7 @@ public class ExportWordDocument {
             run = paragraph.createRun();
             run.setFontFamily(_fontFamily);
             run.setFontSize(10);
-            run.setBold(true);
+            run.setBold(false);
             run.setText("Lưu ý: Mọi thay đổi hay có vấn đề chưa rõ phải phản hồi lại với bộ phận liên quan trước khi thực hiện để tránh sai sót có thể xảy ra.");
             run.addBreak();
 

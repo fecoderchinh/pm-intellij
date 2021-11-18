@@ -757,7 +757,7 @@ public class WorkOrderController implements Initializable {
     public void exportData(ActionEvent actionEvent) throws IOException {
 //        data2DocOfOrderList((Stage)((Node) actionEvent.getSource()).getScene().getWindow());
 
-        if(getListID() != "") {
+        try {
             FileChooser fileChooser = new FileChooser();
             FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("Word document (*.docx)", "*.docx");
             fileChooser.getExtensionFilters().add(extensionFilter);
@@ -780,9 +780,9 @@ public class WorkOrderController implements Initializable {
                 ExportWordDocument.data2DocOfOrderListDraft(file, workOrder);
                 ExportWordDocument.data2DocOfOrderList(file, workOrder.getId()+"");
             }
-            utils.alert("info", Alert.AlertType.INFORMATION, "Xuất file thành công!", "File đã được lưu vào ổ đĩa!").showAndWait();
-        } else {
-            utils.alert("err", Alert.AlertType.ERROR, "Lỗi", "Không có dữ liệu").showAndWait();
+            utils.alert("info", Alert.AlertType.INFORMATION, "Xuất file thành công!", "File đã được lưu vào đường dẫn " +file.getPath()).showAndWait();
+        } catch(Exception ex) {
+            utils.alert("err", Alert.AlertType.ERROR, "Lỗi", ex.getMessage()).showAndWait();
         }
 
     }
