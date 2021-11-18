@@ -4,19 +4,12 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fecoder.MainViewController">
+<BorderPane prefHeight="680.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fecoder.MainViewController">
     <top>
         <HBox prefWidth="200.0" spacing="10" BorderPane.alignment="CENTER">
             <children>
-                <Button id="suplierManage" fx:id="suplierManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="NHÀ CUNG CẤP" />
-                <Button id="packagingTypeManage" fx:id="packagingTypeManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="LOẠI BAO BÌ" />
-                <Button id="yearManage" fx:id="yearManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="NĂM" />
-                <Button id="sizeManage" fx:id="sizeManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="SIZE TÔM" />
-                <Button id="customerManage" fx:id="customerManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="KHÁCH HÀNG" />
-                <Button id="packagingManage" fx:id="packagingManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="BAO BÌ" />
-                <Button id="productManage" fx:id="productManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="MẶT HÀNG" />
-<!--                <Button id="packagingOwner" fx:id="packagingOwner" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="ĐÓNG GÓI" />-->
-                <Button id="commands" fx:id="commands" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="LỆNH SẢN XUẤT" />
+                <!--                <Button id="packagingOwner" fx:id="packagingOwner" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="ĐÓNG GÓI" />-->
+                <!--                                      <Button id="newWindowButton" fx:id="newWindowButton" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="New Window" />-->
             </children>
             <padding>
                 <Insets bottom="10" />
@@ -24,27 +17,41 @@
         </HBox>
     </top>
     <center>
-      <ScrollPane id="centerContain" fitToHeight="true" fitToWidth="true">
-         <content>
-              <VBox spacing="10.0">
-                  <children>
-                      <StackPane prefHeight="-1.0" prefWidth="-1.0">
-                          <children>
-                              <HBox alignment="BASELINE_LEFT" prefHeight="0.0" prefWidth="211.0" spacing="8">
-                                  <children>
-                                      <Button id="newWindowButton" fx:id="newWindowButton" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="New Window" />
-                                  </children>
-                              </HBox>
-                          </children>
-                          <padding>
-                              <Insets bottom="10" left="10" right="10" top="10" />
-                          </padding>
-                      </StackPane>
-                  <Separator prefWidth="1002.0" />
-                  </children>
-              </VBox>
-         </content>
-      </ScrollPane>
+        <VBox id="centerContain" spacing="10.0">
+            <children>
+                <StackPane prefHeight="-1.0" prefWidth="-1.0">
+                    <children>
+                        <HBox alignment="BASELINE_LEFT" prefHeight="0.0" prefWidth="211.0" spacing="30">
+                            <children>
+                                <Button id="suplierManage" fx:id="suplierManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="NHÀ CUNG CẤP" />
+                                <Button id="packagingTypeManage" fx:id="packagingTypeManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="LOẠI BAO BÌ" />
+                                <Button id="yearManage" fx:id="yearManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="NĂM" />
+                                <Button id="sizeManage" fx:id="sizeManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="SIZE TÔM" />
+                            </children>
+                        </HBox>
+                    </children>
+                    <padding>
+                        <Insets bottom="30" left="20" right="20" top="35" />
+                    </padding>
+                </StackPane>
+                <Separator prefWidth="1002.0" />
+                <StackPane prefHeight="-1.0" prefWidth="-1.0">
+                    <children>
+                        <HBox alignment="BASELINE_LEFT" prefHeight="0.0" prefWidth="211.0" spacing="30">
+                            <children>
+                                <Button id="customerManage" fx:id="customerManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="KHÁCH HÀNG" />
+                                <Button id="packagingManage" fx:id="packagingManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="BAO BÌ" />
+                                <Button id="productManage" fx:id="productManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="MẶT HÀNG" />
+                                <Button id="commands" fx:id="workOrder" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="LỆNH SẢN XUẤT" />
+                            </children>
+                        </HBox>
+                    </children>
+                    <padding>
+                        <Insets bottom="0" left="20" right="20" top="30" />
+                    </padding>
+                </StackPane>
+            </children>
+        </VBox>
     </center>
     <bottom>
         <HBox alignment="BOTTOM_RIGHT" prefWidth="200.0" spacing="10" BorderPane.alignment="CENTER">
