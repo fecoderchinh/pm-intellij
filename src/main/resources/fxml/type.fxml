@@ -61,15 +61,13 @@
                         </HBox>
                     </VBox>
                     <VBox spacing="10">
-                        <ScrollPane prefHeight="100.0" prefWidth="291.0">
-                            <TableView fx:id="dataTable" editable="true" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="255.0">
-                                <columns>
-                                    <TableColumn fx:id="idColumn" prefWidth="50.0" text="STT" />
-                                    <TableColumn fx:id="nameColumn" prefWidth="100.0" text="Tên loại" />
-                                    <TableColumn fx:id="unitColumn" prefWidth="100.0" text="Đơn vị tính" />
-                                </columns>
-                            </TableView>
-                        </ScrollPane>
+                        <TableView fx:id="dataTable" editable="true" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="277.0">
+                            <columns>
+                                <TableColumn fx:id="idColumn" prefWidth="50.0" text="STT" />
+                                <TableColumn fx:id="nameColumn" prefWidth="100.0" text="Tên loại" />
+                                <TableColumn fx:id="unitColumn" prefWidth="100.0" text="Đơn vị tính" />
+                            </columns>
+                        </TableView>
                     </VBox>
                 </HBox>
             </VBox>

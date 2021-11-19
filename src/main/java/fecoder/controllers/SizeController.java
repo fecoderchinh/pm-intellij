@@ -2,6 +2,7 @@ package fecoder.controllers;
 
 import fecoder.DAO.SizeDAO;
 import fecoder.models.Size;
+import fecoder.utils.Utils;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -16,6 +17,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class SizeController implements Initializable {
@@ -33,6 +35,8 @@ public class SizeController implements Initializable {
     public TableColumn<Size, String> sizeColumn;
 
     private final SizeDAO DAO = new SizeDAO();
+
+    private final Utils utils = new Utils();
 
     /**
      * All needed to start controller
@@ -90,7 +94,7 @@ public class SizeController implements Initializable {
      * */
     private void getItem(String data, int id) {
         sizeField.setText(data);
-        anchorLabel.setText("Current ID: ");
+        anchorLabel.setText("ID Selected");
         anchorData.setText(""+id);
     }
 
@@ -99,7 +103,7 @@ public class SizeController implements Initializable {
      * */
     private void clearFields() {
         sizeField.setText(null);
-        anchorLabel.setText(null);
+        anchorLabel.setText("No ID Selected");
         anchorData.setText(null);
     }
 
@@ -155,6 +159,8 @@ public class SizeController implements Initializable {
      * - Implementing contextMenu on right click <br>
      * */
     public void loadView() {
+        anchorLabel.setText("No ID Selected");
+
         dataTable.setEditable(true);
 
         getCurrentRow();
@@ -179,31 +185,15 @@ public class SizeController implements Initializable {
             final MenuItem editItem = new MenuItem("Cập nhật");
             final MenuItem removeItem = new MenuItem("Xóa dòng");
 
-            viewItem.setOnAction((ActionEvent event) -> {
-                Size data = dataTable.getSelectionModel().getSelectedItem();
-                int rowIndex = dataTable.getSelectionModel().getSelectedIndex();
-
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Chi tiết size");
-                alert.setHeaderText(data.getSize());
-                alert.setContentText(
-                        "Size: " + data.getSize() +"\n"
-                );
-
-                alert.showAndWait();
-            });
-            contextMenu.getItems().add(viewItem);
-
-            editItem.setOnAction((ActionEvent event) -> {
-                Size data = dataTable.getSelectionModel().getSelectedItem();
-                getItem(data.getSize(), data.getId());
-            });
-            contextMenu.getItems().add(editItem);
-
             removeItem.setOnAction((ActionEvent event) -> {
                 Size data = dataTable.getSelectionModel().getSelectedItem();
-                DAO.delete(data.getId());
-                reload();
+                Alert alert = utils.alert("del", Alert.AlertType.CONFIRMATION, "Xóa: "+ data.getSize(), null);
+
+                Optional<ButtonType> result = alert.showAndWait();
+                if (alert.getAlertType() == Alert.AlertType.CONFIRMATION && result.get() == ButtonType.OK){
+                    DAO.delete(data.getId());
+                    reload();
+                }
             });
             contextMenu.getItems().add(removeItem);
             // Set context menu on row, but use a binding to make it only show for non-empty rows:

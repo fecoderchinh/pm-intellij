@@ -2,6 +2,7 @@ package fecoder.controllers;
 
 import fecoder.DAO.YearDAO;
 import fecoder.models.Year;
+import fecoder.utils.Utils;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -16,6 +17,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class YearController implements Initializable {
@@ -33,6 +35,8 @@ public class YearController implements Initializable {
     public TableColumn<Year, String> yearColumn;
 
     private final YearDAO yearDAO = new YearDAO();
+
+    private final Utils utils = new Utils();
 
     /**
      * All needed to start controller
@@ -90,7 +94,7 @@ public class YearController implements Initializable {
      * */
     private void getItem(String year, int id) {
         yearField.setText(year);
-        anchorLabel.setText("Current ID: ");
+        anchorLabel.setText("ID Selected");
         anchorData.setText(""+id);
     }
 
@@ -99,7 +103,7 @@ public class YearController implements Initializable {
      * */
     private void clearFields() {
         yearField.setText(null);
-        anchorLabel.setText(null);
+        anchorLabel.setText("No ID Selected");
         anchorData.setText(null);
     }
 
@@ -154,6 +158,8 @@ public class YearController implements Initializable {
      * - Implementing contextMenu on right click <br>
      * */
     public void loadView() {
+        anchorLabel.setText("No ID Selected");
+
         dataTable.setEditable(true);
 
         getCurrentRow();
@@ -178,31 +184,15 @@ public class YearController implements Initializable {
             final MenuItem editItem = new MenuItem("Cập nhật");
             final MenuItem removeItem = new MenuItem("Xóa dòng");
 
-            viewItem.setOnAction((ActionEvent event) -> {
-                Year data = dataTable.getSelectionModel().getSelectedItem();
-                int rowIndex = dataTable.getSelectionModel().getSelectedIndex();
-
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Chi tiết kích thước");
-                alert.setHeaderText(data.getYear());
-                alert.setContentText(
-                        "Năm phát hành: " + data.getYear() +"\n"
-                );
-
-                alert.showAndWait();
-            });
-            contextMenu.getItems().add(viewItem);
-
-            editItem.setOnAction((ActionEvent event) -> {
-                Year data = dataTable.getSelectionModel().getSelectedItem();
-                getItem(data.getYear(), data.getId());
-            });
-            contextMenu.getItems().add(editItem);
-
             removeItem.setOnAction((ActionEvent event) -> {
                 Year data = dataTable.getSelectionModel().getSelectedItem();
-                yearDAO.delete(data.getId());
-                reload();
+                Alert alert = utils.alert("del", Alert.AlertType.CONFIRMATION, "Xóa: "+ data.getYear(), null);
+
+                Optional<ButtonType> result = alert.showAndWait();
+                if (alert.getAlertType() == Alert.AlertType.CONFIRMATION && result.get() == ButtonType.OK){
+                    yearDAO.delete(data.getId());
+                    reload();
+                }
             });
             contextMenu.getItems().add(removeItem);
             // Set context menu on row, but use a binding to make it only show for non-empty rows:

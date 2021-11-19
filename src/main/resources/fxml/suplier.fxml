@@ -157,20 +157,18 @@
                     <Button id="reloadData" fx:id="reloadData" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#reloadData" text="TẢI LẠI BẢNG" />
                 </HBox>
             </HBox>
-            <ScrollPane prefHeight="655.0" prefWidth="1004.0">
-                <TableView fx:id="dataTable" editable="true" prefHeight="655.0" prefWidth="1225">
-                    <columns>
-                        <TableColumn fx:id="idColumn" prefWidth="50.0" text="STT" />
-                        <TableColumn fx:id="codeColumn" prefWidth="70.0" text="Mã" />
-                        <TableColumn fx:id="nameColumn" prefWidth="180.0" text="Tên công ty" />
-                        <TableColumn fx:id="addressColumn" prefWidth="200.0" text="Địa chỉ" />
-                        <TableColumn fx:id="emailColumn" prefWidth="180.0" text="Email" />
-                        <TableColumn fx:id="deputyColumn" prefWidth="180.0" text="Đại diện" />
-                        <TableColumn fx:id="phoneColumn" prefWidth="180.0" text="Điện thoại" />
-                        <TableColumn fx:id="faxColumn" prefWidth="180.0" text="Fax" />
-                    </columns>
-                </TableView>
-            </ScrollPane>
+            <TableView fx:id="dataTable" editable="true" prefHeight="655.0" prefWidth="1225">
+                <columns>
+                    <TableColumn fx:id="idColumn" prefWidth="50.0" text="STT" />
+                    <TableColumn fx:id="codeColumn" prefWidth="70.0" text="Mã" />
+                    <TableColumn fx:id="nameColumn" prefWidth="180.0" text="Tên công ty" />
+                    <TableColumn fx:id="addressColumn" prefWidth="200.0" text="Địa chỉ" />
+                    <TableColumn fx:id="emailColumn" prefWidth="180.0" text="Email" />
+                    <TableColumn fx:id="deputyColumn" prefWidth="180.0" text="Đại diện" />
+                    <TableColumn fx:id="phoneColumn" prefWidth="180.0" text="Điện thoại" />
+                    <TableColumn fx:id="faxColumn" prefWidth="180.0" text="Fax" />
+                </columns>
+            </TableView>
         </VBox>
     </center>
 

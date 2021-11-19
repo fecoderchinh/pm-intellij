@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fecoder.controllers.YearController">
+<BorderPane prefHeight="400.0" prefWidth="250.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fecoder.controllers.YearController">
 
     <top>
         <VBox spacing="10">
@@ -17,57 +17,42 @@
                 </Label>
             </HBox>
          <Separator prefWidth="200.0" />
+            <HBox spacing="10">
+                <TextField fx:id="yearField" prefHeight="28" promptText="Nhập năm" />
+                <Button fx:id="insertButton" mnemonicParsing="false" onAction="#insertButton" prefHeight="28.0" prefWidth="73.0" text="THÊM" />
+                <padding>
+                    <Insets top="5" />
+                </padding>
+            </HBox>
+         <Separator prefWidth="200.0" />
             <padding>
-                <Insets bottom="20" />
+                <Insets bottom="10" />
             </padding>
         </VBox>
     </top>
 
-    <left>
-        <VBox prefHeight="688.0" prefWidth="234.0" spacing="10">
-            <HBox prefWidth="340" spacing="10">
-                <VBox spacing="16.5">
-                    <Label text="Năm">
-                        <font>
-                            <Font size="14.0" />
-                        </font>
-                    </Label>
-                </VBox>
-                <VBox spacing="10">
-                    <TextField fx:id="yearField" />
-                </VBox>
-            </HBox>
-            <HBox spacing="10">
-                <Button fx:id="insertButton" mnemonicParsing="false" onAction="#insertButton" prefHeight="30.0" prefWidth="60.0" text="THÊM" />
-                <Button fx:id="updateButton" mnemonicParsing="false" onAction="#updateButton" prefHeight="30.0" prefWidth="80.0" text="CẬP NHẬT" />
-                <Button fx:id="clearButton" mnemonicParsing="false" onAction="#clearButton" prefHeight="30.0" prefWidth="60.0" text="CLEAR" />
-            </HBox>
-        </VBox>
-    </left>
-
     <center>
         <VBox spacing="10">
-            <HBox prefWidth="790" spacing="10">
-                <HBox alignment="CENTER_LEFT" prefWidth="500" spacing="10">
-                    <Label text="Lọc">
-                        <font>
-                            <Font size="14.0" />
-                        </font>
-                    </Label>
-                    <TextField fx:id="searchField" />
+            <HBox prefHeight="26.0" prefWidth="200.0" spacing="10">
+                <HBox alignment="CENTER_LEFT" prefHeight="26.0" prefWidth="122.0" spacing="10">
+<!--                    <Label text="Lọc">-->
+<!--                        <font>-->
+<!--                            <Font size="14.0" />-->
+<!--                        </font>-->
+<!--                    </Label>-->
+                    <TextField fx:id="searchField" prefHeight="26.0" prefWidth="119.0" promptText="Tìm kiếm" />
                 </HBox>
-                <HBox alignment="BASELINE_RIGHT" prefWidth="290" spacing="10">
-                    <Button id="reloadData" fx:id="reloadData" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#reloadData" text="TẢI LẠI TRANG" />
+                <HBox alignment="BASELINE_RIGHT" prefHeight="26.0" prefWidth="96.0" spacing="10">
+                    <Button id="reloadData" fx:id="reloadData" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#reloadData" text="TẢI LẠI BẢNG" />
                 </HBox>
             </HBox>
-            <ScrollPane prefHeight="655.0" prefWidth="770.0">
-                <TableView fx:id="dataTable" editable="true" maxWidth="1.7976931348623157E308" prefHeight="655.0" prefWidth="766.0">
-                    <columns>
-                        <TableColumn fx:id="idColumn" prefWidth="50.0" text="STT" />
-                        <TableColumn fx:id="yearColumn" prefWidth="720.0" text="Tên loại" />
-                    </columns>
-                </TableView>
-            </ScrollPane>
+         <Separator prefWidth="200.0" />
+            <TableView fx:id="dataTable" editable="true" prefHeight="187.0" prefWidth="230.0">
+                <columns>
+                    <TableColumn fx:id="idColumn" prefWidth="50.0" text="STT" />
+                    <TableColumn fx:id="yearColumn" prefWidth="100.0" text="Tên loại" />
+                </columns>
+            </TableView>
         </VBox>
     </center>
 
@@ -89,7 +74,7 @@
     </bottom>
 
     <padding>
-        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+        <Insets bottom="10.0" left="10.0" right="10.0" top="5.0" />
     </padding>
 
 
