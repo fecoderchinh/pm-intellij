@@ -2,6 +2,7 @@ package fecoder.controllers;
 
 import fecoder.DAO.TypeDAO;
 import fecoder.models.Type;
+import fecoder.utils.Utils;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -17,6 +18,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class TypeController implements Initializable {
@@ -37,6 +39,7 @@ public class TypeController implements Initializable {
     public TextField unitField;
 
     private final TypeDAO typeDAO = new TypeDAO();
+    Utils utils = new Utils();
 
     /**
      * All needed to start controller
@@ -132,6 +135,8 @@ public class TypeController implements Initializable {
      * - Implementing contextMenu on right click <br>
      * */
     public void loadView() {
+        anchorLabel.setText("No ID Selected");
+
         dataTable.setEditable(true);
 
         getCurrentRow();
@@ -166,31 +171,31 @@ public class TypeController implements Initializable {
             final MenuItem removeItem = new MenuItem("Xóa dòng");
 
             viewItem.setOnAction((ActionEvent event) -> {
-                Type suplier = dataTable.getSelectionModel().getSelectedItem();
+                Type data = dataTable.getSelectionModel().getSelectedItem();
                 int rowIndex = dataTable.getSelectionModel().getSelectedIndex();
 
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Chi tiết loại bao bì");
-                alert.setHeaderText(suplier.getName());
-                alert.setContentText(
-                        "Tên loại: " + suplier.getName() + "\n" +
-                        "Đơn vị tính: " + suplier.getUnit()
-                );
-
-                alert.showAndWait();
+                utils.alert("info", Alert.AlertType.INFORMATION, "Chi tiết "+data.getName(),
+                                "Tên loại: " + data.getName() + "\n" +
+                                "Đơn vị tính: " + data.getUnit()
+                ).showAndWait();
             });
             contextMenu.getItems().add(viewItem);
 
             editItem.setOnAction((ActionEvent event) -> {
                 Type data = dataTable.getSelectionModel().getSelectedItem();
-                getItem(data.getName(), data.getUnit(), data.getId());
+                getItem(data);
             });
             contextMenu.getItems().add(editItem);
 
             removeItem.setOnAction((ActionEvent event) -> {
                 Type data = dataTable.getSelectionModel().getSelectedItem();
-                typeDAO.delete(data.getId());
-                reload();
+                Alert alert = utils.alert("del", Alert.AlertType.CONFIRMATION, "Xóa: "+ data.getName(), null);
+
+                Optional<ButtonType> result = alert.showAndWait();
+                if (alert.getAlertType() == Alert.AlertType.CONFIRMATION && result.get() == ButtonType.OK){
+                    typeDAO.delete(data.getId());
+                    reload();
+                }
             });
             contextMenu.getItems().add(removeItem);
             // Set context menu on row, but use a binding to make it only show for non-empty rows:
@@ -216,15 +221,13 @@ public class TypeController implements Initializable {
     /**
      * Setting data for inputs
      *
-     * @param name - the record's name
-     * @param unit - the record's unit
-     * @param id - the record's id
+     * @param t Type model
      * */
-    private void getItem(String name, String unit, int id) {
-        nameField.setText(name);
-        unitField.setText(unit);
-        anchorLabel.setText("Current ID: ");
-        anchorData.setText(""+id);
+    private void getItem(Type t) {
+        nameField.setText(t.getName());
+        unitField.setText(t.getUnit());
+        anchorLabel.setText("ID Selected");
+        anchorData.setText(""+t.getId());
     }
 
     /**
@@ -233,7 +236,7 @@ public class TypeController implements Initializable {
     private void clearFields() {
         nameField.setText(null);
         unitField.setText(null);
-        anchorLabel.setText(null);
+        anchorLabel.setText("No ID Selected");
         anchorData.setText(null);
     }
 }

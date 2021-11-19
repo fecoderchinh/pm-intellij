@@ -140,7 +140,7 @@ public class SupplierController implements Initializable {
         phoneField.setText(supplier.getPhone());
         faxField.setText(supplier.getFax());
         codeField.setText(supplier.getCode());
-        anchorLabel.setText("Current ID: ");
+        anchorLabel.setText("ID Selected: ");
         anchorData.setText(""+ supplier.getId());
     }
 
@@ -155,8 +155,8 @@ public class SupplierController implements Initializable {
         phoneField.setText(null);
         faxField.setText(null);
         codeField.setText(null);
-        anchorLabel.setText(null);
-        anchorData.setText(null);
+        anchorLabel.setText("No ID Selected");
+        anchorData.setText("");
     }
 
     /**
@@ -239,6 +239,8 @@ public class SupplierController implements Initializable {
      * - Implementing contextMenu on right click <br>
      * */
     public void loadView() {
+        anchorLabel.setText("No ID Selected");
+
         dataTable.setEditable(true);
 
         getCurrentRow();

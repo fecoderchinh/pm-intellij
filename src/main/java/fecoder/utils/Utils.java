@@ -483,6 +483,41 @@ public class Utils {
     }
 
     /**
+     * Loading scene utility
+     *
+     * @param resource resource path
+     * @param title scene title
+     * */
+    public void loadSceneWithStage(Stage stage, String resource, String title) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource(resource));
+            /*
+             * if "fx:controller" is not set in fxml
+             * fxmlLoader.setController(NewWindowController);
+             */
+            Scene scene = new Scene(fxmlLoader.load());
+            scene.getStylesheets().add("style.css");
+            Stage _stage = new Stage();
+            _stage.getIcons().add(new Image("/images/icon.png"));
+            _stage.setTitle(title);
+            _stage.setScene(scene);
+            _stage.initModality(Modality.APPLICATION_MODAL);
+            _stage.setResizable(false);
+
+            _stage.setOnHiding(e -> stage.show());
+
+            _stage.show();
+
+            stage.hide();
+
+        } catch (IOException e) {
+            Logger logger = Logger.getLogger(getClass().getName());
+            logger.log(Level.SEVERE, "Failed to create new Window.", e);
+        }
+    }
+
+    /**
      * Force the field to be numeric only
      *
      * @param textField text field id
