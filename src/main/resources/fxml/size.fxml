@@ -10,12 +10,13 @@
     <top>
         <VBox spacing="10">
             <HBox spacing="10">
-                <Label text="Danh sách size tôm">
+                <Label text="SIZE SẢN PHẨM">
                     <font>
                         <Font size="28.0" />
                     </font>
                 </Label>
             </HBox>
+         <Separator prefWidth="200.0" />
             <padding>
                 <Insets bottom="20" />
             </padding>
@@ -33,7 +34,7 @@
                     </Label>
                 </VBox>
                 <VBox spacing="10">
-                    <TextField fx:id="sizeField"/>
+                    <TextField fx:id="sizeField" />
                 </VBox>
             </HBox>
             <HBox spacing="10">
@@ -56,7 +57,7 @@
                     <TextField fx:id="searchField" />
                 </HBox>
                 <HBox alignment="BASELINE_RIGHT" prefWidth="290" spacing="10">
-                    <Button id="reloadData" fx:id="reloadData" onAction="#reloadData" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="TẢI LẠI TRANG" />
+                    <Button id="reloadData" fx:id="reloadData" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#reloadData" text="TẢI LẠI TRANG" />
                 </HBox>
             </HBox>
             <ScrollPane prefHeight="655.0" prefWidth="770.0">

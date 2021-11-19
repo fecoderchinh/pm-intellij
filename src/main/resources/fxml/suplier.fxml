@@ -10,83 +10,131 @@
 <BorderPane prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fecoder.controllers.SupplierController">
 
     <top>
-        <VBox spacing="10">
-            <HBox spacing="10">
-                <Label text="QUẢN LÝ DANH SÁCH NHÀ CUNG CẤP">
-                    <font>
-                        <Font size="28.0" />
-                    </font>
-                </Label>
-            </HBox>
+        <VBox prefHeight="178.0" prefWidth="1004.0" spacing="10">
+            <children>
+                <HBox spacing="10">
+                    <Label text="DANH SÁCH NHÀ CUNG CẤP">
+                        <font>
+                            <Font size="28.0" />
+                        </font>
+                    </Label>
+                    <padding>
+                        <Insets left="10" />
+                    </padding>
+                </HBox>
+            <Separator prefWidth="200.0" />
+                <HBox>
+                    <VBox prefWidth="850">
+                        <HBox>
+                            <VBox prefWidth="240.0" spacing="10">
+<!--                                <Label text="Code">-->
+<!--                                    <font>-->
+<!--                                        <Font size="14.0" />-->
+<!--                                    </font>-->
+<!--                                </Label>-->
+                                <TextField fx:id="codeField" promptText="Mã NCC" />
+                                <padding>
+                                    <Insets bottom="10" left="10" right="10" top="10" />
+                                </padding>
+                            </VBox>
+                            <VBox prefWidth="340.0" spacing="10">
+<!--                                <Label text="Tên">-->
+<!--                                    <font>-->
+<!--                                        <Font size="14.0" />-->
+<!--                                    </font>-->
+<!--                                </Label>-->
+                                <TextField fx:id="nameField" promptText="Tên NCC" />
+                                <padding>
+                                    <Insets bottom="10" left="10" right="10" top="10" />
+                                </padding>
+                            </VBox>
+                            <VBox prefWidth="440.0" spacing="10">
+<!--                                <Label text="Email">-->
+<!--                                    <font>-->
+<!--                                        <Font size="14.0" />-->
+<!--                                    </font>-->
+<!--                                </Label>-->
+                                <TextField fx:id="emailField" promptText="Địa chỉ email" />
+                                <padding>
+                                    <Insets bottom="10" left="10" right="10" top="10" />
+                                </padding>
+                            </VBox>
+                        </HBox>
+                        <HBox>
+                            <VBox prefWidth="540.0" spacing="10">
+<!--                                <Label text="Đại diện">-->
+<!--                                    <font>-->
+<!--                                        <Font size="14.0" />-->
+<!--                                    </font>-->
+<!--                                </Label>-->
+                                <TextField fx:id="deputyField" promptText="Người đại diện" />
+                                <padding>
+                                    <Insets bottom="10" left="10" right="10" top="10" />
+                                </padding>
+                            </VBox>
+                            <VBox prefWidth="240.0" spacing="10">
+<!--                                <Label text="Điện thoại">-->
+<!--                                    <font>-->
+<!--                                        <Font size="14.0" />-->
+<!--                                    </font>-->
+<!--                                </Label>-->
+                                <TextField fx:id="phoneField" promptText="Số điện thoại" />
+                                <padding>
+                                    <Insets bottom="10" left="10" right="10" top="10" />
+                                </padding>
+                            </VBox>
+                            <VBox prefWidth="240.0" spacing="10">
+<!--                                <Label text="Fax">-->
+<!--                                    <font>-->
+<!--                                        <Font size="14.0" />-->
+<!--                                    </font>-->
+<!--                                </Label>-->
+                                <TextField fx:id="faxField" promptText="Số Fax" />
+                                <padding>
+                                    <Insets bottom="10" left="10" right="10" top="10" />
+                                </padding>
+                            </VBox>
+                        </HBox>
+                        <HBox>
+                            <VBox prefWidth="1024" spacing="10">
+<!--                                <Label text="Địa chỉ">-->
+<!--                                    <font>-->
+<!--                                        <Font size="14.0" />-->
+<!--                                    </font>-->
+<!--                                </Label>-->
+                                <TextField fx:id="addressField" promptText="Địa chỉ" />
+                                <padding>
+                                    <Insets bottom="10" left="10" right="10" top="10" />
+                                </padding>
+                            </VBox>
+                        </HBox>
+                    </VBox>
+                    <VBox prefWidth="174" spacing="13">
+                        <Button fx:id="insertButton" mnemonicParsing="false" onAction="#insertButton" prefHeight="30.0" prefWidth="150.0" text="THÊM" />
+                        <Button fx:id="updateButton" mnemonicParsing="false" onAction="#updateButton" prefHeight="30.0" prefWidth="150.0" text="CẬP NHẬT" />
+                        <Button fx:id="clearButton" mnemonicParsing="false" onAction="#clearButton" prefHeight="30.0" prefWidth="150.0" text="XÓA Ô" />
+                        <padding>
+                            <Insets bottom="5" left="10" right="10" top="10" />
+                        </padding>
+                    </VBox>
+                </HBox>
+            <Separator prefWidth="200.0" />
+            </children>
             <padding>
-                <Insets bottom="20" />
+                <Insets bottom="10" />
             </padding>
         </VBox>
     </top>
 
     <left>
-        <VBox prefHeight="688.0" prefWidth="234.0" spacing="10">
-            <HBox prefWidth="340" spacing="10">
-                <VBox spacing="16.5">
-                    <Label text="Code">
-                        <font>
-                            <Font size="14.0" />
-                        </font>
-                    </Label>
-                    <Label text="Tên">
-                        <font>
-                            <Font size="14.0" />
-                        </font>
-                    </Label>
-                    <Label text="Địa chỉ">
-                        <font>
-                            <Font size="14.0" />
-                        </font>
-                    </Label>
-                    <Label text="Email">
-                        <font>
-                            <Font size="14.0" />
-                        </font>
-                    </Label>
-                    <Label text="Đại diện">
-                        <font>
-                            <Font size="14.0" />
-                        </font>
-                    </Label>
-                    <Label text="Điện thoại">
-                        <font>
-                            <Font size="14.0" />
-                        </font>
-                    </Label>
-                    <Label text="Fax">
-                        <font>
-                            <Font size="14.0" />
-                        </font>
-                    </Label>
-                </VBox>
-                <VBox spacing="10">
-                    <TextField fx:id="codeField" />
-                    <TextField fx:id="nameField" />
-                    <TextField fx:id="addressField" />
-                    <TextField fx:id="emailField" />
-                    <TextField fx:id="deputyField" />
-                    <TextField fx:id="phoneField" />
-                    <TextField fx:id="faxField" />
-                </VBox>
-            </HBox>
-            <HBox spacing="10">
-                <Button fx:id="insertButton" onAction="#insertButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="60.0" text="THÊM" />
-                <Button fx:id="updateButton" onAction="#updateButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="80.0" text="CẬP NHẬT" />
-                <Button fx:id="clearButton" onAction="#clearButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="60.0" text="CLEAR" />
-            </HBox>
-        </VBox>
+
     </left>
 
     <center>
-        <VBox spacing="10">
+        <VBox prefHeight="414.0" prefWidth="1004.0" spacing="10">
             <HBox prefWidth="790" spacing="10">
                 <HBox alignment="CENTER_LEFT" prefWidth="500" spacing="10">
-                    <Label text="Tìm theo">
+                    <Label text="Lọc theo">
                         <font>
                             <Font size="14.0" />
                         </font>
@@ -103,14 +151,14 @@
                             <String fx:value="Mã" />
                         </value>
                     </ComboBox>
-                    <TextField fx:id="searchField" />
+                    <TextField fx:id="searchField" promptText="Gõ từ khóa" />
                 </HBox>
-                <HBox alignment="BASELINE_RIGHT" prefWidth="290" spacing="10">
-                    <Button id="reloadData" fx:id="reloadData" onAction="#reloadData" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="TẢI LẠI TRANG" />
+                <HBox alignment="BASELINE_RIGHT" prefHeight="26.0" prefWidth="496.0" spacing="10">
+                    <Button id="reloadData" fx:id="reloadData" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#reloadData" text="TẢI LẠI BẢNG" />
                 </HBox>
             </HBox>
-            <ScrollPane prefHeight="655.0" prefWidth="770.0">
-                <TableView fx:id="dataTable" maxWidth="1.7976931348623157E308" prefHeight="655.0" editable="true">
+            <ScrollPane prefHeight="655.0" prefWidth="1004.0">
+                <TableView fx:id="dataTable" editable="true" prefHeight="655.0" prefWidth="1225">
                     <columns>
                         <TableColumn fx:id="idColumn" prefWidth="50.0" text="STT" />
                         <TableColumn fx:id="codeColumn" prefWidth="70.0" text="Mã" />

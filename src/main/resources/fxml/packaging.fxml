@@ -12,7 +12,7 @@
     <top>
         <VBox spacing="10">
             <HBox spacing="10">
-                <Label text="QUẢN LÝ DANH SÁCH BAO BÌ">
+                <Label text="DANH SÁCH BAO BÌ">
                     <font>
                         <Font size="28.0" />
                     </font>

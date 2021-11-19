@@ -10,12 +10,13 @@
     <top>
         <VBox spacing="10">
             <HBox spacing="10">
-                <Label text="QUẢN LÝ LOẠI BAO BÌ">
+                <Label text="LOẠI BAO BÌ">
                     <font>
                         <Font size="28.0" />
                     </font>
                 </Label>
             </HBox>
+         <Separator prefWidth="200.0" />
             <padding>
                 <Insets bottom="20" />
             </padding>

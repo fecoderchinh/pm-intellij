@@ -21,6 +21,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.text.Text;
 
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class SupplierController implements Initializable {
@@ -129,25 +130,18 @@ public class SupplierController implements Initializable {
     /**
      * Setting data for inputs
      *
-     * @param name - the record's name
-     * @param address - the record's address
-     * @param email - the record's email
-     * @param deputy - the record's deputy
-     * @param phone - the record's phone number
-     * @param fax - the record's fax number
-     * @param code - the record's code
-     * @param id - the record's id
+     * @param supplier Supplier model
      * */
-    private void getSupplier(String name, String address, String email, String deputy, String phone, String fax, String code, int id) {
-        nameField.setText(name);
-        addressField.setText(address);
-        emailField.setText(email);
-        deputyField.setText(deputy);
-        phoneField.setText(phone);
-        faxField.setText(fax);
-        codeField.setText(code);
+    private void getSupplier(Supplier supplier) {
+        nameField.setText(supplier.getName());
+        addressField.setText(supplier.getAddress());
+        emailField.setText(supplier.getEmail());
+        deputyField.setText(supplier.getDeputy());
+        phoneField.setText(supplier.getPhone());
+        faxField.setText(supplier.getFax());
+        codeField.setText(supplier.getCode());
         anchorLabel.setText("Current ID: ");
-        anchorData.setText(""+id);
+        anchorData.setText(""+ supplier.getId());
     }
 
     /**
@@ -392,33 +386,33 @@ public class SupplierController implements Initializable {
                 Supplier supplier = dataTable.getSelectionModel().getSelectedItem();
                 int rowIndex = dataTable.getSelectionModel().getSelectedIndex();
 
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Chi tiết Nhà Cung Cấp");
-                alert.setHeaderText(supplier.getName());
-                alert.setContentText(
+                utils.alert("info", Alert.AlertType.INFORMATION, "Chi tiết "+supplier.getName(),
                         "Mã NCC: " + supplier.getCode() + "\n" +
-                        "Tên NCC: " + supplier.getName() + "\n" +
-                        "Địa chỉ: " + supplier.getAddress() + "\n" +
-                        "Email: " + supplier.getEmail() + "\n" +
-                        "Đại diện: " + supplier.getDeputy() + "\n" +
-                        "Điện thoại: " + supplier.getPhone() + "\n" +
-                        "Fax: " + supplier.getFax() + "\n"
-                );
-
-                alert.showAndWait();
+                                "Tên NCC: " + supplier.getName() + "\n" +
+                                "Địa chỉ: " + supplier.getAddress() + "\n" +
+                                "Email: " + supplier.getEmail() + "\n" +
+                                "Đại diện: " + supplier.getDeputy() + "\n" +
+                                "Điện thoại: " + supplier.getPhone() + "\n" +
+                                "Fax: " + supplier.getFax() + "\n"
+                        ).showAndWait();
             });
             contextMenu.getItems().add(viewItem);
 
             editItem.setOnAction((ActionEvent event) -> {
                 Supplier supplier = dataTable.getSelectionModel().getSelectedItem();
-                getSupplier(supplier.getName(), supplier.getAddress(), supplier.getEmail(), supplier.getDeputy(), supplier.getPhone(), supplier.getFax(), supplier.getCode(), supplier.getId());
+                getSupplier(supplier);
             });
             contextMenu.getItems().add(editItem);
 
             removeItem.setOnAction((ActionEvent event) -> {
                 Supplier supplier = dataTable.getSelectionModel().getSelectedItem();
-                supplierDAO.delete(supplier.getId());
-                reload();
+                Alert alert = utils.alert("del", Alert.AlertType.CONFIRMATION, "Xóa: "+ supplier.getName(), null);
+
+                Optional<ButtonType> result = alert.showAndWait();
+                if (alert.getAlertType() == Alert.AlertType.CONFIRMATION && result.get() == ButtonType.OK){
+                    supplierDAO.delete(supplier.getId());
+                    reload();
+                }
             });
             contextMenu.getItems().add(removeItem);
             // Set context menu on row, but use a binding to make it only show for non-empty rows:

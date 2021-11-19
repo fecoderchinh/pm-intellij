@@ -146,6 +146,7 @@ public class Utils {
 
         BorderPane root = new BorderPane(textArea, null, null, buttons, null);
         Scene scene = new Scene(root);
+        stage.getIcons().add(new Image("/images/icon.png"));
         stage.setScene(scene);
         stage.setTitle(title);
         stage.setResizable(false);
@@ -405,7 +406,7 @@ public class Utils {
                 typeLabel = alertLabel != null ? alertLabel : "Xóa ";
                 typeDesc = alertDesc != null ? alertDesc : "Lưu ý: Dữ liệu sẽ không thể khôi phục lại sau khi xóa, bạn có chắc muốn tiếp tục?";
                 alert = new Alert(alertType);
-                alert.setTitle("Thông báo!");
+                alert.setTitle(typeLabel);
                 alert.setHeaderText(typeLabel);
                 alert.setContentText(typeDesc);
                                 break;
@@ -414,7 +415,7 @@ public class Utils {
                 typeLabel = alertLabel != null ? alertLabel : "Cập nhật thông tin cho ";
                 typeDesc = alertDesc != null ? alertDesc : "Nhấn OK để xác nhận thực hiện hành động.";
                 alert = new Alert(alertType);
-                alert.setTitle("Thông báo!");
+                alert.setTitle(typeLabel);
                 alert.setHeaderText(typeLabel);
                 alert.setContentText(typeDesc);
                 break;
@@ -423,7 +424,7 @@ public class Utils {
                 typeLabel = alertLabel != null ? alertLabel : "Đã xảy ra lỗi!";
                 typeDesc = alertDesc != null ? alertDesc : "Đã xảy ra lỗi trong quá trình nhập.";
                 alert = new Alert(alertType);
-                alert.setTitle("Lỗi!");
+                alert.setTitle(typeLabel);
                 alert.setHeaderText(typeLabel);
                 alert.setContentText(typeDesc);
                 break;
@@ -432,18 +433,21 @@ public class Utils {
                 typeLabel = alertLabel != null ? alertLabel : "Chúc mừng!";
                 typeDesc = alertDesc != null ? alertDesc : "Thao tác thành công, nhấn OK và kiểm tra kết quả!";
                 alert = new Alert(alertType);
-                alert.setTitle("Thông báo!");
+                alert.setTitle(typeLabel);
                 alert.setHeaderText(typeLabel);
                 alert.setContentText(typeDesc);
                 break;
             default:
                 typeLabel = alertLabel != null ? alertLabel : "Không xác định được hành động.";
                 alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Thông báo!");
+                alert.setTitle(typeLabel);
                 alert.setHeaderText(typeLabel);
                 alert.close();
                 break;
         }
+        Stage stage = new Stage();
+        stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image("/images/icon.png"));
 
         return alert;
     }
