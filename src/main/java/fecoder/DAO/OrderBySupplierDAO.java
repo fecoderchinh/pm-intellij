@@ -3,6 +3,8 @@ package fecoder.DAO;
 import fecoder.connection.ConnectionUtils;
 import fecoder.models.Order;
 import fecoder.models.OrderBySupllier;
+import fecoder.utils.Utils;
+import javafx.scene.control.Alert;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -12,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OrderBySupplierDAO {
+    Utils utils = new Utils();
     /**
      * Representing a database
      *
@@ -23,6 +26,7 @@ public class OrderBySupplierDAO {
         try {
             data.setWoName(resultSet.getString("woName"));
             data.setpName(resultSet.getString("pName"));
+            data.setpIsPrinted(resultSet.getString("pIsPrinted"));
             data.setpSpecs(resultSet.getString("pSpecs"));
             data.setpDimension(resultSet.getString("pDimension"));
             data.setpUnit(resultSet.getString("pUnit"));
@@ -59,6 +63,7 @@ public class OrderBySupplierDAO {
                     " wo.id as woID," +
                     " group_concat(distinct wo.name separator \"+\") as woName, " +
                     " p.name as pName," +
+                    " wopp.printed as pIsPrinted," +
                     " p.specifications as pSpecs," +
                     " p.dimension as pDimension," +
                     " t.unit as pUnit," +
@@ -96,8 +101,9 @@ public class OrderBySupplierDAO {
             resultSet.close();
             conn.close();
         } catch (ClassNotFoundException | SQLException ex) {
-            assert ex instanceof SQLException;
-            jdbcDAO.printSQLException((SQLException) ex);
+//            assert ex instanceof SQLException;
+//            jdbcDAO.printSQLException((SQLException) ex);
+            utils.alert("err", Alert.AlertType.ERROR, "Error code: "+((SQLException) ex).getErrorCode(), ex.getLocalizedMessage()).showAndWait();
         }
         return list;
     }
@@ -119,6 +125,7 @@ public class OrderBySupplierDAO {
                     " wo.id as woID," +
                     " group_concat(distinct wo.name separator \"+\") as woName, " +
                     " p.name as pName," +
+                    " wopp.printed as pIsPrinted," +
                     " p.specifications as pSpecs," +
                     " p.dimension as pDimension," +
                     " t.unit as pUnit," +
@@ -157,8 +164,9 @@ public class OrderBySupplierDAO {
             resultSet.close();
             conn.close();
         } catch (ClassNotFoundException | SQLException ex) {
-            assert ex instanceof SQLException;
-            jdbcDAO.printSQLException((SQLException) ex);
+//            assert ex instanceof SQLException;
+//            jdbcDAO.printSQLException((SQLException) ex);
+            utils.alert("err", Alert.AlertType.ERROR, "Error", ((SQLException) ex).getMessage()).showAndWait();
         }
         return list;
     }

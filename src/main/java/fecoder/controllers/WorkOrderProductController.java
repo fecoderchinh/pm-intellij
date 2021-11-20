@@ -56,6 +56,7 @@ public class WorkOrderProductController implements Initializable {
     public TableView<WorkOrderProductString> productTableView;
     public TableColumn<WorkOrderProductString, String> productIdColumn;
     public TableColumn<WorkOrderProductString, String> productNameColumn;
+    public TableColumn<WorkOrderProductString, Integer> productQuantityColumn;
 
     public TreeTableView<WorkProduction> dataTable;
     
@@ -224,7 +225,7 @@ public class WorkOrderProductController implements Initializable {
      * */
     private void clearFields() {
         resetComboBox();
-        anchorLabel.setText("");
+        anchorLabel.setText("No ID Selected");
         anchorData.setText("");
 
         qtyField.setText("");
@@ -328,7 +329,7 @@ public class WorkOrderProductController implements Initializable {
         ordinalNumberField.setText(data.getOrdinal_num()+"");
 
         qtyField.setText(data.getQty()+"");
-        anchorLabel.setText("Current ID: ");
+        anchorLabel.setText("ID Selected: ");
         anchorData.setText(""+data.getId());
         this.isUpdating = true;
     }
@@ -344,13 +345,14 @@ public class WorkOrderProductController implements Initializable {
         productTableView.setEditable(true);
         productIdColumn.setCellValueFactory(new PropertyValueFactory<>("productOrdinalNumber"));
         productNameColumn.setCellValueFactory(new PropertyValueFactory<>("productName"));
+        productQuantityColumn.setCellValueFactory(new PropertyValueFactory<>("productQuantity"));
         productTableView.setItems(workProductionObservableListByName);
 
         setContextMenuProductTable();
 
         productTableView.setOnMouseClicked((MouseEvent event) -> {
             if(event.getButton().equals(MouseButton.PRIMARY) && productTableView.getSelectionModel().getSelectedItem() != null){
-                mainLabel.setText(this.innerData.getName() + " - ("+ productTableView.getSelectionModel().getSelectedItem().getProductOrdinalNumber() +") - "+productTableView.getSelectionModel().getSelectedItem().getProductName());
+//                mainLabel.setText(this.innerData.getName() + " - ("+ productTableView.getSelectionModel().getSelectedItem().getProductOrdinalNumber() +") - "+productTableView.getSelectionModel().getSelectedItem().getProductName());
             }
         });
     }
@@ -370,7 +372,7 @@ public class WorkOrderProductController implements Initializable {
 
         dataTable.getColumns().clear();
 
-        dataTable.getColumns().add(TreeTableUtil.getIdColumn());
+//        dataTable.getColumns().add(TreeTableUtil.getIdColumn());
         dataTable.getColumns().add(TreeTableUtil.getOrdinalNumberColumn());
 //        dataTable.getColumns().add(TreeTableUtil.getWOIDColumn());
 //        dataTable.getColumns().add(TreeTableUtil.getWorkOrderNameColumn());
@@ -385,7 +387,7 @@ public class WorkOrderProductController implements Initializable {
         dataTable.getColumns().add(TreeTableUtil.getActualQuantityColumn(dataTable));
         dataTable.getColumns().add(TreeTableUtil.getResidualQuantityColumn(dataTable));
 //        dataTable.getColumns().add(TreeTableUtil.getTotalResidualQuantityColumn(dataTable));
-        dataTable.getColumns().add(TreeTableUtil.getPrintStatusColumn());
+        dataTable.getColumns().add(TreeTableUtil.getPrintStatusColumn(dataTable));
 
 //        setContextMenu();
 
@@ -456,6 +458,8 @@ public class WorkOrderProductController implements Initializable {
      * - Implementing contextMenu on right click <br>
      * */
     private void loadView() {
+        anchorLabel.setText("No ID Select");
+
         resetFields();
 
         resetComboBox();

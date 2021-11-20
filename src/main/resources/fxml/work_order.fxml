@@ -12,100 +12,57 @@
     <top>
         <VBox spacing="10">
             <HBox spacing="10">
-                <Label text="QUẢN LÝ LỆNH SẢN XUẤT">
+                <Label prefHeight="40.0" prefWidth="737.0" text="LỆNH SẢN XUẤT">
                     <font>
                         <Font size="28.0" />
                     </font>
                 </Label>
+                <HBox spacing="10">
+                    <Button fx:id="insertButton" mnemonicParsing="false" onAction="#insertButton" prefHeight="30.0" prefWidth="60.0" text="THÊM" />
+                    <Button fx:id="updateButton" mnemonicParsing="false" onAction="#updateButton" prefHeight="30.0" prefWidth="80.0" text="CẬP NHẬT" />
+                    <Button fx:id="clearButton" mnemonicParsing="false" onAction="#clearButton" prefHeight="30.0" prefWidth="89.0" text="XÓA Ô" />
+                    <padding>
+                        <Insets top="5" />
+                    </padding>
+                </HBox>
             </HBox>
+         <Separator prefWidth="200.0" />
+            <HBox prefHeight="0.0" prefWidth="1004.0" spacing="10">
+                <VBox prefHeight="546.0" prefWidth="1004.0" spacing="10">
+                    <HBox prefHeight="26.0" prefWidth="966.0" spacing="10">
+                        <TextField fx:id="workOrderName" prefWidth="250" promptText="Lệnh" />
+                        <TextField fx:id="workOrderLotNumber" prefWidth="250" promptText="Số Lot" />
+                        <TextField fx:id="workOrderPONumber" prefWidth="250" promptText="Số PO" />
+                        <TextField fx:id="workOrderDestination" prefWidth="250" promptText="Cảng" />
+                    </HBox>
+                    <HBox prefWidth="966.0" spacing="10">
+                        <ComboBox fx:id="workOrderYear" prefHeight="26.0" prefWidth="100.0">
+                            <items>
+                                <FXCollections fx:factory="observableArrayList" />
+                            </items>
+                        </ComboBox>
+                        <ComboBox fx:id="workOrderCustomer" prefHeight="26.0" prefWidth="300.0">
+                            <items>
+                                <FXCollections fx:factory="observableArrayList" />
+                            </items>
+                        </ComboBox>
+                        <DatePicker fx:id="workOrderSendDate" prefHeight="26.0" prefWidth="150.0" />
+                        <DatePicker fx:id="workOrderShippingDate" prefHeight="26.0" prefWidth="150.0" />
+                        <TextField fx:id="workOrderNote" prefWidth="300" promptText="Ghi chú" />
+                    </HBox>
+                </VBox>
+            </HBox>
+            <Separator prefWidth="200.0" />
             <padding>
                 <Insets bottom="20" />
             </padding>
         </VBox>
     </top>
 
-    <left>
-        <VBox prefHeight="668.0" prefWidth="284.0" spacing="10">
-            <HBox prefWidth="340" spacing="10">
-                <VBox spacing="14">
-                    <Label text="Lệnh">
-                        <font>
-                            <Font size="14.0" />
-                        </font>
-                    </Label>
-                    <Label text="Số LOT">
-                        <font>
-                            <Font size="14.0" />
-                        </font>
-                    </Label>
-                    <Label text="Số PO">
-                        <font>
-                            <Font size="14.0" />
-                        </font>
-                    </Label>
-                    <Label text="Năm phát hành">
-                        <font>
-                            <Font size="14.0" />
-                        </font>
-                    </Label>
-                    <Label text="Khách hàng">
-                        <font>
-                            <Font size="14.0" />
-                        </font>
-                    </Label>
-                    <Label text="Ngày gửi lệnh">
-                        <font>
-                            <Font size="14.0" />
-                        </font>
-                    </Label>
-                    <Label text="Ngày xuất hàng">
-                        <font>
-                            <Font size="14.0" />
-                        </font>
-                    </Label>
-                    <Label text="Cảng đến">
-                        <font>
-                            <Font size="14.0" />
-                        </font>
-                    </Label>
-                    <Label text="Ghi chú">
-                        <font>
-                            <Font size="14.0" />
-                        </font>
-                    </Label>
-                </VBox>
-                <VBox prefHeight="4.0" prefWidth="154.0" spacing="10">
-                    <TextField fx:id="workOrderName" />
-                    <TextField fx:id="workOrderLotNumber" />
-                    <TextField fx:id="workOrderPONumber" />
-                    <ComboBox fx:id="workOrderYear" prefHeight="26.0" prefWidth="184.0">
-                        <items>
-                            <FXCollections fx:factory="observableArrayList"/>
-                        </items>
-                    </ComboBox>
-                    <ComboBox fx:id="workOrderCustomer" prefHeight="26.0" prefWidth="355.0">
-                        <items>
-                            <FXCollections fx:factory="observableArrayList"/>
-                        </items>
-                    </ComboBox>
-                    <DatePicker fx:id="workOrderSendDate" prefHeight="26.0" prefWidth="355.0"/>
-                    <DatePicker fx:id="workOrderShippingDate" prefHeight="26.0" prefWidth="355.0"/>
-                    <TextField fx:id="workOrderDestination" />
-                    <TextField fx:id="workOrderNote" />
-                </VBox>
-            </HBox>
-            <HBox spacing="10">
-                <Button fx:id="insertButton" mnemonicParsing="false" onAction="#insertButton" prefHeight="30.0" prefWidth="60.0" text="THÊM" />
-                <Button fx:id="updateButton" mnemonicParsing="false" onAction="#updateButton" prefHeight="30.0" prefWidth="80.0" text="CẬP NHẬT" />
-                <Button fx:id="clearButton" mnemonicParsing="false" onAction="#clearButton" prefHeight="30.0" prefWidth="89.0" text="CLEAR" />
-            </HBox>
-        </VBox>
-    </left>
-
     <center>
         <VBox spacing="10">
             <HBox prefWidth="790" spacing="10">
-                <HBox alignment="CENTER_LEFT" prefWidth="500" spacing="10">
+                <HBox alignment="CENTER_LEFT" prefHeight="26.0" prefWidth="698.0" spacing="10">
                     <Label text="Tìm theo">
                         <font>
                             <Font size="14.0" />
@@ -125,29 +82,27 @@
                             <String fx:value="Số lệnh" />
                         </value>
                     </ComboBox>
-                    <TextField fx:id="searchField" />
+                    <TextField fx:id="searchField" promptText="Nhập từ khóa cần tìm" />
                 </HBox>
                 <HBox alignment="BASELINE_RIGHT" prefWidth="290" spacing="10">
-                    <Button id="exportData" onAction="#exportData" fx:id="exportData" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="XUẤT PHIẾU" />
-                    <Button id="reloadData" fx:id="reloadData" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#reloadData" text="TẢI LẠI TRANG" />
+                    <Button id="exportData" fx:id="exportData" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#exportData" text="XUẤT NHIỀU LỆNH" />
+                    <Button id="reloadData" fx:id="reloadData" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#reloadData" text="TẢI LẠI BẢNG" />
                 </HBox>
             </HBox>
-            <ScrollPane prefHeight="655.0" prefWidth="770.0">
-                <TableView fx:id="dataTable" editable="true" maxWidth="1.7976931348623157E308" prefHeight="652.0" prefWidth="1350.0">
-                    <columns>
-                        <TableColumn fx:id="idColumn" prefWidth="50.0" text="STT" />
-                        <TableColumn fx:id="workOrderSendDateColumn" prefWidth="150.0" text="Ngày gửi" />
-                        <TableColumn fx:id="workOrderNumberColumn" prefWidth="100.0" text="Số lệnh" />
-                        <TableColumn fx:id="workOrderLotColumn" prefWidth="100.0" text="Số LOT" />
-                        <TableColumn fx:id="workOrderPOColumn" prefWidth="100.0" text="Số PO" />
-                        <TableColumn fx:id="workOrderYearColumn" prefWidth="100.0" text="Năm phát hành" />
-                        <TableColumn fx:id="workOrderCustomerColumn" prefWidth="200.0" text="Khách hàng" />
-                        <TableColumn fx:id="workOrderShippingDateColumn" prefWidth="150.0" text="Ngày xuất" />
-                        <TableColumn fx:id="workOrderDestinationColumn" prefWidth="200.0" text="Cảng đến" />
-                        <TableColumn fx:id="workOrderNoteColumn" prefWidth="200.0" text="Ghi chú" />
-                    </columns>
-                </TableView>
-            </ScrollPane>
+            <TableView fx:id="dataTable" editable="true" maxWidth="1.7976931348623157E308" prefHeight="652.0" prefWidth="1350.0">
+                <columns>
+                    <TableColumn fx:id="idColumn" prefWidth="50.0" text="STT" />
+                    <TableColumn fx:id="workOrderSendDateColumn" prefWidth="150.0" text="Ngày gửi" />
+                    <TableColumn fx:id="workOrderNumberColumn" prefWidth="100.0" text="Số lệnh" />
+                    <TableColumn fx:id="workOrderLotColumn" prefWidth="100.0" text="Số LOT" />
+                    <TableColumn fx:id="workOrderPOColumn" prefWidth="100.0" text="Số PO" />
+                    <TableColumn fx:id="workOrderYearColumn" prefWidth="100.0" text="Năm phát hành" />
+                    <TableColumn fx:id="workOrderCustomerColumn" prefWidth="200.0" text="Khách hàng" />
+                    <TableColumn fx:id="workOrderShippingDateColumn" prefWidth="150.0" text="Ngày xuất" />
+                    <TableColumn fx:id="workOrderDestinationColumn" prefWidth="200.0" text="Cảng đến" />
+                    <TableColumn fx:id="workOrderNoteColumn" prefWidth="200.0" text="Ghi chú" />
+                </columns>
+            </TableView>
         </VBox>
     </center>
 

@@ -22,6 +22,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
@@ -190,7 +191,7 @@ public class WorkOrderController implements Initializable {
      * */
     private void clearFields() {
         resetComboBox();
-        anchorLabel.setText("");
+        anchorLabel.setText("No ID Selected");
         anchorData.setText("");
 
         workOrderName.setText("");
@@ -294,7 +295,7 @@ public class WorkOrderController implements Initializable {
         workOrderDestination.setText(workOrder.getDestination());
         workOrderNote.setText(workOrder.getNote());
 
-        anchorLabel.setText("Current ID: ");
+        anchorLabel.setText("ID selected: ");
         anchorData.setText(""+ workOrder.getId());
 
         isUpdating = true;
@@ -413,7 +414,7 @@ public class WorkOrderController implements Initializable {
 
             manage.setOnAction((ActionEvent event) -> {
                 WorkOrder workOrder = dataTable.getSelectionModel().getSelectedItem();
-                loadSingleProductScene("/fxml/work_order_product.fxml", workOrder.getName(), workOrder);
+                loadSingleProductScene((Stage) manage.getParentPopup().getOwnerWindow(),"/fxml/work_order_product.fxml", workOrder.getName(), workOrder);
             });
             contextMenu.getItems().add(manage);
 
@@ -445,7 +446,7 @@ public class WorkOrderController implements Initializable {
      * @param title scene title
      * @param workOrder data
      * */
-    private void loadSingleProductScene(String resource, String title, WorkOrder workOrder) {
+    private void loadSingleProductScene(Stage stage, String resource, String title, WorkOrder workOrder) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource(resource));
@@ -454,15 +455,20 @@ public class WorkOrderController implements Initializable {
              * fxmlLoader.setController(NewWindowController);
              */
             Scene scene = new Scene(fxmlLoader.load());
-            Stage stage = new Stage();
+            Stage _stage = new Stage();
             scene.getStylesheets().add("style.css");
-            stage.setTitle(title);
-            stage.setScene(scene);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setResizable(false);
-            stage.show();
+            _stage.setTitle(title);
+            _stage.setScene(scene);
+            _stage.initModality(Modality.APPLICATION_MODAL);
+            _stage.setResizable(false);
+            _stage.getIcons().add(new Image("/images/icon.png"));
+            stage.setOpacity(0);
+            _stage.show();
             WorkOrderProductController controller = fxmlLoader.<WorkOrderProductController>getController();
             controller.setData(workOrder);
+            _stage.setOnHiding(e -> {
+                stage.setOpacity(1);
+            });
 
         } catch (IOException e) {
             Logger logger = Logger.getLogger(getClass().getName());
@@ -509,6 +515,7 @@ public class WorkOrderController implements Initializable {
      * - Implementing contextMenu on right click <br>
      * */
     private void loadView() {
+        anchorLabel.setText("No ID Selected");
         formatDate();
 
         resetFields();

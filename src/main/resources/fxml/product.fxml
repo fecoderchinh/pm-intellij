@@ -12,57 +12,39 @@
     <top>
         <VBox spacing="10">
             <HBox spacing="10">
-                <Label text="QUẢN LÝ DANH SÁCH MẶT HÀNG">
+                <Label prefHeight="40.0" prefWidth="744.0" text="DANH SÁCH SẢN PHẨM">
                     <font>
                         <Font size="28.0" />
                     </font>
                 </Label>
+                <HBox spacing="10">
+                    <Button fx:id="insertButton" mnemonicParsing="false" onAction="#insertButton" prefHeight="30.0" prefWidth="60.0" text="THÊM" />
+                    <Button fx:id="updateButton" mnemonicParsing="false" onAction="#updateButton" prefHeight="30.0" prefWidth="80.0" text="CẬP NHẬT" />
+                    <Button fx:id="clearButton" mnemonicParsing="false" onAction="#clearButton" prefHeight="30.0" prefWidth="89.0" text="XÓA Ô" />
+                    <padding>
+                        <Insets top="10" />
+                    </padding>
+                </HBox>
             </HBox>
+         <Separator prefWidth="200.0" />
+            <HBox prefHeight="0.0" prefWidth="1004.0" spacing="10">
+                <VBox prefHeight="62.0" prefWidth="1003.0" spacing="10">
+                    <HBox prefHeight="4.0" prefWidth="900.0" spacing="10">
+                        <TextField fx:id="nameField" prefWidth="300" promptText="Tên sản phẩm" />
+                        <TextField fx:id="descriptionField" prefWidth="400" promptText="Tên gợi nhớ (vd: SGM --có thể viết tắt)" />
+                        <TextField fx:id="noteField" prefWidth="300" promptText="Ghi chú" />
+                    </HBox>
+                    <HBox prefHeight="26.0" prefWidth="900.0" spacing="10">
+                        <TextField fx:id="specificationField" prefHeight="26.0" prefWidth="1004.0" promptText="Qui cách sản phẩm" />
+                    </HBox>
+                </VBox>
+            </HBox>
+         <Separator prefWidth="200.0" />
             <padding>
                 <Insets bottom="20" />
             </padding>
         </VBox>
     </top>
-
-    <left>
-        <VBox prefHeight="340.0" prefWidth="261.0" spacing="10">
-            <HBox prefWidth="340" spacing="10">
-                <VBox spacing="14">
-                    <Label text="Tên mặt hàng">
-                        <font>
-                            <Font size="14.0" />
-                        </font>
-                    </Label>
-                    <Label text="Mô tả">
-                        <font>
-                            <Font size="14.0" />
-                        </font>
-                    </Label>
-                    <Label text="Qui cách">
-                        <font>
-                            <Font size="14.0" />
-                        </font>
-                    </Label>
-                    <Label text="Ghi chú">
-                        <font>
-                            <Font size="14.0" />
-                        </font>
-                    </Label>
-                </VBox>
-                <VBox prefHeight="4.0" prefWidth="154.0" spacing="10">
-                    <TextField fx:id="nameField" />
-                    <TextField fx:id="descriptionField" />
-                    <TextField fx:id="specificationField" />
-                    <TextField fx:id="noteField" />
-                </VBox>
-            </HBox>
-            <HBox spacing="10">
-                <Button fx:id="insertButton" mnemonicParsing="false" onAction="#insertButton" prefHeight="30.0" prefWidth="60.0" text="THÊM" />
-                <Button fx:id="updateButton" mnemonicParsing="false" onAction="#updateButton" prefHeight="30.0" prefWidth="80.0" text="CẬP NHẬT" />
-                <Button fx:id="clearButton" mnemonicParsing="false" onAction="#clearButton" prefHeight="30.0" prefWidth="89.0" text="CLEAR" />
-            </HBox>
-        </VBox>
-    </left>
 
     <center>
         <VBox spacing="10">
@@ -85,23 +67,21 @@
                             <String fx:value="Tên mặt hàng" />
                         </value>
                     </ComboBox>
-                    <TextField fx:id="searchField" />
+                    <TextField fx:id="searchField" promptText="Gõ từ khóa cần tìm" />
                 </HBox>
-                <HBox alignment="BASELINE_RIGHT" prefWidth="290" spacing="10">
-                    <Button id="reloadData" fx:id="reloadData" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#reloadData" text="TẢI LẠI TRANG" />
+                <HBox alignment="BASELINE_RIGHT" prefHeight="26.0" prefWidth="497.0" spacing="10">
+                    <Button id="reloadData" fx:id="reloadData" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#reloadData" text="TẢI LẠI BẢNG" />
                 </HBox>
             </HBox>
-            <ScrollPane prefHeight="655.0" prefWidth="770.0">
-                <TableView fx:id="dataTable" editable="true" maxWidth="1.7976931348623157E308" prefHeight="652.0">
-                    <columns>
-                        <TableColumn fx:id="idColumn" prefWidth="50.0" text="STT" />
-                        <TableColumn fx:id="nameColumn" prefWidth="200.0" text="Tên mặt hàng" />
-                        <TableColumn fx:id="descriptionColumn" prefWidth="200.0" text="Mô tả" />
-                        <TableColumn fx:id="specificationColumn" prefWidth="250.0" text="Qui cách" />
-                        <TableColumn fx:id="noteColumn" prefWidth="250.0" text="Lưu ý" />
-                    </columns>
-                </TableView>
-            </ScrollPane>
+            <TableView fx:id="dataTable" editable="true" maxWidth="1.7976931348623157E308" prefHeight="652.0">
+                <columns>
+                    <TableColumn fx:id="idColumn" prefWidth="50.0" text="STT" />
+                    <TableColumn fx:id="nameColumn" prefWidth="200.0" text="Tên mặt hàng" />
+                    <TableColumn fx:id="descriptionColumn" prefWidth="200.0" text="Mô tả" />
+                    <TableColumn fx:id="specificationColumn" prefWidth="250.0" text="Qui cách" />
+                    <TableColumn fx:id="noteColumn" prefWidth="250.0" text="Lưu ý" />
+                </columns>
+            </TableView>
         </VBox>
     </center>
 

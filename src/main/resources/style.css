@@ -3,5 +3,6 @@
 }
 
 .tree-table-row-cell:top-node {
-    -fx-background: orange;
+    /*-fx-background: orange;*/
+    -fx-background: #17C1FF;
 }

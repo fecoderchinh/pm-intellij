@@ -6,9 +6,9 @@
 
 <BorderPane prefHeight="680.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fecoder.MainViewController">
     <top>
-        <HBox prefWidth="200.0" spacing="10" BorderPane.alignment="CENTER">
+        <HBox alignment="CENTER_RIGHT" prefHeight="36.0" prefWidth="969.0" spacing="10" BorderPane.alignment="CENTER">
             <children>
-                <!--                <Button id="packagingOwner" fx:id="packagingOwner" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="ĐÓNG GÓI" />-->
+                <Button id="packagingOwner" fx:id="packagingOwner" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="Bảng thống kê" />
                 <!--                                      <Button id="newWindowButton" fx:id="newWindowButton" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="New Window" />-->
             </children>
             <padding>
@@ -19,6 +19,7 @@
     <center>
         <VBox id="centerContain" spacing="10.0">
             <children>
+                <Separator prefWidth="1002.0" />
                 <StackPane prefHeight="-1.0" prefWidth="-1.0">
                     <children>
                         <HBox alignment="BASELINE_LEFT" prefHeight="0.0" prefWidth="211.0" spacing="30">

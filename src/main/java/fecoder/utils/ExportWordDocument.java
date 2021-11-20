@@ -171,7 +171,7 @@ public class ExportWordDocument {
                             row.getCell(4).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
                             row.getCell(5).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
 
-                            utils.setHeaderRowforSingleCell(row.getCell(0), packagingList.get(j).getPackagingName(), 10, false, false, ParagraphAlignment.LEFT);
+                            utils.setHeaderRowforSingleCell(row.getCell(0), packagingList.get(j).getPackagingName() + "("+packagingList.get(j).getPrintStatus()+")", 10, false, false, ParagraphAlignment.LEFT);
                             utils.setHeaderRowforSingleCell(row.getCell(0), "("+ packagingList.get(j).getPackagingSpecification() +")", 10, false, false, ParagraphAlignment.LEFT);
                             utils.setHeaderRowforSingleCell(row.getCell(1), packagingList.get(j).getPackagingDimension(), 10, false, false, ParagraphAlignment.CENTER);
                             utils.setHeaderRowforSingleCell(row.getCell(2), packagingList.get(j).getUnit(), 10, false, false, ParagraphAlignment.CENTER);
@@ -309,17 +309,18 @@ public class ExportWordDocument {
             run.addBreak();
             run.setText("Công ty CP SEAVINA xin gửi ĐƠN ĐẶT HÀNG đến Quý Công Ty với chi tiết như sau:");
 
-            table = doc.createTable(1, 7);
+            table = doc.createTable(1, 8);
             table.setWidth("100%");
 
             row = table.getRow(0);
             row.getCell(0).setWidth("6%");
-            row.getCell(1).setWidth("30%");
+            row.getCell(1).setWidth("20%");
             row.getCell(2).setWidth("15%");
             row.getCell(3).setWidth("10%");
             row.getCell(4).setWidth("12%");
-            row.getCell(5).setWidth("12%");
-            row.getCell(6).setWidth("15%");
+            row.getCell(5).setWidth("10%");
+            row.getCell(6).setWidth("14%");
+            row.getCell(7).setWidth("13%");
             row.getCell(0).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
             row.getCell(1).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
             row.getCell(2).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
@@ -327,6 +328,7 @@ public class ExportWordDocument {
             row.getCell(4).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
             row.getCell(5).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
             row.getCell(6).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
+            row.getCell(7).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
 
             utils.setHeaderRowforSingleCell(row.getCell(0), "STT", 10, false, true, ParagraphAlignment.CENTER);
             utils.setHeaderRowforSingleCell(row.getCell(1), "Tên Bao Bì", 10, false, true, ParagraphAlignment.CENTER);
@@ -334,22 +336,24 @@ public class ExportWordDocument {
             utils.setHeaderRowforSingleCell(row.getCell(3), "ĐVT", 10, false, true, ParagraphAlignment.CENTER);
             utils.setHeaderRowforSingleCell(row.getCell(4), "SL Đặt", 10, false, true, ParagraphAlignment.CENTER);
             utils.setHeaderRowforSingleCell(row.getCell(5), "Mã", 10, false, true, ParagraphAlignment.CENTER);
-            utils.setHeaderRowforSingleCell(row.getCell(6), "LSX", 10, false, true, ParagraphAlignment.CENTER);
+            utils.setHeaderRowforSingleCell(row.getCell(6), "Đơn giá (Chưa VAT)", 10, false, true, ParagraphAlignment.CENTER);
+            utils.setHeaderRowforSingleCell(row.getCell(7), "LSX", 10, false, true, ParagraphAlignment.CENTER);
 
             DecimalFormat formatter = new DecimalFormat("#,###");
 
-            table = doc.createTable(orderObservableList.size(), 7);
+            table = doc.createTable(orderObservableList.size(), 8);
             table.setWidth("100%");
 
             for(int i=0;i<orderObservableList.size();i++) {
                 row = table.getRow(i);
                 row.getCell(0).setWidth("6%");
-                row.getCell(1).setWidth("30%");
+                row.getCell(1).setWidth("20%");
                 row.getCell(2).setWidth("15%");
                 row.getCell(3).setWidth("10%");
                 row.getCell(4).setWidth("12%");
-                row.getCell(5).setWidth("12%");
-                row.getCell(6).setWidth("15%");
+                row.getCell(5).setWidth("10%");
+                row.getCell(6).setWidth("14%");
+                row.getCell(7).setWidth("13%");
                 row.getCell(0).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
                 row.getCell(1).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
                 row.getCell(2).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
@@ -357,27 +361,29 @@ public class ExportWordDocument {
                 row.getCell(4).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
                 row.getCell(5).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
                 row.getCell(6).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
+                row.getCell(7).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
 
                 utils.setHeaderRowforSingleCell(row.getCell(0), (i+1)+"", 10, false, false, ParagraphAlignment.CENTER);
-                utils.setHeaderRowforSingleCell(row.getCell(1), orderObservableList.get(i).getpName(), 10, false, false, ParagraphAlignment.LEFT);
+                utils.setHeaderRowforSingleCell(row.getCell(1), orderObservableList.get(i).getpName() + "("+orderObservableList.get(i).getpIsPrinted()+")", 10, false, false, ParagraphAlignment.LEFT);
                 utils.setHeaderRowforSingleCell(row.getCell(1), " ("+ orderObservableList.get(i).getpSpecs() +")", 10, false, false, ParagraphAlignment.LEFT);
                 utils.setHeaderRowforSingleCell(row.getCell(2), orderObservableList.get(i).getpDimension(), 10, false, false, ParagraphAlignment.CENTER);
                 utils.setHeaderRowforSingleCell(row.getCell(3), orderObservableList.get(i).getpUnit(), 10, false, false, ParagraphAlignment.CENTER);
                 utils.setHeaderRowforSingleCell(row.getCell(4), formatter.format(Float.parseFloat(orderObservableList.get(i).getpTotal()+""))+"", 10, false, false, ParagraphAlignment.CENTER);
                 utils.setHeaderRowforSingleCell(row.getCell(5), orderObservableList.get(i).getpCode(), 10, false, false, ParagraphAlignment.CENTER);
-                utils.setHeaderRowforSingleCell(row.getCell(6), orderObservableList.get(i).getWoName(), 10, false, false, ParagraphAlignment.CENTER);
+                utils.setHeaderRowforSingleCell(row.getCell(6), "đ/"+orderObservableList.get(i).getpUnit(), 10, false, false, ParagraphAlignment.CENTER);
+                utils.setHeaderRowforSingleCell(row.getCell(7), orderObservableList.get(i).getWoName(), 10, false, false, ParagraphAlignment.CENTER);
             }
 
             table = doc.createTable(4, 2);
             table.setWidth("100%");
             utils.spanCellsAcrossRow(table, 0,0,2);
-            utils.spanCellsAcrossRow(table, 0,1,6);
+            utils.spanCellsAcrossRow(table, 0,1,7);
             utils.spanCellsAcrossRow(table, 1,0,2);
-            utils.spanCellsAcrossRow(table, 1,1,6);
+            utils.spanCellsAcrossRow(table, 1,1,7);
             utils.spanCellsAcrossRow(table, 2,0,2);
-            utils.spanCellsAcrossRow(table, 2,1,6);
+            utils.spanCellsAcrossRow(table, 2,1,7);
             utils.spanCellsAcrossRow(table, 3,0,2);
-            utils.spanCellsAcrossRow(table, 3,1,6);
+            utils.spanCellsAcrossRow(table, 3,1,7);
             row = table.getRow(0);
             row.getCell(0).setWidth("40%");
             row.getCell(1).setWidth("60%");
@@ -406,7 +412,7 @@ public class ExportWordDocument {
 
             table = doc.createTable(1, 2);
             utils.spanCellsAcrossRow(table, 0,0,3);
-            utils.spanCellsAcrossRow(table, 0,1,6);
+            utils.spanCellsAcrossRow(table, 0,1,7);
             table.setWidth("100%");
             table.removeBorders();
             row = table.getRow(0);
@@ -579,7 +585,7 @@ public class ExportWordDocument {
                 float residualNumber = Float.parseFloat(orderObservableList.get(i).getpTotal()+"") + Float.parseFloat(orderObservableList.get(i).getpStock()+"") - Float.parseFloat(orderObservableList.get(i).getpResidualQuantity()+"") - Float.parseFloat(orderObservableList.get(i).getpDesireQuantity()+"");
 
                 utils.setHeaderRowforSingleCell(row.getCell(0), (i+1)+"", 10, false, false, ParagraphAlignment.CENTER);
-                utils.setHeaderRowforSingleCell(row.getCell(1), orderObservableList.get(i).getpName() + " ("+ orderObservableList.get(i).getpSpecs() +")", 10, false, false, ParagraphAlignment.LEFT);
+                utils.setHeaderRowforSingleCell(row.getCell(1), orderObservableList.get(i).getpName() + "("+ orderObservableList.get(i).getpIsPrinted() +")" + " ("+ orderObservableList.get(i).getpSpecs() +")", 10, false, false, ParagraphAlignment.LEFT);
                 utils.setHeaderRowforSingleCell(row.getCell(2), orderObservableList.get(i).getpDimension(), 10, false, false, ParagraphAlignment.CENTER);
                 utils.setHeaderRowforSingleCell(row.getCell(3), orderObservableList.get(i).getpUnit(), 10, false, false, ParagraphAlignment.CENTER);
                 utils.setHeaderRowforSingleCell(row.getCell(4), formatter.format(Float.parseFloat(orderObservableList.get(i).getpTotal()+""))+"", 10, false, false, ParagraphAlignment.CENTER);

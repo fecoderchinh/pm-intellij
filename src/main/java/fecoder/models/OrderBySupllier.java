@@ -4,6 +4,7 @@ public class OrderBySupllier {
     int woID;
     String woName;
     String pName;
+    String pIsPrinted;
     String pSpecs;
     String pDimension;
     String pUnit;
@@ -25,6 +26,7 @@ public class OrderBySupllier {
             int woID,
             String woName,
             String pName,
+            String pIsPrinted,
             String pSpecs,
             String pDimension,
             String pUnit,
@@ -43,6 +45,7 @@ public class OrderBySupllier {
         this.woID = woID;
         this.woName = woName;
         this.pName = pName;
+        this.pIsPrinted = pIsPrinted;
         this.pSpecs = pSpecs;
         this.pDimension = pDimension;
         this.pUnit = pUnit;
@@ -81,6 +84,14 @@ public class OrderBySupllier {
 
     public void setpName(String pName) {
         this.pName = pName;
+    }
+
+    public String getpIsPrinted() {
+        return pIsPrinted;
+    }
+
+    public void setpIsPrinted(String pIsPrinted) {
+        this.pIsPrinted = pIsPrinted;
     }
 
     public String getpSpecs() {

@@ -205,7 +205,7 @@ public class ProductPackagingController implements Initializable {
      * */
     private void clearFields() {
         resetComboBox();
-        anchorLabel.setText("");
+        anchorLabel.setText("No ID selected");
         anchorData.setText("");
 
         packQtyField.setText("");
@@ -302,7 +302,7 @@ public class ProductPackagingController implements Initializable {
         }
 
         packQtyField.setText(packagingOwner.getPack_qty()+"");
-        anchorLabel.setText("Current ID: ");
+        anchorLabel.setText("ID Selected: ");
         anchorData.setText(""+packagingOwner.getId());
         this.isUpdating = true;
     }
@@ -383,6 +383,8 @@ public class ProductPackagingController implements Initializable {
      * - Implementing contextMenu on right click <br>
      * */
     private void loadView() {
+        anchorLabel.setText("No ID Selected");
+
         resetFields();
 
         resetComboBox();

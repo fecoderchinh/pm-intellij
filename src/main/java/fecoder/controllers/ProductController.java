@@ -13,9 +13,11 @@ import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
@@ -122,7 +124,7 @@ public class ProductController implements Initializable {
         descriptionField.setText(null);
         specificationField.setText(null);
         noteField.setText(null);
-        anchorLabel.setText(null);
+        anchorLabel.setText("No ID Selected");
         anchorData.setText(null);
     }
 
@@ -136,7 +138,7 @@ public class ProductController implements Initializable {
         descriptionField.setText(product.getDescription());
         specificationField.setText(product.getSpecification());
         noteField.setText(product.getNote());
-        anchorLabel.setText("Current ID: ");
+        anchorLabel.setText("ID Selected:");
         anchorData.setText(""+product.getId());
     }
 
@@ -216,7 +218,7 @@ public class ProductController implements Initializable {
      * @param title scene title
      * @param product product data
      * */
-    private void loadSingleProductScene(String resource, String title, Product product) {
+    private void loadSingleProductScene(Stage stage, String resource, String title, Product product) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource(resource));
@@ -225,14 +227,19 @@ public class ProductController implements Initializable {
              * fxmlLoader.setController(NewWindowController);
              */
             Scene scene = new Scene(fxmlLoader.load());
-            Stage stage = new Stage();
-            stage.setTitle(title);
-            stage.setScene(scene);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setResizable(false);
-            stage.show();
+            Stage _stage = new Stage();
+            _stage.setTitle(title);
+            _stage.setScene(scene);
+            _stage.initModality(Modality.APPLICATION_MODAL);
+            _stage.setResizable(false);
+            _stage.getIcons().add(new Image("/images/icon.png"));
+            stage.setOpacity(0);
+            _stage.show();
             ProductPackagingController productPackagingController = fxmlLoader.<ProductPackagingController>getController();
             productPackagingController.setData(product);
+            _stage.setOnHiding(e -> {
+                stage.setOpacity(1);
+            });
 
         } catch (IOException e) {
             Logger logger = Logger.getLogger(getClass().getName());
@@ -250,6 +257,8 @@ public class ProductController implements Initializable {
      * - Implementing contextMenu on right click <br>
      * */
     private void loadView() {
+
+        anchorLabel.setText("No ID Selected");
 
         dataTable.setEditable(true);
 
@@ -409,7 +418,7 @@ public class ProductController implements Initializable {
 
             managePackaging.setOnAction((ActionEvent event) -> {
                 Product product = dataTable.getSelectionModel().getSelectedItem();
-                loadSingleProductScene("/fxml/product_packaging.fxml", "Bao bì cho: "+product.getName(), product);
+                loadSingleProductScene((Stage) managePackaging.getParentPopup().getOwnerWindow(),"/fxml/product_packaging.fxml", "Chi tiết mặt hàng: "+product.getName(), product);
             });
             contextMenu.getItems().add(managePackaging);
 

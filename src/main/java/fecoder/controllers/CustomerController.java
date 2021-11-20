@@ -2,6 +2,7 @@ package fecoder.controllers;
 
 import fecoder.DAO.CustomerDAO;
 import fecoder.models.Customer;
+import fecoder.utils.Utils;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -16,6 +17,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class CustomerController implements Initializable {
@@ -35,6 +37,8 @@ public class CustomerController implements Initializable {
     public TableColumn<Customer, String> noteColumn;
 
     private final CustomerDAO DAO = new CustomerDAO();
+
+    private final Utils utils = new Utils();
 
     /**
      * All needed to start controller
@@ -94,7 +98,7 @@ public class CustomerController implements Initializable {
     private void getItem(String name, String note, int id) {
         nameField.setText(name);
         noteField.setText(note);
-        anchorLabel.setText("Current ID: ");
+        anchorLabel.setText("ID Selected: ");
         anchorData.setText(""+id);
     }
 
@@ -104,7 +108,7 @@ public class CustomerController implements Initializable {
     private void clearFields() {
         nameField.setText(null);
         noteField.setText(null);
-        anchorLabel.setText(null);
+        anchorLabel.setText("No ID Selected");
         anchorData.setText(null);
     }
 
@@ -159,6 +163,8 @@ public class CustomerController implements Initializable {
      * - Implementing contextMenu on right click <br>
      * */
     public void loadView() {
+        anchorLabel.setText("No ID Selected");
+
         dataTable.setEditable(true);
 
         getCurrentRow();
@@ -179,7 +185,7 @@ public class CustomerController implements Initializable {
         noteColumn.setCellFactory(TextFieldTableCell.<Customer>forTableColumn());
         noteColumn.setOnEditCommit(event -> {
             final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
-            ((Customer) event.getTableView().getItems().get(event.getTablePosition().getRow())).setName(data);
+            ((Customer) event.getTableView().getItems().get(event.getTablePosition().getRow())).setNote(data);
             DAO.updateData("note", data, event.getRowValue().getId());
             dataTable.refresh();
         });
@@ -193,31 +199,25 @@ public class CustomerController implements Initializable {
             final MenuItem removeItem = new MenuItem("Xóa dòng");
 
             viewItem.setOnAction((ActionEvent event) -> {
-                Customer suplier = dataTable.getSelectionModel().getSelectedItem();
+                Customer data = dataTable.getSelectionModel().getSelectedItem();
                 int rowIndex = dataTable.getSelectionModel().getSelectedIndex();
 
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Chi tiết loại bao bì");
-                alert.setHeaderText(suplier.getName());
-                alert.setContentText(
-                        "Tên Khách Hàng: " + suplier.getName() + "\n" +
-                                "Ghi chú: " + suplier.getNote()
-                );
-
-                alert.showAndWait();
+                utils.alert("info", Alert.AlertType.INFORMATION, "Chi tiết "+data.getName(),
+                        "Tên Khách Hàng: " + data.getName() + "\n" +
+                        "Ghi chú: " + data.getNote()
+                ).showAndWait();
             });
             contextMenu.getItems().add(viewItem);
 
-            editItem.setOnAction((ActionEvent event) -> {
-                Customer data = dataTable.getSelectionModel().getSelectedItem();
-                getItem(data.getName(), data.getNote(), data.getId());
-            });
-            contextMenu.getItems().add(editItem);
-
             removeItem.setOnAction((ActionEvent event) -> {
                 Customer data = dataTable.getSelectionModel().getSelectedItem();
-                DAO.delete(data.getId());
-                reload();
+                Alert alert = utils.alert("del", Alert.AlertType.CONFIRMATION, "Xóa: "+ data.getName(), null);
+
+                Optional<ButtonType> result = alert.showAndWait();
+                if (alert.getAlertType() == Alert.AlertType.CONFIRMATION && result.get() == ButtonType.OK){
+                    DAO.delete(data.getId());
+                    reload();
+                }
             });
             contextMenu.getItems().add(removeItem);
             // Set context menu on row, but use a binding to make it only show for non-empty rows:

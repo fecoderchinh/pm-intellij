@@ -10,80 +10,59 @@
 <BorderPane prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fecoder.controllers.WorkOrderProductController">
 
     <top>
-        <VBox spacing="10">
-            <HBox spacing="10">
-                <Label fx:id="mainLabel" text="THÔNG TIN MẶT HÀNG">
-                    <font>
-                        <Font size="28.0" />
-                    </font>
-                </Label>
-            </HBox>
-            <padding>
-                <Insets bottom="20" />
-            </padding>
-        </VBox>
+        <HBox maxHeight="-Infinity" prefHeight="207.0" prefWidth="1004.0">
+            <VBox prefHeight="212.0" prefWidth="556.0" spacing="10">
+                <HBox spacing="10">
+                    <Label fx:id="mainLabel" text="THÔNG TIN MẶT HÀNG">
+                        <font>
+                            <Font size="28.0" />
+                        </font>
+                    </Label>
+                </HBox>
+                <Separator prefWidth="200.0" />
+                <HBox spacing="10">
+                    <VBox prefHeight="139.0" prefWidth="523.0" spacing="10">
+                        <HBox spacing="10">
+                            <TextField fx:id="ordinalNumberField" prefHeight="26.0" prefWidth="294.0" promptText="Thứ tự mặt hàng" />
+                            <TextField fx:id="qtyField" prefHeight="26.0" prefWidth="260.0" promptText="Số lượng" />
+                        </HBox>
+                        <HBox spacing="10">
+                            <ComboBox fx:id="productComboBox" prefHeight="26.0" prefWidth="582.0">
+                                <items>
+                                    <FXCollections fx:factory="observableArrayList" />
+                                </items>
+                            </ComboBox>
+                        </HBox>
+                        <HBox spacing="10">
+                            <TextField fx:id="noteField" prefHeight="26.0" prefWidth="578.0" promptText="Ghi chú" />
+                        </HBox>
+                        <HBox spacing="10">
+                            <Button fx:id="insertButton" mnemonicParsing="false" onAction="#insertButton" prefHeight="30.0" prefWidth="60.0" text="THÊM" />
+                            <Button fx:id="updateButton" mnemonicParsing="false" onAction="#updateButton" prefHeight="30.0" prefWidth="80.0" text="CẬP NHẬT" />
+                            <Button fx:id="clearButton" mnemonicParsing="false" onAction="#clearButton" prefHeight="30.0" prefWidth="89.0" text="XÓA Ô" />
+                            <padding>
+                                <Insets top="5" />
+                            </padding>
+                        </HBox>
+                    </VBox>
+                </HBox>
+                <padding>
+                    <Insets bottom="20" />
+                </padding>
+            </VBox>
+            <TableView fx:id="productTableView" maxHeight="-Infinity" prefHeight="204.0" prefWidth="452.0">
+                <columns>
+                    <TableColumn fx:id="productIdColumn" prefWidth="35.0" text="STT" />
+                    <TableColumn fx:id="productNameColumn" prefWidth="320.0" text="Tên mặt hàng" />
+                    <TableColumn fx:id="productQuantityColumn" prefWidth="80.0" text="Số lượng" />
+                </columns>
+            </TableView>
+        </HBox>
     </top>
-
-    <left>
-        <VBox prefHeight="668.0" prefWidth="289.0" spacing="10">
-            <HBox prefWidth="340" spacing="10">
-                <VBox spacing="14">
-                    <Label text="Mặt hàng số:">
-                        <font>
-                            <Font size="14.0" />
-                        </font>
-                    </Label>
-                    <Label text="Tên mặt hàng">
-                        <font>
-                            <Font size="14.0" />
-                        </font>
-                    </Label>
-                    <Label text="Số lượng thùng">
-                        <font>
-                            <Font size="14.0" />
-                        </font>
-                    </Label>
-                    <Label text="Ghi chú">
-                        <font>
-                            <Font size="14.0" />
-                        </font>
-                    </Label>
-                </VBox>
-                <VBox prefHeight="4.0" prefWidth="154.0" spacing="10">
-                    <TextField fx:id="ordinalNumberField" />
-                    <ComboBox fx:id="productComboBox" prefHeight="26.0" prefWidth="355.0">
-                        <items>
-                            <FXCollections fx:factory="observableArrayList" />
-                        </items>
-                    </ComboBox>
-                    <TextField fx:id="qtyField" />
-                    <TextField fx:id="noteField" />
-                </VBox>
-            </HBox>
-            <HBox spacing="10">
-                <Button fx:id="insertButton" mnemonicParsing="false" onAction="#insertButton" prefHeight="30.0" prefWidth="60.0" text="THÊM" />
-                <Button fx:id="updateButton" mnemonicParsing="false" onAction="#updateButton" prefHeight="30.0" prefWidth="80.0" text="CẬP NHẬT" />
-                <Button fx:id="clearButton" mnemonicParsing="false" onAction="#clearButton" prefHeight="30.0" prefWidth="89.0" text="CLEAR" />
-            </HBox>
-         <ScrollPane prefHeight="520.0" prefWidth="230.0">
-           <content>
-             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="516.0" prefWidth="276.0">
-                  <children>
-                     <TableView fx:id="productTableView" prefHeight="516.0" prefWidth="500.0">
-                       <columns>
-                         <TableColumn prefWidth="35.0" fx:id="productIdColumn" text="STT" />
-                         <TableColumn prefWidth="365.0" fx:id="productNameColumn" text="Tên mặt hàng" />
-                       </columns>
-                     </TableView>
-                  </children>
-               </AnchorPane>
-           </content>
-         </ScrollPane>
-        </VBox>
-    </left>
 
     <center>
         <VBox prefHeight="668.0" prefWidth="693.0" spacing="10">
+            <Separator prefWidth="200.0" />
             <HBox prefWidth="790" spacing="10">
                 <HBox alignment="CENTER_LEFT" prefWidth="500" spacing="10">
                     <Label text="Tìm theo">
@@ -103,16 +82,14 @@
                             <String fx:value="Tên bao bì" />
                         </value>
                     </ComboBox>
-                    <TextField fx:id="searchField" />
+                    <TextField fx:id="searchField" promptText="Nhập từ khóa cần tìm" />
                 </HBox>
-                <HBox alignment="BASELINE_RIGHT" prefWidth="290" spacing="10">
-                    <Button id="exportData" onAction="#exportData" fx:id="exportData" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="XUẤT PHIẾU" />
-                    <Button id="reloadData" onAction="#reloadData" fx:id="reloadData" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="TẢI LẠI TRANG" />
+                <HBox alignment="BASELINE_RIGHT" prefHeight="26.0" prefWidth="494.0" spacing="10">
+                    <Button id="exportData" fx:id="exportData" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#exportData" text="XUẤT PHIẾU" />
+                    <Button id="reloadData" fx:id="reloadData" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#reloadData" text="TẢI LẠI TRANG" />
                 </HBox>
             </HBox>
-            <ScrollPane prefHeight="655.0" prefWidth="770.0">
-                <TreeTableView fx:id="dataTable" maxWidth="1.7976931348623157E308" prefHeight="652.0" prefWidth="1500.0"/>
-            </ScrollPane>
+            <TreeTableView fx:id="dataTable" maxWidth="1.7976931348623157E308" prefHeight="652.0" prefWidth="1500.0" />
         </VBox>
     </center>
 

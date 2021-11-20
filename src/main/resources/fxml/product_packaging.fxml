@@ -7,64 +7,44 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fecoder.controllers.ProductPackagingController">
+<BorderPane prefHeight="768.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fecoder.controllers.ProductPackagingController">
 
     <top>
         <VBox spacing="10">
             <HBox spacing="10">
-                <Label fx:id="mainLabel" text="QUẢN LÝ BAO BÌ CỦA TỪNG MẶT HÀNG">
+                <Label fx:id="mainLabel" text="CHI TIẾT MẶT HÀNG">
                     <font>
                         <Font size="28.0" />
                     </font>
                 </Label>
             </HBox>
+         <Separator prefWidth="200.0" />
+            <VBox prefHeight="0.0" prefWidth="1004.0" spacing="10">
+                <HBox prefHeight="26.0" prefWidth="460.0" spacing="10">
+                    <ComboBox fx:id="sizeComboBox" prefHeight="26.0" prefWidth="150.0">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList" />
+                        </items>
+                    </ComboBox>
+                    <ComboBox fx:id="packagingComboBox" prefHeight="26.0" prefWidth="500.0">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList" />
+                        </items>
+                    </ComboBox>
+                    <TextField fx:id="packQtyField" prefWidth="150" promptText="Số lượng" />
+                </HBox>
+                <HBox spacing="10">
+                    <Button fx:id="insertButton" mnemonicParsing="false" onAction="#insertButton" prefHeight="30.0" prefWidth="60.0" text="THÊM" />
+                    <Button fx:id="updateButton" mnemonicParsing="false" onAction="#updateButton" prefHeight="30.0" prefWidth="80.0" text="CẬP NHẬT" />
+                    <Button fx:id="clearButton" mnemonicParsing="false" onAction="#clearButton" prefHeight="30.0" prefWidth="89.0" text="XÓA Ô" />
+                </HBox>
+            <Separator prefWidth="200.0" />
+            </VBox>
             <padding>
                 <Insets bottom="20" />
             </padding>
         </VBox>
     </top>
-
-    <left>
-        <VBox prefHeight="668.0" prefWidth="284.0" spacing="10">
-            <HBox prefWidth="340" spacing="10">
-                <VBox spacing="14">
-                    <Label text="Size">
-                        <font>
-                            <Font size="14.0" />
-                        </font>
-                    </Label>
-                    <Label text="Bao bì">
-                        <font>
-                            <Font size="14.0" />
-                        </font>
-                    </Label>
-                    <Label text="Số lượng /thùng">
-                        <font>
-                            <Font size="14.0" />
-                        </font>
-                    </Label>
-                </VBox>
-                <VBox prefHeight="4.0" prefWidth="154.0" spacing="10">
-                    <ComboBox fx:id="sizeComboBox" prefHeight="26.0" prefWidth="355.0">
-                        <items>
-                            <FXCollections fx:factory="observableArrayList"/>
-                        </items>
-                    </ComboBox>
-                    <ComboBox fx:id="packagingComboBox" prefHeight="26.0" prefWidth="425.0">
-                        <items>
-                            <FXCollections fx:factory="observableArrayList"/>
-                        </items>
-                    </ComboBox>
-                    <TextField fx:id="packQtyField" />
-                </VBox>
-            </HBox>
-            <HBox spacing="10">
-                <Button fx:id="insertButton" mnemonicParsing="false" onAction="#insertButton" prefHeight="30.0" prefWidth="60.0" text="THÊM" />
-                <Button fx:id="updateButton" mnemonicParsing="false" onAction="#updateButton" prefHeight="30.0" prefWidth="80.0" text="CẬP NHẬT" />
-                <Button fx:id="clearButton" mnemonicParsing="false" onAction="#clearButton" prefHeight="30.0" prefWidth="89.0" text="CLEAR" />
-            </HBox>
-        </VBox>
-    </left>
 
     <center>
         <VBox spacing="10">
@@ -86,22 +66,20 @@
                             <String fx:value="Bao bì" />
                         </value>
                     </ComboBox>
-                    <TextField fx:id="searchField" />
+                    <TextField fx:id="searchField" promptText="Nhập từ khóa cần tìm" />
                 </HBox>
                 <HBox alignment="BASELINE_RIGHT" prefWidth="290" spacing="10">
-                    <Button id="reloadData" onAction="#reloadData" fx:id="reloadData" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="TẢI LẠI TRANG" />
+                    <Button id="reloadData" fx:id="reloadData" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#reloadData" text="TẢI LẠI BẢNG" />
                 </HBox>
             </HBox>
-            <ScrollPane prefHeight="655.0" prefWidth="770.0">
-                <TableView fx:id="dataTable" editable="true" maxWidth="1.7976931348623157E308" prefHeight="652.0" prefWidth="854.0">
-                    <columns>
-                        <TableColumn fx:id="idColumn" prefWidth="50.0" text="STT" />
-                        <TableColumn fx:id="sizeColumn" prefWidth="200.0" text="Size" />
-                        <TableColumn fx:id="packagingColumn" prefWidth="250.0" text="Bao bì" />
-                        <TableColumn fx:id="packingQtyColumn" prefWidth="250.0" text="Số lượng /thùng" />
-                    </columns>
-                </TableView>
-            </ScrollPane>
+            <TableView fx:id="dataTable" editable="true" maxWidth="1.7976931348623157E308" prefHeight="652.0" prefWidth="730.0">
+                <columns>
+                    <TableColumn fx:id="idColumn" prefWidth="40.0" text="STT" />
+                    <TableColumn fx:id="sizeColumn" prefWidth="200.0" text="Size" />
+                    <TableColumn fx:id="packagingColumn" prefWidth="220.0" text="Bao bì" />
+                    <TableColumn fx:id="packingQtyColumn" prefWidth="220.0" text="Số lượng /thùng" />
+                </columns>
+            </TableView>
         </VBox>
     </center>
 

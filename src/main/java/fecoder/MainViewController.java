@@ -21,6 +21,7 @@ public class MainViewController {
     public Button productManage;
 //    public Button packagingOwner;
     public Button workOrder;
+    public Button packagingOwner;
     @FXML private Button logoutButton;
     @FXML private Label sessionLabel;
 
@@ -31,9 +32,10 @@ public class MainViewController {
     public void initSessionID(final LoginManager loginManager, String sessionID) {
         sessionLabel.setText(sessionID);
 
-//        newWindowButton.setGraphic(new ImageView(new Image(getClass().getResource("/images/logo.jpg").toString())));
-//        newWindowButton.setContentDisplay(ContentDisplay.TOP);
-
+        packagingOwner.setOnMouseClicked((event) -> {
+            utils.loadSceneWithStage((Stage)suplierManage.getScene().getWindow(), "/fxml/suplier.fxml", "Danh Sách Nhà Cung Cấp");
+        });
+        
         logoutButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent event) {
                 loginManager.logout();
@@ -79,7 +81,7 @@ public class MainViewController {
         productManage.setGraphic(new ImageView(new Image(getClass().getResource("/images/tempura.png").toString(), 200, 200, true, true)));
         productManage.setContentDisplay(ContentDisplay.TOP);
         productManage.setOnMouseClicked((event) -> {
-            utils.loadSceneWithStage((Stage)productManage.getScene().getWindow(),"/fxml/product.fxml", "Danh sách mặt hàng");
+            utils.loadSceneWithStage((Stage)productManage.getScene().getWindow(),"/fxml/product.fxml", "Danh sách sản phẩm");
         });
 
 //        packagingOwner.setOnMouseClicked((event) -> {

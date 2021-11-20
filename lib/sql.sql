@@ -504,7 +504,7 @@ from packaging p, products p2, work_order_product wop, work_order_product_packag
 where wop.product_id = p2.id and wopp.packaging_id = p.id and wop.product_id = 1 and type=1;*/
 
 /*list đề nghị*/
-select distinct (@count := @count + 1) AS rowNumber, wo.id as woID, wo.name as workOrderName, p.name as packagingName,  p.specifications as specs,  p.dimension as dimension, t.unit as unit, wopp.actual_qty as total, if((wopp.actual_qty - wopp.residual_qty + wopp.stock - wopp.work_order_qty) > 0, (wopp.actual_qty - wopp.residual_qty + wopp.stock - wopp.work_order_qty), "") as totalResidualQuantity
+/*select distinct (@count := @count + 1) AS rowNumber, wo.id as woID, wo.name as workOrderName, p.name as packagingName,  p.specifications as specs,  p.dimension as dimension, t.unit as unit, wopp.actual_qty as total, if((wopp.actual_qty - wopp.residual_qty + wopp.stock - wopp.work_order_qty) > 0, (wopp.actual_qty - wopp.residual_qty + wopp.stock - wopp.work_order_qty), "") as totalResidualQuantity
 from 
 	work_order_product_packaging wopp, 
 	packaging p, 
@@ -525,10 +525,10 @@ where
 	and wopp.wop_id = wop.id
 	and wopp.work_order_id in ("1", "2")
 	and wopp.actual_qty > 0
-	group by wopp.id;
+	group by wopp.id;*/
 	
 /*đơn đặt hàng*/
-select
+/*select
 	wo.id as woID,
 	group_concat(distinct wo.name separator "+") as woName, 
 	p.name as pName,
@@ -559,4 +559,4 @@ where
 -- 	and wopp.actual_qty > 0 
 	and wopp.work_order_id in (3)
 group by 
-	wopp.packaging_id;
+	wopp.packaging_id;*/

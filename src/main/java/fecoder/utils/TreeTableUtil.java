@@ -3,6 +3,7 @@ package fecoder.utils;
 import fecoder.DAO.*;
 import fecoder.models.WorkOrderProductPackaging;
 import fecoder.models.WorkProduction;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -11,8 +12,11 @@ import javafx.event.EventHandler;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTreeTableCell;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
+
+import javax.swing.text.AbstractDocument;
 
 public class TreeTableUtil {
 
@@ -127,18 +131,19 @@ public class TreeTableUtil {
         TreeTableColumn<WorkProduction, String> column = new TreeTableColumn<>("Mặt hàng");
         column.setCellValueFactory(new TreeItemPropertyValueFactory<>("productName"));
         column.prefWidthProperty().bind(table.widthProperty().multiply(0.3));
-        column.setCellFactory(new Callback<TreeTableColumn<WorkProduction, String>, TreeTableCell<WorkProduction, String>>() {
-            @Override
-            public TreeTableCell<WorkProduction, String> call(TreeTableColumn<WorkProduction, String> workProductionStringTreeTableColumn) {
-                TreeTableCell<WorkProduction, String> cell = new TreeTableCell<>();
-                Text text = new Text();
-                cell.setGraphic(text);
-                cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
-                text.wrappingWidthProperty().bind(cell.widthProperty());
-                text.textProperty().bind(cell.itemProperty());
-                return cell;
-            }
-        });
+//        column.setCellFactory(new Callback<TreeTableColumn<WorkProduction, String>, TreeTableCell<WorkProduction, String>>() {
+//            @Override
+//            public TreeTableCell<WorkProduction, String> call(TreeTableColumn<WorkProduction, String> workProductionStringTreeTableColumn) {
+//                TreeTableCell<WorkProduction, String> cell = new TreeTableCell<>();
+//                Text text = new Text();
+//                cell.setGraphic(text);
+//                cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
+//                text.wrappingWidthProperty().bind(cell.widthProperty());
+//                text.textProperty().bind(cell.itemProperty());
+//                return cell;
+//            }
+//        });
+        column.setCellFactory(WRAPPING_CELL_FACTORY);
         return column;
     }
 
@@ -146,20 +151,21 @@ public class TreeTableUtil {
     {
         TreeTableColumn<WorkProduction, String> column = new TreeTableColumn<>("Bao bì");
         column.setCellValueFactory(new TreeItemPropertyValueFactory<>("packagingName"));
-        column.prefWidthProperty().bind(table.widthProperty().multiply(0.3));
-        column.setResizable(false);
-        column.setCellFactory(new Callback<TreeTableColumn<WorkProduction, String>, TreeTableCell<WorkProduction, String>>() {
-            @Override
-            public TreeTableCell<WorkProduction, String> call(TreeTableColumn<WorkProduction, String> workProductionStringTreeTableColumn) {
-                TreeTableCell<WorkProduction, String> cell = new TreeTableCell<>();
-                Text text = new Text();
-                cell.setGraphic(text);
-                cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
-                text.wrappingWidthProperty().bind(cell.widthProperty());
-                text.textProperty().bind(cell.itemProperty());
-                return cell;
-            }
-        });
+        column.prefWidthProperty().bind(table.widthProperty().multiply(0.45));
+//        column.setResizable(false);
+//        column.setCellFactory(new Callback<TreeTableColumn<WorkProduction, String>, TreeTableCell<WorkProduction, String>>() {
+//            @Override
+//            public TreeTableCell<WorkProduction, String> call(TreeTableColumn<WorkProduction, String> workProductionStringTreeTableColumn) {
+//                TreeTableCell<WorkProduction, String> cell = new TreeTableCell<>();
+//                Text text = new Text();
+//                cell.setGraphic(text);
+//                cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
+//                text.wrappingWidthProperty().bind(cell.widthProperty());
+//                text.textProperty().bind(cell.itemProperty());
+//                return cell;
+//            }
+//        });
+        column.setCellFactory(WRAPPING_CELL_FACTORY);
         return column;
     }
 
@@ -169,18 +175,19 @@ public class TreeTableUtil {
         column.setCellValueFactory(new TreeItemPropertyValueFactory<>("packagingSpecification"));
         column.prefWidthProperty().bind(table.widthProperty().multiply(0.3));
         column.setResizable(false);
-        column.setCellFactory(new Callback<TreeTableColumn<WorkProduction, String>, TreeTableCell<WorkProduction, String>>() {
-            @Override
-            public TreeTableCell<WorkProduction, String> call(TreeTableColumn<WorkProduction, String> workProductionStringTreeTableColumn) {
-                TreeTableCell<WorkProduction, String> cell = new TreeTableCell<>();
-                Text text = new Text();
-                cell.setGraphic(text);
-                cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
-                text.wrappingWidthProperty().bind(cell.widthProperty());
-                text.textProperty().bind(cell.itemProperty());
-                return cell;
-            }
-        });
+//        column.setCellFactory(new Callback<TreeTableColumn<WorkProduction, String>, TreeTableCell<WorkProduction, String>>() {
+//            @Override
+//            public TreeTableCell<WorkProduction, String> call(TreeTableColumn<WorkProduction, String> workProductionStringTreeTableColumn) {
+//                TreeTableCell<WorkProduction, String> cell = new TreeTableCell<>();
+//                Text text = new Text();
+//                cell.setGraphic(text);
+//                cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
+//                text.wrappingWidthProperty().bind(cell.widthProperty());
+//                text.textProperty().bind(cell.itemProperty());
+//                return cell;
+//            }
+//        });
+        column.setCellFactory(WRAPPING_CELL_FACTORY);
         return column;
     }
 
@@ -190,18 +197,19 @@ public class TreeTableUtil {
         column.setCellValueFactory(new TreeItemPropertyValueFactory<>("packagingDimension"));
         column.prefWidthProperty().bind(table.widthProperty().multiply(0.10));
         column.setResizable(false);
-        column.setCellFactory(new Callback<TreeTableColumn<WorkProduction, String>, TreeTableCell<WorkProduction, String>>() {
-            @Override
-            public TreeTableCell<WorkProduction, String> call(TreeTableColumn<WorkProduction, String> workProductionStringTreeTableColumn) {
-                TreeTableCell<WorkProduction, String> cell = new TreeTableCell<>();
-                Text text = new Text();
-                cell.setGraphic(text);
-                cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
-                text.wrappingWidthProperty().bind(cell.widthProperty());
-                text.textProperty().bind(cell.itemProperty());
-                return cell;
-            }
-        });
+//        column.setCellFactory(new Callback<TreeTableColumn<WorkProduction, String>, TreeTableCell<WorkProduction, String>>() {
+//            @Override
+//            public TreeTableCell<WorkProduction, String> call(TreeTableColumn<WorkProduction, String> workProductionStringTreeTableColumn) {
+//                TreeTableCell<WorkProduction, String> cell = new TreeTableCell<>();
+//                Text text = new Text();
+//                cell.setGraphic(text);
+//                cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
+//                text.wrappingWidthProperty().bind(cell.widthProperty());
+//                text.textProperty().bind(cell.itemProperty());
+//                return cell;
+//            }
+//        });
+        column.setCellFactory(WRAPPING_CELL_FACTORY);
         return column;
     }
 
@@ -216,18 +224,19 @@ public class TreeTableUtil {
     {
         TreeTableColumn<WorkProduction, String> column = new TreeTableColumn<>("Mã BB");
         column.setCellValueFactory(new TreeItemPropertyValueFactory<>("packagingCode"));
-        column.setCellFactory(new Callback<TreeTableColumn<WorkProduction, String>, TreeTableCell<WorkProduction, String>>() {
-            @Override
-            public TreeTableCell<WorkProduction, String> call(TreeTableColumn<WorkProduction, String> workProductionStringTreeTableColumn) {
-                TreeTableCell<WorkProduction, String> cell = new TreeTableCell<>();
-                Text text = new Text();
-                cell.setGraphic(text);
-                cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
-                text.wrappingWidthProperty().bind(cell.widthProperty());
-                text.textProperty().bind(cell.itemProperty());
-                return cell;
-            }
-        });
+//        column.setCellFactory(new Callback<TreeTableColumn<WorkProduction, String>, TreeTableCell<WorkProduction, String>>() {
+//            @Override
+//            public TreeTableCell<WorkProduction, String> call(TreeTableColumn<WorkProduction, String> workProductionStringTreeTableColumn) {
+//                TreeTableCell<WorkProduction, String> cell = new TreeTableCell<>();
+//                Text text = new Text();
+//                cell.setGraphic(text);
+//                cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
+//                text.wrappingWidthProperty().bind(cell.widthProperty());
+//                text.textProperty().bind(cell.itemProperty());
+//                return cell;
+//            }
+//        });
+        column.setCellFactory(WRAPPING_CELL_FACTORY);
         return column;
     }
 
@@ -238,10 +247,41 @@ public class TreeTableUtil {
         return column;
     }
 
-    public static TreeTableColumn<WorkProduction, String> getPrintStatusColumn()
+    public static TreeTableColumn<WorkProduction, String> getPrintStatusColumn(TreeTableView table)
     {
         TreeTableColumn<WorkProduction, String> column = new TreeTableColumn<>("In sẵn");
         column.setCellValueFactory(new TreeItemPropertyValueFactory<>("printStatus"));
+        column.prefWidthProperty().bind(table.widthProperty().multiply(0.1));
+        column.setCellFactory(new Callback<TreeTableColumn<WorkProduction, String>, TreeTableCell<WorkProduction, String>>() {
+            @Override
+            public TreeTableCell<WorkProduction, String> call(TreeTableColumn<WorkProduction, String> workProductionStringTreeTableColumn) {
+                return new TextFieldTreeTableCell<>();
+            }
+        });
+        column.setCellFactory(TextFieldTreeTableCell.forTreeTableColumn());
+        column.setOnEditCommit(new EventHandler<TreeTableColumn.CellEditEvent<WorkProduction, String>>() {
+            @Override
+            public void handle(TreeTableColumn.CellEditEvent<WorkProduction, String> workProductionStringCellEditEvent) {
+
+
+
+                /*IMPORTANT: Do NOT forget to set ENOUGH data at your TreeItem<WorkProduction> leaves.*/
+
+
+
+                TreeItem<WorkProduction> workProductionTreeItem = (TreeItem<WorkProduction>) table.getSelectionModel().getSelectedItem();
+//                System.out.println(workProductionTreeItem.getValue().getId());
+
+                TreeItem<WorkProduction> currentEditingWorkProductionTreeItem =  table.getTreeItem(workProductionStringCellEditEvent.getTreeTablePosition().getRow());
+
+//                System.out.println(currentEditingWorkProductionTreeItem.getValue().getId());
+
+                currentEditingWorkProductionTreeItem.getValue().setPrintStatus(workProductionStringCellEditEvent.getNewValue());
+                WorkOrderProductPackagingDAO workOrderProductPackagingDAO = new WorkOrderProductPackagingDAO();
+
+                workOrderProductPackagingDAO.updateData("printed", workProductionStringCellEditEvent.getNewValue(), workProductionTreeItem.getValue().getId());
+            }
+        });
         return column;
     }
 
@@ -255,9 +295,8 @@ public class TreeTableUtil {
                 return new TreeTableCell<WorkProduction, Integer>() {
                     @Override
                     protected void updateItem(Integer integer, boolean b) {
-                        if (integer != null) {
-                            super.setText(integer == 0?"":integer.toString());
-                        }
+                        super.updateItem(integer, b);
+                        setText(b || integer == 0 ? "" : integer.toString());
                     }
                 };
             }
@@ -435,6 +474,37 @@ public class TreeTableUtil {
     {
         TreeTableColumn<WorkProduction, String> column = new TreeTableColumn<>("Ghi chú");
         column.setCellValueFactory(new TreeItemPropertyValueFactory<>("noteProduct"));
+        column.setCellFactory(WRAPPING_CELL_FACTORY);
         return column;
     }
+
+    public static final Callback<TreeTableColumn<WorkProduction,String>, TreeTableCell<WorkProduction,String>> WRAPPING_CELL_FACTORY =
+            new Callback<TreeTableColumn<WorkProduction,String>, TreeTableCell<WorkProduction,String>>() {
+
+                @Override public TreeTableCell<WorkProduction,String> call(TreeTableColumn<WorkProduction,String> param) {
+                    TreeTableCell<WorkProduction,String> tableCell = new TreeTableCell<WorkProduction, String>() {
+                        @Override protected void updateItem(String item, boolean empty) {
+                            if (item == getItem()) return;
+
+                            super.updateItem(item, empty);
+
+                            if (item == null) {
+                                super.setText(null);
+                                super.setGraphic(null);
+                            } else {
+                                super.setText(null);
+                                Label l = new Label(item);
+                                l.setWrapText(false);
+                                VBox box = new VBox(l);
+                                l.heightProperty().addListener((observable,oldValue,newValue)-> {
+                                    Platform.runLater(()->this.getTreeTableRow().requestLayout());
+                                    box.setPrefHeight(newValue.intValue());
+                                });
+                                super.setGraphic(box);
+                            }
+                        }
+                    };
+                    return tableCell;
+                }
+            };
 }
