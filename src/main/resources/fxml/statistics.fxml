@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.collections.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fecoder.controllers.StatsController">
+
+    <top>
+        <VBox spacing="10">
+            <HBox spacing="10">
+                <Label fx:id="mainLabel" text="THỐNG KÊ BAO BÌ">
+                    <font>
+                        <Font size="28.0" />
+                    </font>
+                </Label>
+            </HBox>
+         <Separator prefWidth="200.0" />
+            <padding>
+                <Insets bottom="20" />
+            </padding>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox spacing="10">
+            <HBox prefWidth="790" spacing="10">
+                <HBox alignment="CENTER_LEFT" prefHeight="26.0" prefWidth="703.0" spacing="10">
+                    <Label text="Tìm theo">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </Label>
+                    <ComboBox fx:id="searchComboBox">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <String fx:value="Tên mặt hàng" />
+                                <String fx:value="Size" />
+                                <String fx:value="Bao bì" />
+                            </FXCollections>
+                        </items>
+                        <value>
+                            <String fx:value="Tên mặt hàng" />
+                        </value>
+                    </ComboBox>
+                    <TextField fx:id="searchField" promptText="Nhập từ khóa cần tìm" />
+                </HBox>
+                <HBox alignment="BASELINE_RIGHT" prefWidth="290" spacing="10">
+                    <Button id="reloadData" onAction="#reloadData" fx:id="reloadData" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="TẢI LẠI BẢNG" />
+                </HBox>
+            </HBox>
+            <TableView fx:id="dataTable" editable="true" maxWidth="1.7976931348623157E308" prefHeight="652.0" prefWidth="968.0">
+                <columns>
+                    <TableColumn fx:id="datetimeCol" prefWidth="120.0" text="Ngày đặt" />
+                    <TableColumn fx:id="woNumberCol" prefWidth="120.0" text="LSX" />
+                    <TableColumn fx:id="pNameCol" prefWidth="300.0" text="Bao bì" />
+                    <TableColumn fx:id="pDimCol" prefWidth="150.0" text="Qui cách" />
+                    <TableColumn fx:id="pQuantityCol" prefWidth="100.0" text="SL Cần" />
+                    <TableColumn fx:id="pStockCol" prefWidth="100.0" text="SL Tồn" />
+                    <TableColumn fx:id="pActualQtyCol" prefWidth="100.0" text="SL Đặt" />
+                    <TableColumn fx:id="pPriceCol" prefWidth="100.0" text="Đơn giá" />
+                </columns>
+            </TableView>
+        </VBox>
+    </center>
+
+    <bottom>
+        <VBox spacing="10">
+            <HBox spacing="10">
+                <Label fx:id="anchorLabel">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </Label>
+                <Label fx:id="anchorData">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </Label>
+            </HBox>
+        </VBox>
+    </bottom>
+
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+    </padding>
+
+
+</BorderPane>

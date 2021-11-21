@@ -110,7 +110,7 @@ public class SizeDAO {
      * @param id - record's id
      * */
     public void updateData(String column, String size, int id) {
-        jdbcDAO.updateSingleData(tableName, column, size, id);
+        jdbcDAO.updateSingleData(tableName, column, size, id+"");
     }
 
     /**

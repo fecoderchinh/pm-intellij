@@ -534,7 +534,7 @@ public class WorkOrderController implements Initializable {
         workOrderNumberColumn.setOnEditCommit(event -> {
             final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
             ((WorkOrder) event.getTableView().getItems().get(event.getTablePosition().getRow())).setName(data);
-            workOrderDAO.updateData("name", data, event.getRowValue().getId());
+            workOrderDAO.updateData("name", data, event.getRowValue().getId()+"");
             dataTable.refresh();
         });
 
@@ -543,7 +543,7 @@ public class WorkOrderController implements Initializable {
         workOrderLotColumn.setOnEditCommit(event -> {
             final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
             ((WorkOrder) event.getTableView().getItems().get(event.getTablePosition().getRow())).setLotNumber(data);
-            workOrderDAO.updateData("lot_number", data, event.getRowValue().getId());
+            workOrderDAO.updateData("lot_number", data, event.getRowValue().getId()+"");
             dataTable.refresh();
         });
 
@@ -552,7 +552,7 @@ public class WorkOrderController implements Initializable {
         workOrderPOColumn.setOnEditCommit(event -> {
             final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
             ((WorkOrder) event.getTableView().getItems().get(event.getTablePosition().getRow())).setPurchaseOrder(data);
-            workOrderDAO.updateData("po_number", data, event.getRowValue().getId());
+            workOrderDAO.updateData("po_number", data, event.getRowValue().getId()+"");
             dataTable.refresh();
         });
 
@@ -713,7 +713,7 @@ public class WorkOrderController implements Initializable {
         workOrderSendDateColumn.setOnEditCommit(event -> {
             final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
             ((WorkOrder) event.getTableView().getItems().get(event.getTablePosition().getRow())).setSendDate(data);
-            workOrderDAO.updateData("send_date", data, event.getRowValue().getId());
+            workOrderDAO.updateData("send_date", data, event.getRowValue().getId()+"");
             dataTable.refresh();
         });
 
@@ -722,7 +722,7 @@ public class WorkOrderController implements Initializable {
         workOrderShippingDateColumn.setOnEditCommit(event -> {
             final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
             ((WorkOrder) event.getTableView().getItems().get(event.getTablePosition().getRow())).setShippingDate(data);
-            workOrderDAO.updateData("shipping_date", data, event.getRowValue().getId());
+            workOrderDAO.updateData("shipping_date", data, event.getRowValue().getId()+"");
             dataTable.refresh();
         });
 
@@ -731,7 +731,7 @@ public class WorkOrderController implements Initializable {
         workOrderDestinationColumn.setOnEditCommit(event -> {
             final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
             ((WorkOrder) event.getTableView().getItems().get(event.getTablePosition().getRow())).setDestination(data);
-            workOrderDAO.updateData("destination", data, event.getRowValue().getId());
+            workOrderDAO.updateData("destination", data, event.getRowValue().getId()+"");
             dataTable.refresh();
         });
 
@@ -740,7 +740,7 @@ public class WorkOrderController implements Initializable {
         workOrderNoteColumn.setOnEditCommit(event -> {
             final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
             ((WorkOrder) event.getTableView().getItems().get(event.getTablePosition().getRow())).setNote(data);
-            workOrderDAO.updateData("note", data, event.getRowValue().getId());
+            workOrderDAO.updateData("note", data, event.getRowValue().getId()+"");
             dataTable.refresh();
         });
 
@@ -777,15 +777,18 @@ public class WorkOrderController implements Initializable {
 
             ObservableList<OrderBySupllier> orderBySuplliers = FXCollections.observableArrayList(orderBySupplierDAO.getList(getListID()));
 
+            LocalDateTime now = LocalDateTime.now();
+
             for (OrderBySupllier orderBySupllier : orderBySuplliers) {
-                ExportWordDocument.data2DocOfOrderBySupplier(file, getListID(), orderBySupllier.getsCode());
+                ExportWordDocument.data2DocOfOrderBySupplier(file, getListID(), orderBySupllier.getsCode(), now.toString());
             }
 
             String[] _arrayListID = getListID().split(",");
             for(int i=0;i<_arrayListID.length; i++) {
+                workOrderDAO.updateData("order_date", now.getDayOfMonth()+"/"+now.getMonthValue()+"/"+now.getYear(), _arrayListID[i].trim());
                 WorkOrder workOrder = workOrderDAO.getDataByID(Integer.parseInt(_arrayListID[i].trim()));
-                ExportWordDocument.data2DocOfOrderListDraft(file, workOrder);
-                ExportWordDocument.data2DocOfOrderList(file, workOrder.getId()+"");
+                ExportWordDocument.data2DocOfOrderListDraft(file, workOrder, now.toString());
+                ExportWordDocument.data2DocOfOrderList(file, workOrder.getId()+"", now.toString());
             }
             utils.alert("info", Alert.AlertType.INFORMATION, "Xuất file thành công!", "File đã được lưu vào đường dẫn " +file.getPath()).showAndWait();
         } catch(Exception ex) {

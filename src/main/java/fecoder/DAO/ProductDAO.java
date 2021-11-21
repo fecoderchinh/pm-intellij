@@ -147,7 +147,7 @@ public class ProductDAO {
      * @param id - record's id
      * */
     public void updateData(String column, String value, int id) {
-        jdbcDAO.updateSingleData(tableName, column, value, id);
+        jdbcDAO.updateSingleData(tableName, column, value, id+"");
     }
 
     /**

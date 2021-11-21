@@ -30,7 +30,7 @@ public class ExportWordDocument {
      * @param file File
      * @param workOrder WorkOrder
      * */
-    public static void data2DocOfOrderListDraft(File file, WorkOrder workOrder) {
+    public static void data2DocOfOrderListDraft(File file, WorkOrder workOrder, String date) {
         WorkProductionDAO workProductionDAO = new WorkProductionDAO();
         WorkOrderProductPackagingDAO workOrderProductPackagingDAO = new WorkOrderProductPackagingDAO();
         Utils utils = new Utils();
@@ -93,9 +93,10 @@ public class ExportWordDocument {
             run.setFontFamily(_fontFamily);
 
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-            LocalDateTime now = LocalDateTime.now();
+//            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime _date = LocalDateTime.parse(date);
 
-            run.setText("SEAVINA, ngày " + now.getDayOfMonth() + ", tháng " + now.getMonthValue() + ", năm "+ now.getYear());
+            run.setText("SEAVINA, ngày " + _date.getDayOfMonth() + ", tháng " + _date.getMonthValue() + ", năm "+ _date.getYear());
             run.addBreak();
 
             paragraph = doc.createParagraph();
@@ -208,7 +209,7 @@ public class ExportWordDocument {
      * @param idList list or single id from work_order_product_packaging.work_order_id
      * @param code list or single id from suppliers.code
      * */
-    public static void data2DocOfOrderBySupplier(File file, String idList, String code) {
+    public static void data2DocOfOrderBySupplier(File file, String idList, String code, String date) {
         String imgFile = "e:\\java_platform\\docs-data\\logo.jpg";
         String _fontFamily = "Arial";
         SupplierDAO supplierDAO = new SupplierDAO();
@@ -244,6 +245,7 @@ public class ExportWordDocument {
             paragraph = row.getCell(0).getParagraphArray(0);
             paragraph.setVerticalAlignment(TextAlignment.CENTER);
             run = paragraph.createRun();
+
             // add png image
             try (FileInputStream is = new FileInputStream(imgFile)) {
                 run.addPicture(is,
@@ -269,9 +271,10 @@ public class ExportWordDocument {
             run.setFontFamily(_fontFamily);
 
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-            LocalDateTime now = LocalDateTime.now();
+//            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime _date = LocalDateTime.parse(date);
 
-            run.setText("SEAVINA, ngày " + now.getDayOfMonth() + ", tháng " + now.getMonthValue() + ", năm "+ now.getYear());
+            run.setText("SEAVINA, ngày " + _date.getDayOfMonth() + ", tháng " + _date.getMonthValue() + ", năm "+ _date.getYear());
             run.addBreak();
 
             paragraph = doc.createParagraph();
@@ -288,7 +291,7 @@ public class ExportWordDocument {
             run.setFontFamily(_fontFamily);
             run.setBold(true);
             run.setFontSize(10);
-            run.setText("(Số: "+code+".\t\t/"+now.getYear()+")");
+            run.setText("(Số: "+code+".\t\t/"+_date.getYear()+")");
             run.addBreak();
 
             paragraph = doc.createParagraph();
@@ -364,7 +367,7 @@ public class ExportWordDocument {
                 row.getCell(7).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
 
                 utils.setHeaderRowforSingleCell(row.getCell(0), (i+1)+"", 10, false, false, ParagraphAlignment.CENTER);
-                utils.setHeaderRowforSingleCell(row.getCell(1), orderObservableList.get(i).getpName() + "("+orderObservableList.get(i).getpIsPrinted()+")", 10, false, false, ParagraphAlignment.LEFT);
+                utils.setHeaderRowforSingleCell(row.getCell(1), orderObservableList.get(i).getpName() + (orderObservableList.get(i).getpIsPrinted() != null ? (orderObservableList.get(i).getpIsPrinted() != null ? "("+orderObservableList.get(i).getpIsPrinted()+")" : "") : ""), 10, false, false, ParagraphAlignment.LEFT);
                 utils.setHeaderRowforSingleCell(row.getCell(1), " ("+ orderObservableList.get(i).getpSpecs() +")", 10, false, false, ParagraphAlignment.LEFT);
                 utils.setHeaderRowforSingleCell(row.getCell(2), orderObservableList.get(i).getpDimension(), 10, false, false, ParagraphAlignment.CENTER);
                 utils.setHeaderRowforSingleCell(row.getCell(3), orderObservableList.get(i).getpUnit(), 10, false, false, ParagraphAlignment.CENTER);
@@ -392,7 +395,7 @@ public class ExportWordDocument {
 
             utils.setHeaderRowforSingleCell(row.getCell(0), "Đặc điểm và qui cách", 10, false, false, ParagraphAlignment.LEFT);
             utils.setHeaderRowforSingleCell(row.getCell(1), "- Chất lượng: Đảm bảo đúng chất lượng và định lượng bao bì như mẫu chào hàng.", 10, true, false, ParagraphAlignment.LEFT);
-            utils.setHeaderRowforSingleCell(row.getCell(1), "- Sản xuất theo mẫu xác nhận ngày: " + now.getDayOfMonth() + "/" + now.getMonthValue() + "/"+ now.getYear(), 10, true, false, ParagraphAlignment.LEFT);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "- Sản xuất theo mẫu xác nhận ngày: " + _date.getDayOfMonth() + "/" + _date.getMonthValue() + "/"+ _date.getYear(), 10, true, false, ParagraphAlignment.LEFT);
             utils.setHeaderRowforSingleCell(row.getCell(1), "- Bao bì phải làm đúng kích thước, màu sắc, thông tin như đã xác nhận.", 10, true, false, ParagraphAlignment.LEFT);
             utils.setHeaderRowforSingleCell(row.getCell(1), "- Bao bì phải đạt tiêu chuẩn hàng Thủy sản xuất khẩu. Số lượng làm đủ, không thừa, không thiếu.", 10, true, false, ParagraphAlignment.LEFT);
             utils.setHeaderRowforSingleCell(row.getCell(1), "- Chúng tôi sẽ trả lại các lô hàng làm sai qui cách và không đúng các yêu cầu trên.", 10, true, false, ParagraphAlignment.LEFT);
@@ -446,7 +449,7 @@ public class ExportWordDocument {
      * @param file File
      * @param idList list or single id from work_order_product_packaging.work_order_id
      * */
-    public static void data2DocOfOrderList(File file, String idList) {
+    public static void data2DocOfOrderList(File file, String idList, String date) {
         String imgFile = "e:\\java_platform\\docs-data\\logo.jpg";
         String _fontFamily = "Arial";
 
@@ -504,9 +507,10 @@ public class ExportWordDocument {
             run.setFontFamily(_fontFamily);
 
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-            LocalDateTime now = LocalDateTime.now();
+//            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime _date = LocalDateTime.parse(date);
 
-            run.setText("SEAVINA, ngày " + now.getDayOfMonth() + ", tháng " + now.getMonthValue() + ", năm "+ now.getYear());
+            run.setText("SEAVINA, ngày " + _date.getDayOfMonth() + ", tháng " + _date.getMonthValue() + ", năm "+ _date.getYear());
             run.addBreak();
 
             paragraph = doc.createParagraph();

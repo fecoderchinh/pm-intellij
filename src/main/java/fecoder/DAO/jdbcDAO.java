@@ -88,15 +88,15 @@ public class jdbcDAO {
      * @param table - the selected table
      * @param column - the selected column
      * @param value - the string new value
-     * @param id - the record id
+     * @param idList - the list of ID
      * */
-    public static void updateSingleData(String table, String column, String value, int id) {
-        String query = "update "+ table +" set "+ column +"=? where id=?";
+    public static void updateSingleData(String table, String column, String value, String idList) {
+        String query = "update "+ table +" set "+ column +"=? where id in (?)";
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, value);
-            preparedStatement.setInt(2, id);
+            preparedStatement.setString(2, idList);
             preparedStatement.execute();
         } catch (Exception ex) {
             assert ex instanceof SQLException;

@@ -178,6 +178,7 @@ create table work_order (
 	shipping_date date,
 	destination varchar(250),
 	note longtext,
+	order_date varchar(100),
 	primary key (id),
 	foreign key (year) references years(id),
 	foreign key (customer_id) references customers(id)
@@ -412,7 +413,8 @@ select distinct
 	wopp.actual_qty as packActualQuantity,
 	wopp.residual_qty as packResidualQuantity,
 	(wopp.actual_qty + wopp.stock - wopp.residual_qty - (pps.pack_qty * wop.qty)) as totalResidualQuantity,
-	wopp.printed as printStatus
+	wopp.printed as printStatus,
+	wo.order_date as orderDate
 from 
 	work_order_product wop,
 	work_order wo,
@@ -436,8 +438,6 @@ where
 -- 	and wo.id in ("1") -- filter by work_order.id
 -- 	and p.id = 1 -- filter by products.id
 -- 	and wop.ordinal_num = 1 -- filter by work_order_product.ordinal_num 
-group by wopp.id
-order by wopp.work_order_id, wop.ordinal_num 
 ;
 
 /*select distinct

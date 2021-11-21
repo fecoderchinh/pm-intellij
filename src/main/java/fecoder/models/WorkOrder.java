@@ -12,10 +12,11 @@ public class WorkOrder {
     private String shippingDate;
     private String destination;
     private String note;
+    private String order_date;
 
     public WorkOrder() {}
 
-    public WorkOrder(int id, String name, String lotNumber, String purchaseOrder, int year, int customerId, String sendDate, String shippingDate, String destination, String note) {
+    public WorkOrder(int id, String name, String lotNumber, String purchaseOrder, int year, int customerId, String sendDate, String shippingDate, String destination, String note, String order_date) {
         this.id = id;
         this.name = name;
         this.lotNumber = lotNumber;
@@ -26,6 +27,7 @@ public class WorkOrder {
         this.shippingDate = shippingDate;
         this.destination = destination;
         this.note = note;
+        this.order_date = order_date;
     }
 
     public int getId() { return this.id; }
@@ -57,6 +59,14 @@ public class WorkOrder {
 
     public String getNote() { return this.note; }
     public void setNote(String value) { this.note = value; }
+
+    public String getOrder_date() {
+        return order_date;
+    }
+
+    public void setOrder_date(String order_date) {
+        this.order_date = order_date;
+    }
 
     @Override
     public String toString() {

@@ -33,6 +33,7 @@ public class WorkOrderDAO {
             data.setShippingDate(resultSet.getString("shipping_date"));
             data.setDestination(resultSet.getString("destination"));
             data.setNote(resultSet.getString("note"));
+            data.setOrder_date(resultSet.getString("order_date"));
         } catch (SQLException ex) {
             jdbcDAO.printSQLException(ex);
         }
@@ -144,10 +145,10 @@ public class WorkOrderDAO {
      * 
      * @param column - table's column
      * @param value - column's new value
-     * @param id - record's id
+     * @param idList - record's id
      * */
-    public void updateData(String column, String value, int id) {
-        jdbcDAO.updateSingleData(tableName, column, value, id);
+    public void updateData(String column, String value, String idList) {
+        jdbcDAO.updateSingleData(tableName, column, value, idList);
     }
 
     /**

@@ -33,7 +33,7 @@ public class MainViewController {
         sessionLabel.setText(sessionID);
 
         packagingOwner.setOnMouseClicked((event) -> {
-            utils.loadSceneWithStage((Stage)suplierManage.getScene().getWindow(), "/fxml/suplier.fxml", "Danh Sách Nhà Cung Cấp");
+            utils.loadSceneWithStage((Stage)suplierManage.getScene().getWindow(), "/fxml/statistics.fxml", "Thống kê bao bì");
         });
         
         logoutButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -83,10 +83,6 @@ public class MainViewController {
         productManage.setOnMouseClicked((event) -> {
             utils.loadSceneWithStage((Stage)productManage.getScene().getWindow(),"/fxml/product.fxml", "Danh sách sản phẩm");
         });
-
-//        packagingOwner.setOnMouseClicked((event) -> {
-//            utils.loadScene("/fxml/packaging_owner.fxml", "Quản lý bao bì trong mặt hàng");
-//        });
 
         workOrder.setGraphic(new ImageView(new Image(getClass().getResource("/images/note.png").toString(), 200, 200, true, true)));
         workOrder.setContentDisplay(ContentDisplay.TOP);

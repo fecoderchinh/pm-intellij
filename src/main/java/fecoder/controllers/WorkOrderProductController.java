@@ -506,14 +506,17 @@ public class WorkOrderProductController implements Initializable {
 
             ObservableList<OrderBySupllier> orderBySuplliers = FXCollections.observableArrayList(orderBySupplierDAO.getList(this.innerData.getId()+""));
 
+            LocalDateTime now = LocalDateTime.now();
+            workOrderDAO.updateData("order_date", now.getDayOfMonth()+"/"+now.getMonthValue()+"/"+now.getYear(), this.innerData.getId()+"");
+
             for (OrderBySupllier orderBySupllier : orderBySuplliers) {
-                ExportWordDocument.data2DocOfOrderBySupplier(file, this.innerData.getId()+"", orderBySupllier.getsCode());
+                ExportWordDocument.data2DocOfOrderBySupplier(file, this.innerData.getId()+"", orderBySupllier.getsCode(), now.toString());
             }
 
             WorkOrder workOrder = workOrderDAO.getDataByID(this.innerData.getId());
-            ExportWordDocument.data2DocOfOrderListDraft(file, workOrder);
+            ExportWordDocument.data2DocOfOrderListDraft(file, workOrder, now.toString());
 
-            ExportWordDocument.data2DocOfOrderList(file, this.innerData.getId()+"");
+            ExportWordDocument.data2DocOfOrderList(file, this.innerData.getId()+"", now.toString());
             utils.alert("info", Alert.AlertType.INFORMATION, "Xuất file thành công!", "File đã được lưu vào đường dẫn " +file.getPath()).showAndWait();
         } catch (Exception ex){
             utils.alert("err", Alert.AlertType.ERROR, "Lỗi", ex.getMessage()).showAndWait();

@@ -135,7 +135,7 @@ public class YearDAO {
      * @param id - record's id
      * */
     public void updateData(String column, String year, int id) {
-        jdbcDAO.updateSingleData(tableName, column, year, id);
+        jdbcDAO.updateSingleData(tableName, column, year, id+"");
     }
 
     /**

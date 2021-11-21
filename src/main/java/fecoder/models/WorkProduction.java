@@ -20,6 +20,7 @@ public class WorkProduction {
     String residualQuantity;
     String totalResidualQuantity;
     String noteProduct;
+    String orderDate;
 
     public WorkProduction() {}
 
@@ -42,7 +43,8 @@ public class WorkProduction {
             String actualQuantity,
             String residualQuantity,
             String totalResidualQuantity,
-            String noteProduct
+            String noteProduct,
+            String orderDate
     ) {
         this.id = id;
         this.ordinalNumbers = ordinalNumbers;
@@ -63,6 +65,7 @@ public class WorkProduction {
         this.residualQuantity = residualQuantity;
         this.totalResidualQuantity = totalResidualQuantity;
         this.noteProduct = noteProduct;
+        this.orderDate = orderDate;
     }
 
     public int getId() {
@@ -215,5 +218,13 @@ public class WorkProduction {
 
     public void setNoteProduct(String noteProduct) {
         this.noteProduct = noteProduct;
+    }
+
+    public String getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(String orderDate) {
+        this.orderDate = orderDate;
     }
 }

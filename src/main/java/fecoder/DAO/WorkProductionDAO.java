@@ -40,6 +40,7 @@ public class WorkProductionDAO {
             data.setResidualQuantity(resultSet.getString("residualQuantity"));
             data.setTotalResidualQuantity(resultSet.getString("totalResidualQuantity"));
             data.setNoteProduct(resultSet.getString("noteProduct"));
+            data.setOrderDate(resultSet.getString("orderDate"));
         } catch (SQLException ex) {
             jdbcDAO.printSQLException(ex);
         }
@@ -75,7 +76,8 @@ public class WorkProductionDAO {
                     " wopp.actual_qty as actualQuantity, " +
                     " wopp.residual_qty as residualQuantity, " +
                     " (wopp.actual_qty + wopp.stock - wopp.residual_qty - (pps.pack_qty * wop.qty)) as totalResidualQuantity, " +
-                    " wopp.note as noteProduct " +
+                    " wopp.note as noteProduct, " +
+                    " wo.order_date as orderDate " +
                     "from " +
                     " work_order_product wop," +
                     " work_order wo," +
@@ -143,7 +145,8 @@ public class WorkProductionDAO {
                     " wopp.actual_qty as actualQuantity, " +
                     " wopp.residual_qty as residualQuantity, " +
                     " (wopp.actual_qty + wopp.stock - wopp.residual_qty - (pps.pack_qty * wop.qty)) as totalResidualQuantity, " +
-                    " wopp.note as noteProduct " +
+                    " wopp.note as noteProduct, " +
+                    " wo.order_date as orderDate " +
                     "from " +
                     " work_order_product wop," +
                     " work_order wo," +
@@ -212,7 +215,8 @@ public class WorkProductionDAO {
                     " wopp.actual_qty as actualQuantity, " +
                     " wopp.residual_qty as residualQuantity, " +
                     " (wopp.actual_qty + wopp.stock - wopp.residual_qty - (pps.pack_qty * wop.qty)) as totalResidualQuantity, " +
-                    " wopp.note as noteProduct " +
+                    " wopp.note as noteProduct, " +
+                    " wo.order_date as orderDate " +
                     "from " +
                     " work_order_product wop," +
                     " work_order wo," +
@@ -281,7 +285,8 @@ public class WorkProductionDAO {
                     " wopp.actual_qty as actualQuantity, " +
                     " wopp.residual_qty as residualQuantity, " +
                     " (wopp.actual_qty + wopp.stock - wopp.residual_qty - (pps.pack_qty * wop.qty)) as totalResidualQuantity, " +
-                    " wopp.note as noteProduct " +
+                    " wopp.note as noteProduct, " +
+                    " wo.order_date as orderDate " +
                     "from " +
                     " work_order_product wop," +
                     " work_order wo," +
@@ -303,7 +308,7 @@ public class WorkProductionDAO {
                     " and wopp.product_id = p.id" +
                     " and wopp.packaging_id = p2.id" +
                     " and wo.id in (" + work_order_id + ")" +
-                    " group by p.id" +
+                    " group by wop.id" +
                     " order by wop.ordinal_num";
             ResultSet resultSet = statement.executeQuery(selectAll);
             while(resultSet.next()) {
@@ -352,7 +357,8 @@ public class WorkProductionDAO {
                     " wopp.actual_qty as actualQuantity, " +
                     " wopp.residual_qty as residualQuantity, " +
                     " (wopp.actual_qty + wopp.stock - wopp.residual_qty - (pps.pack_qty * wop.qty)) as totalResidualQuantity, " +
-                    " wopp.note as noteProduct " +
+                    " wopp.note as noteProduct, " +
+                    " wo.order_date as orderDate " +
                     "from " +
                     " work_order_product wop," +
                     " work_order wo," +
