@@ -18,6 +18,11 @@
             </HBox>
          <Separator prefWidth="200.0" />
             <HBox spacing="10">
+                <Label prefHeight="20.0" prefWidth="53.0" text="Năm">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </Label>
                 <TextField fx:id="yearField" prefHeight="28" promptText="Nhập năm" />
                 <Button fx:id="insertButton" mnemonicParsing="false" onAction="#insertButton" prefHeight="28.0" prefWidth="73.0" text="THÊM" />
                 <padding>
@@ -35,11 +40,11 @@
         <VBox spacing="10">
             <HBox prefHeight="26.0" prefWidth="200.0" spacing="10">
                 <HBox alignment="CENTER_LEFT" prefHeight="26.0" prefWidth="122.0" spacing="10">
-<!--                    <Label text="Lọc">-->
-<!--                        <font>-->
-<!--                            <Font size="14.0" />-->
-<!--                        </font>-->
-<!--                    </Label>-->
+                    <Label prefHeight="20.0" prefWidth="53.0" text="Lọc">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </Label>
                     <TextField fx:id="searchField" prefHeight="26.0" prefWidth="119.0" promptText="Tìm kiếm" />
                 </HBox>
                 <HBox alignment="BASELINE_RIGHT" prefHeight="26.0" prefWidth="96.0" spacing="10">

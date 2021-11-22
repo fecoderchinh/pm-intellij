@@ -274,6 +274,21 @@ public class WorkOrderController implements Initializable {
     }
 
     /**
+     * Handle on clearing comnbobox
+     * */
+    private void getComboBoxData(WorkOrder data) {
+        if(!isEditableComboBox) {
+            workOrderYear.getSelectionModel().select(yearDAO.getDataByID(data.getYear()));
+            workOrderCustomer.getSelectionModel().select(customerDAO.getDataByID(data.getCustomerId()));
+        } else {
+            Year _yM = yearDAO.getDataByID(data.getYear());
+            workOrderYear.getEditor().setText(_yM.getYear());
+            Customer _cM = customerDAO.getDataByID(data.getCustomerId());
+            workOrderCustomer.getEditor().setText(_cM.getName());
+        }
+    }
+
+    /**
      * Setting data for inputs
      *
      * @param workOrder - the product data
@@ -286,11 +301,7 @@ public class WorkOrderController implements Initializable {
         workOrderSendDate.setValue(utils.getDate(workOrder.getSendDate()));
         workOrderShippingDate.setValue(utils.getDate(workOrder.getShippingDate()));
 
-//        Year yearData = yearDAO.getDataByID(command.getYear());
-//        utils.setComboBoxValue(commandYear, yearData.getYear());
-//
-//        Customer customerData = customerDAO.getDataByID(command.getCustomerId());
-//        utils.setComboBoxValue(commandCustomer, customerData.getName());
+        getComboBoxData(workOrder);
 
         workOrderDestination.setText(workOrder.getDestination());
         workOrderNote.setText(workOrder.getNote());

@@ -21,103 +21,81 @@
          <Separator prefWidth="200.0" />
             <HBox prefHeight="46.0" prefWidth="1004.0" spacing="10">
                 <VBox prefHeight="134.0" prefWidth="927.0" spacing="10">
-<!--                    <VBox spacing="14">-->
-<!--                        <Label text="Tên">-->
-<!--                            <font>-->
-<!--                                <Font size="14.0" />-->
-<!--                            </font>-->
-<!--                        </Label>-->
-<!--                        <Label text="Qui cách">-->
-<!--                            <font>-->
-<!--                                <Font size="14.0" />-->
-<!--                            </font>-->
-<!--                        </Label>-->
-<!--                        <Label text="Kích thước">-->
-<!--                            <font>-->
-<!--                                <Font size="14.0" />-->
-<!--                            </font>-->
-<!--                        </Label>-->
-<!--                        <Label text="Loại">-->
-<!--                            <font>-->
-<!--                                <Font size="14.0" />-->
-<!--                            </font>-->
-<!--                        </Label>-->
-<!--                        <Label text="Nhà in">-->
-<!--                            <font>-->
-<!--                                <Font size="14.0" />-->
-<!--                            </font>-->
-<!--                        </Label>-->
-<!--                        <Label text="Tối thiểu">-->
-<!--                            <font>-->
-<!--                                <Font size="14.0" />-->
-<!--                            </font>-->
-<!--                        </Label>-->
-<!--                        <Label text="In sẵn">-->
-<!--                            <font>-->
-<!--                                <Font size="14.0" />-->
-<!--                            </font>-->
-<!--                        </Label>-->
-<!--                        <Label text="Mã bao bì">-->
-<!--                            <font>-->
-<!--                                <Font size="14.0" />-->
-<!--                            </font>-->
-<!--                        </Label>-->
-<!--                        <Label text="Thùng chính">-->
-<!--                            <font>-->
-<!--                                <Font size="14.0" />-->
-<!--                            </font>-->
-<!--                        </Label>-->
-<!--                        <Label text="Đơn giá">-->
-<!--                            <font>-->
-<!--                                <Font size="14.0" />-->
-<!--                            </font>-->
-<!--                        </Label>-->
-<!--                        <Label text="Tồn kho">-->
-<!--                            <font>-->
-<!--                                <Font size="14.0" />-->
-<!--                            </font>-->
-<!--                        </Label>-->
-<!--                        <Label text="Lưu ý">-->
-<!--                            <font>-->
-<!--                                <Font size="14.0" />-->
-<!--                            </font>-->
-<!--                        </Label>-->
-<!--                    </VBox>-->
                     <VBox prefHeight="135.0" prefWidth="370.0" spacing="10">
                         <HBox prefWidth="900" spacing="10">
+                            <Label prefHeight="20.0" prefWidth="94.0" text="Tên BB">
+                                <font>
+                                    <Font size="14.0" />
+                                </font>
+                            </Label>
                             <TextField fx:id="nameField" prefWidth="300" promptText="Tên Bao bì" />
+                            <Label prefHeight="20.0" prefWidth="106.0" text="Qui cách">
+                                <font>
+                                    <Font size="14.0" />
+                                </font>
+                            </Label>
                             <TextField fx:id="specificationField" prefWidth="300" promptText="Qui cách" />
-                            <TextField fx:id="dimensionField" prefWidth="300" promptText="Kích thước" />
+                            <Label prefHeight="20.0" prefWidth="114.0" text="Kích thước">
+                                <font>
+                                    <Font size="14.0" />
+                                </font>
+                            </Label>
+                            <TextField fx:id="dimensionField" prefHeight="26.0" prefWidth="237.0" promptText="Kích thước" />
                         </HBox>
                         <HBox prefWidth="900" spacing="10">
                             <ComboBox fx:id="typeComboBox" prefHeight="26.0" prefWidth="300.0">
                                 <items>
                                     <FXCollections fx:factory="observableArrayList">
-                                        <String fx:value="Chưa chọn" />
+                                        <String fx:value="Loại BB" />
                                     </FXCollections>
                                 </items>
                                 <value>
-                                    <String fx:value="Chưa chọn" />
+                                    <String fx:value="Loại BB" />
                                 </value>
                             </ComboBox>
                             <ComboBox fx:id="suplierComboBox" prefHeight="26.0" prefWidth="300.0">
                                 <items>
                                     <FXCollections fx:factory="observableArrayList">
-                                        <String fx:value="Chưa chọn" />
+                                        <String fx:value="Mã NCC" />
                                     </FXCollections>
                                 </items>
                                 <value>
-                                    <String fx:value="Chưa chọn" />
+                                    <String fx:value="Mã NCC" />
                                 </value>
                             </ComboBox>
+                            <Label prefHeight="20.0" prefWidth="104.0" text="SL Tối thiểu">
+                                <font>
+                                    <Font size="14.0" />
+                                </font>
+                            </Label>
                             <TextField fx:id="minimumField" prefWidth="300" promptText="Đặt tối thiểu" />
                         </HBox>
                         <HBox prefWidth="900" spacing="10">
+                            <Label prefHeight="20.0" prefWidth="102.0" text="Đơn giá">
+                                <font>
+                                    <Font size="14.0" />
+                                </font>
+                            </Label>
                             <TextField fx:id="priceField" prefWidth="300" promptText="Đơn giá" />
+                            <Label prefHeight="20.0" prefWidth="85.0" text="Tồn">
+                                <font>
+                                    <Font size="14.0" />
+                                </font>
+                            </Label>
                             <TextField fx:id="stockField" prefWidth="300" promptText="Tồn kho" />
+                            <Label prefHeight="20.0" prefWidth="102.0" text="Ghi chú">
+                                <font>
+                                    <Font size="14.0" />
+                                </font>
+                            </Label>
                             <TextField fx:id="noteField" prefWidth="300" promptText="Ghi chú" />
                         </HBox>
                         <HBox prefWidth="900" spacing="10">
+                            <Label prefHeight="20.0" prefWidth="41.0" text="Mã BB">
+                                <font>
+                                    <Font size="14.0" />
+                                </font>
+                            </Label>
                             <TextField fx:id="codeField" prefWidth="300" promptText="Mã BB" />
                             <CheckBox fx:id="stampedField" text="In sẵn" />
                             <CheckBox fx:id="mainField" text="Đóng gói chính" />
@@ -149,13 +127,13 @@
                     <ComboBox fx:id="searchComboBox">
                         <items>
                             <FXCollections fx:factory="observableArrayList">
-                                <String fx:value="Mã" />
-                                <String fx:value="Tên" />
+                                <String fx:value="Mã BB" />
+                                <String fx:value="Tên BB" />
                                 <String fx:value="Kích thước" />
                             </FXCollections>
                         </items>
                         <value>
-                            <String fx:value="Mã" />
+                            <String fx:value="Tên BB" />
                         </value>
                     </ComboBox>
                     <TextField fx:id="searchField" prefHeight="26.0" prefWidth="258.0" promptText="Nhập từ khóa" />

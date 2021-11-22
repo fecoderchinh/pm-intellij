@@ -335,6 +335,8 @@ public class PackagingDAO {
             preparedStatement.setFloat(12, stock);
             preparedStatement.setInt(13, id);
 
+            System.out.println(preparedStatement);
+
             preparedStatement.executeUpdate();
 
             preparedStatement.close();

@@ -3,9 +3,7 @@ package fecoder.controllers;
 import fecoder.DAO.PackagingDAO;
 import fecoder.DAO.SupplierDAO;
 import fecoder.DAO.TypeDAO;
-import fecoder.models.Packaging;
-import fecoder.models.Supplier;
-import fecoder.models.Type;
+import fecoder.models.*;
 import fecoder.utils.AutoFill.AutoFillTextBox;
 import fecoder.utils.Utils;
 import javafx.beans.binding.Bindings;
@@ -30,6 +28,7 @@ import javafx.scene.text.Text;
 import javafx.util.Callback;
 import javafx.util.converter.FloatStringConverter;
 import javafx.util.converter.IntegerStringConverter;
+import org.apache.poi.ss.formula.functions.T;
 
 import java.net.URL;
 import java.util.Optional;
@@ -80,14 +79,50 @@ public class PackagingController implements Initializable {
     private String currentCell;
     private final Utils utils = new Utils();
 
+    private boolean isEditableComboBox = false;
+    private boolean isUpdating = false;
+
+    private final  ObservableList<Type> type_obs = FXCollections.observableArrayList(typeDAO.getList());
+    private final  ObservableList<Supplier> supplier_obs = FXCollections.observableArrayList(supplierDAO.getList());
+
     /**
      * All needed to start controller
      * */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        typeComboBox.getItems().addAll(FXCollections.observableArrayList(typeDAO.getList()));
-        suplierComboBox.getItems().addAll(FXCollections.observableArrayList(supplierDAO.getList()));
+        typeComboBox.getItems().addAll(type_obs);
+        suplierComboBox.getItems().addAll(supplier_obs);
+        supplierComboBoxFilter();
         loadView();
+    }
+
+    /**
+     * Handle on filter Customer Combobox
+     * */
+    private void supplierComboBoxFilter() {
+        // Create the listener to filter the list as user enters search terms
+        FilteredList<Supplier> dataFilteredList = new FilteredList<>(supplier_obs, p-> true);
+
+        // Add listener to our ComboBox textfield to filter the list
+        suplierComboBox.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
+            dataFilteredList.setPredicate(item -> {
+
+                this.isUpdating = false;
+
+                // Check if the search term is contained anywhere in our list
+                if (item.getName().toLowerCase().contains(newValue.toLowerCase().trim()) && !isUpdating) {
+                    suplierComboBox.show();
+                    return true;
+                }
+
+                // No matches found
+                return false;
+            });
+
+        });
+
+        suplierComboBox.getItems().removeAll(supplier_obs);
+        suplierComboBox.getItems().addAll(dataFilteredList);
     }
 
     /**
@@ -98,15 +133,15 @@ public class PackagingController implements Initializable {
                 nameField.getText(),
                 specificationField.getText(),
                 dimensionField.getText(),
-                suplierComboBox.getSelectionModel().getSelectedItem().getId(),
-                typeComboBox.getSelectionModel().getSelectedItem().getId(),
-                Integer.parseInt(minimumField.getText()),
+                supplierDAO.getDataByCode(suplierComboBox.getValue()+"").getId(),
+                typeDAO.getDataByName(typeComboBox.getValue()+"").getId(),
+                minimumField.getText().isEmpty() ? 0 : Integer.parseInt(minimumField.getText()),
                 stampedField.isSelected(),
                 codeField.getText(),
                 mainField.isSelected(),
                 noteField.getText(),
-                Float.parseFloat(priceField.getText()),
-                Float.parseFloat(stockField.getText())
+                priceField.getText().isEmpty() ? 0 : Float.parseFloat(priceField.getText()),
+                stockField.getText().isEmpty() ? 0 : Float.parseFloat(stockField.getText())
         );
         clearFields();
         reload();
@@ -120,8 +155,8 @@ public class PackagingController implements Initializable {
                 nameField.getText(),
                 specificationField.getText(),
                 dimensionField.getText(),
-                suplierComboBox.getSelectionModel().getSelectedItem().getId(),
-                typeComboBox.getSelectionModel().getSelectedItem().getId(),
+                supplierDAO.getDataByCode(suplierComboBox.getValue()+"").getId(),
+                typeDAO.getDataByName(typeComboBox.getValue()+"").getId(),
                 Integer.parseInt(minimumField.getText()),
                 stampedField.isSelected(),
                 codeField.getText(),
@@ -153,6 +188,7 @@ public class PackagingController implements Initializable {
      * Reloading method
      * */
     private void reload() {
+        utils.reloadTableViewOnChange(dataTable, currentRow, currentCell);
         clearFields();
         loadView();
     }
@@ -164,12 +200,7 @@ public class PackagingController implements Initializable {
         nameField.setText("");
         specificationField.setText("");
         dimensionField.setText("");
-        if(!suplierComboBox.getItems().isEmpty()) {
-            suplierComboBox.getSelectionModel().clearSelection();
-        }
-        if(!typeComboBox.getItems().isEmpty()) {
-            typeComboBox.getSelectionModel().clearSelection();
-        }
+        resetComboBox();
         minimumField.setText("");
         stampedField.setSelected(false);
         codeField.setText("");
@@ -182,6 +213,29 @@ public class PackagingController implements Initializable {
     }
 
     /**
+     * Handle on clearing comnbobox
+     * */
+    private void resetComboBox() {
+        utils.setComboBoxValue(typeComboBox, "Loại BB");
+        utils.setComboBoxValue(suplierComboBox, "Mã NCC");
+    }
+
+    /**
+     * Handle on clearing comnbobox
+     * */
+    private void getComboBoxData(Packaging packaging) {
+        if(!isEditableComboBox) {
+            typeComboBox.getSelectionModel().select(packaging.getType());
+            suplierComboBox.getSelectionModel().select(packaging.getSuplier());
+        } else {
+            Type _typeModel = typeDAO.getDataByID(packaging.getType());
+            typeComboBox.getEditor().setText(_typeModel.getName());
+            Supplier _supplierModel = supplierDAO.getDataByID(packaging.getSuplier());
+            suplierComboBox.getEditor().setText(_supplierModel.getCode());
+        }
+    }
+
+    /**
      * Setting data for inputs
      *
      * @param packaging - the packaging data
@@ -190,8 +244,9 @@ public class PackagingController implements Initializable {
         nameField.setText(packaging.getName());
         specificationField.setText(packaging.getSpecifications());
         dimensionField.setText(packaging.getDimension());
-        suplierComboBox.getSelectionModel().select(packaging.getSuplier());
-        typeComboBox.getSelectionModel().select(packaging.getType());
+
+        getComboBoxData(packaging);
+
         minimumField.setText(packaging.getMinimum_order()+"");
         stampedField.selectedProperty().bindBidirectional(new SimpleBooleanProperty(packaging.isStamped()));
         codeField.setText(packaging.getCode());
@@ -199,8 +254,10 @@ public class PackagingController implements Initializable {
         noteField.setText(packaging.getNote());
         priceField.setText(packaging.getPrice()+"");
         stockField.setText(packaging.getStock()+"");
-        anchorLabel.setText("Current ID: ");
+        anchorLabel.setText("ID selected: ");
         anchorData.setText(""+packaging.getId());
+
+        isUpdating = true;
     }
 
     /**
@@ -237,7 +294,7 @@ public class PackagingController implements Initializable {
         searchField.textProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     switch (searchComboBox.getValue()) {
-                        case "Mã":
+                        case "Mã BB":
                             packagingFilteredList.setPredicate(str -> {
                                 if (newValue == null || newValue.isEmpty())
                                     return true;
@@ -246,7 +303,7 @@ public class PackagingController implements Initializable {
                                         (lowerCaseFilter);
                             });
                             break;
-                        case "Tên":
+                        case "Tên BB":
                             packagingFilteredList.setPredicate(str -> {
                                 if (newValue == null || newValue.isEmpty())
                                     return true;
@@ -297,6 +354,23 @@ public class PackagingController implements Initializable {
     }
 
     /**
+     * Reset fields
+     * This will handle an enter event and mouse leave for these Nodes
+     * */
+    private void resetFields() {
+        utils.disableKeyEnterOnTextField(nameField);
+        utils.disableKeyEnterOnTextField(specificationField);
+        utils.disableKeyEnterOnTextField(dimensionField);
+        utils.disableKeyEnterOnTextField(minimumField);
+        utils.disableKeyEnterOnTextField(priceField);
+        utils.disableKeyEnterOnTextField(stockField);
+        utils.disableKeyEnterOnTextField(noteField);
+
+        utils.disableKeyEnterOnTextFieldComboBox(typeComboBox, false);
+        utils.disableKeyEnterOnTextFieldComboBox(suplierComboBox, false);
+    }
+
+    /**
      * Load the current view resources.
      * <br>
      * Contains: <br>
@@ -306,6 +380,8 @@ public class PackagingController implements Initializable {
      * - Implementing contextMenu on right click <br>
      * */
     public void loadView(){
+        anchorLabel.setText("No ID Selected");
+        resetFields();
 
         setTypeComboBoxEvent();
 
@@ -336,7 +412,8 @@ public class PackagingController implements Initializable {
                 protected String computeValue() {
                     if(cell.itemProperty().getValue() != null) {
                         Packaging item = packagingDAO.getDataByName(cell.itemProperty().getValue());
-                        return item.isStamped() ? cell.itemProperty().getValue()+" (Số LOT)" : cell.itemProperty().getValue()+"";
+//                        return item.isStamped() ? cell.itemProperty().getValue()+" (Số LOT)" : cell.itemProperty().getValue()+"";
+                        return cell.itemProperty().getValue()+"";
                     } else {
                         return "";
                     }

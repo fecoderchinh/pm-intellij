@@ -26,87 +26,87 @@
                 <HBox>
                     <VBox prefWidth="850">
                         <HBox>
-                            <VBox prefWidth="240.0" spacing="10">
-<!--                                <Label text="Code">-->
-<!--                                    <font>-->
-<!--                                        <Font size="14.0" />-->
-<!--                                    </font>-->
-<!--                                </Label>-->
+                            <HBox prefWidth="240.0" spacing="10">
+                                <Label prefHeight="20.0" prefWidth="71.0" text="Mã">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </Label>
                                 <TextField fx:id="codeField" promptText="Mã NCC" />
                                 <padding>
                                     <Insets bottom="10" left="10" right="10" top="10" />
                                 </padding>
-                            </VBox>
-                            <VBox prefWidth="340.0" spacing="10">
-<!--                                <Label text="Tên">-->
-<!--                                    <font>-->
-<!--                                        <Font size="14.0" />-->
-<!--                                    </font>-->
-<!--                                </Label>-->
-                                <TextField fx:id="nameField" promptText="Tên NCC" />
+                            </HBox>
+                            <HBox prefWidth="340.0" spacing="10">
+                                <Label text="Tên">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </Label>
+                                <TextField fx:id="nameField" prefHeight="26.0" prefWidth="224.0" promptText="Tên NCC" />
                                 <padding>
                                     <Insets bottom="10" left="10" right="10" top="10" />
                                 </padding>
-                            </VBox>
-                            <VBox prefWidth="440.0" spacing="10">
-<!--                                <Label text="Email">-->
-<!--                                    <font>-->
-<!--                                        <Font size="14.0" />-->
-<!--                                    </font>-->
-<!--                                </Label>-->
-                                <TextField fx:id="emailField" promptText="Địa chỉ email" />
+                            </HBox>
+                            <HBox prefWidth="440.0" spacing="10">
+                                <Label text="Email">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </Label>
+                                <TextField fx:id="emailField" prefHeight="26.0" prefWidth="312.0" promptText="Địa chỉ email" />
                                 <padding>
                                     <Insets bottom="10" left="10" right="10" top="10" />
                                 </padding>
-                            </VBox>
+                            </HBox>
                         </HBox>
                         <HBox>
-                            <VBox prefWidth="540.0" spacing="10">
-<!--                                <Label text="Đại diện">-->
-<!--                                    <font>-->
-<!--                                        <Font size="14.0" />-->
-<!--                                    </font>-->
-<!--                                </Label>-->
-                                <TextField fx:id="deputyField" promptText="Người đại diện" />
+                            <HBox prefHeight="47.0" prefWidth="451.0" spacing="10">
+                                <Label text="Người liên hệ">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </Label>
+                                <TextField fx:id="deputyField" prefHeight="26.0" prefWidth="300.0" promptText="Người đại diện" />
                                 <padding>
                                     <Insets bottom="10" left="10" right="10" top="10" />
                                 </padding>
-                            </VBox>
-                            <VBox prefWidth="240.0" spacing="10">
-<!--                                <Label text="Điện thoại">-->
-<!--                                    <font>-->
-<!--                                        <Font size="14.0" />-->
-<!--                                    </font>-->
-<!--                                </Label>-->
-                                <TextField fx:id="phoneField" promptText="Số điện thoại" />
+                            </HBox>
+                            <HBox prefWidth="240.0" spacing="10">
+                                <Label text="Điện thoại">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </Label>
+                                <TextField fx:id="phoneField" prefHeight="26.0" prefWidth="130.0" promptText="Số điện thoại" />
                                 <padding>
                                     <Insets bottom="10" left="10" right="10" top="10" />
                                 </padding>
-                            </VBox>
-                            <VBox prefWidth="240.0" spacing="10">
-<!--                                <Label text="Fax">-->
-<!--                                    <font>-->
-<!--                                        <Font size="14.0" />-->
-<!--                                    </font>-->
-<!--                                </Label>-->
-                                <TextField fx:id="faxField" promptText="Số Fax" />
+                            </HBox>
+                            <HBox prefHeight="47.0" prefWidth="193.0" spacing="10">
+                                <Label text="Fax">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </Label>
+                                <TextField fx:id="faxField" prefHeight="26.0" prefWidth="126.0" promptText="Số Fax" />
                                 <padding>
                                     <Insets bottom="10" left="10" right="10" top="10" />
                                 </padding>
-                            </VBox>
+                            </HBox>
                         </HBox>
                         <HBox>
-                            <VBox prefWidth="1024" spacing="10">
-<!--                                <Label text="Địa chỉ">-->
-<!--                                    <font>-->
-<!--                                        <Font size="14.0" />-->
-<!--                                    </font>-->
-<!--                                </Label>-->
-                                <TextField fx:id="addressField" promptText="Địa chỉ" />
+                            <HBox prefWidth="1024" spacing="10">
+                                <Label text="Địa chỉ">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </Label>
+                                <TextField fx:id="addressField" prefHeight="26.0" prefWidth="767.0" promptText="Địa chỉ" />
                                 <padding>
                                     <Insets bottom="10" left="10" right="10" top="10" />
                                 </padding>
-                            </VBox>
+                            </HBox>
                         </HBox>
                     </VBox>
                     <VBox prefWidth="174" spacing="13">

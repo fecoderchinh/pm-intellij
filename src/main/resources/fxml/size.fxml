@@ -18,7 +18,12 @@
             </HBox>
          <Separator prefWidth="200.0" />
             <HBox spacing="10">
-                <TextField fx:id="sizeField" />
+                <Label prefWidth="57.0" text="Size">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </Label>
+                <TextField fx:id="sizeField" promptText="Size" />
                 <Button fx:id="insertButton" mnemonicParsing="false" onAction="#insertButton" prefHeight="28.0" prefWidth="73.0" text="THÊM" />
                 <padding>
                     <Insets top="5" />
@@ -35,12 +40,12 @@
         <VBox spacing="10">
             <HBox prefHeight="26.0" prefWidth="200.0" spacing="10">
                 <HBox alignment="CENTER_LEFT" prefHeight="26.0" prefWidth="122.0" spacing="10">
-<!--                    <Label text="Lọc">-->
-<!--                        <font>-->
-<!--                            <Font size="14.0" />-->
-<!--                        </font>-->
-<!--                    </Label>-->
-                    <TextField fx:id="searchField" prefHeight="26.0" prefWidth="119.0" promptText="Tìm kiếm" />
+                    <Label prefHeight="20.0" prefWidth="57.0" text="Lọc">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </Label>
+                    <TextField fx:id="searchField" prefHeight="26.0" prefWidth="119.0" promptText="Nhập size" />
                 </HBox>
                 <HBox alignment="BASELINE_RIGHT" prefHeight="26.0" prefWidth="96.0" spacing="10">
                     <Button id="reloadData" fx:id="reloadData" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#reloadData" text="TẢI LẠI BẢNG" />

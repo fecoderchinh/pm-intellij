@@ -23,7 +23,17 @@
                 <HBox spacing="10">
                     <VBox prefHeight="139.0" prefWidth="523.0" spacing="10">
                         <HBox spacing="10">
+                            <Label prefHeight="20.0" prefWidth="126.0" text="Thứ tự">
+                                <font>
+                                    <Font size="14.0" />
+                                </font>
+                            </Label>
                             <TextField fx:id="ordinalNumberField" prefHeight="26.0" prefWidth="294.0" promptText="Thứ tự mặt hàng" />
+                            <Label prefHeight="20.0" prefWidth="139.0" text="Số lượng">
+                                <font>
+                                    <Font size="14.0" />
+                                </font>
+                            </Label>
                             <TextField fx:id="qtyField" prefHeight="26.0" prefWidth="260.0" promptText="Số lượng" />
                         </HBox>
                         <HBox spacing="10">
@@ -34,6 +44,11 @@
                             </ComboBox>
                         </HBox>
                         <HBox spacing="10">
+                            <Label prefHeight="20.0" prefWidth="166.0" text="Ghi chú">
+                                <font>
+                                    <Font size="14.0" />
+                                </font>
+                            </Label>
                             <TextField fx:id="noteField" prefHeight="26.0" prefWidth="578.0" promptText="Ghi chú" />
                         </HBox>
                         <HBox spacing="10">
