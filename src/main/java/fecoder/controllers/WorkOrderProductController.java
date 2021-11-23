@@ -494,35 +494,39 @@ public class WorkOrderProductController implements Initializable {
     public void exportData(ActionEvent actionEvent) throws IOException {
 //        data2DocOfOrderList((Stage)((Node) actionEvent.getSource()).getScene().getWindow());
 
-        try {
-            FileChooser fileChooser = new FileChooser();
-            FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("Word document (*.docx)", "*.docx");
-            fileChooser.getExtensionFilters().add(extensionFilter);
+        utils.openListCheckboxWindow((Stage)((Node) actionEvent.getSource()).getScene().getWindow(), nv -> {
+            try {
+                FileChooser fileChooser = new FileChooser();
+                FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("Word document (*.docx)", "*.docx");
+                fileChooser.getExtensionFilters().add(extensionFilter);
 
-            DirectoryChooser directoryChooser = new DirectoryChooser();
-            directoryChooser.setTitle("Select folder");
+                DirectoryChooser directoryChooser = new DirectoryChooser();
+                directoryChooser.setTitle("Select folder");
 
 //            File file = fileChooser.showSaveDialog(window);
-            File file = directoryChooser.showDialog((Stage)((Node) actionEvent.getSource()).getScene().getWindow());
+                File file = directoryChooser.showDialog((Stage)((Node) actionEvent.getSource()).getScene().getWindow());
 
 
-            ObservableList<OrderBySupllier> orderBySuplliers = FXCollections.observableArrayList(orderBySupplierDAO.getList(this.innerData.getId()+""));
+                ObservableList<OrderBySupllier> orderBySuplliers = FXCollections.observableArrayList(orderBySupplierDAO.getList(this.innerData.getId()+""));
 
-            LocalDateTime now = LocalDateTime.now();
-            workOrderDAO.updateData("order_date", now.getDayOfMonth()+"/"+now.getMonthValue()+"/"+now.getYear(), this.innerData.getId()+"");
+                LocalDateTime now = LocalDateTime.now();
+                workOrderDAO.updateData("order_date", now.getDayOfMonth()+"/"+now.getMonthValue()+"/"+now.getYear(), this.innerData.getId()+"");
 
-            for (OrderBySupllier orderBySupllier : orderBySuplliers) {
-                ExportWordDocument.data2DocOfOrderBySupplier(file, this.innerData.getId()+"", orderBySupllier.getsCode(), now.toString());
+                if(nv.get(1)) {
+                    for (OrderBySupllier orderBySupllier : orderBySuplliers) {
+                        ExportWordDocument.data2DocOfOrderBySupplier(file, this.innerData.getId()+"", orderBySupllier.getsCode(), now.toString());
+                    }
+                }
+
+                WorkOrder workOrder = workOrderDAO.getDataByID(this.innerData.getId());
+                if(nv.get(0)) ExportWordDocument.data2WorksheetOfOrderListDraft(file, workOrder, now.toString());
+
+                if(nv.get(2)) ExportWordDocument.data2DocOfOrderList(file, this.innerData.getId()+"", now.toString());
+                utils.alert("info", Alert.AlertType.INFORMATION, "Xuất file thành công!", "File đã được lưu vào đường dẫn " +file.getPath()).showAndWait();
+            } catch (Exception ex){
+                utils.alert("err", Alert.AlertType.ERROR, "Lỗi", ex.getMessage()).showAndWait();
             }
-
-            WorkOrder workOrder = workOrderDAO.getDataByID(this.innerData.getId());
-            ExportWordDocument.data2DocOfOrderListDraft(file, workOrder, now.toString());
-
-            ExportWordDocument.data2DocOfOrderList(file, this.innerData.getId()+"", now.toString());
-            utils.alert("info", Alert.AlertType.INFORMATION, "Xuất file thành công!", "File đã được lưu vào đường dẫn " +file.getPath()).showAndWait();
-        } catch (Exception ex){
-            utils.alert("err", Alert.AlertType.ERROR, "Lỗi", ex.getMessage()).showAndWait();
-        }
+        }, "Tùy chọn");
     }
 
     private void helloWord() {

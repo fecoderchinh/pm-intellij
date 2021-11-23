@@ -19,6 +19,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -29,6 +30,8 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -134,11 +137,68 @@ public class Utils {
         cancelButton.setCancelButton(true);
         cancelButton.setOnAction(e -> stage.hide());
 
-        HBox buttons = new HBox(5, okButton, cancelButton);
+        HBox buttons = new HBox(50, okButton, cancelButton);
         buttons.setAlignment(Pos.CENTER);
         buttons.setPadding(new Insets(5));
 
         BorderPane root = new BorderPane(textArea, null, null, buttons, null);
+        Scene scene = new Scene(root);
+        stage.getIcons().add(new Image("/images/icon.png"));
+        stage.setScene(scene);
+        stage.setTitle(title);
+        stage.setResizable(false);
+        stage.show();
+    }
+
+    /**
+     *
+     * Handle an event for opening new Window with a Textarea
+     *
+     * @param owner the parent Window
+     * @param commitHandler commit the new value back to its parent's Window
+     * @param title a dynamic title for Window
+     * */
+    public void openListCheckboxWindow(Window owner, Consumer<ArrayList<Boolean>> commitHandler, String title) {
+        Stage stage = new Stage();
+        stage.initOwner(owner);
+        stage.initModality(Modality.APPLICATION_MODAL);
+
+        CheckBox exportDraft = new CheckBox("Xuất KIỂM TRA BB");
+        CheckBox exportOrderBySupplier = new CheckBox("Xuất Đơn Hàng");
+        CheckBox exportOrderList = new CheckBox("Xuất Đề Nghị BB");
+
+        Button exportAll = new Button("CHỌN HẾT");
+        exportAll.setOnAction(e -> {
+            exportDraft.setSelected(true);
+            exportOrderBySupplier.setSelected(true);
+            exportOrderList.setSelected(true);
+        });
+
+        Button okButton = new Button("ÁP DỤNG");
+        okButton.setDefaultButton(true);
+        okButton.setOnAction(e -> {
+//            commitHandler.accept(exportDraft.isSelected());
+//            commitHandler.accept(exportOrderBySupplier.isSelected());
+//            commitHandler.accept(exportOrderList.isSelected());
+
+            ArrayList<Boolean> list = new ArrayList<>(Arrays.asList(exportDraft.isSelected(), exportOrderBySupplier.isSelected(), exportOrderList.isSelected()));
+            commitHandler.accept(list);
+
+            stage.hide();
+        });
+
+        Button cancelButton = new Button("HỦY BỎ");
+        cancelButton.setCancelButton(true);
+        cancelButton.setOnAction(e -> stage.hide());
+
+        HBox buttons = new HBox(5, exportAll, okButton, cancelButton);
+        buttons.setAlignment(Pos.CENTER);
+        buttons.setPadding(new Insets(5));
+
+        VBox checkboxes = new VBox(5, exportDraft, exportOrderBySupplier, exportOrderList);
+        checkboxes.setPadding(new Insets(5));
+
+        BorderPane root = new BorderPane(checkboxes, null, null, buttons, null);
         Scene scene = new Scene(root);
         stage.getIcons().add(new Image("/images/icon.png"));
         stage.setScene(scene);

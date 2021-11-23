@@ -775,37 +775,46 @@ public class WorkOrderController implements Initializable {
     public void exportData(ActionEvent actionEvent) throws IOException {
 //        data2DocOfOrderList((Stage)((Node) actionEvent.getSource()).getScene().getWindow());
 
-        try {
-            FileChooser fileChooser = new FileChooser();
-            FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("Word document (*.docx)", "*.docx");
-            fileChooser.getExtensionFilters().add(extensionFilter);
+        utils.openListCheckboxWindow((Stage)((Node) actionEvent.getSource()).getScene().getWindow(), nv -> {
 
-            DirectoryChooser directoryChooser = new DirectoryChooser();
-            directoryChooser.setTitle("Select folder");
+            try {
+                FileChooser fileChooser = new FileChooser();
+                FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("Word document (*.docx)", "*.docx");
+                fileChooser.getExtensionFilters().add(extensionFilter);
+
+                DirectoryChooser directoryChooser = new DirectoryChooser();
+                directoryChooser.setTitle("Select folder");
 
 //            File file = fileChooser.showSaveDialog(window);
-            File file = directoryChooser.showDialog((Stage)((Node) actionEvent.getSource()).getScene().getWindow());
+                File file = directoryChooser.showDialog((Stage)((Node) actionEvent.getSource()).getScene().getWindow());
+                LocalDateTime now = LocalDateTime.now();
 
-            ObservableList<OrderBySupllier> orderBySuplliers = FXCollections.observableArrayList(orderBySupplierDAO.getList(getListID()));
+                ObservableList<OrderBySupllier> orderBySuplliers = FXCollections.observableArrayList(orderBySupplierDAO.getList(getListID()));
 
-            LocalDateTime now = LocalDateTime.now();
+                if(nv.get(1)) {
+                    for (OrderBySupllier orderBySupllier : orderBySuplliers) {
+                        ExportWordDocument.data2DocOfOrderBySupplier(file, getListID(), orderBySupllier.getsCode(), now.toString());
+                    }
+                }
 
-            for (OrderBySupllier orderBySupllier : orderBySuplliers) {
-                ExportWordDocument.data2DocOfOrderBySupplier(file, getListID(), orderBySupllier.getsCode(), now.toString());
+                String[] _arrayListID = getListID().split(",");
+                for(int i=0;i<_arrayListID.length; i++) {
+                    workOrderDAO.updateData("order_date", now.getDayOfMonth()+"/"+now.getMonthValue()+"/"+now.getYear(), _arrayListID[i].trim());
+                    WorkOrder workOrder = workOrderDAO.getDataByID(Integer.parseInt(_arrayListID[i].trim()));
+
+                    if(nv.get(0)) {
+                        ExportWordDocument.data2WorksheetOfOrderListDraft(file, workOrder, now.toString());
+                    }
+
+                    if(nv.get(2)) {
+                        ExportWordDocument.data2DocOfOrderList(file, workOrder.getId()+"", now.toString());
+                    }
+                }
+                utils.alert("info", Alert.AlertType.INFORMATION, "Xuất file thành công!", "File đã được lưu vào đường dẫn " +file.getPath()).showAndWait();
+            } catch(Exception ex) {
+                utils.alert("err", Alert.AlertType.ERROR, "Lỗi", ex.getMessage()).showAndWait();
             }
-
-            String[] _arrayListID = getListID().split(",");
-            for(int i=0;i<_arrayListID.length; i++) {
-                workOrderDAO.updateData("order_date", now.getDayOfMonth()+"/"+now.getMonthValue()+"/"+now.getYear(), _arrayListID[i].trim());
-                WorkOrder workOrder = workOrderDAO.getDataByID(Integer.parseInt(_arrayListID[i].trim()));
-//                ExportWordDocument.data2DocOfOrderListDraft(file, workOrder, now.toString());
-                ExportWordDocument.data2WorksheetOfOrderListDraft(file, workOrder, now.toString());
-                ExportWordDocument.data2DocOfOrderList(file, workOrder.getId()+"", now.toString());
-            }
-            utils.alert("info", Alert.AlertType.INFORMATION, "Xuất file thành công!", "File đã được lưu vào đường dẫn " +file.getPath()).showAndWait();
-        } catch(Exception ex) {
-            utils.alert("err", Alert.AlertType.ERROR, "Lỗi", ex.getMessage()).showAndWait();
-        }
+        }, "Tùy chọn");
 
     }
 
