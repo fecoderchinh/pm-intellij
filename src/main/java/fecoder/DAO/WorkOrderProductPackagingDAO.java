@@ -100,23 +100,6 @@ public class WorkOrderProductPackagingDAO {
     }
 
     /**
-     * Inserting data based on work_order_product table insertion
-     * -- be careful whenever using this function without work_order_product inserted first
-     * -- wop_id might not correct
-     *
-     * @param work_order_id work_order id
-     * @param product_id product id
-     * @param wop_qty work_order_product quantity
-     * */
-    public void insertWOPChildren(int work_order_id, int product_id, float wop_qty) {
-        String query = "insert into work_order_product_packaging(wop_id, work_order_id, product_id, packaging_id, work_order_qty, stock, actual_qty, residual_qty)" +
-                " select (select last_insert_id() from work_order_product), ?, ?, pps.packaging_id, pps.pack_qty * ?,0,0,0" +
-                " from packaging_product_size pps" +
-                " where pps.product_id = ?";
-        preparedInsertQueryBasedOnWOPData(query, work_order_id, product_id, wop_qty);
-    }
-
-    /**
      * Delete method, this will remove all data belong to product id
      * Run this method immediately after deleting work_order_product.id
      * -- do not use this method elsewhere without above action
@@ -172,9 +155,8 @@ public class WorkOrderProductPackagingDAO {
             preparedStatement.close();
             conn.close();
         } catch (Exception ex) {
-//            assert ex instanceof SQLException;
-//            jdbcDAO.printSQLException((SQLException) ex);
-            utils.alert("err", Alert.AlertType.ERROR, "Error", ex.getMessage()).showAndWait();
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
         }
     }
 

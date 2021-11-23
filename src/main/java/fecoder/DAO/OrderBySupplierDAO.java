@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OrderBySupplierDAO {
-    Utils utils = new Utils();
     /**
      * Representing a database
      *
@@ -101,9 +100,8 @@ public class OrderBySupplierDAO {
             resultSet.close();
             conn.close();
         } catch (ClassNotFoundException | SQLException ex) {
-//            assert ex instanceof SQLException;
-//            jdbcDAO.printSQLException((SQLException) ex);
-            utils.alert("err", Alert.AlertType.ERROR, "Error code: "+((SQLException) ex).getErrorCode(), ex.getLocalizedMessage()).showAndWait();
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
         }
         return list;
     }
@@ -164,9 +162,8 @@ public class OrderBySupplierDAO {
             resultSet.close();
             conn.close();
         } catch (ClassNotFoundException | SQLException ex) {
-//            assert ex instanceof SQLException;
-//            jdbcDAO.printSQLException((SQLException) ex);
-            utils.alert("err", Alert.AlertType.ERROR, "Error", ((SQLException) ex).getMessage()).showAndWait();
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
         }
         return list;
     }

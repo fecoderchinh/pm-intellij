@@ -41,7 +41,7 @@ public class ProductDAO {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             Statement statement = conn.createStatement();
-            String selectAll = "select * from "+ tableName;
+            String selectAll = "select * from "+ tableName+" order by id DESC";
             ResultSet resultSet = statement.executeQuery(selectAll);
             while(resultSet.next()) {
                 Product data = createData(resultSet);

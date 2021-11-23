@@ -79,7 +79,7 @@ public class StatsController implements Initializable {
                                         (lowerCaseFilter);
                             });
                             break;
-                        case "Số LSX":
+                        case "Lệnh":
                             filteredList.setPredicate(str -> {
                                 if (newValue == null || newValue.isEmpty())
                                     return true;
@@ -97,7 +97,7 @@ public class StatsController implements Initializable {
                                         (lowerCaseFilter);
                             });
                             break;
-                        case "Tên sản phẩm":
+                        case "Qui cách":
                             filteredList.setPredicate(str -> {
                                 if (newValue == null || newValue.isEmpty())
                                     return true;
@@ -138,6 +138,12 @@ public class StatsController implements Initializable {
 
         datetimeCol.setCellValueFactory(new PropertyValueFactory<>("orderDate"));
         woNumberCol.setCellValueFactory(new PropertyValueFactory<>("workOrderName"));
+        pNameCol.setCellValueFactory(new PropertyValueFactory<>("packagingName"));
+        pDimCol.setCellValueFactory(new PropertyValueFactory<>("packagingDimension"));
+        pQuantityCol.setCellValueFactory(new PropertyValueFactory<>("packQuantity"));
+        pStockCol.setCellValueFactory(new PropertyValueFactory<>("stock"));
+        pActualQtyCol.setCellValueFactory(new PropertyValueFactory<>("actualQuantity"));
+        pPriceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
 
         dataTable.setOnKeyPressed(event -> {
             if(event.getCode() == KeyCode.ESCAPE || event.getCode() == KeyCode.F5) {

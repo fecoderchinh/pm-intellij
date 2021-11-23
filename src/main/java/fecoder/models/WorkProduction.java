@@ -14,13 +14,15 @@ public class WorkProduction {
     String unit;
     String printStatus;
     int packQuantity;
-    float workOrderQuantity;
+//    float workOrderQuantity;
+    String workOrderQuantity;
     String Stock;
     String actualQuantity;
     String residualQuantity;
     String totalResidualQuantity;
     String noteProduct;
     String orderDate;
+    float price;
 
     public WorkProduction() {}
 
@@ -38,13 +40,14 @@ public class WorkProduction {
             String unit,
             String printStatus,
             int packQuantity,
-            float workOrderQuantity,
+            String workOrderQuantity,
             String Stock,
             String actualQuantity,
             String residualQuantity,
             String totalResidualQuantity,
             String noteProduct,
-            String orderDate
+            String orderDate,
+            float price
     ) {
         this.id = id;
         this.ordinalNumbers = ordinalNumbers;
@@ -66,6 +69,7 @@ public class WorkProduction {
         this.totalResidualQuantity = totalResidualQuantity;
         this.noteProduct = noteProduct;
         this.orderDate = orderDate;
+        this.price = price;
     }
 
     public int getId() {
@@ -172,11 +176,11 @@ public class WorkProduction {
         this.packQuantity = packQuantity;
     }
 
-    public float getWorkOrderQuantity() {
+    public String getWorkOrderQuantity() {
         return workOrderQuantity;
     }
 
-    public void setWorkOrderQuantity(float workOrderQuantity) {
+    public void setWorkOrderQuantity(String workOrderQuantity) {
         this.workOrderQuantity = workOrderQuantity;
     }
 
@@ -226,5 +230,13 @@ public class WorkProduction {
 
     public void setOrderDate(String orderDate) {
         this.orderDate = orderDate;
+    }
+
+    public float getPrice() {
+        return price;
+    }
+
+    public void setPrice(float price) {
+        this.price = price;
     }
 }

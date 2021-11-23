@@ -39,7 +39,7 @@ public class TypeDAO {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             Statement statement = conn.createStatement();
-            String selectAll = "select * from "+tableName;
+            String selectAll = "select * from "+tableName+ " order by name DESC";
             ResultSet resultSet = statement.executeQuery(selectAll);
             while(resultSet.next()) {
                 Type data = createData(resultSet);

@@ -44,7 +44,7 @@ public class SupplierDAO {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             Statement statement = conn.createStatement();
-            String selectAll = "Select * from "+tableName;
+            String selectAll = "Select * from "+tableName+"order by name DESC";
             ResultSet resultSet = statement.executeQuery(selectAll);
             while (resultSet.next()) {
                 Supplier data = createData(resultSet);

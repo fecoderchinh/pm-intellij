@@ -37,7 +37,7 @@ public class SizeDAO {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             Statement statement = conn.createStatement();
-            String selectAll = "select * from "+ tableName +" order by size";
+            String selectAll = "select * from "+ tableName +" order by size DESC";
             ResultSet resultSet = statement.executeQuery(selectAll);
             while(resultSet.next()) {
                 Size data = createData(resultSet);

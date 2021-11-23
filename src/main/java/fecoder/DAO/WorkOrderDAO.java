@@ -12,7 +12,6 @@ import java.util.List;
 public class WorkOrderDAO {
     
     private final String tableName = "work_order";
-    private final Utils utils = new Utils();
 
     /**
      * Representing a database
@@ -50,7 +49,7 @@ public class WorkOrderDAO {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             Statement statement = conn.createStatement();
-            String selectAll = "Select * from "+tableName;
+            String selectAll = "Select * from "+tableName+" order by id DESC";
             ResultSet resultSet = statement.executeQuery(selectAll);
             while (resultSet.next()) {
                 WorkOrder data = createData(resultSet);
@@ -267,9 +266,8 @@ public class WorkOrderDAO {
             preparedStatement.close();
             conn.close();
         } catch (Exception ex) {
-//            assert ex instanceof SQLException;
-//            jdbcDAO.printSQLException((SQLException) ex);
-            utils.alert("err", Alert.AlertType.ERROR, "Lỗi!", ex.getMessage()).showAndWait();
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
         }
     }
 

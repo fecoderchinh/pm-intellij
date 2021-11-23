@@ -23,7 +23,7 @@ public class YearDAO {
             data.setId(resultSet.getInt("id"));
             data.setYear(resultSet.getString("year"));
         } catch (SQLException ex) {
-            fecoder.DAO.jdbcDAO.printSQLException(ex);
+            jdbcDAO.printSQLException(ex);
         }
         return data;
     }
@@ -38,7 +38,7 @@ public class YearDAO {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             Statement statement = conn.createStatement();
-            String selectAll = "select * from "+tableName;
+            String selectAll = "select * from "+tableName+ " order by id desc";
             ResultSet resultSet = statement.executeQuery(selectAll);
             while(resultSet.next()) {
                 Year data = createData(resultSet);

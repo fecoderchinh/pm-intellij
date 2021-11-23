@@ -3,6 +3,8 @@ package fecoder.DAO;
 import fecoder.connection.ConnectionUtils;
 import fecoder.models.Product;
 import fecoder.models.User;
+import fecoder.utils.Utils;
+import javafx.scene.control.Alert;
 
 import java.sql.*;
 
@@ -206,9 +208,11 @@ public class jdbcDAO {
         for (Throwable e: ex) {
             if( e instanceof SQLException ) {
                 e.printStackTrace(System.err);
-                System.err.println("SQLState: " + ((SQLException) e).getSQLState());
-                System.err.println("Error Code: " + ((SQLException) e).getErrorCode());
-                System.err.println("Message: " + e.getMessage());
+//                System.err.println("SQLState: " + ((SQLException) e).getSQLState());
+//                System.err.println("Error Code: " + ((SQLException) e).getErrorCode());
+//                System.err.println("Message: " + e.getMessage());
+                Utils utils = new Utils();
+                utils.alert("err", Alert.AlertType.ERROR, "Error Code: " + ((SQLException) e).getErrorCode(), "Message: " + e.getMessage()).showAndWait();
                 Throwable t = ex.getCause();
                 while (t != null) {
                     System.out.println("Cause: " + t);

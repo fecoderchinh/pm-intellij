@@ -83,6 +83,8 @@ public class WorkOrderProductController implements Initializable {
 
     private WorkOrder innerData;
 
+    TreeItem<WorkProduction> root;
+
     public void insertButton(ActionEvent actionEvent) {
         Product productInsertData = productDAO.getDataByName(productComboBox.getValue()+"");
         int fakeAutoIncrementID = workOrderProductDAO.getFakeAutoIncrementID().getId();
@@ -358,13 +360,49 @@ public class WorkOrderProductController implements Initializable {
         });
     }
 
+    private void filter(TreeItem<WorkProduction> root, String filter, TreeItem<WorkProduction> filteredRoot) {
+        for (TreeItem<WorkProduction> child : root.getChildren()) {
+            TreeItem<WorkProduction> filteredChild = new TreeItem<>();
+            filteredChild.setValue(child.getValue());
+            filteredChild.setExpanded(true);
+            filter(child, filter, filteredChild );
+            if (!filteredChild.getChildren().isEmpty() || isMatch(filteredChild.getValue(), filter)) {
+//                System.out.println(filteredChild.getValue() + " matches.");
+                filteredRoot.getChildren().add(filteredChild);
+            }
+        }
+    }
+
+    private boolean isMatch(WorkProduction value, String filter) {
+        switch (searchComboBox.getValue()) {
+            case "Tên bao bì":
+                return value.getPackagingName().toLowerCase().contains
+                        (filter.toLowerCase());
+            case "Kích thước":
+                return value.getPackagingDimension().toLowerCase().trim().replace(" ", "").contains
+                        (filter.toLowerCase().trim().replace(" ", ""));
+        }
+        return false;
+    }
+
+    private void filterChanged(String filter) {
+        if (filter.isEmpty()) {
+            dataTable.setRoot(root);
+        } else {
+            TreeItem<WorkProduction> filteredRoot = new TreeItem<>();
+            filteredRoot.setExpanded(true);
+            filter(root, filter, filteredRoot);
+            dataTable.setRoot(filteredRoot);
+        }
+    }
+
     /**
      * Loading Work Order TreeTableView
      *
-     * @param workOrderID work_order.id
      * */
-    private void loadViewWOPP(int workOrderID) {
-        TreeItem<WorkProduction> root = TreeTableUtil.getModel(workOrderID);
+    private void loadViewWOPP() {
+        setSearchFieldTreeItem();
+
         root.setExpanded(true);
         dataTable.setTableMenuButtonVisible(false);
 
@@ -409,8 +447,6 @@ public class WorkOrderProductController implements Initializable {
         });
 
         utils.reloadTreeTableViewOnChange(dataTable, currentRow, currentCell);
-
-//        setSearchField();
     }
 
     /**
@@ -445,6 +481,13 @@ public class WorkOrderProductController implements Initializable {
 //        sortedList.comparatorProperty().bind(dataTable.comparatorProperty());
 //
 //        dataTable.setItems(sortedList);
+    }
+
+    /**
+     * Handle on searching data
+     * */
+    public void setSearchFieldTreeItem() {
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> filterChanged(newValue));
     }
 
     /**
@@ -487,8 +530,9 @@ public class WorkOrderProductController implements Initializable {
         this.innerData = workOrder;
         mainLabel.setText(this.innerData.getName());
         mainLabel.setWrapText(true);
+        root = TreeTableUtil.getModel(this.innerData.getId());
         loadViewProduct(this.innerData.getId());
-        loadViewWOPP(this.innerData.getId());
+        loadViewWOPP();
     }
 
     public void exportData(ActionEvent actionEvent) throws IOException {

@@ -37,13 +37,14 @@
                     <ComboBox fx:id="searchComboBox">
                         <items>
                             <FXCollections fx:factory="observableArrayList">
-                                <String fx:value="Tên mặt hàng" />
-                                <String fx:value="Size" />
-                                <String fx:value="Bao bì" />
+                                <String fx:value="Ngày đặt" />
+                                <String fx:value="Lệnh" />
+                                <String fx:value="Tên bao bì" />
+                                <String fx:value="Qui cách" />
                             </FXCollections>
                         </items>
                         <value>
-                            <String fx:value="Tên mặt hàng" />
+                            <String fx:value="Lệnh" />
                         </value>
                     </ComboBox>
                     <TextField fx:id="searchField" promptText="Nhập từ khóa cần tìm" />

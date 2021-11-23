@@ -174,7 +174,7 @@ public class Utils {
             exportOrderList.setSelected(true);
         });
 
-        Button okButton = new Button("ÁP DỤNG");
+        Button okButton = new Button("XUẤT");
         okButton.setDefaultButton(true);
         okButton.setOnAction(e -> {
 //            commitHandler.accept(exportDraft.isSelected());
@@ -195,7 +195,7 @@ public class Utils {
         buttons.setAlignment(Pos.CENTER);
         buttons.setPadding(new Insets(5));
 
-        VBox checkboxes = new VBox(5, exportDraft, exportOrderBySupplier, exportOrderList);
+        VBox checkboxes = new VBox(5, exportDraft, exportOrderList, exportOrderBySupplier);
         checkboxes.setPadding(new Insets(5));
 
         BorderPane root = new BorderPane(checkboxes, null, null, buttons, null);
