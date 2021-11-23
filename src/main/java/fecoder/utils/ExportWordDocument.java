@@ -11,6 +11,12 @@ import fecoder.models.WorkProduction;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.CellUtil;
 import org.apache.poi.util.Units;
 import org.apache.poi.wp.usermodel.HeaderFooterType;
 import org.apache.poi.xwpf.usermodel.*;
@@ -220,8 +226,152 @@ public class ExportWordDocument {
 
         boolean hasData = false;
 
+        DecimalFormat formatter = new DecimalFormat("#,###");
+
         try {
-            // data here
+            HSSFWorkbook workbook = new HSSFWorkbook();
+            HSSFSheet sheet = workbook.createSheet("KIEM TRA");
+
+            // sets the column with for the column to width*256
+            sheet.setColumnWidth(3, 55*256);
+            sheet.setColumnWidth(4, 13*256);
+            sheet.setColumnWidth(5, 6*256);
+            sheet.setColumnWidth(6, 14*256);
+            sheet.setColumnWidth(7, 14*256);
+            sheet.setColumnWidth(8, 14*256);
+
+            int rownum = 0;
+            Cell cell;
+            Row row;
+
+            HSSFCellStyle mainStyle = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 20, IndexedColors.BLACK.getIndex(), true, true, IndexedColors.YELLOW.getIndex(), HorizontalAlignment.LEFT, VerticalAlignment.CENTER);
+            HSSFCellStyle headerStyle = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 14, IndexedColors.WHITE.getIndex(), true, true, IndexedColors.BLACK.getIndex(), HorizontalAlignment.LEFT, VerticalAlignment.CENTER);
+            HSSFCellStyle labelStyle = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 10, IndexedColors.BLACK.getIndex(), true, true, IndexedColors.WHITE.getIndex(), HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
+            HSSFCellStyle labelStyleLeft = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 10, IndexedColors.BLACK.getIndex(), true, true, IndexedColors.WHITE.getIndex(), HorizontalAlignment.LEFT, VerticalAlignment.CENTER);
+            HSSFCellStyle cellStyle = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 10, IndexedColors.BLACK.getIndex(), false, true, IndexedColors.WHITE.getIndex(), HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
+            HSSFCellStyle cellStyleLeft = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 10, IndexedColors.BLACK.getIndex(), false, true, IndexedColors.WHITE.getIndex(), HorizontalAlignment.LEFT, VerticalAlignment.CENTER);
+
+            row = sheet.createRow(rownum);
+            row.setHeight((short) 500);
+
+            // LSX
+            cell = row.createCell(2, CellType.STRING);
+            cell.setCellValue(productList.get(0).getWorkOrderName());
+            cell.setCellStyle(mainStyle);
+            sheet.addMergedRegion(new CellRangeAddress(
+                    0, //first row (0-based)
+                    0, //last row  (0-based)
+                    2, //first column (0-based)
+                    8  //last column  (0-based)
+            ));
+
+            rownum +=1;
+
+            row = sheet.createRow(rownum);
+            row.setHeight((short) 500);
+
+            // NCC (C)
+            cell = row.createCell(2, CellType.STRING);
+            cell.setCellValue("NCC");
+            cell.setCellStyle(labelStyle);
+            // Tên bao bì (D)
+            cell = row.createCell(3, CellType.STRING);
+            cell.setCellValue("Tên bao bì");
+            cell.setCellStyle(labelStyleLeft);
+            // Kích thước (E)
+            cell = row.createCell(4, CellType.STRING);
+            cell.setCellValue("Kích thước");
+            cell.setCellStyle(labelStyle);
+            // ĐVT (F)
+            cell = row.createCell(5, CellType.STRING);
+            cell.setCellValue("ĐVT");
+            cell.setCellStyle(labelStyle);
+            // Cần đặt (G)
+            cell = row.createCell(6, CellType.STRING);
+            cell.setCellValue("Cần đặt");
+            cell.setCellStyle(labelStyle);
+            // Tồn (H)
+            cell = row.createCell(7, CellType.STRING);
+            cell.setCellValue("Tồn");
+            cell.setCellStyle(labelStyle);
+            // Thực đặt (I)
+            cell = row.createCell(8, CellType.STRING);
+            cell.setCellValue("Thực đặt");
+            cell.setCellStyle(labelStyle);
+
+            if(productList.size() > 0) {
+                for(int i=0;i<productList.size();i++) {
+                    rownum++;
+                    sheet.addMergedRegion(new CellRangeAddress(
+                            rownum, //first row (0-based)
+                            rownum, //last row  (0-based)
+                            2, //first column (0-based)
+                            8  //last column  (0-based)
+                    ));
+                    row = sheet.createRow(rownum);
+                    row.setHeight((short) 500);
+
+                    // Thực đặt
+                    cell = row.createCell(2, CellType.STRING);
+                    cell.setCellValue(productList.get(i).getOrdinalNumbers() + "/ " + productList.get(i).getProductName());
+                    cell.setCellStyle(headerStyle);
+
+                    ObservableList<WorkProduction> packagingList = FXCollections.observableArrayList(
+                            workProductionDAO.getPackagingList(
+                                    workOrder.getId()+"", // work_order_product.work_order_id
+                                    workOrderProductPackagingDAO.getDataByID(productList.get(i).getId()).getProduct_id(), // work_order_product.product_id
+                                    productList.get(i).getOrdinalNumbers() // work_order_product.ordinal_num
+                            )
+                    );
+                    hasData = packagingList.size() > 0;
+                    if(packagingList.size()>0) {
+                        for(int j=0;j<packagingList.size(); j++) {
+                            rownum++;
+                            row = sheet.createRow(rownum);
+                            // NCC (C)
+                            cell = row.createCell(2, CellType.STRING);
+                            cell.setCellValue(packagingList.get(j).getPackagingSuplier());
+                            cell.setCellStyle(cellStyle);
+                            // Tên BB (Qui cách) (D)
+                            cell = row.createCell(3, CellType.STRING);
+                            cell.setCellValue(packagingList.get(j).getPackagingName() + (packagingList.get(j).getPrintStatus() != null ? "("+ packagingList.get(j).getPrintStatus() +")" : "") + " ("+ packagingList.get(j).getPackagingSpecification() +")");
+                            cell.setCellStyle(cellStyleLeft);
+                            // Kích thước (E)
+                            cell = row.createCell(4, CellType.STRING);
+                            cell.setCellValue(packagingList.get(j).getPackagingDimension());
+                            cell.setCellStyle(cellStyle);
+                            // ĐVT (F)
+                            cell = row.createCell(5, CellType.STRING);
+                            cell.setCellValue(packagingList.get(j).getUnit());
+                            cell.setCellStyle(cellStyle);
+                            // Cần (G)
+                            cell = row.createCell(6, CellType.STRING);
+                            cell.setCellValue(formatter.format(Float.parseFloat(packagingList.get(j).getWorkOrderQuantity()+"")));
+                            cell.setCellStyle(cellStyle);
+                            // Tồn (H)
+                            cell = row.createCell(7, CellType.STRING);
+                            cell.setCellValue(formatter.format(Float.parseFloat(packagingList.get(j).getStock()+"")));
+                            cell.setCellStyle(cellStyle);
+                            // Thực đặt (I)
+                            cell = row.createCell(8, CellType.STRING);
+                            cell.setCellValue(formatter.format(Float.parseFloat(packagingList.get(j).getActualQuantity()+"")));
+                            cell.setCellStyle(cellStyle);
+                        }
+                    }
+                }
+            }
+
+            if(hasData) {
+                if(file != null) {
+                    // save it to .docx file
+//                try (FileOutputStream out = new FileOutputStream(file.getPath())) // for fileChooser
+                    try (FileOutputStream out = new FileOutputStream(file.getPath()+"/KIEM TRA BB "+ workOrder.getName() +".xls"))
+                    {
+                        workbook.write(out);
+//                    utils.alert("info", Alert.AlertType.INFORMATION, "Xuất file thành công!", "File đã được lưu vào ổ đĩa!").showAndWait();
+                    }
+                }
+            }
         } catch(Exception ex) {
             utils.alert("err", Alert.AlertType.ERROR, "Error", ex.getMessage()).showAndWait();
         }

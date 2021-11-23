@@ -798,7 +798,8 @@ public class WorkOrderController implements Initializable {
             for(int i=0;i<_arrayListID.length; i++) {
                 workOrderDAO.updateData("order_date", now.getDayOfMonth()+"/"+now.getMonthValue()+"/"+now.getYear(), _arrayListID[i].trim());
                 WorkOrder workOrder = workOrderDAO.getDataByID(Integer.parseInt(_arrayListID[i].trim()));
-                ExportWordDocument.data2DocOfOrderListDraft(file, workOrder, now.toString());
+//                ExportWordDocument.data2DocOfOrderListDraft(file, workOrder, now.toString());
+                ExportWordDocument.data2WorksheetOfOrderListDraft(file, workOrder, now.toString());
                 ExportWordDocument.data2DocOfOrderList(file, workOrder.getId()+"", now.toString());
             }
             utils.alert("info", Alert.AlertType.INFORMATION, "Xuất file thành công!", "File đã được lưu vào đường dẫn " +file.getPath()).showAndWait();
