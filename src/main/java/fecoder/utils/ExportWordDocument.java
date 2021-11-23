@@ -203,6 +203,31 @@ public class ExportWordDocument {
     }
 
     /**
+     * Exporting Draft Worksheet for pre-check before processing
+     *
+     * @param file File
+     * @param workOrder WorkOrder
+     * */
+    public static void data2WorksheetOfOrderListDraft(File file, WorkOrder workOrder, String date) {
+        WorkProductionDAO workProductionDAO = new WorkProductionDAO();
+        WorkOrderProductPackagingDAO workOrderProductPackagingDAO = new WorkOrderProductPackagingDAO();
+        Utils utils = new Utils();
+
+        String imgFile = "e:\\java_platform\\docs-data\\logo.jpg";
+        String _fontFamily = "Arial";
+
+        ObservableList<WorkProduction> productList = FXCollections.observableArrayList(workProductionDAO.getProductList(workOrder.getId()+""));
+
+        boolean hasData = false;
+
+        try {
+            // data here
+        } catch(Exception ex) {
+            utils.alert("err", Alert.AlertType.ERROR, "Error", ex.getMessage()).showAndWait();
+        }
+    }
+
+    /**
      * Exporting Order Document which separate by Supplier
      *
      * @param file File

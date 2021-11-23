@@ -108,8 +108,8 @@ create table packaging(
 	price float,
 	stock float,
 	primary key(id),
-	foreign key (suplier) references supliers(id),
-	foreign key (type) references types(id)
+	foreign key (suplier) references supliers(id) on delete cascade,
+	foreign key (type) references types(id) on delete cascade
 );
 
 -- drop table packaging;
@@ -180,8 +180,8 @@ create table work_order (
 	note longtext,
 	order_date varchar(100),
 	primary key (id),
-	foreign key (year) references years(id),
-	foreign key (customer_id) references customers(id)
+	foreign key (year) references years(id) on delete cascade,
+	foreign key (customer_id) references customers(id) on delete cascade
 );
 
 -- drop tables work_order;

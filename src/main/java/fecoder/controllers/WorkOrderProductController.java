@@ -353,6 +353,7 @@ public class WorkOrderProductController implements Initializable {
         productTableView.setOnMouseClicked((MouseEvent event) -> {
             if(event.getButton().equals(MouseButton.PRIMARY) && productTableView.getSelectionModel().getSelectedItem() != null){
 //                mainLabel.setText(this.innerData.getName() + " - ("+ productTableView.getSelectionModel().getSelectedItem().getProductOrdinalNumber() +") - "+productTableView.getSelectionModel().getSelectedItem().getProductName());
+//                mainLabel.setWrapText(true);
             }
         });
     }
@@ -485,6 +486,7 @@ public class WorkOrderProductController implements Initializable {
     public void setData(WorkOrder workOrder) {
         this.innerData = workOrder;
         mainLabel.setText(this.innerData.getName());
+        mainLabel.setWrapText(true);
         loadViewProduct(this.innerData.getId());
         loadViewWOPP(this.innerData.getId());
     }

@@ -322,7 +322,8 @@ public class ProductPackagingController implements Initializable {
      * */
     public void setData(Product product) {
         this.product = product;
-        mainLabel.setText("List bao bì: "+this.product.getName());
+        mainLabel.setText("Danh sách BB: "+this.product.getName());
+        mainLabel.setWrapText(true);
         setSearchField(this.product.getName());
     }
 

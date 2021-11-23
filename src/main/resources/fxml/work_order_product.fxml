@@ -10,7 +10,7 @@
 <BorderPane prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fecoder.controllers.WorkOrderProductController">
 
     <top>
-        <HBox maxHeight="-Infinity" prefHeight="207.0" prefWidth="1004.0">
+        <HBox prefHeight="207.0" prefWidth="1004.0">
             <VBox prefHeight="212.0" prefWidth="556.0" spacing="10">
                 <HBox spacing="10">
                     <Label fx:id="mainLabel" text="THÔNG TIN MẶT HÀNG">
