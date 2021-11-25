@@ -193,9 +193,9 @@ public class WorkOrderProductDAO {
      * @param quantity column qty
      * @param note column note
      * */
-    public void insert_wopp_children(int wop_id, int workOrderID, String ordinalNumber, int productID, float quantity, String note) {
-        String insertQuery = "{call insert_wopp_children(?, ?, ?, ?, ?, ? )}";
-        preparedInsertWOPPChildrenQuery(insertQuery, wop_id, workOrderID, ordinalNumber, productID, quantity, note);
+    public void insert_wopp_children(int wop_id, int workOrderID, String ordinalNumber, int productID, float quantity, String note, int ship_address) {
+        String insertQuery = "{call insert_wopp_children(?, ?, ?, ?, ?, ?, ? )}";
+        preparedInsertWOPPChildrenQuery(insertQuery, wop_id, workOrderID, ordinalNumber, productID, quantity, note, ship_address);
     }
 
     /**
@@ -236,7 +236,7 @@ public class WorkOrderProductDAO {
      * @param quantity column qty
      * @param note column note
      * */
-    public void preparedInsertWOPPChildrenQuery(String query, int wop_id, int workOrderID, String ordinalNumber, int productID, float quantity, String note) {
+    public void preparedInsertWOPPChildrenQuery(String query, int wop_id, int workOrderID, String ordinalNumber, int productID, float quantity, String note, int ship_address) {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             CallableStatement callableStatement = conn.prepareCall(query);
@@ -246,6 +246,7 @@ public class WorkOrderProductDAO {
             callableStatement.setInt(4, productID);
             callableStatement.setFloat(5, quantity);
             callableStatement.setString(6, note);
+            callableStatement.setInt(7, ship_address);
 
             callableStatement.executeUpdate();
 

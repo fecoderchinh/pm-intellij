@@ -27,6 +27,7 @@ public class PackagingOwnerStringDAO {
             data.setPackagingName(resultSet.getString("packagingName"));
             data.setPack_qty(resultSet.getInt("pack_qty"));
             data.setUnit(resultSet.getString("unit"));
+            data.setNote(resultSet.getString("note"));
         } catch (SQLException ex) {
             jdbcDAO.printSQLException(ex);
         }
@@ -43,7 +44,7 @@ public class PackagingOwnerStringDAO {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             Statement statement = conn.createStatement();
-            String selectAll =  "select a.id as id, b.name as packagingName, c.name as productName, d.size as size, a.pack_qty as pack_qty, e.unit as unit " +
+            String selectAll =  "select a.id as id, b.name as packagingName, c.name as productName, d.size as size, a.pack_qty as pack_qty, e.unit as unit, a.note as note " +
                     "from packaging_product_size a, packaging b, products c, sizes d, types e " +
                     "where a.packaging_id = b.id and a.product_id = c.id and a.size_id = d.id and b.type = e.id " +
                     "order by c.name";
@@ -73,7 +74,7 @@ public class PackagingOwnerStringDAO {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             Statement statement = conn.createStatement();
-            String selectAll =  "select a.id as id, b.name as packagingName, c.name as productName, d.size as size, a.pack_qty as pack_qty, e.unit as unit " +
+            String selectAll =  "select a.id as id, b.name as packagingName, c.name as productName, d.size as size, a.pack_qty as pack_qty, e.unit as unit, a.note as note " +
                     "from packaging_product_size a, packaging b, products c, sizes d, types e " +
                     "where a.packaging_id = b.id and a.product_id = c.id and a.size_id = d.id and b.type = e.id  and c.name = '" + productName +"' " +
                     "order by c.name";

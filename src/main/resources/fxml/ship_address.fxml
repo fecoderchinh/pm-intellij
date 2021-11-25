@@ -7,13 +7,13 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fecoder.controllers.SupplierController">
+<BorderPane prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fecoder.controllers.ShipAddressController">
 
     <top>
         <VBox prefHeight="178.0" prefWidth="1004.0" spacing="10">
             <children>
                 <HBox spacing="10">
-                    <Label text="DANH SÁCH NHÀ CUNG CẤP">
+                    <Label text="ĐỊA CHỈ GIAO HÀNG">
                         <font>
                             <Font size="28.0" />
                         </font>
@@ -26,35 +26,24 @@
                 <HBox>
                     <VBox prefWidth="850">
                         <HBox>
-                            <HBox prefWidth="240.0" spacing="10">
-                                <Label prefHeight="20.0" prefWidth="71.0" text="Mã">
+                            <HBox prefHeight="47.0" prefWidth="452.0" spacing="10">
+                                <Label prefHeight="20.0" prefWidth="71.0" text="Mã Cty">
                                     <font>
                                         <Font size="14.0" />
                                     </font>
                                 </Label>
-                                <TextField fx:id="codeField" promptText="Mã NCC" />
+                                <TextField fx:id="codeField" prefHeight="26.0" prefWidth="359.0" promptText="Mã Cty" />
                                 <padding>
                                     <Insets bottom="10" left="10" right="10" top="10" />
                                 </padding>
                             </HBox>
-                            <HBox prefWidth="340.0" spacing="10">
-                                <Label text="Tên">
+                            <HBox prefHeight="47.0" prefWidth="393.0" spacing="10">
+                                <Label prefHeight="20.0" prefWidth="90.0" text="Tên Cty">
                                     <font>
                                         <Font size="14.0" />
                                     </font>
                                 </Label>
-                                <TextField fx:id="nameField" prefHeight="26.0" prefWidth="224.0" promptText="Tên NCC" />
-                                <padding>
-                                    <Insets bottom="10" left="10" right="10" top="10" />
-                                </padding>
-                            </HBox>
-                            <HBox prefWidth="440.0" spacing="10">
-                                <Label text="Email">
-                                    <font>
-                                        <Font size="14.0" />
-                                    </font>
-                                </Label>
-                                <TextField fx:id="emailField" prefHeight="26.0" prefWidth="312.0" promptText="Địa chỉ email" />
+                                <TextField fx:id="nameField" prefHeight="26.0" prefWidth="316.0" promptText="Tên Cty" />
                                 <padding>
                                     <Insets bottom="10" left="10" right="10" top="10" />
                                 </padding>
@@ -62,47 +51,36 @@
                         </HBox>
                         <HBox>
                             <HBox prefHeight="47.0" prefWidth="451.0" spacing="10">
-                                <Label text="Người liên hệ">
+                                <Label prefHeight="20.0" prefWidth="65.0" text="Thủ kho">
                                     <font>
                                         <Font size="14.0" />
                                     </font>
                                 </Label>
-                                <TextField fx:id="deputyField" prefHeight="26.0" prefWidth="300.0" promptText="Người đại diện" />
+                                <TextField fx:id="stockerField" prefHeight="26.0" prefWidth="355.0" promptText="Thủ kho" />
                                 <padding>
                                     <Insets bottom="10" left="10" right="10" top="10" />
                                 </padding>
                             </HBox>
-                            <HBox prefWidth="240.0" spacing="10">
-                                <Label text="Điện thoại">
+                            <HBox prefHeight="47.0" prefWidth="386.0" spacing="10">
+                                <Label prefHeight="20.0" prefWidth="75.0" text="Điện thoại">
                                     <font>
                                         <Font size="14.0" />
                                     </font>
                                 </Label>
-                                <TextField fx:id="phoneField" prefHeight="26.0" prefWidth="130.0" promptText="Số điện thoại" />
-                                <padding>
-                                    <Insets bottom="10" left="10" right="10" top="10" />
-                                </padding>
-                            </HBox>
-                            <HBox prefHeight="47.0" prefWidth="193.0" spacing="10">
-                                <Label text="Fax">
-                                    <font>
-                                        <Font size="14.0" />
-                                    </font>
-                                </Label>
-                                <TextField fx:id="faxField" prefHeight="26.0" prefWidth="126.0" promptText="Số Fax" />
+                                <TextField fx:id="phoneField" prefHeight="26.0" prefWidth="295.0" promptText="Số điện thoại" />
                                 <padding>
                                     <Insets bottom="10" left="10" right="10" top="10" />
                                 </padding>
                             </HBox>
                         </HBox>
                         <HBox>
-                            <HBox prefWidth="1024" spacing="10">
-                                <Label text="Địa chỉ">
+                            <HBox prefHeight="47.0" prefWidth="862.0" spacing="10">
+                                <Label prefHeight="20.0" prefWidth="137.0" text="Địa chỉ">
                                     <font>
                                         <Font size="14.0" />
                                     </font>
                                 </Label>
-                                <TextField fx:id="addressField" prefHeight="26.0" prefWidth="767.0" promptText="Địa chỉ" />
+                                <TextField fx:id="addressField" prefHeight="26.0" prefWidth="816.0" promptText="Địa chỉ" />
                                 <padding>
                                     <Insets bottom="10" left="10" right="10" top="10" />
                                 </padding>
@@ -142,13 +120,13 @@
                     <ComboBox fx:id="comboBox">
                         <items>
                             <FXCollections fx:factory="observableArrayList">
-                                <String fx:value="Mã" />
-                                <String fx:value="Tên" />
+                                <String fx:value="Mã Cty" />
+                                <String fx:value="Tên Cty" />
                                 <String fx:value="Địa chỉ" />
                             </FXCollections>
                         </items>
                         <value>
-                            <String fx:value="Mã" />
+                            <String fx:value="Tên Cty" />
                         </value>
                     </ComboBox>
                     <TextField fx:id="searchField" promptText="Gõ từ khóa" />
@@ -157,17 +135,14 @@
                     <Button id="reloadData" fx:id="reloadData" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#reloadData" text="TẢI LẠI BẢNG" />
                 </HBox>
             </HBox>
-            <TableView fx:id="dataTable" editable="true" prefHeight="655.0" prefWidth="1215">
+            <TableView fx:id="dataTable" editable="true" prefHeight="655.0" prefWidth="885">
                 <columns>
                     <TableColumn fx:id="idColumn" prefWidth="50.0" text="STT" />
-<!--                    <TableColumn fx:id="fixedAddressColumn" prefWidth="100.0" text="Địa chỉ &#10;giao hàng" />-->
-                    <TableColumn fx:id="codeColumn" prefWidth="70.0" text="Mã" />
-                    <TableColumn fx:id="nameColumn" prefWidth="180.0" text="Tên công ty" />
-                    <TableColumn fx:id="addressColumn" prefWidth="200.0" text="Địa chỉ" />
-                    <TableColumn fx:id="emailColumn" prefWidth="180.0" text="Email" />
-                    <TableColumn fx:id="deputyColumn" prefWidth="180.0" text="Đại diện" />
-                    <TableColumn fx:id="phoneColumn" prefWidth="180.0" text="Điện thoại" />
-                    <TableColumn fx:id="faxColumn" prefWidth="180.0" text="Fax" />
+                    <TableColumn fx:id="nameColumn" prefWidth="200.0" text="Tên công ty" />
+                    <TableColumn fx:id="codeColumn" prefWidth="80.0" text="Mã công ty" />
+                    <TableColumn fx:id="addressColumn" prefWidth="280.0" text="Địa chỉ" />
+                    <TableColumn fx:id="stockerColumn" prefWidth="180.0" text="Thủ kho" />
+                    <TableColumn fx:id="phoneColumn" prefWidth="180.0" text="Số ĐT" />
                 </columns>
             </TableView>
         </VBox>

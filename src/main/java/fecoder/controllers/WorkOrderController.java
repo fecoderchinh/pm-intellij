@@ -209,8 +209,8 @@ public class WorkOrderController implements Initializable {
      * Handle on clearing comnbobox
      * */
     private void resetComboBox() {
-        Year yearData = yearDAO.getDataByID(1);
-        utils.setComboBoxValue(workOrderYear, yearData.getYear());
+        LocalDateTime now = LocalDateTime.now();
+        utils.setComboBoxValue(workOrderYear, now.getYear()+"");
 
         Customer customerData = customerDAO.getDataByID(1);
         utils.setComboBoxValue(workOrderCustomer, customerData.getName());
@@ -544,8 +544,8 @@ public class WorkOrderController implements Initializable {
         workOrderNumberColumn.setCellFactory(TextFieldTableCell.<WorkOrder>forTableColumn());
         workOrderNumberColumn.setOnEditCommit(event -> {
             final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
-            ((WorkOrder) event.getTableView().getItems().get(event.getTablePosition().getRow())).setName(data);
-            workOrderDAO.updateData("name", data, event.getRowValue().getId()+"");
+            ((WorkOrder) event.getTableView().getItems().get(event.getTablePosition().getRow())).setName(data.trim().replace(" ", ""));
+            workOrderDAO.updateData("name", data.trim().replace(" ", ""), event.getRowValue().getId()+"");
             dataTable.refresh();
         });
 
@@ -789,28 +789,34 @@ public class WorkOrderController implements Initializable {
                 File file = directoryChooser.showDialog((Stage)((Node) actionEvent.getSource()).getScene().getWindow());
                 LocalDateTime now = LocalDateTime.now();
 
-                ObservableList<OrderBySupllier> orderBySuplliers = FXCollections.observableArrayList(orderBySupplierDAO.getList(getListID()));
+                if(file != null) {
+                    ObservableList<OrderBySupllier> orderBySuplliers = FXCollections.observableArrayList(orderBySupplierDAO.getList(getListID()));
 
-                if(nv.get(1)) {
-                    for (OrderBySupllier orderBySupllier : orderBySuplliers) {
-                        ExportWordDocument.data2DocOfOrderBySupplier(file, getListID(), orderBySupllier.getsCode(), now.toString());
+                    if(nv.get(1)) {
+                        for (OrderBySupllier orderBySupllier : orderBySuplliers) {
+                            ObservableList<OrderBySupllier> _sa = FXCollections.observableArrayList(orderBySupplierDAO.getListGroupByShippingAddress(getListID()));
+                            for(OrderBySupllier _saEach : _sa) {
+                                ExportWordDocument.data2DocOfOrderBySupplier(file, getListID(), orderBySupllier.getsCode(), _saEach.getShipAddress(), now.toString());
+                            }
+//                            ExportWordDocument.data2DocOfOrderBySupplier(file, getListID(), orderBySupllier.getsCode(), now.toString());
+                        }
                     }
+
+                    String[] _arrayListID = getListID().split(",");
+                    for(int i=0;i<_arrayListID.length; i++) {
+                        workOrderDAO.updateData("order_date", now.getDayOfMonth()+"/"+now.getMonthValue()+"/"+now.getYear(), _arrayListID[i].trim());
+                        WorkOrder workOrder = workOrderDAO.getDataByID(Integer.parseInt(_arrayListID[i].trim()));
+
+                        if(nv.get(0)) {
+                            ExportWordDocument.data2WorksheetOfOrderListDraft(file, workOrder, now.toString());
+                        }
+
+                        if(nv.get(2)) {
+                            ExportWordDocument.data2DocOfOrderList(file, workOrder.getId()+"", now.toString());
+                        }
+                    }
+                    utils.alert("info", Alert.AlertType.INFORMATION, "Xuất file thành công!", "File đã được lưu vào đường dẫn " +file.getPath()).showAndWait();
                 }
-
-                String[] _arrayListID = getListID().split(",");
-                for(int i=0;i<_arrayListID.length; i++) {
-                    workOrderDAO.updateData("order_date", now.getDayOfMonth()+"/"+now.getMonthValue()+"/"+now.getYear(), _arrayListID[i].trim());
-                    WorkOrder workOrder = workOrderDAO.getDataByID(Integer.parseInt(_arrayListID[i].trim()));
-
-                    if(nv.get(0)) {
-                        ExportWordDocument.data2WorksheetOfOrderListDraft(file, workOrder, now.toString());
-                    }
-
-                    if(nv.get(2)) {
-                        ExportWordDocument.data2DocOfOrderList(file, workOrder.getId()+"", now.toString());
-                    }
-                }
-                utils.alert("info", Alert.AlertType.INFORMATION, "Xuất file thành công!", "File đã được lưu vào đường dẫn " +file.getPath()).showAndWait();
             } catch(Exception ex) {
                 utils.alert("err", Alert.AlertType.ERROR, "Lỗi", ex.getMessage()).showAndWait();
             }

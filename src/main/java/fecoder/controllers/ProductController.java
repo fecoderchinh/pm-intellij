@@ -418,7 +418,7 @@ public class ProductController implements Initializable {
 
             managePackaging.setOnAction((ActionEvent event) -> {
                 Product product = dataTable.getSelectionModel().getSelectedItem();
-                loadSingleProductScene((Stage) managePackaging.getParentPopup().getOwnerWindow(),"/fxml/product_packaging.fxml", "Chi tiết mặt hàng: "+product.getName(), product);
+                loadSingleProductScene((Stage) managePackaging.getParentPopup().getOwnerWindow(),"/fxml/product_packaging.fxml", "Chi tiết mặt hàng: "+product.getDescription(), product);
             });
             contextMenu.getItems().add(managePackaging);
 

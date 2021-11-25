@@ -8,6 +8,7 @@
     <top>
         <HBox alignment="CENTER_RIGHT" prefHeight="36.0" prefWidth="966.0" spacing="10" BorderPane.alignment="CENTER">
             <children>
+                <Button id="shipAddress" fx:id="shipAddress" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="Địa chỉ giao hàng" />
                 <Button id="packagingOwner" fx:id="packagingOwner" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="Bảng thống kê" />
                 <!--                                      <Button id="newWindowButton" fx:id="newWindowButton" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="New Window" />-->
             </children>

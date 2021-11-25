@@ -1,6 +1,7 @@
 package fecoder.models;
 
 public class OrderBySupllier {
+    int woppID;
     int woID;
     String woName;
     String pName;
@@ -19,10 +20,12 @@ public class OrderBySupllier {
     String sDeputy;
     String sPhone;
     String sFax;
+    String shipAddress;
 
     public OrderBySupllier() {}
 
     public OrderBySupllier(
+            int woppID,
             int woID,
             String woName,
             String pName,
@@ -40,8 +43,10 @@ public class OrderBySupllier {
             String sAddress,
             String sDeputy,
             String sPhone,
-            String sFax
+            String sFax,
+            String shipAddress
     ) {
+        this.woppID = woppID;
         this.woID = woID;
         this.woName = woName;
         this.pName = pName;
@@ -60,6 +65,15 @@ public class OrderBySupllier {
         this.sDeputy = sDeputy;
         this.sPhone = sPhone;
         this.sFax = sFax;
+        this.shipAddress = shipAddress;
+    }
+
+    public int getWoppID() {
+        return woppID;
+    }
+
+    public void setWoppID(int woppID) {
+        this.woppID = woppID;
     }
 
     public int getWoID() {
@@ -204,5 +218,13 @@ public class OrderBySupllier {
 
     public void setsFax(String sFax) {
         this.sFax = sFax;
+    }
+
+    public String getShipAddress() {
+        return shipAddress;
+    }
+
+    public void setShipAddress(String shipAddress) {
+        this.shipAddress = shipAddress;
     }
 }

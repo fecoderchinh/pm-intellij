@@ -1,10 +1,18 @@
 package fecoder.controllers;
 
 import fecoder.DAO.SupplierDAO;
+import fecoder.models.Packaging;
+import fecoder.models.PackagingOwnerString;
+import fecoder.models.Size;
 import fecoder.models.Supplier;
 import fecoder.utils.Utils;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -14,11 +22,14 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.CheckBoxTableCell;
+import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 
 import javafx.scene.control.TableColumn;
 import javafx.scene.text.Text;
+import javafx.util.Callback;
 
 import java.net.URL;
 import java.util.Optional;
@@ -35,6 +46,7 @@ public class SupplierController implements Initializable {
     public TableColumn<Supplier, String> deputyColumn;
     public TableColumn<Supplier, String> phoneColumn;
     public TableColumn<Supplier, String> faxColumn;
+//    public TableColumn<Supplier, String> fixedAddressColumn;
 
     public TextField codeField;
     public TextField nameField;
@@ -375,6 +387,22 @@ public class SupplierController implements Initializable {
             supplierDAO.updateData("code", data, event.getRowValue().getId());
             dataTable.refresh();
         });
+
+//        ObservableList<String> fixedAddressList = FXCollections.observableArrayList("Cố định", "Thay đổi");
+
+//        fixedAddressColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Supplier, String>, ObservableValue<String>>() {
+//            @Override
+//            public ObservableValue<String> call(TableColumn.CellDataFeatures<Supplier, String> sizeCellDataFeatures) {
+//                return new SimpleStringProperty(sizeCellDataFeatures.getValue().isFixed_address() ? "Cố định" : "Thay đổi");
+//            }
+//        });
+//        fixedAddressColumn.setCellFactory(ComboBoxTableCell.forTableColumn(fixedAddressList));
+//        fixedAddressColumn.setOnEditCommit(event -> {
+//            final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
+//            ((Supplier) event.getTableView().getItems().get(event.getTablePosition().getRow())).setFixed_address(data.equals("Cố định"));
+//            supplierDAO.updateDataBoolean("fixed_ship_address", data.equals("Cố định"), event.getRowValue().getId());
+//            dataTable.refresh();
+//        });
 
         dataTable.setRowFactory((TableView<Supplier> tableView) -> {
             final TableRow<Supplier> row = new TableRow<>();

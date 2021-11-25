@@ -114,8 +114,9 @@ public class SizeController implements Initializable {
         ObservableList<Size> list = FXCollections.observableArrayList(DAO.getList());
         FilteredList<Size> filteredList = new FilteredList<>(list, p -> true);
 
-        searchField.textProperty()
+        sizeField.textProperty()
                 .addListener((observable, oldValue, newValue) -> {
+                    searchField.setText("");
                     filteredList.setPredicate(str -> {
                         if (newValue == null || newValue.isEmpty())
                             return true;
@@ -123,6 +124,19 @@ public class SizeController implements Initializable {
                         return str.getSize().toLowerCase().contains
                                 (lowerCaseFilter);
                     });
+                });
+
+        searchField.textProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    if(sizeField.getText().isEmpty()) {
+                        filteredList.setPredicate(str -> {
+                            if (newValue == null || newValue.isEmpty())
+                                return true;
+                            String lowerCaseFilter = newValue.toLowerCase();
+                            return str.getSize().toLowerCase().contains
+                                    (lowerCaseFilter);
+                        });
+                    }
                 });
 
         SortedList<Size> sortedList = new SortedList<>(filteredList);

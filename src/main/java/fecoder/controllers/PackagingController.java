@@ -216,23 +216,33 @@ public class PackagingController implements Initializable {
      * Handle on clearing comnbobox
      * */
     private void resetComboBox() {
-        utils.setComboBoxValue(typeComboBox, "Loại BB");
-        utils.setComboBoxValue(suplierComboBox, "Mã NCC");
+        utils.setComboBoxValue(typeComboBox, typeDAO.getDataByID(1).getName());
+        utils.setComboBoxValue(suplierComboBox, supplierDAO.getDataByID(5).getCode());
     }
 
     /**
      * Handle on clearing comnbobox
      * */
     private void getComboBoxData(Packaging packaging) {
-        if(!isEditableComboBox) {
-            typeComboBox.getSelectionModel().select(packaging.getType());
-            suplierComboBox.getSelectionModel().select(packaging.getSuplier());
+        if(!suplierComboBox.isEditable()) {
+            suplierComboBox.getSelectionModel().select(supplierDAO.getDataByID(packaging.getSuplier()));
         } else {
-            Type _typeModel = typeDAO.getDataByID(packaging.getType());
-            typeComboBox.getEditor().setText(_typeModel.getName());
             Supplier _supplierModel = supplierDAO.getDataByID(packaging.getSuplier());
             suplierComboBox.getEditor().setText(_supplierModel.getCode());
         }
+
+        if(!typeComboBox.isEditable()) {
+            typeComboBox.getSelectionModel().select(typeDAO.getDataByID(packaging.getType()));
+        } else {
+            Type _typeModel = typeDAO.getDataByID(packaging.getType());
+            typeComboBox.getEditor().setText(_typeModel.getName());
+        }
+    }
+
+    /**
+     * Hiding the ComboBox while on updating stage.
+     * */
+    private void hideComboBoxForUpdatingData() {
     }
 
     /**
@@ -366,8 +376,8 @@ public class PackagingController implements Initializable {
         utils.disableKeyEnterOnTextField(stockField);
         utils.disableKeyEnterOnTextField(noteField);
 
-        utils.disableKeyEnterOnTextFieldComboBox(typeComboBox, false);
-        utils.disableKeyEnterOnTextFieldComboBox(suplierComboBox, false);
+        utils.disableKeyEnterOnTextFieldComboBox(typeComboBox, true);
+        utils.disableKeyEnterOnTextFieldComboBox(suplierComboBox, true);
     }
 
     /**
@@ -380,6 +390,8 @@ public class PackagingController implements Initializable {
      * - Implementing contextMenu on right click <br>
      * */
     public void loadView(){
+        resetComboBox();
+
         anchorLabel.setText("No ID Selected");
         resetFields();
 
@@ -876,7 +888,9 @@ public class PackagingController implements Initializable {
 
             editItem.setOnAction((ActionEvent event) -> {
                 Packaging packaging = dataTable.getSelectionModel().getSelectedItem();
+//                System.out.println(packaging.getId() + " " + packaging.getType() + " " + packaging.getSuplier());
                 getPackaging(packaging);
+                hideComboBoxForUpdatingData();
             });
             contextMenu.getItems().add(editItem);
 

@@ -20,6 +20,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -173,6 +174,8 @@ public class Utils {
             exportOrderBySupplier.setSelected(true);
             exportOrderList.setSelected(true);
         });
+
+        exportDraft.setSelected(true);
 
         Button okButton = new Button("XUẤT");
         okButton.setDefaultButton(true);
@@ -453,6 +456,7 @@ public class Utils {
     public Alert alert(String type, Alert.AlertType alertType, String alertLabel, String alertDesc) {
         Alert alert;
         String typeLabel = null, typeDesc = null;
+        Text text;
 
         switch (type) {
             case "del":
@@ -460,36 +464,48 @@ public class Utils {
                 typeLabel = alertLabel != null ? alertLabel : "Xóa ";
                 typeDesc = alertDesc != null ? alertDesc : "Lưu ý: Dữ liệu sẽ không thể khôi phục lại sau khi xóa, bạn có chắc muốn tiếp tục?";
                 alert = new Alert(alertType);
+                text = new Text(typeDesc);
+                text.setWrappingWidth(500);
+                alert.getDialogPane().setPadding(new Insets(0, 10, 0, 10));
                 alert.setTitle(typeLabel);
                 alert.setHeaderText(typeLabel);
-                alert.setContentText(typeDesc);
+                alert.getDialogPane().setContent(text);
                                 break;
             case "update":
             case "edit":
                 typeLabel = alertLabel != null ? alertLabel : "Cập nhật thông tin cho ";
                 typeDesc = alertDesc != null ? alertDesc : "Nhấn OK để xác nhận thực hiện hành động.";
                 alert = new Alert(alertType);
+                text = new Text(typeDesc);
+                text.setWrappingWidth(500);
+                alert.getDialogPane().setPadding(new Insets(0, 10, 0, 10));
                 alert.setTitle(typeLabel);
                 alert.setHeaderText(typeLabel);
-                alert.setContentText(typeDesc);
+                alert.getDialogPane().setContent(text);
                 break;
             case "err":
             case "error":
                 typeLabel = alertLabel != null ? alertLabel : "Đã xảy ra lỗi!";
                 typeDesc = alertDesc != null ? alertDesc : "Đã xảy ra lỗi trong quá trình nhập.";
                 alert = new Alert(alertType);
+                text = new Text(typeDesc);
+                text.setWrappingWidth(500);
+                alert.getDialogPane().setPadding(new Insets(0, 10, 0, 10));
                 alert.setTitle(typeLabel);
                 alert.setHeaderText(typeLabel);
-                alert.setContentText(typeDesc);
+                alert.getDialogPane().setContent(text);
                 break;
             case "info":
             case "success":
                 typeLabel = alertLabel != null ? alertLabel : "Chúc mừng!";
                 typeDesc = alertDesc != null ? alertDesc : "Thao tác thành công, nhấn OK và kiểm tra kết quả!";
                 alert = new Alert(alertType);
+                text = new Text(typeDesc);
+                text.setWrappingWidth(500);
+                alert.getDialogPane().setPadding(new Insets(0, 10, 0, 10));
                 alert.setTitle(typeLabel);
                 alert.setHeaderText(typeLabel);
-                alert.setContentText(typeDesc);
+                alert.getDialogPane().setContent(text);
                 break;
             default:
                 typeLabel = alertLabel != null ? alertLabel : "Không xác định được hành động.";
@@ -597,7 +613,7 @@ public class Utils {
      * @param bold XWPFRun setBold()
      * @param paragraphAlignment XWPFParagraph setAlignment()
      * */
-    public void setHeaderRowforSingleCell(XWPFTableCell cell, String text, int fontsize, boolean addBreak, boolean bold, ParagraphAlignment paragraphAlignment) {
+    public void setHeaderRowforSingleCell(XWPFTableCell cell, String text, int fontsize, boolean addBreak, boolean bold, ParagraphAlignment paragraphAlignment, UnderlinePatterns isUnderline) {
         XWPFParagraph tempParagraph = cell.getParagraphs().get(0);
         tempParagraph.setSpacingBefore(80);
         tempParagraph.setSpacingAfter(50);
@@ -605,10 +621,11 @@ public class Utils {
         tempParagraph.setIndentationRight(100);
         tempParagraph.setAlignment(paragraphAlignment != null ? paragraphAlignment : ParagraphAlignment.LEFT);
         XWPFRun tempRun = tempParagraph.createRun();
-        tempRun.setFontFamily("Arial");
+        tempRun.setFontFamily("Calibri (Body)");
         tempRun.setFontSize(fontsize);
         tempRun.setColor("000000");
         tempRun.setBold(bold);
+        tempRun.setUnderline(isUnderline);
         tempRun.setText(text);
         if (addBreak) {
             tempRun.addBreak();

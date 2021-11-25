@@ -23,6 +23,8 @@ public class OrderBySupplierDAO {
     private OrderBySupllier createData(ResultSet resultSet) {
         OrderBySupllier data = new OrderBySupllier();
         try {
+            data.setWoppID(resultSet.getInt("woppID"));
+            data.setWoID(resultSet.getInt("woID"));
             data.setWoName(resultSet.getString("woName"));
             data.setpName(resultSet.getString("pName"));
             data.setpIsPrinted(resultSet.getString("pIsPrinted"));
@@ -40,6 +42,7 @@ public class OrderBySupplierDAO {
             data.setsDeputy(resultSet.getString("sDeputy"));
             data.setsPhone(resultSet.getString("sPhone"));
             data.setsFax(resultSet.getString("sFax"));
+            data.setShipAddress(resultSet.getString("shipAddress"));
         } catch (SQLException ex) {
             jdbcDAO.printSQLException(ex);
         }
@@ -56,49 +59,127 @@ public class OrderBySupplierDAO {
     public List<OrderBySupllier> getList(String idList) {
         List<OrderBySupllier> list = new ArrayList<>();
         try {
-            Connection conn = ConnectionUtils.getMyConnection();
-            Statement statement = conn.createStatement();
-            String selectAll =  "select" +
-                    " wo.id as woID," +
-                    " group_concat(distinct wo.name separator \"+\") as woName, " +
-                    " p.name as pName," +
-                    " wopp.printed as pIsPrinted," +
-                    " p.specifications as pSpecs," +
-                    " p.dimension as pDimension," +
-                    " t.unit as pUnit," +
-                    " sum(wopp.work_order_qty) as pDesireQuantity," +
-                    " sum(wopp.actual_qty) as pTotal," +
-                    " sum(wopp.stock) as pStock," +
-                    " sum(wopp.residual_qty) as pResidualQuantity," +
-                    " s.code as sCode," +
-                    " p.code as pCode," +
-                    " s.address as sAddress," +
-                    " s.deputy as sDeputy," +
-                    " s.name as sName," +
-                    " s.phone as sPhone," +
-                    " s.fax as sFax " +
-                    "from " +
-                    " work_order_product_packaging wopp," +
-                    " work_order wo," +
-                    " packaging p," +
-                    " types t ," +
-                    " supliers s " +
-                    "where " +
-                    " wopp.work_order_id = wo.id" +
-                    " and wopp.packaging_id = p.id" +
-                    " and p.`type` = t.id" +
-                    " and p.suplier = s.id" +
-                    " and wopp.actual_qty > 0 " +
-                    "and wopp.work_order_id in (" + idList + ") "+
-                    "group by " +
-                    " wopp.packaging_id";
-            ResultSet resultSet = statement.executeQuery(selectAll);
-            while(resultSet.next()) {
-                OrderBySupllier data = createData(resultSet);
-                list.add(data);
+            if(!idList.isEmpty()) {
+                Connection conn = ConnectionUtils.getMyConnection();
+                Statement statement = conn.createStatement();
+                String selectAll =  "select" +
+                        " wopp.id as woppID," +
+                        " wo.id as woID," +
+                        " group_concat(distinct wo.name separator \"+\") as woName, " +
+                        " p.name as pName," +
+                        " wopp.printed as pIsPrinted," +
+                        " p.specifications as pSpecs," +
+                        " p.dimension as pDimension," +
+                        " t.unit as pUnit," +
+                        " sum(wopp.work_order_qty) as pDesireQuantity," +
+                        " sum(wopp.actual_qty) as pTotal," +
+                        " sum(wopp.stock) as pStock," +
+                        " sum(wopp.residual_qty) as pResidualQuantity," +
+                        " s.code as sCode," +
+                        " p.code as pCode," +
+                        " s.address as sAddress," +
+                        " s.deputy as sDeputy," +
+                        " s.name as sName," +
+                        " s.phone as sPhone," +
+                        " s.fax as sFax, " +
+                        " sa.code_address as shipAddress " +
+                        "from " +
+                        " work_order_product_packaging wopp," +
+                        " work_order wo," +
+                        " packaging p," +
+                        " types t ," +
+                        " supliers s, " +
+                        " ship_address sa " +
+                        "where " +
+                        " wopp.work_order_id = wo.id" +
+                        " and wopp.packaging_id = p.id" +
+                        " and p.`type` = t.id" +
+                        " and p.suplier = s.id" +
+                        " and wopp.ship_address = sa.id" +
+                        " and wopp.actual_qty > 0 " +
+                        "and wopp.work_order_id in (" + idList + ") "+
+                        "group by " +
+                        " wopp.packaging_id";
+                ResultSet resultSet = statement.executeQuery(selectAll);
+                while(resultSet.next()) {
+                    OrderBySupllier data = createData(resultSet);
+                    list.add(data);
+                }
+                resultSet.close();
+                conn.close();
+            } else {
+                Utils utils = new Utils();
+                utils.alert("err", Alert.AlertType.ERROR, "Lỗi", "Chưa chọn LSX").showAndWait();
             }
-            resultSet.close();
-            conn.close();
+        } catch (ClassNotFoundException | SQLException ex) {
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
+        }
+        return list;
+    }
+
+    /**
+     * Getting all records of table
+     *
+     * @param idList list of work_order_product_packaging.work_order_id
+     *
+     * @return list
+     * */
+    public List<OrderBySupllier> getListGroupByShippingAddress(String idList) {
+        List<OrderBySupllier> list = new ArrayList<>();
+        try {
+            if(!idList.isEmpty()) {
+                Connection conn = ConnectionUtils.getMyConnection();
+                Statement statement = conn.createStatement();
+                String selectAll =  "select" +
+                        " wopp.id as woppID," +
+                        " wo.id as woID," +
+                        " group_concat(distinct wo.name separator \"+\") as woName, " +
+                        " p.name as pName," +
+                        " wopp.printed as pIsPrinted," +
+                        " p.specifications as pSpecs," +
+                        " p.dimension as pDimension," +
+                        " t.unit as pUnit," +
+                        " sum(wopp.work_order_qty) as pDesireQuantity," +
+                        " sum(wopp.actual_qty) as pTotal," +
+                        " sum(wopp.stock) as pStock," +
+                        " sum(wopp.residual_qty) as pResidualQuantity," +
+                        " s.code as sCode," +
+                        " p.code as pCode," +
+                        " s.address as sAddress," +
+                        " s.deputy as sDeputy," +
+                        " s.name as sName," +
+                        " s.phone as sPhone," +
+                        " s.fax as sFax, " +
+                        " sa.code_address as shipAddress " +
+                        "from " +
+                        " work_order_product_packaging wopp," +
+                        " work_order wo," +
+                        " packaging p," +
+                        " types t ," +
+                        " supliers s, " +
+                        " ship_address sa " +
+                        "where " +
+                        " wopp.work_order_id = wo.id" +
+                        " and wopp.packaging_id = p.id" +
+                        " and p.`type` = t.id" +
+                        " and p.suplier = s.id" +
+                        " and wopp.ship_address = sa.id" +
+                        " and wopp.actual_qty > 0 " +
+                        "and wopp.work_order_id in (" + idList + ") "+
+                        "group by " +
+                        " sa.code_address";
+                ResultSet resultSet = statement.executeQuery(selectAll);
+                while(resultSet.next()) {
+                    OrderBySupllier data = createData(resultSet);
+                    list.add(data);
+                }
+                resultSet.close();
+                conn.close();
+            } else {
+                Utils utils = new Utils();
+                utils.alert("err", Alert.AlertType.ERROR, "Lỗi", "Chưa chọn LSX").showAndWait();
+            }
         } catch (ClassNotFoundException | SQLException ex) {
             assert ex instanceof SQLException;
             jdbcDAO.printSQLException((SQLException) ex);
@@ -111,56 +192,67 @@ public class OrderBySupplierDAO {
      *
      * @param idList list of work_order_product_packaging.work_order_id
      * @param code suppliers.code
+     * @param shippingCode ship_address.code_address
      *
      * @return list
      * */
-    public List<OrderBySupllier> getListBySupplierCode(String idList, String code) {
+    public List<OrderBySupllier> getListBySupplierCode(String idList, String code, String shippingCode) {
         List<OrderBySupllier> list = new ArrayList<>();
         try {
-            Connection conn = ConnectionUtils.getMyConnection();
-            Statement statement = conn.createStatement();
-            String selectAll =  "select" +
-                    " wo.id as woID," +
-                    " group_concat(distinct wo.name separator \"+\") as woName, " +
-                    " p.name as pName," +
-                    " wopp.printed as pIsPrinted," +
-                    " p.specifications as pSpecs," +
-                    " p.dimension as pDimension," +
-                    " t.unit as pUnit," +
-                    " sum(wopp.work_order_qty) as pDesireQuantity," +
-                    " sum(wopp.actual_qty) as pTotal," +
-                    " sum(wopp.stock) as pStock," +
-                    " sum(wopp.residual_qty) as pResidualQuantity," +
-                    " s.code as sCode," +
-                    " p.code as pCode," +
-                    " s.address as sAddress," +
-                    " s.deputy as sDeputy," +
-                    " s.name as sName," +
-                    " s.phone as sPhone," +
-                    " s.fax as sFax " +
-                    "from " +
-                    " work_order_product_packaging wopp," +
-                    " work_order wo," +
-                    " packaging p," +
-                    " types t ," +
-                    " supliers s " +
-                    "where " +
-                    " wopp.work_order_id = wo.id" +
-                    " and wopp.packaging_id = p.id" +
-                    " and p.`type` = t.id" +
-                    " and p.suplier = s.id" +
-                    " and wopp.actual_qty > 0 " +
-                    "and wopp.work_order_id in (" + idList + ") "+
-                    " and s.code = '" + code + "' " +
-                    "group by " +
-                    " wopp.packaging_id";
-            ResultSet resultSet = statement.executeQuery(selectAll);
-            while(resultSet.next()) {
-                OrderBySupllier data = createData(resultSet);
-                list.add(data);
+            if(!idList.isEmpty()) {
+                Connection conn = ConnectionUtils.getMyConnection();
+                Statement statement = conn.createStatement();
+                String selectAll =  "select" +
+                        " wopp.id as woppID," +
+                        " wo.id as woID," +
+                        " group_concat(distinct wo.name separator \"+\") as woName, " +
+                        " p.name as pName," +
+                        " wopp.printed as pIsPrinted," +
+                        " p.specifications as pSpecs," +
+                        " p.dimension as pDimension," +
+                        " t.unit as pUnit," +
+                        " sum(wopp.work_order_qty) as pDesireQuantity," +
+                        " sum(wopp.actual_qty) as pTotal," +
+                        " sum(wopp.stock) as pStock," +
+                        " sum(wopp.residual_qty) as pResidualQuantity," +
+                        " s.code as sCode," +
+                        " p.code as pCode," +
+                        " s.address as sAddress," +
+                        " s.deputy as sDeputy," +
+                        " s.name as sName," +
+                        " s.phone as sPhone," +
+                        " s.fax as sFax, " +
+                        " sa.code_address as shipAddress " +
+                        "from " +
+                        " work_order_product_packaging wopp," +
+                        " work_order wo," +
+                        " packaging p," +
+                        " types t ," +
+                        " supliers s, " +
+                        " ship_address sa " +
+                        "where " +
+                        " wopp.work_order_id = wo.id" +
+                        " and wopp.packaging_id = p.id" +
+                        " and p.`type` = t.id" +
+                        " and p.suplier = s.id" +
+                        " and wopp.ship_address = sa.id" +
+                        " and wopp.actual_qty > 0 " +
+                        "and wopp.work_order_id in (" + idList + ") "+
+                        " and s.code = '" + code + "' " +
+                        " and sa.code_address = '" + shippingCode + "' " +
+                        "group by " +
+                        " wopp.packaging_id, sa.code_address";
+                ResultSet resultSet = statement.executeQuery(selectAll);
+                while(resultSet.next()) {
+                    OrderBySupllier data = createData(resultSet);
+                    list.add(data);
+                }
+                resultSet.close();
+                conn.close();
+            } else {
+                Utils utils = new Utils();
+                utils.alert("err", Alert.AlertType.ERROR, "Lỗi", "Chưa chọn LSX").showAndWait();
             }
-            resultSet.close();
-            conn.close();
         } catch (ClassNotFoundException | SQLException ex) {
             assert ex instanceof SQLException;
             jdbcDAO.printSQLException((SQLException) ex);

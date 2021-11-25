@@ -39,6 +39,14 @@
                     <TextField fx:id="packQtyField" prefWidth="150" promptText="Số lượng" />
                 </HBox>
                 <HBox spacing="10">
+                    <Label prefHeight="20.0" prefWidth="62.0" text="Ghi chú">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </Label>
+                    <TextField fx:id="noteField" prefHeight="26.0" prefWidth="481.0" promptText="Ghi chú" />
+                </HBox>
+                <HBox spacing="10">
                     <Button fx:id="insertButton" mnemonicParsing="false" onAction="#insertButton" prefHeight="30.0" prefWidth="60.0" text="THÊM" />
                     <Button fx:id="updateButton" mnemonicParsing="false" onAction="#updateButton" prefHeight="30.0" prefWidth="80.0" text="CẬP NHẬT" />
                     <Button fx:id="clearButton" mnemonicParsing="false" onAction="#clearButton" prefHeight="30.0" prefWidth="89.0" text="XÓA Ô" />
@@ -80,9 +88,10 @@
             <TableView fx:id="dataTable" editable="true" maxWidth="1.7976931348623157E308" prefHeight="652.0" prefWidth="730.0">
                 <columns>
                     <TableColumn fx:id="idColumn" prefWidth="40.0" text="STT" />
-                    <TableColumn fx:id="sizeColumn" prefWidth="200.0" text="Size" />
+                    <TableColumn fx:id="sizeColumn" prefWidth="100.0" text="Size" />
                     <TableColumn fx:id="packagingColumn" prefWidth="220.0" text="Bao bì" />
-                    <TableColumn fx:id="packingQtyColumn" prefWidth="220.0" text="Số lượng /thùng" />
+                    <TableColumn fx:id="packingQtyColumn" prefWidth="120.0" text="Số lượng /thùng" />
+                    <TableColumn fx:id="noteColumn" prefWidth="200.0" text="Ghi chú" />
                 </columns>
             </TableView>
         </VBox>

@@ -11,6 +11,7 @@ public class WorkOrderProductPackaging {
     float actual_qty;
     float residual_qty;
     String printed;
+    int ship_address;
 
     public WorkOrderProductPackaging() {}
 
@@ -94,6 +95,14 @@ public class WorkOrderProductPackaging {
         this.printed = printed;
     }
 
+    public int getShip_address() {
+        return ship_address;
+    }
+
+    public void setShip_address(int ship_address) {
+        this.ship_address = ship_address;
+    }
+
     public WorkOrderProductPackaging(
             int id,
             int wop_id,
@@ -104,7 +113,8 @@ public class WorkOrderProductPackaging {
             float stock,
             float actual_qty,
             float residual_qty,
-            String printed
+            String printed,
+            int ship_address
     ) {
         this.id = id;
         this.wop_id = wop_id;
@@ -116,5 +126,6 @@ public class WorkOrderProductPackaging {
         this.actual_qty = actual_qty;
         this.residual_qty = residual_qty;
         this.printed = printed;
+        this.ship_address = ship_address;
     }
 }

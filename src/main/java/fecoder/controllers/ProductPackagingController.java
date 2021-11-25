@@ -22,9 +22,11 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
+import javafx.util.converter.FloatStringConverter;
 import javafx.util.converter.IntegerStringConverter;
 
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -43,9 +45,11 @@ public class ProductPackagingController implements Initializable {
     public TableColumn<PackagingOwnerString, Integer> idColumn;
     public TableColumn<PackagingOwnerString, Size> sizeColumn;
     public TableColumn<PackagingOwnerString, String> packagingColumn;
-    public TableColumn<PackagingOwnerString, Integer> packingQtyColumn;
+    public TableColumn<PackagingOwnerString, Float> packingQtyColumn;
+    public TableColumn<PackagingOwnerString, String> noteColumn;
     public Label anchorLabel;
     public Label anchorData;
+    public TextField noteField;
 
     private boolean isEditableComboBox = false;
     private boolean isUpdating = false;
@@ -80,7 +84,7 @@ public class ProductPackagingController implements Initializable {
         Size sizeInsertData = sizeDAO.getDataByName(sizeValue);
         Packaging packagingInsertData = packagingDAO.getDataByName(packagingValue);
         try {
-            packagingOwnerDAO.insert(this.product.getId(), sizeInsertData.getId(), packagingInsertData.getId(), Integer.parseInt(packQtyField.getText()));
+            packagingOwnerDAO.insert(this.product.getId(), sizeInsertData.getId(), packagingInsertData.getId(), Float.parseFloat(packQtyField.getText()), noteField.getText());
             clearFields();
             reload();
         } catch (NumberFormatException e) {
@@ -94,7 +98,7 @@ public class ProductPackagingController implements Initializable {
         Size sizeInsertData = sizeDAO.getDataByName(sizeValue);
         Packaging packagingInsertData = packagingDAO.getDataByName(packagingValue);
         try {
-            packagingOwnerDAO.update(this.product.getId(), sizeInsertData.getId(), packagingInsertData.getId(), Integer.parseInt(packQtyField.getText()), Integer.parseInt(anchorData.getText()));
+            packagingOwnerDAO.update(this.product.getId(), sizeInsertData.getId(), packagingInsertData.getId(), Float.parseFloat(packQtyField.getText()), noteField.getText(),Integer.parseInt(anchorData.getText()));
             clearFields();
             reload();
         } catch (NumberFormatException e) {
@@ -187,6 +191,7 @@ public class ProductPackagingController implements Initializable {
         utils.disableKeyEnterOnTextFieldComboBox(packagingComboBox, true);
 
         utils.disableKeyEnterOnTextField(packQtyField);
+        utils.disableKeyEnterOnTextField(noteField);
     }
 
     /**
@@ -196,8 +201,27 @@ public class ProductPackagingController implements Initializable {
         Size sizeData = sizeDAO.getDataByName("16/20");
         utils.setComboBoxValue(sizeComboBox, sizeData.getSize());
 
-        Packaging packagingData = packagingDAO.getDataByID(1);
+        Packaging packagingData = packagingDAO.getDataByID(7);
         utils.setComboBoxValue(packagingComboBox, packagingData.getName());
+    }
+
+    /**
+     * Handle on clearing comnbobox
+     * */
+    private void getComboBoxData(PackagingOwner data) {
+        if(!sizeComboBox.isEditable()) {
+            sizeComboBox.getSelectionModel().select(sizeDAO.getDataByID(data.getSize_id()));
+        } else {
+            Size _sM = sizeDAO.getDataByID(data.getSize_id());
+            sizeComboBox.getEditor().setText(_sM.getSize());
+        }
+
+        if(!packagingComboBox.isEditable()) {
+            packagingComboBox.getSelectionModel().select(packagingDAO.getDataByID(data.getPackaging_id()));
+        } else {
+            Packaging _pM = packagingDAO.getDataByID(data.getPackaging_id());
+            packagingComboBox.getEditor().setText(_pM.getName());
+        }
     }
 
     /**
@@ -291,17 +315,10 @@ public class ProductPackagingController implements Initializable {
      * @param packagingOwner - the packaging data
      * */
     private void getData(PackagingOwner packagingOwner) {
-        if(!isEditableComboBox) {
-            sizeComboBox.getSelectionModel().select(packagingOwner.getSize_id());
-            packagingComboBox.getSelectionModel().select(packagingOwner.getPackaging_id());
-        } else {
-            Size sizeData = sizeDAO.getDataByID(packagingOwner.getSize_id());
-            sizeComboBox.getEditor().setText(sizeData.getSize());
-            Packaging packagingData = packagingDAO.getDataByID(packagingOwner.getPackaging_id());
-            packagingComboBox.getEditor().setText(packagingData.getName());
-        }
+        getComboBoxData(packagingOwner);
 
         packQtyField.setText(packagingOwner.getPack_qty()+"");
+        noteField.setText(packagingOwner.getNote());
         anchorLabel.setText("ID Selected: ");
         anchorData.setText(""+packagingOwner.getId());
         this.isUpdating = true;
@@ -311,10 +328,10 @@ public class ProductPackagingController implements Initializable {
      * Hiding the Combobox while on updating stage.
      * */
     private void hideComboBoxForUpdatingData() {
-        if(isUpdating) {
-            sizeComboBox.hide();
-            packagingComboBox.hide();
-        }
+//        if(isUpdating) {
+//            sizeComboBox.hide();
+//            packagingComboBox.hide();
+//        }
     }
 
     /**
@@ -476,11 +493,20 @@ public class ProductPackagingController implements Initializable {
         });
 
         packingQtyColumn.setCellValueFactory(new PropertyValueFactory<>("pack_qty"));
-        packingQtyColumn.setCellFactory(TextFieldTableCell.<PackagingOwnerString, Integer>forTableColumn(new IntegerStringConverter()));
+        packingQtyColumn.setCellFactory(TextFieldTableCell.<PackagingOwnerString, Float>forTableColumn(new FloatStringConverter()));
         packingQtyColumn.setOnEditCommit(event -> {
-            final Integer data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
+            final float data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
             ((PackagingOwnerString) event.getTableView().getItems().get(event.getTablePosition().getRow())).setPack_qty(data);
-            packagingOwnerDAO.updateDataInteger("pack_qty", data, event.getRowValue().getId());
+            packagingOwnerDAO.updateDataFloat("pack_qty", data, event.getRowValue().getId());
+            dataTable.refresh();
+        });
+
+        noteColumn.setCellValueFactory(new PropertyValueFactory<>("note"));
+        noteColumn.setCellFactory(TextFieldTableCell.<PackagingOwnerString>forTableColumn());
+        noteColumn.setOnEditCommit(event -> {
+            final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
+            ((PackagingOwnerString) event.getTableView().getItems().get(event.getTablePosition().getRow())).setNote(data);
+            packagingOwnerDAO.updateData("note", data, event.getRowValue().getId());
             dataTable.refresh();
         });
 

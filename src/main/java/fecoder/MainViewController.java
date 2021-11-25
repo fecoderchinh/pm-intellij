@@ -22,6 +22,7 @@ public class MainViewController {
 //    public Button packagingOwner;
     public Button workOrder;
     public Button packagingOwner;
+    public Button shipAddress;
     @FXML private Button logoutButton;
     @FXML private Label sessionLabel;
 
@@ -34,6 +35,10 @@ public class MainViewController {
 
         packagingOwner.setOnMouseClicked((event) -> {
             utils.loadSceneWithStage((Stage)suplierManage.getScene().getWindow(), "/fxml/statistics.fxml", "Thống kê bao bì");
+        });
+
+        shipAddress.setOnMouseClicked((event) -> {
+            utils.loadSceneWithStage((Stage)suplierManage.getScene().getWindow(), "/fxml/ship_address.fxml", "Địa chỉ giao hàng");
         });
         
         logoutButton.setOnAction(new EventHandler<ActionEvent>() {

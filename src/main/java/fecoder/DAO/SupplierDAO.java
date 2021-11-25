@@ -28,6 +28,7 @@ public class SupplierDAO {
             data.setPhone(resultSet.getString("phone"));
             data.setFax(resultSet.getString("fax"));
             data.setCode(resultSet.getString("code"));
+//            data.setFixed_address(resultSet.getBoolean("fixed_ship_address"));
         } catch (SQLException ex) {
             jdbcDAO.printSQLException(ex);
         }
@@ -44,7 +45,7 @@ public class SupplierDAO {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             Statement statement = conn.createStatement();
-            String selectAll = "Select * from "+tableName+"order by name DESC";
+            String selectAll = "Select * from "+tableName+" order by name DESC";
             ResultSet resultSet = statement.executeQuery(selectAll);
             while (resultSet.next()) {
                 Supplier data = createData(resultSet);
@@ -168,6 +169,17 @@ public class SupplierDAO {
      * */
     public void updateData(String column, String value, int id) {
         jdbcDAO.updateSingleData(tableName, column, value, id+"");
+    }
+
+    /**
+     * Updating record data
+     *
+     * @param column - table's column
+     * @param value - column's new value
+     * @param id - record's id
+     * */
+    public void updateDataBoolean(String column, boolean value, int id) {
+        jdbcDAO.updateSingleDataBoolean(tableName, column, value, id);
     }
 
     /**

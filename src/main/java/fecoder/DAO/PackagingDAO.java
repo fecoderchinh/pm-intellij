@@ -49,7 +49,7 @@ public class PackagingDAO {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             Statement statement = conn.createStatement();
-            String selectAll = "select * from "+tableName;
+            String selectAll = "select * from "+tableName+" order by id DESC";
             ResultSet resultSet = statement.executeQuery(selectAll);
             while(resultSet.next()) {
                 Packaging data = createData(resultSet);
@@ -335,7 +335,7 @@ public class PackagingDAO {
             preparedStatement.setFloat(12, stock);
             preparedStatement.setInt(13, id);
 
-            System.out.println(preparedStatement);
+//            System.out.println(preparedStatement);
 
             preparedStatement.executeUpdate();
 

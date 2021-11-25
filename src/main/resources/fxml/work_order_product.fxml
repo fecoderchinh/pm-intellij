@@ -65,13 +65,22 @@
                     <Insets bottom="20" />
                 </padding>
             </VBox>
-            <TableView fx:id="productTableView" maxHeight="-Infinity" prefHeight="204.0" prefWidth="452.0">
-                <columns>
-                    <TableColumn fx:id="productIdColumn" prefWidth="35.0" text="STT" />
-                    <TableColumn fx:id="productNameColumn" prefWidth="320.0" text="Tên mặt hàng" />
-                    <TableColumn fx:id="productQuantityColumn" prefWidth="80.0" text="Số lượng" />
-                </columns>
-            </TableView>
+            <VBox>
+                <TableView fx:id="productTableView" maxHeight="-Infinity" prefHeight="204.0" prefWidth="452.0">
+                    <columns>
+                        <TableColumn fx:id="productIdColumn" prefWidth="35.0" text="STT" />
+                        <TableColumn fx:id="productNameColumn" prefWidth="320.0" text="Tên mặt hàng" />
+                        <TableColumn fx:id="productQuantityColumn" prefWidth="80.0" text="Số lượng" />
+                    </columns>
+                </TableView>
+                <TableView fx:id="supplierShipToAddressTableView" maxHeight="-Infinity" prefHeight="204.0" prefWidth="452.0">
+                    <columns>
+                        <TableColumn fx:id="ss2aIdColumn" prefWidth="35.0" text="STT" />
+                        <TableColumn fx:id="suplierCodeColumn" prefWidth="200.0" text="NCC" />
+                        <TableColumn fx:id="addressColumn" prefWidth="200.0" text="Nơi Giao" />
+                    </columns>
+                </TableView>
+            </VBox>
         </HBox>
     </top>
 

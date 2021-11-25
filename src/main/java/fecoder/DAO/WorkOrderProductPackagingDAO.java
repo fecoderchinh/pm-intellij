@@ -33,6 +33,7 @@ public class WorkOrderProductPackagingDAO {
             data.setActual_qty(resultSet.getFloat("actual_qty"));
             data.setResidual_qty(resultSet.getFloat("residual_qty"));
             data.setPrinted(resultSet.getString("printed"));
+            data.setShip_address(resultSet.getInt("ship_address"));
         } catch (SQLException ex) {
             jdbcDAO.printSQLException(ex);
         }
@@ -255,5 +256,16 @@ public class WorkOrderProductPackagingDAO {
      * */
     public void updateData(String column, String value, int id) {
         jdbcDAO.updateSingleData(tableName, column, value, id+"");
+    }
+
+    /**
+     * Updating record string data
+     *
+     * @param column - table's column
+     * @param value - column's new value
+     * @param id - record's id
+     * */
+    public void updateDataInteger(String column, int value, int id) {
+        jdbcDAO.updateSingleDataInteger(tableName, column, value, id);
     }
 }

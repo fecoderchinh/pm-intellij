@@ -30,19 +30,19 @@
             <HBox prefHeight="0.0" prefWidth="1004.0" spacing="10">
                 <VBox prefHeight="62.0" prefWidth="1003.0" spacing="10">
                     <HBox prefHeight="4.0" prefWidth="900.0" spacing="10">
-                        <Label prefHeight="20.0" prefWidth="150.0" text="Tên đầy đủ">
+                        <Label prefHeight="20.0" prefWidth="185.0" text="Mã sản phẩm">
                             <font>
                                 <Font size="14.0" />
                             </font>
                         </Label>
-                        <TextField fx:id="nameField" prefWidth="300" promptText="Tên sản phẩm" />
-                        <Label prefHeight="20.0" prefWidth="161.0" text="Tên gợi nhớ">
+                        <TextField fx:id="nameField" prefWidth="300" promptText="(vd: SGM --gợi nhớ)" />
+                        <Label prefHeight="20.0" prefWidth="185.0" text="Tên sản phẩm">
                             <font>
                                 <Font size="14.0" />
                             </font>
                         </Label>
-                        <TextField fx:id="descriptionField" prefWidth="400" promptText="Tên gợi nhớ (vd: SGM --có thể viết tắt)" />
-                        <Label prefHeight="20.0" prefWidth="132.0" text="Ghi chú">
+                        <TextField fx:id="descriptionField" prefWidth="400" promptText="Tên sản phẩm" />
+                        <Label prefHeight="20.0" prefWidth="149.0" text="Ghi chú">
                             <font>
                                 <Font size="14.0" />
                             </font>

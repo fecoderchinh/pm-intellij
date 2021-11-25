@@ -39,7 +39,7 @@ public class CustomerDAO {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             Statement statement = conn.createStatement();
-            String selectAll = "select * from "+ tableName;
+            String selectAll = "select * from "+ tableName +" order by id DESC";
             ResultSet resultSet = statement.executeQuery(selectAll);
             while(resultSet.next()) {
                 Customer data = createData(resultSet);

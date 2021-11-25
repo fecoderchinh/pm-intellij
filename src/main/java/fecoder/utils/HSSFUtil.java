@@ -9,6 +9,7 @@ public class HSSFUtil {
     public static HSSFCellStyle createStyle(HSSFWorkbook workbook, BorderStyle borderStyle, short fontSize, short textColor, boolean boldText, boolean wrapText, short backgroundColor, HorizontalAlignment hAlign, VerticalAlignment vAlign) {
         HSSFFont font = workbook.createFont();
         font.setBold(boldText);
+        font.setFontName("Calibri (Body)");
         font.setFontHeightInPoints(fontSize);
         font.setColor(textColor);
         HSSFCellStyle style = workbook.createCellStyle();

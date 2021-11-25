@@ -46,22 +46,14 @@
                             <ComboBox fx:id="typeComboBox" prefHeight="26.0" prefWidth="300.0">
                                 <items>
                                     <FXCollections fx:factory="observableArrayList">
-                                        <String fx:value="Loại BB" />
                                     </FXCollections>
                                 </items>
-                                <value>
-                                    <String fx:value="Loại BB" />
-                                </value>
                             </ComboBox>
                             <ComboBox fx:id="suplierComboBox" prefHeight="26.0" prefWidth="300.0">
                                 <items>
                                     <FXCollections fx:factory="observableArrayList">
-                                        <String fx:value="Mã NCC" />
                                     </FXCollections>
                                 </items>
-                                <value>
-                                    <String fx:value="Mã NCC" />
-                                </value>
                             </ComboBox>
                             <Label prefHeight="20.0" prefWidth="104.0" text="SL Tối thiểu">
                                 <font>
@@ -142,20 +134,20 @@
                     <Button id="reloadData" fx:id="reloadData" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#reloadData" text="TẢI LẠI BẢNG" />
                 </HBox>
             </HBox>
-            <TableView fx:id="dataTable" editable="true" maxWidth="1.7976931348623157E308" prefHeight="652.0" prefWidth="1442.0">
+            <TableView fx:id="dataTable" editable="true" maxWidth="1.7976931348623157E308" prefHeight="652.0" prefWidth="1352.0">
                 <columns>
-                    <TableColumn fx:id="idColumn" prefWidth="50.0" text="STT" />
-                    <TableColumn fx:id="stampedColumn" prefWidth="70.0" text="In sẵn" />
-                    <TableColumn fx:id="mainColumn" prefWidth="100.0" text="Bao gói chính" />
+                    <TableColumn fx:id="idColumn" prefWidth="30.0" text="STT" />
+                    <TableColumn fx:id="stampedColumn" prefWidth="50.0" text="In sẵn" />
+                    <TableColumn fx:id="mainColumn" prefWidth="60.0" text="Bao gói &#10;Chính" />
                     <TableColumn fx:id="nameColumn" prefWidth="200.0" text="Tên bao bì" />
                     <TableColumn fx:id="specificationColumn" prefWidth="200.0" text="Qui cách" />
                     <TableColumn fx:id="dimensionColumn" prefWidth="150.0" text="Kích thước" />
-                    <TableColumn fx:id="minimumColumn" prefWidth="150.0" text="Đặt tối thiểu" />
-                    <TableColumn fx:id="typeColumn" prefWidth="150.0" text="Loại bao bì" />
-                    <TableColumn fx:id="suplierColumn" prefWidth="70.0" text="Nhà cung cấp" />
-                    <TableColumn fx:id="codeColumn" prefWidth="70.0" text="Mã bao bì" />
-                    <TableColumn fx:id="stockColumn" prefWidth="70.0" text="Tồn kho" />
-                    <TableColumn fx:id="priceColumn" prefWidth="70.0" text="Đơn giá" />
+                    <TableColumn fx:id="minimumColumn" prefWidth="150.0" text="Đặt &#10;tối thiểu" />
+                    <TableColumn fx:id="typeColumn" prefWidth="150.0" text="Loại &#10;bao bì" />
+                    <TableColumn fx:id="suplierColumn" prefWidth="70.0" text="Nhà &#10;cung cấp" />
+                    <TableColumn fx:id="codeColumn" prefWidth="70.0" text="Mã &#10;bao bì" />
+                    <TableColumn fx:id="stockColumn" prefWidth="70.0" text="Tồn &#10;kho" />
+                    <TableColumn fx:id="priceColumn" prefWidth="70.0" text="Đơn &#10;giá" />
                     <TableColumn fx:id="noteColumn" prefWidth="200.0" text="Lưu ý" />
                 </columns>
             </TableView>

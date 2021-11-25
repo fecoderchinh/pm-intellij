@@ -24,7 +24,8 @@ public class PackagingOwnerDAO {
             data.setProduct_id(resultSet.getInt("product_id"));
             data.setSize_id(resultSet.getInt("size_id"));
             data.setPackaging_id(resultSet.getInt("packaging_id"));
-            data.setPack_qty(resultSet.getInt("pack_qty"));
+            data.setPack_qty(resultSet.getFloat("pack_qty"));
+            data.setNote(resultSet.getString("note"));
         } catch (SQLException ex) {
             jdbcDAO.printSQLException(ex);
         }
@@ -128,6 +129,28 @@ public class PackagingOwnerDAO {
     }
 
     /**
+     * Updating record integer data
+     *
+     * @param column - table's column
+     * @param value - column's new value
+     * @param id - record's id
+     * */
+    public void updateDataFloat(String column, float value, int id) {
+        jdbcDAO.updateSingleDataFloat(tableName, column, value, id);
+    }
+
+    /**
+     * Updating record integer data
+     *
+     * @param column - table's column
+     * @param value - column's new value
+     * @param id - record's id
+     * */
+    public void updateData(String column, String value, int id) {
+        jdbcDAO.updateSingleData(tableName, column, value, id+"");
+    }
+
+    /**
      * Updating all columns
      *
      * @param productID - column productID
@@ -136,9 +159,9 @@ public class PackagingOwnerDAO {
      * @param packQty - column packQty
      * @param id - column id
      * */
-    public void update(int productID, int sizeID, int packagingID, int packQty, int id) {
-        String updateQuery = "update "+ tableName +" set product_id=?, size_id=?, packaging_id=?, pack_qty=? where id=?";
-        preparedUpdateQuery(updateQuery, productID, sizeID, packagingID, packQty, id);
+    public void update(int productID, int sizeID, int packagingID, float packQty, String note, int id) {
+        String updateQuery = "update "+ tableName +" set product_id=?, size_id=?, packaging_id=?, pack_qty=?, note=? where id=?";
+        preparedUpdateQuery(updateQuery, productID, sizeID, packagingID, packQty, note, id);
     }
 
     /**
@@ -149,9 +172,9 @@ public class PackagingOwnerDAO {
      * @param packagingID - column packagingID
      * @param packQty - column packQty
      * */
-    public void insert(int productID, int sizeID, int packagingID, int packQty) {
-        String insertQuery = "insert into "+ tableName +" (product_id, size_id, packaging_id, pack_qty) values(?,?,?,?)";
-        preparedInsertQuery(insertQuery, productID, sizeID, packagingID, packQty);
+    public void insert(int productID, int sizeID, int packagingID, float packQty, String note) {
+        String insertQuery = "insert into "+ tableName +" (product_id, size_id, packaging_id, pack_qty, note) values(?,?,?,?,?)";
+        preparedInsertQuery(insertQuery, productID, sizeID, packagingID, packQty, note);
     }
 
     /**
@@ -162,14 +185,15 @@ public class PackagingOwnerDAO {
      * @param packagingID - column packagingID
      * @param packQty - column packQty
      * */
-    public void preparedInsertQuery(String query, int productID, int sizeID, int packagingID, int packQty) {
+    public void preparedInsertQuery(String query, int productID, int sizeID, int packagingID, float packQty, String note) {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setInt(1, productID);
             preparedStatement.setInt(2, sizeID);
             preparedStatement.setInt(3, packagingID);
-            preparedStatement.setInt(4, packQty);
+            preparedStatement.setFloat(4, packQty);
+            preparedStatement.setString(5, note);
 
             preparedStatement.executeUpdate();
 
@@ -190,15 +214,16 @@ public class PackagingOwnerDAO {
      * @param packQty - column packQty
      * @param id - column id
      * */
-    public void preparedUpdateQuery(String query, int productID, int sizeID, int packagingID, int packQty, int id) {
+    public void preparedUpdateQuery(String query, int productID, int sizeID, int packagingID, float packQty, String note, int id) {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setInt(1, productID);
             preparedStatement.setInt(2, sizeID);
             preparedStatement.setInt(3, packagingID);
-            preparedStatement.setInt(4, packQty);
-            preparedStatement.setInt(5, id);
+            preparedStatement.setFloat(4, packQty);
+            preparedStatement.setString(5, note);
+            preparedStatement.setInt(6, id);
 
             preparedStatement.executeUpdate();
 

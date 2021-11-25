@@ -17,6 +17,9 @@ import javafx.scene.text.Text;
 import javafx.util.Callback;
 
 import javax.swing.text.AbstractDocument;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 public class TreeTableUtil {
 
@@ -304,23 +307,27 @@ public class TreeTableUtil {
         return column;
     }
 
-    public static TreeTableColumn<WorkProduction, Float> getWorkOrderQuantityColumn()
+    public static TreeTableColumn<WorkProduction, String> getWorkOrderQuantityColumn()
     {
-        TreeTableColumn<WorkProduction, Float> column = new TreeTableColumn<>("SL đặt");
+        TreeTableColumn<WorkProduction, String> column = new TreeTableColumn<>("SL đặt");
         column.setCellValueFactory(new TreeItemPropertyValueFactory<>("workOrderQuantity"));
-//        column.setCellFactory(new Callback<TreeTableColumn<WorkProduction, Float>, TreeTableCell<WorkProduction, Float>>() {
-//            @Override
-//            public TreeTableCell<WorkProduction, Float> call(TreeTableColumn<WorkProduction, Float> workProductionIntegerTreeTableColumn) {
-//                return new TreeTableCell<WorkProduction, Float>() {
-//                    @Override
-//                    protected void updateItem(Float value, boolean b) {
-//                        if (value != null) {
-//                            super.setText(value == 0?"":value.toString());
-//                        }
-//                    }
-//                };
-//            }
-//        });
+        column.setCellFactory(new Callback<TreeTableColumn<WorkProduction, String>, TreeTableCell<WorkProduction, String>>() {
+            @Override
+            public TreeTableCell<WorkProduction, String> call(TreeTableColumn<WorkProduction, String> workProductionIntegerTreeTableColumn) {
+                return new TreeTableCell<WorkProduction, String>() {
+                    @Override
+                    protected void updateItem(String value, boolean b) {
+                        if (value != null) {
+                            Locale locale  = new Locale("vi", "VN");
+                            DecimalFormat df = (DecimalFormat) NumberFormat.getNumberInstance(locale);
+                            df.applyPattern("###,###.###");
+
+                            super.setText(df.format(Float.parseFloat(value)));
+                        }
+                    }
+                };
+            }
+        });
         return column;
     }
 

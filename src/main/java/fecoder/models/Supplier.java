@@ -9,10 +9,11 @@ public class Supplier {
     private String phone;
     private String fax;
     private String code;
+//    private boolean fixed_address;
 
     public Supplier(){}
 
-    public Supplier(int id, String name, String address, String email, String deputy, String phone, String fax, String code) {
+    public Supplier(int id, String name, String address, String email, String deputy, String phone, String fax, String code/*, boolean fixed_address*/) {
         this.id = id;
         this.name = name;
         this.address = address;
@@ -21,6 +22,7 @@ public class Supplier {
         this.phone = phone;
         this.fax = fax;
         this.code = code;
+//        this.fixed_address = fixed_address;
     }
 
     public int getId() { return id; }
@@ -46,6 +48,14 @@ public class Supplier {
 
     public String getCode() { return code; }
     public void setCode(String code) { this.code = code; }
+
+//    public boolean isFixed_address() {
+//        return fixed_address;
+//    }
+//
+//    public void setFixed_address(boolean fixed_address) {
+//        this.fixed_address = fixed_address;
+//    }
 
     @Override
     public String toString() {

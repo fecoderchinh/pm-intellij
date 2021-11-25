@@ -50,9 +50,14 @@ CREATE TABLE supliers
  phone varchar(250),
  fax varchar(250),
  code varchar(10),
+ fixed_ship_address bit not null default 0,
  primary key (id),
  unique key (code)
 );
+
+-- ALTER TABLE supliers ADD fixed_ship_address bit;
+-- ALTER TABLE supliers MODIFY fixed_ship_address bit not null default 0;
+-- ALTER TABLE supliers DROP fixed_ship_address;
 
 --  drop table supliers;
 
@@ -63,6 +68,40 @@ values (N'Công Ty TNHH SX-TM Tân Thuận Thành', N'Lô 43A, Đường số 2,
 	   (N'Công Ty TNHH Hải Nam - CN Cần Thơ', 'K35, Đường số 3, Khu ĐTM Hưng Phú, P. Hưng Thạnh, Q. Cái Răng, Tp. Cần Thơ', '', 'Mr. Giang', '02923 733 399', '02923 753 399', 'HN');
 	   
 -- select * from supliers;
+	
+/*
+=================================================
+table địa chỉ giao hàng
+*/
+  create table ship_address (
+	id bigint unsigned not null auto_increment,
+	name varchar(250) not null,
+ 	address varchar(250) not null,
+ 	code_address varchar(50),
+	stocker varchar(150),
+	stocker_phone varchar(150)
+	primary key (id),
+	unique key `code_address_unique` (code_address)
+);
+
+-- alter table ship_address drop fixed_ship_address;
+-- alter table ship_address add unique key `code_address_unique` (code_address);
+
+create table suplier_ship_address(
+	id bigint unsigned not null auto_increment,
+	suplier_id bigint unsigned,
+	ship_address_id bigint unsigned,
+	work_order_id bigint unsigned,
+	product_id bigint unsigned,
+	primary key (id),
+	foreign key (suplier_id) references supliers(id) on delete cascade,
+	foreign key (ship_address_id) references ship_address(id) on delete cascade,
+	foreign key (work_order_id) references work_order(id) on delete cascade,
+	foreign key (product_id) references products(id) on delete cascade
+);
+
+-- alter table suplier_ship_address add product_id bigint unsigned;
+-- alter table suplier_ship_address add foreign key (product_id) references products(id) on delete cascade;
 
 /*
 =================================================
@@ -158,7 +197,7 @@ create table years(
 insert into years(year)
 values ('2020'), ('2021');
 
--- select * from years;
+select * from years;
 
 /*
 =================================================
@@ -250,12 +289,17 @@ create table packaging_product_size (
 	product_id bigint unsigned,
 	size_id bigint unsigned,
 	packaging_id bigint unsigned,
-	pack_qty int not null,
+	pack_qty float not null,
+	note longtext,
 	primary key (id),
 	foreign key (product_id) references products(id) on delete cascade,
 	foreign key (size_id) references sizes(id) on delete cascade,
 	foreign key (packaging_id) references packaging(id) on delete cascade
 );
+
+-- ALTER TABLE packaging_product_size MODIFY pack_qty float not null default 0;
+
+-- ALTER TABLE packaging_product_size ADD note longtext;
 
 -- drop table packaging_product_size;
 
@@ -440,7 +484,7 @@ where
 -- 	and wop.ordinal_num = 1 -- filter by work_order_product.ordinal_num 
 ;
 
-/*select distinct
+select distinct
 	(@count := @count + 1),
 	wopp.id as id,
 	wop.ordinal_num as ordinalNumbers, 
@@ -488,8 +532,8 @@ where
 -- 	and wopp.packaging_id = p.id 
 	and wo.`year`  = y.id
 	and p.suplier = s.id
--- 	and wopp.work_order_id = 1 and wop.product_id = 1 and wop.ordinal_num = 2
-order by wop.ordinal_num;*/
+	and wopp.work_order_id = 3 and wop.product_id = 3
+order by s.code ASC;
 
 
 /*tính số khối*/
@@ -528,7 +572,7 @@ where
 	group by wopp.id;*/
 	
 /*đơn đặt hàng*/
-/*select
+select
 	wo.id as woID,
 	group_concat(distinct wo.name separator "+") as woName, 
 	p.name as pName,
@@ -544,19 +588,20 @@ where
 	s.deputy as sDeputy,
 	s.name as sName,
 	s.phone as sPhone,
-	s.fax as sFax
+	s.fax as sFax,
+	"" as shipAddress
 from 
 	work_order_product_packaging wopp,
 	work_order wo,
 	packaging p,
 	types t ,
-	supliers s 
+	supliers s
 where 
 	wopp.work_order_id = wo.id
 	and wopp.packaging_id = p.id
 	and p.`type` = t.id
 	and p.suplier = s.id
 -- 	and wopp.actual_qty > 0 
-	and wopp.work_order_id in (3)
+	and wopp.work_order_id in (6)
 group by 
-	wopp.packaging_id;*/
+	wopp.packaging_id;
