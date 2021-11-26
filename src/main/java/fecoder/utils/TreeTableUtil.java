@@ -34,6 +34,10 @@ public class TreeTableUtil {
 
         ObservableList<WorkProduction> workOrderList = FXCollections.observableArrayList(workProductionDAO.getWorkOrderList(workOrderID+""));
 
+        Locale locale  = new Locale("vi", "VN");
+        DecimalFormat df = (DecimalFormat) NumberFormat.getNumberInstance(locale);
+        df.applyPattern("###,###.###");
+
 //        System.out.println(workOrderList.size());
         TreeItem<WorkProduction> root = new TreeItem<>();
 
@@ -72,7 +76,7 @@ public class TreeTableUtil {
                         for(WorkProduction _packaging : packagingList) {
 //                            System.out.println(_packaging.getOrdinalNumbers() + " | " + _packaging.getProductName() + " | " +_packaging.getPackagingName() + " | " + _packaging.getActualQuantity() + " | " + _packaging.getPackagingSuplier());
 //                            _productNode.getChildren().add(new TreeItem<>(_packaging));
-                            _productNode.getChildren().add(new TreeItem<>(new WorkProduction(_packaging.getId(),"", "","","",_packaging.getPackagingName(),"", _packaging.getPackagingDimension(), _packaging.getPackagingSuplier(), _packaging.getPackagingCode(), _packaging.getUnit(), _packaging.getPrintStatus(), 0, _packaging.getWorkOrderQuantity(), _packaging.getStock(), _packaging.getActualQuantity(), _packaging.getResidualQuantity(), _packaging.getTotalResidualQuantity(), _packaging.getNoteProduct(), "", 0)));
+                            _productNode.getChildren().add(new TreeItem<>(new WorkProduction(_packaging.getId(),"", "","","",_packaging.getPackagingName(),"", _packaging.getPackagingDimension(), _packaging.getPackagingSuplier(), _packaging.getPackagingCode(), _packaging.getUnit(), _packaging.getPrintStatus(), 0, df.format(Float.parseFloat(_packaging.getWorkOrderQuantity())), df.format(Float.parseFloat(_packaging.getStock())), df.format(Integer.parseInt(_packaging.getActualQuantity())), _packaging.getResidualQuantity(), _packaging.getTotalResidualQuantity(), _packaging.getNoteProduct(), "", 0)));
                             _productNode.setExpanded(true);
                         }
 //                        System.out.println("---------------------------------------------");
@@ -311,23 +315,23 @@ public class TreeTableUtil {
     {
         TreeTableColumn<WorkProduction, String> column = new TreeTableColumn<>("SL đặt");
         column.setCellValueFactory(new TreeItemPropertyValueFactory<>("workOrderQuantity"));
-        column.setCellFactory(new Callback<TreeTableColumn<WorkProduction, String>, TreeTableCell<WorkProduction, String>>() {
-            @Override
-            public TreeTableCell<WorkProduction, String> call(TreeTableColumn<WorkProduction, String> workProductionIntegerTreeTableColumn) {
-                return new TreeTableCell<WorkProduction, String>() {
-                    @Override
-                    protected void updateItem(String value, boolean b) {
-                        if (value != null) {
-                            Locale locale  = new Locale("vi", "VN");
-                            DecimalFormat df = (DecimalFormat) NumberFormat.getNumberInstance(locale);
-                            df.applyPattern("###,###.###");
-
-                            super.setText(df.format(Float.parseFloat(value)));
-                        }
-                    }
-                };
-            }
-        });
+//        column.setCellFactory(new Callback<TreeTableColumn<WorkProduction, String>, TreeTableCell<WorkProduction, String>>() {
+//            @Override
+//            public TreeTableCell<WorkProduction, String> call(TreeTableColumn<WorkProduction, String> workProductionIntegerTreeTableColumn) {
+//                return new TreeTableCell<WorkProduction, String>() {
+//                    @Override
+//                    protected void updateItem(String value, boolean b) {
+//                        if (value != null) {
+//                            Locale locale  = new Locale("vi", "VN");
+//                            DecimalFormat df = (DecimalFormat) NumberFormat.getNumberInstance(locale);
+//                            df.applyPattern("###,###.###");
+//
+//                            super.setText(df.format(Float.parseFloat(value)));
+//                        }
+//                    }
+//                };
+//            }
+//        });
         return column;
     }
 

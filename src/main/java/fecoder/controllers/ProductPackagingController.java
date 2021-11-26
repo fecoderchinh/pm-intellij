@@ -2,8 +2,10 @@ package fecoder.controllers;
 
 import fecoder.DAO.*;
 import fecoder.models.*;
+import fecoder.utils.AutoFill.AutoFillTextBox;
 import fecoder.utils.Utils;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.StringBinding;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
@@ -493,7 +495,26 @@ public class ProductPackagingController implements Initializable {
         });
 
         packingQtyColumn.setCellValueFactory(new PropertyValueFactory<>("pack_qty"));
-        packingQtyColumn.setCellFactory(TextFieldTableCell.<PackagingOwnerString, Float>forTableColumn(new FloatStringConverter()));
+//        packingQtyColumn.setCellFactory(TextFieldTableCell.<PackagingOwnerString, Float>forTableColumn(new FloatStringConverter()));
+        packingQtyColumn.setCellFactory(tc -> {
+            TableCell<PackagingOwnerString, Float> cell = new TableCell<>();
+
+            currentRow = cell.getIndex();
+            currentCell = cell.getText();
+
+            Text text = new Text();
+            cell.setGraphic(text);
+            cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
+            text.wrappingWidthProperty().bind(packingQtyColumn.widthProperty());
+            text.textProperty().bind(new StringBinding() {
+                { bind(cell.itemProperty()); }
+                @Override
+                protected String computeValue() {
+                    return cell.itemProperty().getValue() != null ? String.format("%.3f", cell.itemProperty().getValue()) : "";
+                }
+            });
+            return cell;
+        });
         packingQtyColumn.setOnEditCommit(event -> {
             final float data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
             ((PackagingOwnerString) event.getTableView().getItems().get(event.getTablePosition().getRow())).setPack_qty(data);

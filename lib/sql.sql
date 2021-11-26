@@ -87,7 +87,7 @@ table địa chỉ giao hàng
 -- alter table ship_address drop fixed_ship_address;
 -- alter table ship_address add unique key `code_address_unique` (code_address);
 
-create table suplier_ship_address(
+/*create table suplier_ship_address(
 	id bigint unsigned not null auto_increment,
 	suplier_id bigint unsigned,
 	ship_address_id bigint unsigned,
@@ -98,7 +98,9 @@ create table suplier_ship_address(
 	foreign key (ship_address_id) references ship_address(id) on delete cascade,
 	foreign key (work_order_id) references work_order(id) on delete cascade,
 	foreign key (product_id) references products(id) on delete cascade
-);
+);*/
+
+-- drop table suplier_ship_address;
 
 -- alter table suplier_ship_address add product_id bigint unsigned;
 -- alter table suplier_ship_address add foreign key (product_id) references products(id) on delete cascade;
@@ -378,12 +380,17 @@ create table work_order_product_packaging (
 	residual_qty float not null default 0, -- new
 	printed varchar(250),
 	note longtext,
+	ship_address bigint unsigned,
 	primary key (id),
 	foreign key (wop_id) references work_order_product(id) on delete cascade,
 	foreign key (work_order_id) references work_order(id) on delete cascade,
 	foreign key (product_id) references products(id) on delete cascade,
-	foreign key (packaging_id) references packaging(id) on delete cascade
+	foreign key (packaging_id) references packaging(id) on delete cascade,
+	foreign key (ship_address) references ship_address(id) on delete cascade
 );
+
+-- alter table work_order_product_packaging add ship_address bigint unsigned;
+-- alter table work_order_product_packaging add foreign key (ship_address) references ship_address(id) on delete cascade;
 
 -- drop table work_order_product_packaging;
 
@@ -439,7 +446,7 @@ table hiển thị thông tin số lượng nhập/xuất, có thể dùng để
 - CHƯA TEST THỰC TẾ
 */
 
-select distinct 
+/*select distinct 
 	wopp.id as woppID,
 	wop.ordinal_num as woOrdinalNumbers, 
 	wop.id as woID, 
@@ -482,9 +489,9 @@ where
 -- 	and wo.id in ("1") -- filter by work_order.id
 -- 	and p.id = 1 -- filter by products.id
 -- 	and wop.ordinal_num = 1 -- filter by work_order_product.ordinal_num 
-;
+;*/
 
-select distinct
+/*select distinct
 	(@count := @count + 1),
 	wopp.id as id,
 	wop.ordinal_num as ordinalNumbers, 
@@ -533,7 +540,7 @@ where
 	and wo.`year`  = y.id
 	and p.suplier = s.id
 	and wopp.work_order_id = 3 and wop.product_id = 3
-order by s.code ASC;
+order by s.code ASC;*/
 
 
 /*tính số khối*/
@@ -572,7 +579,8 @@ where
 	group by wopp.id;*/
 	
 /*đơn đặt hàng*/
-select
+/*select
+	wopp.id as woppID,
 	wo.id as woID,
 	group_concat(distinct wo.name separator "+") as woName, 
 	p.name as pName,
@@ -589,19 +597,23 @@ select
 	s.name as sName,
 	s.phone as sPhone,
 	s.fax as sFax,
-	"" as shipAddress
+	sa.code_address as shipAddress
 from 
 	work_order_product_packaging wopp,
 	work_order wo,
 	packaging p,
 	types t ,
-	supliers s
+	supliers s,
+	ship_address sa
 where 
 	wopp.work_order_id = wo.id
 	and wopp.packaging_id = p.id
 	and p.`type` = t.id
 	and p.suplier = s.id
+	and wopp.ship_address = sa.id
 -- 	and wopp.actual_qty > 0 
-	and wopp.work_order_id in (6)
+	and wopp.work_order_id in (6,7,8)
+-- 	and s.code = " TTT"
+-- 	and sa.code_address = "SVN"
 group by 
-	wopp.packaging_id;
+	wopp.packaging_id;*/

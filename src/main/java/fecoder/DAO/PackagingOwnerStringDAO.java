@@ -25,7 +25,7 @@ public class PackagingOwnerStringDAO {
             data.setProductName(resultSet.getString("productName"));
             data.setSize(resultSet.getString("size"));
             data.setPackagingName(resultSet.getString("packagingName"));
-            data.setPack_qty(resultSet.getInt("pack_qty"));
+            data.setPack_qty(resultSet.getFloat("pack_qty"));
             data.setUnit(resultSet.getString("unit"));
             data.setNote(resultSet.getString("note"));
         } catch (SQLException ex) {
