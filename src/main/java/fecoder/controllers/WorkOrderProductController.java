@@ -436,11 +436,11 @@ public class WorkOrderProductController implements Initializable {
         dataTable.getColumns().add(TreeTableUtil.getPackagingSuplierColumn());
         dataTable.getColumns().add(TreeTableUtil.getPackagingCodeColumn());
         dataTable.getColumns().add(TreeTableUtil.getWorkOrderQuantityColumn());
-        dataTable.getColumns().add(TreeTableUtil.getStockColumn(dataTable));
-        dataTable.getColumns().add(TreeTableUtil.getActualQuantityColumn(dataTable));
-        dataTable.getColumns().add(TreeTableUtil.getResidualQuantityColumn(dataTable));
+        dataTable.getColumns().add(TreeTableUtil.getStockColumn(dataTable, this, innerData));
+        dataTable.getColumns().add(TreeTableUtil.getActualQuantityColumn(dataTable, this, innerData));
+        dataTable.getColumns().add(TreeTableUtil.getResidualQuantityColumn(dataTable, this, innerData));
 //        dataTable.getColumns().add(TreeTableUtil.getTotalResidualQuantityColumn(dataTable));
-        dataTable.getColumns().add(TreeTableUtil.getPrintStatusColumn(dataTable));
+        dataTable.getColumns().add(TreeTableUtil.getPrintStatusColumn(dataTable, this, innerData));
 
 //        setContextMenu();
 

@@ -79,7 +79,7 @@ table địa chỉ giao hàng
  	address varchar(250) not null,
  	code_address varchar(50),
 	stocker varchar(150),
-	stocker_phone varchar(150)
+	stocker_phone varchar(150),
 	primary key (id),
 	unique key `code_address_unique` (code_address)
 );

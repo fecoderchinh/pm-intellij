@@ -1,6 +1,8 @@
 package fecoder.utils;
 
 import fecoder.DAO.*;
+import fecoder.controllers.WorkOrderProductController;
+import fecoder.models.WorkOrder;
 import fecoder.models.WorkOrderProductPackaging;
 import fecoder.models.WorkProduction;
 import javafx.application.Platform;
@@ -9,6 +11,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTreeTableCell;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
@@ -254,7 +257,7 @@ public class TreeTableUtil {
         return column;
     }
 
-    public static TreeTableColumn<WorkProduction, String> getPrintStatusColumn(TreeTableView table)
+    public static TreeTableColumn<WorkProduction, String> getPrintStatusColumn(TreeTableView table, final WorkOrderProductController controller, WorkOrder data)
     {
         TreeTableColumn<WorkProduction, String> column = new TreeTableColumn<>("In sẵn");
         column.setCellValueFactory(new TreeItemPropertyValueFactory<>("printStatus"));
@@ -287,6 +290,7 @@ public class TreeTableUtil {
                 WorkOrderProductPackagingDAO workOrderProductPackagingDAO = new WorkOrderProductPackagingDAO();
 
                 workOrderProductPackagingDAO.updateData("printed", workProductionStringCellEditEvent.getNewValue(), workProductionTreeItem.getValue().getId());
+                controller.setData(data);
             }
         });
         return column;
@@ -362,7 +366,7 @@ public class TreeTableUtil {
 //        return column;
 //    }
 
-    public static TreeTableColumn<WorkProduction, String> getStockColumn(TreeTableView table)
+    public static TreeTableColumn<WorkProduction, String> getStockColumn(TreeTableView table, final WorkOrderProductController controller, WorkOrder data)
     {
         TreeTableColumn<WorkProduction, String> column = new TreeTableColumn<>("Tồn");
         column.setCellValueFactory(new TreeItemPropertyValueFactory<>("stock"));
@@ -394,13 +398,14 @@ public class TreeTableUtil {
                 WorkOrderProductPackagingDAO workOrderProductPackagingDAO = new WorkOrderProductPackagingDAO();
 
                 workOrderProductPackagingDAO.updateQuantity("stock", Float.parseFloat(workProductionStringCellEditEvent.getNewValue()), workProductionTreeItem.getValue().getId());
+                controller.setData(data);
             }
         });
 
         return column;
     }
 
-    public static TreeTableColumn<WorkProduction, String> getActualQuantityColumn(TreeTableView table)
+    public static TreeTableColumn<WorkProduction, String> getActualQuantityColumn(TreeTableView table, final WorkOrderProductController controller, WorkOrder data)
     {
         TreeTableColumn<WorkProduction, String> column = new TreeTableColumn<>("Thực đặt");
         column.setCellValueFactory(new TreeItemPropertyValueFactory<>("actualQuantity"));
@@ -422,12 +427,13 @@ public class TreeTableUtil {
                 currentEditingWorkProductionTreeItem.getValue().setActualQuantity(workProductionStringCellEditEvent.getNewValue());
                 WorkOrderProductPackagingDAO workOrderProductPackagingDAO = new WorkOrderProductPackagingDAO();
                 workOrderProductPackagingDAO.updateQuantity("actual_qty", Float.parseFloat(workProductionStringCellEditEvent.getNewValue()), workProductionTreeItem.getValue().getId());
+                controller.setData(data);
             }
         });
         return column;
     }
 
-    public static TreeTableColumn<WorkProduction, String> getResidualQuantityColumn(TreeTableView table)
+    public static TreeTableColumn<WorkProduction, String> getResidualQuantityColumn(TreeTableView table, final WorkOrderProductController controller, WorkOrder data)
     {
         TreeTableColumn<WorkProduction, String> column = new TreeTableColumn<>("Hao hụt");
         column.setCellValueFactory(new TreeItemPropertyValueFactory<>("residualQuantity"));
@@ -449,6 +455,7 @@ public class TreeTableUtil {
                 currentEditingWorkProductionTreeItem.getValue().setResidualQuantity(workProductionStringCellEditEvent.getNewValue());
                 WorkOrderProductPackagingDAO workOrderProductPackagingDAO = new WorkOrderProductPackagingDAO();
                 workOrderProductPackagingDAO.updateQuantity("residual_qty", Float.parseFloat(workProductionStringCellEditEvent.getNewValue()), workProductionTreeItem.getValue().getId());
+                controller.setData(data);
             }
         });
         return column;
