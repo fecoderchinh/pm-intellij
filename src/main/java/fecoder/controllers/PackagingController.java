@@ -4,6 +4,7 @@ import fecoder.DAO.PackagingDAO;
 import fecoder.DAO.SupplierDAO;
 import fecoder.DAO.TypeDAO;
 import fecoder.models.*;
+import fecoder.utils.AutoCompleteComboBoxListener;
 import fecoder.utils.AutoFill.AutoFillTextBox;
 import fecoder.utils.Utils;
 import javafx.beans.binding.Bindings;
@@ -92,7 +93,9 @@ public class PackagingController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         typeComboBox.getItems().addAll(type_obs);
         suplierComboBox.getItems().addAll(supplier_obs);
-        supplierComboBoxFilter();
+        new AutoCompleteComboBoxListener<>(typeComboBox, true, typeDAO.getLastestData().getName());
+        new AutoCompleteComboBoxListener<>(suplierComboBox, true, supplierDAO.getLastestData().getCode());
+//        supplierComboBoxFilter();
         loadView();
     }
 
@@ -133,11 +136,11 @@ public class PackagingController implements Initializable {
                 nameField.getText(),
                 specificationField.getText(),
                 dimensionField.getText(),
-                supplierDAO.getDataByCode(suplierComboBox.getValue()+"").getId(),
-                typeDAO.getDataByName(typeComboBox.getValue()+"").getId(),
+                supplierDAO.getDataByCode(utils.getComboBoxValue(suplierComboBox)).getId(),
+                typeDAO.getDataByName(utils.getComboBoxValue(typeComboBox)).getId(),
                 minimumField.getText().isEmpty() ? 0 : Integer.parseInt(minimumField.getText()),
                 stampedField.isSelected(),
-                codeField.getText(),
+                codeField.getText().trim().replace(" ", "").toUpperCase(),
                 mainField.isSelected(),
                 noteField.getText(),
                 priceField.getText().isEmpty() ? 0 : Float.parseFloat(priceField.getText()),
@@ -155,11 +158,11 @@ public class PackagingController implements Initializable {
                 nameField.getText(),
                 specificationField.getText(),
                 dimensionField.getText(),
-                supplierDAO.getDataByCode(suplierComboBox.getValue()+"").getId(),
-                typeDAO.getDataByName(typeComboBox.getValue()+"").getId(),
+                supplierDAO.getDataByCode(utils.getComboBoxValue(suplierComboBox)).getId(),
+                typeDAO.getDataByName(utils.getComboBoxValue(typeComboBox)).getId(),
                 Integer.parseInt(minimumField.getText()),
                 stampedField.isSelected(),
-                codeField.getText(),
+                codeField.getText().trim().replace(" ", "").toUpperCase(),
                 mainField.isSelected(),
                 noteField.getText(),
                 Float.parseFloat(priceField.getText()),
@@ -218,6 +221,8 @@ public class PackagingController implements Initializable {
     private void resetComboBox() {
         utils.setComboBoxValue(typeComboBox, typeDAO.getDataByID(1).getName());
         utils.setComboBoxValue(suplierComboBox, supplierDAO.getDataByID(5).getCode());
+        typeComboBox.hide();
+        suplierComboBox.hide();
     }
 
     /**
@@ -268,30 +273,6 @@ public class PackagingController implements Initializable {
         anchorData.setText(""+packaging.getId());
 
         isUpdating = true;
-    }
-
-    /**
-     * Set an event for typeComboBox
-     * */
-    public void setTypeComboBoxEvent() {
-        typeComboBox.setOnKeyReleased(event -> {
-            if (event.getCode().equals(KeyCode.ENTER)) {
-                Type type = typeComboBox.getSelectionModel().getSelectedItem();
-                System.out.println(type.getId());
-            }
-        });
-    }
-
-    /**
-     * Set an event for suplierComboBox
-     * */
-    public void setSuplierComboBoxEvent() {
-        suplierComboBox.setOnKeyReleased(event -> {
-            if (event.getCode().equals(KeyCode.ENTER)) {
-                Supplier supplier = suplierComboBox.getSelectionModel().getSelectedItem();
-                System.out.println(supplier.getId());
-            }
-        });
     }
 
     /**
@@ -376,8 +357,8 @@ public class PackagingController implements Initializable {
         utils.disableKeyEnterOnTextField(stockField);
         utils.disableKeyEnterOnTextField(noteField);
 
-        utils.disableKeyEnterOnTextFieldComboBox(typeComboBox, true);
-        utils.disableKeyEnterOnTextFieldComboBox(suplierComboBox, true);
+        utils.disableKeyEnterOnTextFieldComboBox(typeComboBox, true, "Loại BB");
+        utils.disableKeyEnterOnTextFieldComboBox(suplierComboBox, true, "NCC");
     }
 
     /**
@@ -394,10 +375,6 @@ public class PackagingController implements Initializable {
 
         anchorLabel.setText("No ID Selected");
         resetFields();
-
-        setTypeComboBoxEvent();
-
-        setSuplierComboBoxEvent();
 
         dataTable.setEditable(true);
 
@@ -499,7 +476,7 @@ public class PackagingController implements Initializable {
         codeColumn.setOnEditCommit(event -> {
             final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
             ((Packaging) event.getTableView().getItems().get(event.getTablePosition().getRow())).setCode(data);
-            packagingDAO.updateData("code", data, event.getRowValue().getId());
+            packagingDAO.updateData("code", data.trim().replace(" ", "").toUpperCase(), event.getRowValue().getId());
             dataTable.refresh();
         });
 

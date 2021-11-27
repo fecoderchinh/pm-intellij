@@ -114,7 +114,7 @@ public class SupplierController implements Initializable {
                 deputyField.getText(),
                 phoneField.getText(),
                 faxField.getText(),
-                codeField.getText().toUpperCase(),
+                codeField.getText().trim().replace(" ", "").toUpperCase(),
                 Integer.parseInt(anchorData.getText())
         );
         clearFields();
@@ -133,7 +133,7 @@ public class SupplierController implements Initializable {
                 deputyField.getText(),
                 phoneField.getText(),
                 faxField.getText(),
-                codeField.getText().toUpperCase()
+                codeField.getText().trim().replace(" ", "").toUpperCase()
         );
         clearFields();
         reload();
@@ -384,7 +384,7 @@ public class SupplierController implements Initializable {
         codeColumn.setOnEditCommit(event -> {
             final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
             ((Supplier) event.getTableView().getItems().get(event.getTablePosition().getRow())).setCode(data);
-            supplierDAO.updateData("code", data, event.getRowValue().getId());
+            supplierDAO.updateData("code", data.trim().replace(" ", "").toUpperCase(), event.getRowValue().getId());
             dataTable.refresh();
         });
 

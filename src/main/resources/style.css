@@ -2,6 +2,14 @@
     /*-fx-background: #17C1FF;*/
 }
 
+#mainviewgridpane {
+    -fx-border-style: solid inside;
+    -fx-border-width: 2;
+    -fx-border-insets: 5;
+    -fx-border-radius: 5;
+    -fx-border-color: #17C1FF;
+}
+
 .tree-table-row-cell:top-node {
     /*-fx-background: orange;*/
     -fx-background: #17C1FF;

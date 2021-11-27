@@ -3,82 +3,88 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<BorderPane prefHeight="680.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fecoder.MainViewController">
+<BorderPane prefHeight="400.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fecoder.MainViewController">
     <top>
-        <HBox alignment="CENTER_RIGHT" prefHeight="36.0" prefWidth="966.0" spacing="10" BorderPane.alignment="CENTER">
-            <children>
-                <Button id="shipAddress" fx:id="shipAddress" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="Địa chỉ giao hàng" />
-                <Button id="packagingOwner" fx:id="packagingOwner" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="Bảng thống kê" />
-                <!--                                      <Button id="newWindowButton" fx:id="newWindowButton" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="New Window" />-->
-            </children>
+        <VBox alignment="CENTER" prefHeight="36.0" prefWidth="992.0" spacing="10" BorderPane.alignment="CENTER">
             <padding>
                 <Insets bottom="10" />
             </padding>
-        </HBox>
+         <children>
+            <Label alignment="CENTER" text="PHẦN MỀM QUẢN LÝ BAO BÌ" textAlignment="CENTER">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+             <Label alignment="CENTER" text="Phiên bản 1.0" textAlignment="CENTER">
+                 <font>
+                     <Font size="18.0" />
+                 </font>
+             </Label>
+         </children>
+        </VBox>
     </top>
     <center>
-        <VBox id="centerContain" spacing="10.0">
+        <GridPane id="mainviewgridpane" hgap="10" vgap="10">
+            <columnConstraints>
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            </rowConstraints>
             <children>
-                <Separator prefWidth="1002.0" />
-                <StackPane prefHeight="-1.0" prefWidth="-1.0">
-                    <children>
-                        <HBox alignment="BASELINE_LEFT" prefHeight="0.0" prefWidth="211.0" spacing="30">
-                            <children>
-                                <Button id="suplierManage" fx:id="suplierManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="NHÀ CUNG CẤP" />
-                                <Button id="packagingTypeManage" fx:id="packagingTypeManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="LOẠI BAO BÌ" />
-                                <Button id="yearManage" fx:id="yearManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="NĂM" />
-                                <Button id="sizeManage" fx:id="sizeManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="SIZE TÔM" />
-                            </children>
-                        </HBox>
-                    </children>
-                    <padding>
-                        <Insets bottom="30" left="20" right="20" top="35" />
-                    </padding>
-                </StackPane>
-                <Separator prefWidth="1002.0" />
-                <StackPane prefHeight="-1.0" prefWidth="-1.0">
-                    <children>
-                        <HBox alignment="BASELINE_LEFT" prefHeight="0.0" prefWidth="211.0" spacing="30">
-                            <children>
-                                <Button id="customerManage" fx:id="customerManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="KHÁCH HÀNG" />
-                                <Button id="packagingManage" fx:id="packagingManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="BAO BÌ" />
-                                <Button id="productManage" fx:id="productManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="MẶT HÀNG" />
-                                <Button id="commands" fx:id="workOrder" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="LỆNH SẢN XUẤT" />
-                            </children>
-                        </HBox>
-                    </children>
-                    <padding>
-                        <Insets bottom="0" left="20" right="20" top="30" />
-                    </padding>
-                </StackPane>
-            </children>
-        </VBox>
-    </center>
-    <bottom>
-        <HBox alignment="BOTTOM_RIGHT" prefWidth="200.0" spacing="10" BorderPane.alignment="CENTER">
-            <children>
-                <GridPane>
-                    <children>
-                        <Label text="Chào mừng: " GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                        <Label fx:id="sessionLabel" text="Undefined" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                    </children>
-                    <padding>
-                        <Insets top="5" />
-                    </padding>
-               <columnConstraints>
-                  <ColumnConstraints />
-                  <ColumnConstraints />
-               </columnConstraints>
-               <rowConstraints>
-                  <RowConstraints />
-               </rowConstraints>
-                </GridPane>
-                <Button id="logoutButton" fx:id="logoutButton" text="Đăng xuất" />
+                <Button id="packagingTypeManage" fx:id="packagingTypeManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="LOẠI BAO BÌ" GridPane.columnIndex="1" />
+                <Button id="suplierManage" fx:id="suplierManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="NHÀ CUNG CẤP" />
+                <Button id="yearManage" fx:id="yearManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="NĂM" GridPane.columnIndex="2" />
+                <Button id="sizeManage" fx:id="sizeManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="SIZE" GridPane.columnIndex="3" />
+                <Button id="customerManage" fx:id="customerManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="KHÁCH HÀNG" GridPane.rowIndex="1" />
+                <Button id="productManage" fx:id="productManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="MẶT HÀNG" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                <Button id="packagingManage" fx:id="packagingManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="BAO BÌ" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <Button id="commands" fx:id="workOrder" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="ĐƠN HÀNG" GridPane.columnIndex="3" GridPane.rowIndex="1" />
             </children>
             <padding>
-                <Insets top="10" />
+                <Insets bottom="10" left="10" right="10" top="10" />
             </padding>
+        </GridPane>
+    </center>
+    <bottom>
+        <HBox>
+            <HBox prefHeight="18.0" prefWidth="242.0" spacing="10">
+                <Button id="shipAddress" fx:id="shipAddress" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="Địa chỉ giao hàng" />
+                <Button id="packagingOwner" fx:id="packagingOwner" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="Bảng thống kê" />
+                <padding>
+                    <Insets top="10" />
+                </padding>
+            </HBox>
+            <HBox alignment="BOTTOM_RIGHT" prefHeight="18.0" prefWidth="228.0" spacing="10" BorderPane.alignment="BOTTOM_RIGHT">
+                <children>
+                    <GridPane>
+                        <children>
+                            <Label text="Chào mừng: " GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                            <Label fx:id="sessionLabel" text="Undefined" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                        </children>
+                        <padding>
+                            <Insets top="15" />
+                        </padding>
+                        <columnConstraints>
+                            <ColumnConstraints />
+                            <ColumnConstraints />
+                        </columnConstraints>
+                        <rowConstraints>
+                            <RowConstraints />
+                        </rowConstraints>
+                    </GridPane>
+                    <Button id="logoutButton" fx:id="logoutButton" text="Đăng xuất" />
+                </children>
+                <padding>
+                    <Insets top="0" />
+                </padding>
+            </HBox>
         </HBox>
     </bottom>
     <padding>

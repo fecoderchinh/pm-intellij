@@ -16,6 +16,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
@@ -23,6 +27,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
@@ -218,7 +223,7 @@ public class ProductController implements Initializable {
      * @param title scene title
      * @param product product data
      * */
-    private void loadSingleProductScene(Stage stage, String resource, String title, Product product) {
+    private void loadSingleProductScene(Stage stage, String resource, String title, Product product, boolean setMaxHeight) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource(resource));
@@ -237,6 +242,13 @@ public class ProductController implements Initializable {
             _stage.show();
             ProductPackagingController productPackagingController = fxmlLoader.<ProductPackagingController>getController();
             productPackagingController.setData(product);
+
+            if(setMaxHeight) {
+                GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+                _stage.setHeight(gd.getDisplayMode().getHeight()-300);
+                _stage.setMaxHeight(gd.getDisplayMode().getHeight()-300);
+            }
+
             _stage.setOnHiding(e -> {
                 stage.setOpacity(1);
             });
@@ -418,7 +430,7 @@ public class ProductController implements Initializable {
 
             managePackaging.setOnAction((ActionEvent event) -> {
                 Product product = dataTable.getSelectionModel().getSelectedItem();
-                loadSingleProductScene((Stage) managePackaging.getParentPopup().getOwnerWindow(),"/fxml/product_packaging.fxml", "Chi tiết mặt hàng: "+product.getDescription(), product);
+                loadSingleProductScene((Stage) managePackaging.getParentPopup().getOwnerWindow(),"/fxml/product_packaging.fxml", "Chi tiết mặt hàng: "+product.getDescription(), product, true);
             });
             contextMenu.getItems().add(managePackaging);
 

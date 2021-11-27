@@ -2,6 +2,7 @@ package fecoder.controllers;
 
 import fecoder.DAO.*;
 import fecoder.models.*;
+import fecoder.utils.AutoCompleteComboBoxListener;
 import fecoder.utils.ExportWordDocument;
 import fecoder.utils.Utils;
 import javafx.beans.binding.Bindings;
@@ -20,6 +21,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
@@ -32,6 +37,7 @@ import org.apache.poi.util.Units;
 import org.apache.poi.wp.usermodel.HeaderFooterType;
 import org.apache.poi.xwpf.usermodel.*;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -104,9 +110,11 @@ public class WorkOrderController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         workOrderYear.getItems().addAll(yearObservableList);
-        yearComboBoxFilter();
+//        yearComboBoxFilter();
         workOrderCustomer.getItems().addAll(customerObservableList);
-        customerComboBoxFilter();
+//        customerComboBoxFilter();
+        new AutoCompleteComboBoxListener<>(workOrderCustomer, true, customerDAO.getLastestData().getName());
+        resetComboBox();
         loadView();
     }
 
@@ -120,8 +128,8 @@ public class WorkOrderController implements Initializable {
                         workOrderName.getText(),
                         workOrderLotNumber.getText(),
                         workOrderPONumber.getText(),
-                        yearDAO.getYear(workOrderYear.getValue()+"").getId(),
-                        customerDAO.getCustomer(workOrderCustomer.getValue()+"").getId(),
+                        yearDAO.getYear(utils.getComboBoxValue(workOrderYear)).getId(),
+                        customerDAO.getCustomer(utils.getComboBoxValue(workOrderCustomer)).getId(),
                         workOrderSendDate.getEditor().getText(),
                         workOrderShippingDate.getEditor().getText(),
                         workOrderDestination.getText(),
@@ -148,8 +156,8 @@ public class WorkOrderController implements Initializable {
                         workOrderName.getText(),
                         workOrderLotNumber.getText(),
                         workOrderPONumber.getText(),
-                        yearDAO.getYear(workOrderYear.getValue()+"").getId(),
-                        customerDAO.getCustomer(workOrderCustomer.getValue()+"").getId(),
+                        yearDAO.getYear(utils.getComboBoxValue(workOrderYear)).getId(),
+                        customerDAO.getCustomer(utils.getComboBoxValue(workOrderCustomer)).getId(),
                         workOrderSendDate.getEditor().getText(),
                         workOrderShippingDate.getEditor().getText(),
                         workOrderDestination.getText(),
@@ -425,7 +433,7 @@ public class WorkOrderController implements Initializable {
 
             manage.setOnAction((ActionEvent event) -> {
                 WorkOrder workOrder = dataTable.getSelectionModel().getSelectedItem();
-                loadSingleProductScene((Stage) manage.getParentPopup().getOwnerWindow(),"/fxml/work_order_product.fxml", workOrder.getName(), workOrder);
+                loadSingleProductScene((Stage) manage.getParentPopup().getOwnerWindow(),"/fxml/work_order_product.fxml", workOrder.getName(), workOrder, true);
             });
             contextMenu.getItems().add(manage);
 
@@ -457,7 +465,7 @@ public class WorkOrderController implements Initializable {
      * @param title scene title
      * @param workOrder data
      * */
-    private void loadSingleProductScene(Stage stage, String resource, String title, WorkOrder workOrder) {
+    private void loadSingleProductScene(Stage stage, String resource, String title, WorkOrder workOrder, boolean setMaxHeight) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource(resource));
@@ -477,6 +485,13 @@ public class WorkOrderController implements Initializable {
             _stage.show();
             WorkOrderProductController controller = fxmlLoader.<WorkOrderProductController>getController();
             controller.setData(workOrder);
+
+            if(setMaxHeight) {
+                GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+                _stage.setHeight(gd.getDisplayMode().getHeight()-300);
+                _stage.setMaxHeight(gd.getDisplayMode().getHeight()-300);
+            }
+
             _stage.setOnHiding(e -> {
                 stage.setOpacity(1);
             });
@@ -506,8 +521,8 @@ public class WorkOrderController implements Initializable {
         utils.disableKeyEnterOnTextFieldDatePicker(workOrderSendDate);
         utils.disableKeyEnterOnTextFieldDatePicker(workOrderShippingDate);
 
-        utils.disableKeyEnterOnTextFieldComboBox(workOrderYear, false);
-        utils.disableKeyEnterOnTextFieldComboBox(workOrderCustomer, true);
+        utils.disableKeyEnterOnTextFieldComboBox(workOrderYear, false, "Năm");
+        utils.disableKeyEnterOnTextFieldComboBox(workOrderCustomer, true, "Khách hàng");
 
         utils.disableKeyEnterOnTextField(workOrderDestination);
         utils.disableKeyEnterOnTextField(workOrderNote);

@@ -106,6 +106,29 @@ public class ProductDAO {
     }
 
     /**
+     * Getting lastest record data
+     *
+     * @return data
+     * */
+    public Product getLastestData() {
+        Product data = new Product();
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement("select * from "+ tableName +" order by id asc limit 1");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                data = createData(resultSet);
+            }
+            resultSet.close();
+            conn.close();
+        } catch (ClassNotFoundException | SQLException ex) {
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
+        }
+        return data;
+    }
+
+    /**
      * Getting record data by its name
      *
      * @param value - record's name

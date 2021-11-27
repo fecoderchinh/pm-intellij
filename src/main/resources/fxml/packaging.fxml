@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fecoder.controllers.PackagingController">
+<BorderPane prefWidth="1024.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fecoder.controllers.PackagingController">
 
     <top>
         <VBox spacing="10">
@@ -97,7 +97,7 @@
                 <VBox prefHeight="151.0" prefWidth="80.0" spacing="10">
                     <Button fx:id="insertButton" mnemonicParsing="false" onAction="#insertButton" prefHeight="30.0" prefWidth="73.0" text="THÊM" />
                     <Button fx:id="updateButton" mnemonicParsing="false" onAction="#updateButton" prefHeight="30.0" prefWidth="80.0" text="CẬP NHẬT" />
-                    <Button fx:id="clearButton" mnemonicParsing="false" onAction="#clearButton" prefHeight="30.0" prefWidth="73.0" text="XÓA Ô" />
+                    <Button fx:id="clearButton" mnemonicParsing="false" onAction="#clearButton" prefHeight="30.0" prefWidth="73.0" text="LÀM MỚI" />
                 </VBox>
             </HBox>
          <Separator prefWidth="200.0" />

@@ -1,6 +1,7 @@
 package fecoder.DAO;
 
 import fecoder.connection.ConnectionUtils;
+import fecoder.models.Packaging;
 import fecoder.models.Type;
 
 import java.sql.*;
@@ -77,6 +78,29 @@ public class TypeDAO {
             jdbcDAO.printSQLException((SQLException) ex);
         }
         return type;
+    }
+
+    /**
+     * Getting lastest record data
+     *
+     * @return data
+     * */
+    public Type getLastestData() {
+        Type data = new Type();
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement("select * from "+ tableName +" order by id asc limit 1");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                data = createData(resultSet);
+            }
+            resultSet.close();
+            conn.close();
+        } catch (ClassNotFoundException | SQLException ex) {
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
+        }
+        return data;
     }
 
     /**

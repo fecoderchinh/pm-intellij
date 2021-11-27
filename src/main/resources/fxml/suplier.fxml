@@ -112,7 +112,7 @@
                     <VBox prefWidth="174" spacing="13">
                         <Button fx:id="insertButton" mnemonicParsing="false" onAction="#insertButton" prefHeight="30.0" prefWidth="150.0" text="THÊM" />
                         <Button fx:id="updateButton" mnemonicParsing="false" onAction="#updateButton" prefHeight="30.0" prefWidth="150.0" text="CẬP NHẬT" />
-                        <Button fx:id="clearButton" mnemonicParsing="false" onAction="#clearButton" prefHeight="30.0" prefWidth="150.0" text="XÓA Ô" />
+                        <Button fx:id="clearButton" mnemonicParsing="false" onAction="#clearButton" prefHeight="30.0" prefWidth="150.0" text="LÀM MỚI" />
                         <padding>
                             <Insets bottom="5" left="10" right="10" top="10" />
                         </padding>

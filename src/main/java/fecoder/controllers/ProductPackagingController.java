@@ -2,6 +2,7 @@ package fecoder.controllers;
 
 import fecoder.DAO.*;
 import fecoder.models.*;
+import fecoder.utils.AutoCompleteComboBoxListener;
 import fecoder.utils.AutoFill.AutoFillTextBox;
 import fecoder.utils.Utils;
 import javafx.beans.binding.Bindings;
@@ -20,6 +21,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.control.skin.ComboBoxListViewSkin;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
@@ -77,6 +79,8 @@ public class ProductPackagingController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         filterComboBox();
+        new AutoCompleteComboBoxListener<>(sizeComboBox, true, sizeDAO.getLastestData().getSize());
+        new AutoCompleteComboBoxListener<>(packagingComboBox, true, packagingDAO.getLastestData().getName());
         loadView();
     }
 
@@ -121,9 +125,9 @@ public class ProductPackagingController implements Initializable {
      * */
     private void filterComboBox() {
         sizeComboBox.getItems().addAll(sizeObservableList);
-        filterSizeComboBox();
+//        filterSizeComboBox();
         packagingComboBox.getItems().addAll(packagingObservableList);
-        filterPackagingComboBox();
+//        filterPackagingComboBox();
     }
 
     /**
@@ -162,26 +166,26 @@ public class ProductPackagingController implements Initializable {
         // Create the listener to filter the list as user enters search terms
         FilteredList<Packaging> dataFilteredList = new FilteredList<>(packagingObservableList, p-> true);
 
-        // Add listener to our ComboBox textfield to filter the list
-        packagingComboBox.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
-            dataFilteredList.setPredicate(item -> {
-
-                isUpdating = false;
-
-                // Check if the search term is contained anywhere in our list
-                if (item.getName().toLowerCase().contains(newValue.toLowerCase().trim()) && !isUpdating) {
-                    packagingComboBox.show();
-                    return true;
-                }
-
-                // No matches found
-                return false;
-            });
-
-        });
-
-        packagingComboBox.getItems().removeAll(packagingObservableList);
-        packagingComboBox.getItems().addAll(dataFilteredList);
+//        // Add listener to our ComboBox textfield to filter the list
+//        packagingComboBox.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
+//            dataFilteredList.setPredicate(item -> {
+//
+//                isUpdating = false;
+//
+//                // Check if the search term is contained anywhere in our list
+//                if (item.getName().toLowerCase().contains(newValue.toLowerCase().trim()) && !isUpdating) {
+//                    packagingComboBox.show();
+//                    return true;
+//                }
+//
+//                // No matches found
+//                return false;
+//            });
+//
+//        });
+//
+//        packagingComboBox.getItems().removeAll(packagingObservableList);
+//        packagingComboBox.getItems().addAll(dataFilteredList);
     }
 
     /**
@@ -189,8 +193,9 @@ public class ProductPackagingController implements Initializable {
      * This will handle an enter event and mouse leave for these Nodes
      * */
     private void resetFields() {
-        utils.disableKeyEnterOnTextFieldComboBox(sizeComboBox, false);
-        utils.disableKeyEnterOnTextFieldComboBox(packagingComboBox, true);
+        utils.disableKeyEnterOnTextFieldComboBox(sizeComboBox, true, "Size");
+
+        utils.disableKeyEnterOnTextFieldComboBox(packagingComboBox, true, "Loại BB");
 
         utils.disableKeyEnterOnTextField(packQtyField);
         utils.disableKeyEnterOnTextField(noteField);

@@ -14,6 +14,9 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -27,6 +30,7 @@ import javafx.stage.Window;
 import javafx.util.StringConverter;
 import org.apache.poi.xwpf.usermodel.*;
 
+import java.awt.*;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -338,7 +342,7 @@ public class Utils {
      *
      * @param id ComboBox id
      * */
-    public void disableKeyEnterOnTextFieldComboBox(ComboBox id, boolean editable)
+    public void disableKeyEnterOnTextFieldComboBox(ComboBox id, boolean editable, String promptText)
     {
         id.focusedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
@@ -347,6 +351,9 @@ public class Utils {
                     id.setEditable(editable);
                 } else {
                     id.setEditable(false);
+                }
+                if(editable) {
+                    id.setPromptText(promptText);
                 }
             }
         });
@@ -558,7 +565,7 @@ public class Utils {
      * @param resource resource path
      * @param title scene title
      * */
-    public void loadSceneWithStage(Stage stage, String resource, String title) {
+    public void loadSceneWithStage(Stage stage, String resource, String title, boolean setMaxHeight) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource(resource));
@@ -574,6 +581,12 @@ public class Utils {
             _stage.setScene(scene);
             _stage.initModality(Modality.APPLICATION_MODAL);
             _stage.setResizable(false);
+
+            if(setMaxHeight) {
+                GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+                _stage.setHeight(gd.getDisplayMode().getHeight()-300);
+                _stage.setMaxHeight(gd.getDisplayMode().getHeight()-300);
+            }
 
             _stage.setOnHiding(e -> stage.show());
 

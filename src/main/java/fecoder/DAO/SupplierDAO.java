@@ -2,6 +2,7 @@ package fecoder.DAO;
 
 import fecoder.connection.ConnectionUtils;
 import fecoder.models.Supplier;
+import fecoder.models.Type;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -73,6 +74,29 @@ public class SupplierDAO {
             Connection conn = ConnectionUtils.getMyConnection();
             PreparedStatement preparedStatement = conn.prepareStatement("select * from "+ tableName +" where id=?");
             preparedStatement.setInt(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                data = createData(resultSet);
+            }
+            resultSet.close();
+            conn.close();
+        } catch (ClassNotFoundException | SQLException ex) {
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
+        }
+        return data;
+    }
+
+    /**
+     * Getting lastest record data
+     *
+     * @return data
+     * */
+    public Supplier getLastestData() {
+        Supplier data = new Supplier();
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement("select * from "+ tableName +" order by id asc limit 1");
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
                 data = createData(resultSet);

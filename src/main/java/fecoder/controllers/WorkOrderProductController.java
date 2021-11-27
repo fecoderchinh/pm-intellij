@@ -2,10 +2,7 @@ package fecoder.controllers;
 
 import fecoder.DAO.*;
 import fecoder.models.*;
-import fecoder.utils.ExportWordDocument;
-import fecoder.utils.TreeTableUtil;
-import fecoder.utils.UpdateDocument;
-import fecoder.utils.Utils;
+import fecoder.utils.*;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleObjectProperty;
@@ -100,7 +97,7 @@ public class WorkOrderProductController implements Initializable {
     TreeItem<WorkProduction> root;
 
     public void insertButton(ActionEvent actionEvent) {
-        Product productInsertData = productDAO.getDataByName(productComboBox.getValue()+"");
+        Product productInsertData = productDAO.getDataByName(utils.getComboBoxValue(productComboBox));
         int fakeAutoIncrementID = workOrderProductDAO.getFakeAutoIncrementID().getId();
 //        System.out.println(fakeAutoIncrementID);
         if(emptyFieldDetected()) {
@@ -163,6 +160,7 @@ public class WorkOrderProductController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         filterComboBox();
+        new AutoCompleteComboBoxListener<>(productComboBox, true, productDAO.getLastestData().getName());
         loadView();
     }
 
@@ -184,7 +182,7 @@ public class WorkOrderProductController implements Initializable {
      * */
     private void filterComboBox() {
         productComboBox.getItems().addAll(productObservableList);
-        filterProductComboBox();
+//        filterProductComboBox();
     }
 
     /**
@@ -221,7 +219,7 @@ public class WorkOrderProductController implements Initializable {
      * This will handle an enter event and mouse leave for these Nodes
      * */
     private void resetFields() {
-        utils.disableKeyEnterOnTextFieldComboBox(productComboBox, true);
+        utils.disableKeyEnterOnTextFieldComboBox(productComboBox, true, "Mặt hàng");
 
         utils.disableKeyEnterOnTextField(qtyField);
 
