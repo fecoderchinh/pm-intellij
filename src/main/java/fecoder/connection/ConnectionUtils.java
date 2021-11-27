@@ -1,12 +1,13 @@
 package fecoder.connection;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
 public class ConnectionUtils {
 
     public static Connection getMyConnection() throws SQLException,
-            ClassNotFoundException {
+            ClassNotFoundException, IOException {
         // Sử dụng Oracle.
         // Bạn có thể thay thế bởi Database nào đó.
         return MySQLConnUtils.getMySQLConnection();
@@ -16,7 +17,7 @@ public class ConnectionUtils {
     // Test Connection ...
     //
     public static void main(String[] args) throws SQLException,
-            ClassNotFoundException {
+            ClassNotFoundException, IOException {
 
         System.out.println("Get connection ... ");
 

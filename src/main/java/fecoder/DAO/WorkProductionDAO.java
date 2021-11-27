@@ -5,6 +5,7 @@ import fecoder.models.WorkProduction;
 import fecoder.utils.Utils;
 import javafx.scene.control.Alert;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -111,7 +112,7 @@ public class WorkProductionDAO {
             }
             resultSet.close();
             conn.close();
-        } catch (ClassNotFoundException | SQLException ex) {
+        } catch (ClassNotFoundException | SQLException | IOException ex) {
             assert ex instanceof SQLException;
             jdbcDAO.printSQLException((SQLException) ex);
         }
@@ -182,7 +183,7 @@ public class WorkProductionDAO {
             }
             resultSet.close();
             conn.close();
-        } catch (ClassNotFoundException | SQLException ex) {
+        } catch (ClassNotFoundException | SQLException | IOException ex) {
             assert ex instanceof SQLException;
             jdbcDAO.printSQLException((SQLException) ex);
         }
@@ -253,7 +254,7 @@ public class WorkProductionDAO {
             }
             resultSet.close();
             conn.close();
-        } catch (ClassNotFoundException | SQLException ex) {
+        } catch (ClassNotFoundException | SQLException | IOException ex) {
             assert ex instanceof SQLException;
             jdbcDAO.printSQLException((SQLException) ex);
         }
@@ -329,7 +330,7 @@ public class WorkProductionDAO {
                 Utils utils = new Utils();
                 utils.alert("err", Alert.AlertType.ERROR, "Lỗi", "Chưa chọn LSX").showAndWait();
             }
-        } catch (ClassNotFoundException | SQLException ex) {
+        } catch (ClassNotFoundException | SQLException | IOException ex) {
             assert ex instanceof SQLException;
             jdbcDAO.printSQLException((SQLException) ex);
         }
@@ -409,7 +410,7 @@ public class WorkProductionDAO {
                 resultSet.close();
                 conn.close();
             }
-        } catch (ClassNotFoundException | SQLException ex) {
+        } catch (ClassNotFoundException | SQLException | IOException ex) {
             assert ex instanceof SQLException;
             jdbcDAO.printSQLException((SQLException) ex);
         }

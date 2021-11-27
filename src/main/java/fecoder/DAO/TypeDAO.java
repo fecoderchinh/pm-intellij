@@ -4,6 +4,7 @@ import fecoder.connection.ConnectionUtils;
 import fecoder.models.Packaging;
 import fecoder.models.Type;
 
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +49,7 @@ public class TypeDAO {
             }
             resultSet.close();
             conn.close();
-        } catch (ClassNotFoundException | SQLException ex) {
+        } catch (ClassNotFoundException | SQLException | IOException ex) {
             assert ex instanceof SQLException;
             jdbcDAO.printSQLException((SQLException) ex);
         }
@@ -73,7 +74,7 @@ public class TypeDAO {
             }
             resultSet.close();
             conn.close();
-        } catch (ClassNotFoundException | SQLException ex) {
+        } catch (ClassNotFoundException | SQLException | IOException ex) {
             assert ex instanceof SQLException;
             jdbcDAO.printSQLException((SQLException) ex);
         }
@@ -96,7 +97,7 @@ public class TypeDAO {
             }
             resultSet.close();
             conn.close();
-        } catch (ClassNotFoundException | SQLException ex) {
+        } catch (ClassNotFoundException | SQLException | IOException ex) {
             assert ex instanceof SQLException;
             jdbcDAO.printSQLException((SQLException) ex);
         }
@@ -121,7 +122,7 @@ public class TypeDAO {
             }
             resultSet.close();
             conn.close();
-        } catch (ClassNotFoundException | SQLException ex) {
+        } catch (ClassNotFoundException | SQLException | IOException ex) {
             assert ex instanceof SQLException;
             jdbcDAO.printSQLException((SQLException) ex);
         }
@@ -145,7 +146,7 @@ public class TypeDAO {
             }
             resultSet.close();
             conn.close();
-        } catch (ClassNotFoundException | SQLException ex) {
+        } catch (ClassNotFoundException | SQLException | IOException ex) {
             assert ex instanceof SQLException;
             jdbcDAO.printSQLException((SQLException) ex);
         }

@@ -38,14 +38,14 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                <Button id="packagingTypeManage" fx:id="packagingTypeManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="LOẠI BAO BÌ" GridPane.columnIndex="1" />
-                <Button id="suplierManage" fx:id="suplierManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="NHÀ CUNG CẤP" />
-                <Button id="yearManage" fx:id="yearManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="NĂM" GridPane.columnIndex="2" />
-                <Button id="sizeManage" fx:id="sizeManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="SIZE" GridPane.columnIndex="3" />
-                <Button id="customerManage" fx:id="customerManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="KHÁCH HÀNG" GridPane.rowIndex="1" />
-                <Button id="productManage" fx:id="productManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="MẶT HÀNG" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                <Button id="packagingManage" fx:id="packagingManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="BAO BÌ" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                <Button id="commands" fx:id="workOrder" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="ĐƠN HÀNG" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                <Button id="packagingTypeManage" fx:id="packagingTypeManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="Loại Bao Bì" GridPane.columnIndex="1" />
+                <Button id="suplierManage" fx:id="suplierManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="Nhà Cung Cấp" />
+                <Button id="yearManage" fx:id="yearManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="Năm" GridPane.columnIndex="2" />
+                <Button id="sizeManage" fx:id="sizeManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="Size" GridPane.columnIndex="3" />
+                <Button id="customerManage" fx:id="customerManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="Khách Hàng" GridPane.rowIndex="1" />
+                <Button id="productManage" fx:id="productManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="Mặt Hàng" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                <Button id="packagingManage" fx:id="packagingManage" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="Bao Bì" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <Button id="commands" fx:id="workOrder" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="Đơn Hàng" GridPane.columnIndex="3" GridPane.rowIndex="1" />
             </children>
             <padding>
                 <Insets bottom="10" left="10" right="10" top="10" />

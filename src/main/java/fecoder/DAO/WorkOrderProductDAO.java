@@ -4,6 +4,7 @@ import fecoder.connection.ConnectionUtils;
 import fecoder.models.WorkOrderProduct;
 import fecoder.models.WorkOrderProductPackaging;
 
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +51,7 @@ public class WorkOrderProductDAO {
             }
             resultSet.close();
             conn.close();
-        } catch (ClassNotFoundException | SQLException ex) {
+        } catch (ClassNotFoundException | SQLException | IOException ex) {
             assert ex instanceof SQLException;
             jdbcDAO.printSQLException((SQLException) ex);
         }
@@ -78,7 +79,7 @@ public class WorkOrderProductDAO {
             }
             resultSet.close();
             conn.close();
-        } catch (ClassNotFoundException | SQLException ex) {
+        } catch (ClassNotFoundException | SQLException | IOException ex) {
             assert ex instanceof SQLException;
             jdbcDAO.printSQLException((SQLException) ex);
         }
@@ -104,7 +105,7 @@ public class WorkOrderProductDAO {
             }
             resultSet.close();
             conn.close();
-        } catch (ClassNotFoundException | SQLException ex) {
+        } catch (ClassNotFoundException | SQLException | IOException ex) {
             assert ex instanceof SQLException;
             jdbcDAO.printSQLException((SQLException) ex);
         }
@@ -127,7 +128,7 @@ public class WorkOrderProductDAO {
             }
             resultSet.close();
             conn.close();
-        } catch (ClassNotFoundException | SQLException ex) {
+        } catch (ClassNotFoundException | SQLException | IOException ex) {
             assert ex instanceof SQLException;
             jdbcDAO.printSQLException((SQLException) ex);
         }
@@ -153,7 +154,7 @@ public class WorkOrderProductDAO {
             }
             resultSet.close();
             conn.close();
-        } catch (ClassNotFoundException | SQLException ex) {
+        } catch (ClassNotFoundException | SQLException | IOException ex) {
             assert ex instanceof SQLException;
             jdbcDAO.printSQLException((SQLException) ex);
         }

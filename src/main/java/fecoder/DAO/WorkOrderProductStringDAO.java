@@ -4,6 +4,7 @@ import fecoder.connection.ConnectionUtils;
 import fecoder.models.PackagingOwnerString;
 import fecoder.models.WorkOrderProductString;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -55,7 +56,7 @@ public class WorkOrderProductStringDAO {
             }
             resultSet.close();
             conn.close();
-        } catch (ClassNotFoundException | SQLException ex) {
+        } catch (ClassNotFoundException | SQLException | IOException ex) {
             assert ex instanceof SQLException;
             jdbcDAO.printSQLException((SQLException) ex);
         }
@@ -85,7 +86,7 @@ public class WorkOrderProductStringDAO {
             }
             resultSet.close();
             conn.close();
-        } catch (ClassNotFoundException | SQLException ex) {
+        } catch (ClassNotFoundException | SQLException | IOException ex) {
             assert ex instanceof SQLException;
             jdbcDAO.printSQLException((SQLException) ex);
         }
@@ -114,7 +115,7 @@ public class WorkOrderProductStringDAO {
             }
             resultSet.close();
             conn.close();
-        } catch (ClassNotFoundException | SQLException ex) {
+        } catch (ClassNotFoundException | SQLException | IOException ex) {
             assert ex instanceof SQLException;
             jdbcDAO.printSQLException((SQLException) ex);
         }

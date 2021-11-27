@@ -5,12 +5,13 @@ import fecoder.models.WorkOrder;
 import fecoder.utils.Utils;
 import javafx.scene.control.Alert;
 
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class WorkOrderDAO {
-    
+
     private final String tableName = "work_order";
 
     /**
@@ -57,7 +58,7 @@ public class WorkOrderDAO {
             }
             resultSet.close();
             conn.close();
-        } catch (ClassNotFoundException | SQLException ex) {
+        } catch (ClassNotFoundException | SQLException | IOException ex) {
             assert ex instanceof SQLException;
             jdbcDAO.printSQLException((SQLException) ex);
         }
@@ -83,7 +84,7 @@ public class WorkOrderDAO {
             }
             resultSet.close();
             conn.close();
-        } catch (ClassNotFoundException | SQLException ex) {
+        } catch (ClassNotFoundException | SQLException | IOException ex) {
             assert ex instanceof SQLException;
             jdbcDAO.printSQLException((SQLException) ex);
         }
@@ -108,7 +109,7 @@ public class WorkOrderDAO {
             }
             resultSet.close();
             conn.close();
-        } catch (ClassNotFoundException | SQLException ex) {
+        } catch (ClassNotFoundException | SQLException | IOException ex) {
             assert ex instanceof SQLException;
             jdbcDAO.printSQLException((SQLException) ex);
         }
@@ -132,7 +133,7 @@ public class WorkOrderDAO {
             }
             resultSet.close();
             conn.close();
-        } catch (ClassNotFoundException | SQLException ex) {
+        } catch (ClassNotFoundException | SQLException | IOException ex) {
             assert ex instanceof SQLException;
             jdbcDAO.printSQLException((SQLException) ex);
         }
@@ -141,7 +142,7 @@ public class WorkOrderDAO {
 
     /**
      * Updating record data
-     * 
+     *
      * @param column - table's column
      * @param value - column's new value
      * @param idList - record's id
@@ -190,7 +191,7 @@ public class WorkOrderDAO {
             }
             resultSet.close();
             conn.close();
-        } catch (ClassNotFoundException | SQLException ex) {
+        } catch (ClassNotFoundException | SQLException | IOException ex) {
             assert ex instanceof SQLException;
             jdbcDAO.printSQLException((SQLException) ex);
         }

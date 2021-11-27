@@ -1,5 +1,8 @@
 package fecoder.connection;
 
+import fecoder.utils.Configuration;
+
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -8,15 +11,15 @@ public class MySQLConnUtils {
 
     // Kết nối vào MySQL.
     public static Connection getMySQLConnection() throws SQLException,
-            ClassNotFoundException {
-        String hostName = "localhost";
-        String port = "3306";
+            ClassNotFoundException, IOException {
+//        String hostName = "localhost";
+//        String port = "3306";
+//
+//        String dbName = "pmdb";
+//        String userName = "root";
+//        String password = "";
 
-        String dbName = "pmdb";
-        String userName = "root";
-        String password = "";
-
-        return getMySQLConnection(hostName, port, dbName, userName, password);
+        return getMySQLConnection(Configuration.hostname(), Configuration.port(), Configuration.database(), Configuration.user(), Configuration.password());
     }
 
     public static Connection getMySQLConnection(String hostName, String port, String dbName,

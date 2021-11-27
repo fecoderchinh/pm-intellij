@@ -6,6 +6,7 @@ import fecoder.models.User;
 import fecoder.utils.Utils;
 import javafx.scene.control.Alert;
 
+import java.io.IOException;
 import java.sql.*;
 
 public class jdbcDAO {
@@ -47,7 +48,7 @@ public class jdbcDAO {
             }
             resultSet.close();
             conn.close();
-        } catch (ClassNotFoundException | SQLException ex) {
+        } catch (ClassNotFoundException | SQLException | IOException ex) {
             assert ex instanceof SQLException;
             jdbcDAO.printSQLException((SQLException) ex);
         }
@@ -77,7 +78,7 @@ public class jdbcDAO {
                 return true;
             }
 
-        } catch (SQLException | ClassNotFoundException ex) {
+        } catch (SQLException | ClassNotFoundException | IOException ex) {
             assert ex instanceof SQLException;
             printSQLException((SQLException) ex); }
         return false;
