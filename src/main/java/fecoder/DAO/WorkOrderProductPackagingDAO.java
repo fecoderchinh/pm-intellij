@@ -35,6 +35,7 @@ public class WorkOrderProductPackagingDAO {
             data.setResidual_qty(resultSet.getFloat("residual_qty"));
             data.setPrinted(resultSet.getString("printed"));
             data.setShip_address(resultSet.getInt("ship_address"));
+            data.setOrder_times(resultSet.getInt("order_times"));
         } catch (SQLException ex) {
             jdbcDAO.printSQLException(ex);
         }
@@ -122,15 +123,15 @@ public class WorkOrderProductPackagingDAO {
      * @param work_order_qty work_order_product.work_order_qty
      * @param wop_id work_order_product.id
      * */
-    public void updateWOPPChildren(int product_id, float work_order_qty, int wop_id) {
+    public void updateWOPPChildren(int product_id, float work_order_qty, int order_times, int wop_id) {
         String query = "update work_order_product_packaging wopp" +
                 " join (" +
                 " select pps.packaging_id as _id, pps.pack_qty as _pack_qty" +
                 " from packaging_product_size pps" +
                 " where pps.product_id=?" +
                 " ) pps on wopp.packaging_id = pps._id" +
-                " set wopp.work_order_qty = pps._pack_qty * ? where wopp.wop_id = ?";
-        preparedUpdateWOPPChildren(query, product_id, work_order_qty, wop_id);
+                " set wopp.work_order_qty = pps._pack_qty * ?, wopp.order_times=? where wopp.wop_id = ?";
+        preparedUpdateWOPPChildren(query, product_id, work_order_qty, order_times, wop_id);
     }
 
     /**
@@ -192,13 +193,14 @@ public class WorkOrderProductPackagingDAO {
      * @param v2 work_order_product quantity
      * @param v3 product id
      * */
-    public void preparedUpdateWOPPChildren(String query, int v1, float v2, int v3) {
+    public void preparedUpdateWOPPChildren(String query, int v1, float v2, int v3, int v4) {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
             preparedStatement.setInt(1, v1);
             preparedStatement.setFloat(2, v2);
             preparedStatement.setInt(3, v3);
+            preparedStatement.setInt(4, v4);
 
             preparedStatement.executeUpdate();
 

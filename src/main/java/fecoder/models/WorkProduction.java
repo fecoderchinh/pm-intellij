@@ -23,6 +23,7 @@ public class WorkProduction {
     String noteProduct;
     String orderDate;
     float price;
+    String orderTimes;
 
     public WorkProduction() {}
 
@@ -47,7 +48,8 @@ public class WorkProduction {
             String totalResidualQuantity,
             String noteProduct,
             String orderDate,
-            float price
+            float price,
+            String orderTimes
     ) {
         this.id = id;
         this.ordinalNumbers = ordinalNumbers;
@@ -70,6 +72,7 @@ public class WorkProduction {
         this.noteProduct = noteProduct;
         this.orderDate = orderDate;
         this.price = price;
+        this.orderTimes = orderTimes;
     }
 
     public int getId() {
@@ -238,5 +241,13 @@ public class WorkProduction {
 
     public void setPrice(float price) {
         this.price = price;
+    }
+
+    public String getOrderTimes() {
+        return orderTimes;
+    }
+
+    public void setOrderTimes(String orderTimes) {
+        this.orderTimes = orderTimes;
     }
 }

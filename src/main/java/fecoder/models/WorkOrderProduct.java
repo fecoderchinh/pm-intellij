@@ -7,6 +7,7 @@ public class WorkOrderProduct {
     int product_id;
     float qty;
     String note;
+    int order_times;
 
     public WorkOrderProduct() {}
 
@@ -16,7 +17,8 @@ public class WorkOrderProduct {
             float ordinal_num,
             int product_id,
             float qty,
-            String note
+            String note,
+            int order_times
     ){
         this.id = id;
         this.work_order_id = work_order_id;
@@ -24,6 +26,7 @@ public class WorkOrderProduct {
         this.product_id = product_id;
         this.qty = qty;
         this.note = note;
+        this.order_times = order_times;
     }
 
     public int getId() {
@@ -72,5 +75,18 @@ public class WorkOrderProduct {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public int getOrder_times() {
+        return order_times;
+    }
+
+    public void setOrder_times(int order_times) {
+        this.order_times = order_times;
+    }
+
+    @Override
+    public String toString() {
+        return this.getOrder_times()+"";
     }
 }

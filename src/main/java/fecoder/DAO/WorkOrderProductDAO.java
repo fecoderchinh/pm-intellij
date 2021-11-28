@@ -1,6 +1,7 @@
 package fecoder.DAO;
 
 import fecoder.connection.ConnectionUtils;
+import fecoder.models.Packaging;
 import fecoder.models.WorkOrderProduct;
 import fecoder.models.WorkOrderProductPackaging;
 
@@ -27,6 +28,7 @@ public class WorkOrderProductDAO {
             data.setProduct_id(resultSet.getInt("product_id"));
             data.setQty(resultSet.getInt("qty"));
             data.setNote(resultSet.getString("note"));
+            data.setOrder_times(resultSet.getInt("order_times"));
         } catch (SQLException ex) {
             jdbcDAO.printSQLException(ex);
         }
@@ -60,6 +62,29 @@ public class WorkOrderProductDAO {
     }
 
     /**
+     * Getting lastest record data
+     *
+     * @return data
+     * */
+    public WorkOrderProduct getLastestData() {
+        WorkOrderProduct data = new WorkOrderProduct();
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement("select * from "+ tableName +" order by id asc limit 1");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                data = createData(resultSet);
+            }
+            resultSet.close();
+            conn.close();
+        } catch (ClassNotFoundException | SQLException | IOException ex) {
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
+        }
+        return data;
+    }
+
+    /**
      * Getting all records of table
      *
      * @param work_order_id from work_order_product.work_order_id
@@ -72,6 +97,34 @@ public class WorkOrderProductDAO {
             Connection conn = ConnectionUtils.getMyConnection();
             Statement statement = conn.createStatement();
             String selectAll = "Select * from "+tableName+" where work_order_id="+work_order_id;
+            ResultSet resultSet = statement.executeQuery(selectAll);
+            while (resultSet.next()) {
+                WorkOrderProduct data = createData(resultSet);
+                list.add(data);
+            }
+            resultSet.close();
+            conn.close();
+        } catch (ClassNotFoundException | SQLException | IOException ex) {
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
+        }
+
+        return list;
+    }
+
+    /**
+     * Getting all records of table
+     *
+     * @param work_order_id from work_order_product.work_order_id
+     *
+     * @return list
+     * */
+    public List<WorkOrderProduct> getListByIDAndOrderTimes(int work_order_id) {
+        List<WorkOrderProduct> list = new ArrayList<>();
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            Statement statement = conn.createStatement();
+            String selectAll = "Select * from "+tableName+" where work_order_id="+work_order_id+ " group by order_times";
             ResultSet resultSet = statement.executeQuery(selectAll);
             while (resultSet.next()) {
                 WorkOrderProduct data = createData(resultSet);
@@ -194,9 +247,9 @@ public class WorkOrderProductDAO {
      * @param quantity column qty
      * @param note column note
      * */
-    public void insert_wopp_children(int wop_id, int workOrderID, String ordinalNumber, int productID, float quantity, String note, int ship_address) {
-        String insertQuery = "{call insert_wopp_children(?, ?, ?, ?, ?, ?, ? )}";
-        preparedInsertWOPPChildrenQuery(insertQuery, wop_id, workOrderID, ordinalNumber, productID, quantity, note, ship_address);
+    public void insert_wopp_children(int wop_id, int workOrderID, String ordinalNumber, int productID, float quantity, String note, int ship_address, int order_times) {
+        String insertQuery = "{call insert_wopp_children(?, ?, ?, ?, ?, ?, ?, ? )}";
+        preparedInsertWOPPChildrenQuery(insertQuery, wop_id, workOrderID, ordinalNumber, productID, quantity, note, ship_address, order_times);
     }
 
     /**
@@ -237,7 +290,7 @@ public class WorkOrderProductDAO {
      * @param quantity column qty
      * @param note column note
      * */
-    public void preparedInsertWOPPChildrenQuery(String query, int wop_id, int workOrderID, String ordinalNumber, int productID, float quantity, String note, int ship_address) {
+    public void preparedInsertWOPPChildrenQuery(String query, int wop_id, int workOrderID, String ordinalNumber, int productID, float quantity, String note, int ship_address, int order_times) {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             CallableStatement callableStatement = conn.prepareCall(query);
@@ -248,6 +301,7 @@ public class WorkOrderProductDAO {
             callableStatement.setFloat(5, quantity);
             callableStatement.setString(6, note);
             callableStatement.setInt(7, ship_address);
+            callableStatement.setInt(8, order_times);
 
             callableStatement.executeUpdate();
 
@@ -269,9 +323,9 @@ public class WorkOrderProductDAO {
      * @param note column note
      * @param id - column id
      * */
-    public void update(int workOrderID, String ordinalNumber, int productID, float quantity, String note, int id) {
-        String query = "update "+ tableName +" set work_order_id=?, ordinal_num=?, product_id=?, qty=?, note=? where id=?";
-        preparedUpdateQuery(query, workOrderID, ordinalNumber, productID, quantity, note, id);
+    public void update(int workOrderID, String ordinalNumber, int productID, float quantity, String note, int order_times, int id) {
+        String query = "update "+ tableName +" set work_order_id=?, ordinal_num=?, product_id=?, qty=?, note=?, order_times=? where id=?";
+        preparedUpdateQuery(query, workOrderID, ordinalNumber, productID, quantity, note, id, order_times);
     }
 
     /**
@@ -284,7 +338,7 @@ public class WorkOrderProductDAO {
      * @param note column note
      * @param id - column id
      * */
-    public void preparedUpdateQuery(String query, int workOrderID, String ordinalNumber, int productID, float quantity, String note, int id) {
+    public void preparedUpdateQuery(String query, int workOrderID, String ordinalNumber, int productID, float quantity, String note, int order_times, int id) {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(query);
@@ -293,6 +347,7 @@ public class WorkOrderProductDAO {
             preparedStatement.setInt(3, productID);
             preparedStatement.setFloat(4, quantity);
             preparedStatement.setString(5, note);
+            preparedStatement.setInt(5, order_times);
             preparedStatement.setInt(6, id);
 
             preparedStatement.executeUpdate();

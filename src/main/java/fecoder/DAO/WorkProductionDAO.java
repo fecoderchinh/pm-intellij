@@ -45,6 +45,7 @@ public class WorkProductionDAO {
             data.setNoteProduct(resultSet.getString("noteProduct"));
             data.setOrderDate(resultSet.getString("orderDate"));
             data.setPrice(resultSet.getFloat("price"));
+            data.setOrderTimes(resultSet.getString("orderTimes"));
         } catch (SQLException ex) {
             jdbcDAO.printSQLException(ex);
         }
@@ -82,7 +83,8 @@ public class WorkProductionDAO {
                     " (wopp.actual_qty + wopp.stock - wopp.residual_qty - (pps.pack_qty * wop.qty)) as totalResidualQuantity, " +
                     " wopp.note as noteProduct, " +
                     " wo.order_date as orderDate, " +
-                    " p2.price as price " +
+                    " p2.price as price, " +
+                    " wop.order_times as orderTimes " +
                     "from " +
                     " work_order_product wop," +
                     " work_order wo," +
@@ -152,7 +154,8 @@ public class WorkProductionDAO {
                     " (wopp.actual_qty + wopp.stock - wopp.residual_qty - (pps.pack_qty * wop.qty)) as totalResidualQuantity, " +
                     " wopp.note as noteProduct, " +
                     " wo.order_date as orderDate, " +
-                    " p2.price as price " +
+                    " p2.price as price, " +
+                    " wop.order_times as orderTimes " +
                     "from " +
                     " work_order_product wop," +
                     " work_order wo," +
@@ -223,7 +226,8 @@ public class WorkProductionDAO {
                     " (wopp.actual_qty + wopp.stock - wopp.residual_qty - (pps.pack_qty * wop.qty)) as totalResidualQuantity, " +
                     " wopp.note as noteProduct, " +
                     " wo.order_date as orderDate, " +
-                    " p2.price as price " +
+                    " p2.price as price, " +
+                    " wop.order_times as orderTimes " +
                     "from " +
                     " work_order_product wop," +
                     " work_order wo," +
@@ -295,7 +299,8 @@ public class WorkProductionDAO {
                         " (wopp.actual_qty + wopp.stock - wopp.residual_qty - (pps.pack_qty * wop.qty)) as totalResidualQuantity, " +
                         " wopp.note as noteProduct, " +
                         " wo.order_date as orderDate, " +
-                        " p2.price as price " +
+                        " p2.price as price, " +
+                        " wop.order_times as orderTimes " +
                         "from " +
                         " work_order_product wop," +
                         " work_order wo," +
@@ -343,10 +348,11 @@ public class WorkProductionDAO {
      * @param work_order_id the id of work_order_product.work_order_id
      * @param product_id the id of work_order_product.product_id
      * @param ordinal_num the id of work_order_product.ordinal_num
+     * @param ordinal_times the id of work_order_product.ordinal_times
      *
      * @return list
      * */
-    public List<WorkProduction> getPackagingList(String work_order_id, int product_id, String ordinal_num) {
+    public List<WorkProduction> getPackagingList(String work_order_id, int product_id, String ordinal_num, String ordinal_times) {
         List<WorkProduction> list = new ArrayList<>();
         try {
             if(work_order_id.isEmpty() || ordinal_num.isEmpty() || product_id == 0) {
@@ -376,7 +382,8 @@ public class WorkProductionDAO {
                         " (wopp.actual_qty + wopp.stock - wopp.residual_qty - (pps.pack_qty * wop.qty)) as totalResidualQuantity, " +
                         " wopp.note as noteProduct, " +
                         " wo.order_date as orderDate, " +
-                        " p2.price as price " +
+                        " p2.price as price, " +
+                        " wop.order_times as orderTimes " +
                         "from " +
                         " work_order_product wop," +
                         " work_order wo," +
@@ -400,6 +407,7 @@ public class WorkProductionDAO {
                         " and wo.id in (" + work_order_id + ")" +
                         " and p.id = " + product_id +
                         " and wop.ordinal_num = " + ordinal_num +
+                        " and wop.order_times = " + ordinal_times +
                         " group by wopp.id" +
                         " order by s.code ASC";
                 ResultSet resultSet = statement.executeQuery(selectAll);

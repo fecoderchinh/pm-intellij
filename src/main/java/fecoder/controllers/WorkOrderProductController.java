@@ -60,6 +60,7 @@ public class WorkOrderProductController implements Initializable {
     public TableView<WorkOrderProductString> productTableView;
     public TableColumn<WorkOrderProductString, String> productIdColumn;
     public TableColumn<WorkOrderProductString, String> productNameColumn;
+    public TableColumn<WorkOrderProductString, Integer> productOrderTimesColumn;
     public TableColumn<WorkOrderProductString, Integer> productQuantityColumn;
 
     public TreeTableView<WorkProduction> dataTable;
@@ -71,6 +72,8 @@ public class WorkOrderProductController implements Initializable {
     public TableColumn<OrderBySupllier, Integer> ss2aIdColumn;
     public TableColumn<OrderBySupllier, String> suplierCodeColumn;
     public TableColumn<OrderBySupllier, ShipAddress> addressColumn;
+    public TextField orderTimesField;
+    public ComboBox<WorkOrderProduct> orderTimesComboBox;
 
     private int currentRow;
     private String currentCell;
@@ -92,9 +95,13 @@ public class WorkOrderProductController implements Initializable {
     private final ObservableList<Product> productObservableList = FXCollections.observableArrayList(productDAO.getList());
     private final ObservableList<ShipAddress> shipAddresses = FXCollections.observableArrayList(shipAddressDAO.getList());
 
+
     private WorkOrder innerData;
 
     TreeItem<WorkProduction> root;
+
+    public WorkOrderProductController() {
+    }
 
     public void insertButton(ActionEvent actionEvent) {
         Product productInsertData = productDAO.getDataByName(utils.getComboBoxValue(productComboBox));
@@ -104,7 +111,7 @@ public class WorkOrderProductController implements Initializable {
             utils.alert("err", Alert.AlertType.ERROR, "Xảy ra lỗi!", "Không được bỏ trống các trường bắt buộc (*)").showAndWait();
         } else {
             try {
-                workOrderProductDAO.insert_wopp_children(fakeAutoIncrementID+1, this.innerData.getId(), ordinalNumberField.getText()+"", productInsertData.getId(), Float.parseFloat(qtyField.getText()), noteField.getText()+"", shipAddressDAO.getDataByID(1).getId());
+                workOrderProductDAO.insert_wopp_children(fakeAutoIncrementID+1, this.innerData.getId(), ordinalNumberField.getText()+"", productInsertData.getId(), Float.parseFloat(qtyField.getText()), noteField.getText()+"", shipAddressDAO.getDataByID(1).getId(), !orderTimesField.getText().isEmpty() ? Integer.parseInt(orderTimesField.getText()) : 1);
                 clearFields();
                 reload();
                 utils.alert("info", Alert.AlertType.INFORMATION, null, null).showAndWait();
@@ -133,11 +140,13 @@ public class WorkOrderProductController implements Initializable {
                         product.getId(), // work_order_product.product_id
                         Float.parseFloat(qtyField.getText()), // work_order_product.qty
                         noteField.getText()+"", // work_order_product.note
+                        !orderTimesField.getText().isEmpty() ? Integer.parseInt(orderTimesField.getText()) : 1, // work_order_product.order_times
                         Integer.parseInt(anchorData.getText()) // work_order_product.id
                 );
                 workOrderProductPackagingDAO.updateWOPPChildren(
                         product.getId(),
                         Float.parseFloat(qtyField.getText()),
+                        !orderTimesField.getText().isEmpty() ? Integer.parseInt(orderTimesField.getText()) : 1,
                         Integer.parseInt(anchorData.getText())
                 );
                 clearFields();
@@ -155,6 +164,23 @@ public class WorkOrderProductController implements Initializable {
 
     public void reloadData(ActionEvent actionEvent) {
         reload();
+    }
+
+    public void setData(WorkOrder workOrder) {
+        this.innerData = workOrder;
+        mainLabel.setText(this.innerData.getName());
+        mainLabel.setWrapText(true);
+        root = TreeTableUtil.getModel(this.innerData.getId());
+        loadViewProduct(this.innerData.getId());
+        loadViewWOPP();
+        loadSuppliers(this.innerData.getId());
+        final ObservableList<WorkOrderProduct> obs_order_times = FXCollections.observableArrayList(workOrderProductDAO.getListByIDAndOrderTimes(this.innerData.getId()));
+        if(orderTimesComboBox.getItems().size() == 0) {
+            orderTimesComboBox.getItems().addAll(obs_order_times);
+        }
+        if(workOrderProductDAO.getListByID(this.innerData.getId()).size() > 0) {
+            utils.setComboBoxValue(orderTimesComboBox, workOrderProductDAO.getListByID(this.innerData.getId()).get(0).getOrder_times() + "");
+        }
     }
 
     @Override
@@ -243,6 +269,8 @@ public class WorkOrderProductController implements Initializable {
         anchorData.setText("");
 
         qtyField.setText("");
+
+        orderTimesField.setText("");
 
         searchField.setText("");
 
@@ -341,6 +369,8 @@ public class WorkOrderProductController implements Initializable {
         }
 
         ordinalNumberField.setText(data.getOrdinal_num()+"");
+        orderTimesField.setText(data.getOrder_times()+"");
+        noteField.setText(data.getNote());
 
         qtyField.setText(data.getQty()+"");
         anchorLabel.setText("ID Selected: ");
@@ -359,6 +389,7 @@ public class WorkOrderProductController implements Initializable {
         productTableView.setEditable(true);
         productIdColumn.setCellValueFactory(new PropertyValueFactory<>("productOrdinalNumber"));
         productNameColumn.setCellValueFactory(new PropertyValueFactory<>("productName"));
+        productOrderTimesColumn.setCellValueFactory(new PropertyValueFactory<>("orderTimes"));
         productQuantityColumn.setCellValueFactory(new PropertyValueFactory<>("productQuantity"));
         productTableView.setItems(workProductionObservableListByName);
 
@@ -538,16 +569,6 @@ public class WorkOrderProductController implements Initializable {
 //        }
     }
 
-    public void setData(WorkOrder workOrder) {
-        this.innerData = workOrder;
-        mainLabel.setText(this.innerData.getName());
-        mainLabel.setWrapText(true);
-        root = TreeTableUtil.getModel(this.innerData.getId());
-        loadViewProduct(this.innerData.getId());
-        loadViewWOPP();
-        loadSuppliers(this.innerData.getId());
-    }
-
     private void loadSuppliers(int id) {
 
         ObservableList<OrderBySupllier> orderObservableList = FXCollections.observableArrayList(orderBySupplierDAO.getList(id+""));
@@ -606,14 +627,14 @@ public class WorkOrderProductController implements Initializable {
 
                     if(nv.get(1)) {
                         for (OrderBySupllier orderBySupllier : orderBySuplliers) {
-                            ExportWordDocument.data2DocOfOrderBySupplier(file, this.innerData.getId()+"", orderBySupllier.getsCode(), orderBySupllier.getShipAddress(), now.toString());
+                            ExportWordDocument.data2DocOfOrderBySupplier(file, this.innerData.getId()+"", orderBySupllier.getsCode(), orderBySupllier.getShipAddress(), now.toString(), Integer.parseInt(utils.getComboBoxValue(orderTimesComboBox)));
                         }
                     }
 
                     WorkOrder workOrder = workOrderDAO.getDataByID(this.innerData.getId());
                     if(nv.get(0)) ExportWordDocument.data2WorksheetOfOrderListDraft(file, workOrder, now.toString());
 
-                    if(nv.get(2)) ExportWordDocument.data2DocOfOrderList(file, this.innerData.getId()+"", now.toString());
+                    if(nv.get(2)) ExportWordDocument.data2DocOfOrderList(file, this.innerData.getId()+"", now.toString(), Integer.parseInt(utils.getComboBoxValue(orderTimesComboBox)));
                     utils.alert("info", Alert.AlertType.INFORMATION, "Xuất file thành công!", "File đã được lưu vào đường dẫn " +file.getPath()).showAndWait();
                 }
 

@@ -340,6 +340,7 @@ create table work_order_product(
 	product_id bigint unsigned,
 	qty float not null default 0,
 	note longtext,
+	order_times int not null default 1,
 	unique(id),
 	primary key (id),
 	foreign key (product_id) references products(id) on delete cascade,
@@ -347,6 +348,8 @@ create table work_order_product(
 );
 
 -- ALTER TABLE work_order_product MODIFY ordinal_num float not null default 0;
+
+-- alter table work_order_product add order_times int not null default 1;
 
 -- drop table work_order_product;
 
@@ -357,7 +360,7 @@ values (1, 1.0, 1, 500, "");*/
 
 -- delete from work_order_product;
 
--- select * from work_order_product;
+-- select * from work_order_product where work_order_id =13;
 
 /*select wop.id as id, wo.name as workOrderName, p.name as productName, wop.ordinal_num as productOrdinalNumber, wop.qty as productQuantity, wop.note as productNote
 from work_order_product wop, products p, work_order wo 
@@ -381,6 +384,7 @@ create table work_order_product_packaging (
 	printed varchar(250),
 	note longtext,
 	ship_address bigint unsigned,
+	order_times int not null default 1,
 	primary key (id),
 	foreign key (wop_id) references work_order_product(id) on delete cascade,
 	foreign key (work_order_id) references work_order(id) on delete cascade,
@@ -388,6 +392,8 @@ create table work_order_product_packaging (
 	foreign key (packaging_id) references packaging(id) on delete cascade,
 	foreign key (ship_address) references ship_address(id) on delete cascade
 );
+
+-- alter table work_order_product_packaging add order_times int not null default 1;
 
 -- alter table work_order_product_packaging add ship_address bigint unsigned;
 -- alter table work_order_product_packaging add foreign key (ship_address) references ship_address(id) on delete cascade;
@@ -491,7 +497,7 @@ where
 -- 	and wop.ordinal_num = 1 -- filter by work_order_product.ordinal_num 
 ;*/
 
-/*select distinct
+select distinct
 	(@count := @count + 1),
 	wopp.id as id,
 	wop.ordinal_num as ordinalNumbers, 
@@ -516,7 +522,8 @@ where
 	wop.note as noteProduct,
 	y.year as year,
 	"" as privateNode,
-	"" as cbm
+	"" as cbm,
+	wop.order_times
 from 
 	work_order wo, 
 	work_order_product wop, 
@@ -539,8 +546,9 @@ where
 -- 	and wopp.packaging_id = p.id 
 	and wo.`year`  = y.id
 	and p.suplier = s.id
-	and wopp.work_order_id = 3 and wop.product_id = 3
-order by s.code ASC;*/
+	and wopp.work_order_id = 13
+group by wopp.id, wopp.order_times 
+order by s.code ASC;
 
 
 /*tính số khối*/

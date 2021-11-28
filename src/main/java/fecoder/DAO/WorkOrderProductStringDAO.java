@@ -29,6 +29,7 @@ public class WorkOrderProductStringDAO {
             data.setProductOrdinalNumber(resultSet.getString("productOrdinalNumber"));
             data.setProductQuantity(resultSet.getFloat("productQuantity"));
             data.setProductNote(resultSet.getString("productNote"));
+            data.setOrderTimes(resultSet.getString("orderTimes"));
         } catch (SQLException ex) {
             jdbcDAO.printSQLException(ex);
         }
@@ -45,7 +46,7 @@ public class WorkOrderProductStringDAO {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             Statement statement = conn.createStatement();
-            String selectAll =  "select wop.id as id, wo.name as workOrderName, p.name as productName, wop.ordinal_num as productOrdinalNumber, wop.qty as productQuantity, wop.note as productNote" +
+            String selectAll =  "select wop.id as id, wo.name as workOrderName, p.name as productName, wop.ordinal_num as productOrdinalNumber, wop.qty as productQuantity, wop.note as productNote, wop.order_times as orderTimes" +
                     " from work_order_product wop, products p, work_order wo" +
                     " where wop.work_order_id  = wo.id and wop.product_id = p.id"+
                     " order by wop.ordinal_num";
@@ -75,7 +76,7 @@ public class WorkOrderProductStringDAO {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             Statement statement = conn.createStatement();
-            String selectAll =  "select wop.id as id, wo.name as workOrderName, p.name as productName, wop.ordinal_num as productOrdinalNumber, wop.qty as productQuantity, wop.note as productNote" +
+            String selectAll =  "select wop.id as id, wo.name as workOrderName, p.name as productName, wop.ordinal_num as productOrdinalNumber, wop.qty as productQuantity, wop.note as productNote, wop.order_times as orderTimes" +
                     " from work_order_product wop, products p, work_order wo" +
                     " where wop.work_order_id  = wo.id and wop.product_id = p.id and wo.id = '"+ workOrderID +"'"+
                     " order by wop.ordinal_num";
@@ -105,7 +106,7 @@ public class WorkOrderProductStringDAO {
         try {
             Connection conn = ConnectionUtils.getMyConnection();
             Statement statement = conn.createStatement();
-            String selectAll =  "select wop.id as id, wo.name as workOrderName, p.name as productName, wop.ordinal_num as productOrdinalNumber, wop.qty as productQuantity, wop.note as productNote" +
+            String selectAll =  "select wop.id as id, wo.name as workOrderName, p.name as productName, wop.ordinal_num as productOrdinalNumber, wop.qty as productQuantity, wop.note as productNote, wop.order_times as orderTimes" +
                     " from work_order_product wop, products p, work_order wo" +
                     " where wop.work_order_id  = wo.id and wop.product_id = p.id and wo.name = '"+ workOrderName +"'"+
                     " order by wop.ordinal_num";

@@ -7,6 +7,7 @@ public class WorkOrderProductString {
     String productOrdinalNumber;
     float productQuantity;
     String productNote;
+    String orderTimes;
 
     public WorkOrderProductString() {}
 
@@ -16,7 +17,8 @@ public class WorkOrderProductString {
             String productName,
             String productOrdinalNumber,
             float productQuantity,
-            String productNote
+            String productNote,
+            String orderTimes
     ) {
         this.id = id;
         this.workOrderName = workOrderName;
@@ -24,6 +26,7 @@ public class WorkOrderProductString {
         this.productOrdinalNumber = productOrdinalNumber;
         this.productQuantity = productQuantity;
         this.productNote = productNote;
+        this.orderTimes = orderTimes;
     }
 
     public String getWorkOrderName() {
@@ -72,5 +75,13 @@ public class WorkOrderProductString {
 
     public void setProductNote(String productNote) {
         this.productNote = productNote;
+    }
+
+    public String getOrderTimes() {
+        return orderTimes;
+    }
+
+    public void setOrderTimes(String orderTimes) {
+        this.orderTimes = orderTimes;
     }
 }

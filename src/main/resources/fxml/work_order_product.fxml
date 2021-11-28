@@ -44,12 +44,18 @@
                             </ComboBox>
                         </HBox>
                         <HBox spacing="10">
-                            <Label prefHeight="20.0" prefWidth="166.0" text="Ghi chú">
+                            <Label prefHeight="20.0" prefWidth="78.0" text="Ghi chú">
                                 <font>
                                     <Font size="14.0" />
                                 </font>
                             </Label>
-                            <TextField fx:id="noteField" prefHeight="26.0" prefWidth="578.0" promptText="Ghi chú" />
+                            <TextField fx:id="noteField" prefHeight="26.0" prefWidth="263.0" promptText="Ghi chú" />
+                            <Label prefHeight="20.0" prefWidth="59.0" text="Lần đặt">
+                                <font>
+                                    <Font size="14.0" />
+                                </font>
+                            </Label>
+                            <TextField fx:id="orderTimesField" prefHeight="26.0" prefWidth="139.0" promptText="Lần đặt" />
                         </HBox>
                         <HBox spacing="10">
                             <Button fx:id="insertButton" mnemonicParsing="false" onAction="#insertButton" prefHeight="30.0" prefWidth="60.0" text="THÊM" />
@@ -69,7 +75,8 @@
                 <TableView fx:id="productTableView" maxHeight="-Infinity" prefHeight="204.0" prefWidth="452.0">
                     <columns>
                         <TableColumn fx:id="productIdColumn" prefWidth="35.0" text="STT" />
-                        <TableColumn fx:id="productNameColumn" prefWidth="320.0" text="Tên mặt hàng" />
+                        <TableColumn fx:id="productNameColumn" prefWidth="250.0" text="Mã mặt hàng" />
+                        <TableColumn fx:id="productOrderTimesColumn" prefWidth="70.0" text="Lần đặt" />
                         <TableColumn fx:id="productQuantityColumn" prefWidth="80.0" text="Số lượng" />
                     </columns>
                 </TableView>
@@ -108,6 +115,16 @@
                     <TextField fx:id="searchField" promptText="Nhập từ khóa cần tìm" />
                 </HBox>
                 <HBox alignment="BASELINE_RIGHT" prefHeight="26.0" prefWidth="494.0" spacing="10">
+                    <Label text="Chọn lần đặt">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </Label>
+                    <ComboBox fx:id="orderTimesComboBox" prefHeight="26.0" prefWidth="106.0">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList" />
+                        </items>
+                    </ComboBox>
                     <Button id="exportData" fx:id="exportData" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#exportData" text="XUẤT PHIẾU" />
                     <Button id="reloadData" fx:id="reloadData" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#reloadData" text="TẢI LẠI TRANG" />
                 </HBox>

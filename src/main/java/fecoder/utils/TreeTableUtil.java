@@ -55,7 +55,7 @@ public class TreeTableUtil {
                                 workOrderID+"" // work_order_product.work_order_id
                         )
                 );
-                TreeItem<WorkProduction> _workOrderNode = new TreeItem<>(new WorkProduction(0,"", "","","",_workOrder.getWorkOrderName(),"","","","","","",0, null,null,"","","","", "", 0));
+                TreeItem<WorkProduction> _workOrderNode = new TreeItem<>(new WorkProduction(0,"", "","","",_workOrder.getWorkOrderName(),"","","","","","",0, null,null,"","","","", "", 0, ""));
                 if(productList.size() > 0) {
 //                    System.out.println(productList.size());
                     for(WorkProduction _product : productList) {
@@ -68,18 +68,19 @@ public class TreeTableUtil {
                                 workProductionDAO.getPackagingList(
                                         workOrderID+"", // work_order_product.work_order_id
                                         workOrderProductPackagingDAO.getDataByID(_product.getId()).getProduct_id(), // work_order_product.product_id
-                                        _product.getOrdinalNumbers() // work_order_product.ordinal_num
+                                        _product.getOrdinalNumbers(), // work_order_product.ordinal_num,
+                                        _product.getOrderTimes() // work_order_product.order_times
                                 )
                         );
 //                        System.out.println(_product.getYear());
 //                        System.out.println(workOrderProductDAO.getDataByID(workOrderProductStringDAO.getDataByName(_workOrder.getWorkOrderName()).getId()).getWork_order_id());
 //                        System.out.println(productDAO.getDataByName(_product.getProductName()).getId());
 //                        System.out.println(_product.getOrdinalNumbers());
-                        TreeItem<WorkProduction> _productNode = new TreeItem<>(new WorkProduction(0,"", "","","", _product.getProductName(),"","","","","",null,0, null,"","","","","", "", 0));
+                        TreeItem<WorkProduction> _productNode = new TreeItem<>(new WorkProduction(0,"", "","","", _product.getOrdinalNumbers() + "/ " + _product.getProductName() + " (Lần "+_product.getOrderTimes()+")","","","","","",null,0, null,"","","","","", "", 0, ""));
                         for(WorkProduction _packaging : packagingList) {
 //                            System.out.println(_packaging.getOrdinalNumbers() + " | " + _packaging.getProductName() + " | " +_packaging.getPackagingName() + " | " + _packaging.getActualQuantity() + " | " + _packaging.getPackagingSuplier());
 //                            _productNode.getChildren().add(new TreeItem<>(_packaging));
-                            _productNode.getChildren().add(new TreeItem<>(new WorkProduction(_packaging.getId(),"", "","","",_packaging.getPackagingName(),"", _packaging.getPackagingDimension(), _packaging.getPackagingSuplier(), _packaging.getPackagingCode(), _packaging.getUnit(), _packaging.getPrintStatus(), 0, df.format(Float.parseFloat(_packaging.getWorkOrderQuantity())), df.format(Float.parseFloat(_packaging.getStock())), df.format(Integer.parseInt(_packaging.getActualQuantity())), _packaging.getResidualQuantity(), _packaging.getTotalResidualQuantity(), _packaging.getNoteProduct(), "", 0)));
+                            _productNode.getChildren().add(new TreeItem<>(new WorkProduction(_packaging.getId(),"", "","","",_packaging.getPackagingName(),"", _packaging.getPackagingDimension(), _packaging.getPackagingSuplier(), _packaging.getPackagingCode(), _packaging.getUnit(), _packaging.getPrintStatus(), 0, df.format(Float.parseFloat(_packaging.getWorkOrderQuantity())), df.format(Float.parseFloat(_packaging.getStock())), df.format(Integer.parseInt(_packaging.getActualQuantity())), _packaging.getResidualQuantity(), _packaging.getTotalResidualQuantity(), _packaging.getNoteProduct(), "", 0, "")));
                             _productNode.setExpanded(true);
                         }
 //                        System.out.println("---------------------------------------------");

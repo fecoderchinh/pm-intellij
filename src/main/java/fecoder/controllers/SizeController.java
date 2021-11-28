@@ -128,15 +128,13 @@ public class SizeController implements Initializable {
 
         searchField.textProperty()
                 .addListener((observable, oldValue, newValue) -> {
-                    if(sizeField.getText().isEmpty()) {
-                        filteredList.setPredicate(str -> {
-                            if (newValue == null || newValue.isEmpty())
-                                return true;
-                            String lowerCaseFilter = newValue.toLowerCase();
-                            return str.getSize().toLowerCase().contains
-                                    (lowerCaseFilter);
-                        });
-                    }
+                    filteredList.setPredicate(str -> {
+                        if (newValue == null || newValue.isEmpty())
+                            return true;
+                        String lowerCaseFilter = newValue.toLowerCase();
+                        return str.getSize().toLowerCase().contains
+                                (lowerCaseFilter);
+                    });
                 });
 
         SortedList<Size> sortedList = new SortedList<>(filteredList);

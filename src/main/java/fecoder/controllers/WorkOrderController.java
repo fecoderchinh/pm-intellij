@@ -378,6 +378,21 @@ public class WorkOrderController implements Initializable {
                     }
                 });
 
+        workOrderName.textProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    switch (searchComboBox.getValue()) {
+                        case "Số lệnh":
+                            filteredList.setPredicate(str -> {
+                                if (newValue == null || newValue.isEmpty())
+                                    return true;
+                                String lowerCaseFilter = newValue.toLowerCase();
+                                return str.getName().toLowerCase().contains
+                                        (lowerCaseFilter);
+                            });
+                            break;
+                    }
+                });
+
         searchComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if(newVal != null) {
                 searchField.setText(null);
@@ -811,7 +826,7 @@ public class WorkOrderController implements Initializable {
                         for (OrderBySupllier orderBySupllier : orderBySuplliers) {
                             ObservableList<OrderBySupllier> _sa = FXCollections.observableArrayList(orderBySupplierDAO.getListGroupByShippingAddress(getListID()));
                             for(OrderBySupllier _saEach : _sa) {
-                                ExportWordDocument.data2DocOfOrderBySupplier(file, getListID(), orderBySupllier.getsCode(), _saEach.getShipAddress(), now.toString());
+                                ExportWordDocument.data2DocOfOrderBySupplier(file, getListID(), orderBySupllier.getsCode(), _saEach.getShipAddress(), now.toString(), 1);
                             }
 //                            ExportWordDocument.data2DocOfOrderBySupplier(file, getListID(), orderBySupllier.getsCode(), now.toString());
                         }
@@ -827,7 +842,7 @@ public class WorkOrderController implements Initializable {
                         }
 
                         if(nv.get(2)) {
-                            ExportWordDocument.data2DocOfOrderList(file, workOrder.getId()+"", now.toString());
+                            ExportWordDocument.data2DocOfOrderList(file, workOrder.getId()+"", now.toString(), 1);
                         }
                     }
                     utils.alert("info", Alert.AlertType.INFORMATION, "Xuất file thành công!", "File đã được lưu vào đường dẫn " +file.getPath()).showAndWait();

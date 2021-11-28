@@ -159,7 +159,8 @@ public class ExportWordDocument {
                             workProductionDAO.getPackagingList(
                                     workOrder.getId()+"", // work_order_product.work_order_id
                                     workOrderProductPackagingDAO.getDataByID(_product.getId()).getProduct_id(), // work_order_product.product_id
-                                    _product.getOrdinalNumbers() // work_order_product.ordinal_num
+                                    _product.getOrdinalNumbers(), // work_order_product.ordinal_num
+                                    _product.getOrderTimes() // work_order_product.order_times
                             )
                     );
                     hasData = packagingList.size() > 0;
@@ -320,14 +321,15 @@ public class ExportWordDocument {
 
                     // Thực đặt
                     cell = row.createCell(2, CellType.STRING);
-                    cell.setCellValue(productList.get(i).getOrdinalNumbers() + "/ " + productList.get(i).getProductName());
+                    cell.setCellValue(productList.get(i).getOrdinalNumbers() + "/ " + productList.get(i).getProductName() + " (Lần "+productList.get(i).getOrderTimes()+")");
                     cell.setCellStyle(headerStyle);
 
                     ObservableList<WorkProduction> packagingList = FXCollections.observableArrayList(
                             workProductionDAO.getPackagingList(
                                     workOrder.getId()+"", // work_order_product.work_order_id
                                     workOrderProductPackagingDAO.getDataByID(productList.get(i).getId()).getProduct_id(), // work_order_product.product_id
-                                    productList.get(i).getOrdinalNumbers() // work_order_product.ordinal_num
+                                    productList.get(i).getOrdinalNumbers(), // work_order_product.ordinal_num
+                                    productList.get(i).getOrderTimes() // work_order_product.order_times
                             )
                     );
                     hasData = packagingList.size() > 0;
@@ -391,20 +393,20 @@ public class ExportWordDocument {
      * @param idList list or single id from work_order_product_packaging.work_order_id
      * @param supplierCode list or single id from suppliers.code
      * */
-    public static void data2DocOfOrderBySupplier(File file, String idList, String supplierCode, String shippingCode, String date) {
+    public static void data2DocOfOrderBySupplier(File file, String idList, String supplierCode, String shippingCode, String date, int orderTimes) {
         String imgFile = "e:\\java_platform\\docs-data\\logo.jpg";
         String _fontFamily = "Calibri (Body)";
         SupplierDAO supplierDAO = new SupplierDAO();
         OrderBySupplierDAO orderBySupplierDAO = new OrderBySupplierDAO();
         Utils utils = new Utils();
 
-        ObservableList<OrderBySupllier> orderObservableList = FXCollections.observableArrayList(orderBySupplierDAO.getListBySupplierCode(idList, supplierCode, shippingCode));
+        ObservableList<OrderBySupllier> orderObservableList = FXCollections.observableArrayList(orderBySupplierDAO.getListBySupplierCode(idList, supplierCode, shippingCode, orderTimes));
         Supplier supplier = supplierDAO.getDataByCode(supplierCode);
         Supplier SEAVINA = supplierDAO.getDataByCode("SVN");
 
         String woList = "";
         for(int i=0;i<orderObservableList.size();i++) {
-            woList += orderObservableList.get(i).getWoName();
+            woList += orderObservableList.get(i).getWoName() + " (Lần "+orderObservableList.get(i).getOrderTimes()+")";
             woList += (i<orderObservableList.size()-1) ? "+" : "";
         }
 
@@ -646,8 +648,9 @@ public class ExportWordDocument {
      *
      * @param file File
      * @param idList list or single id from work_order_product_packaging.work_order_id
+     * @param orderTimes work_order_product_packaging.order_times
      * */
-    public static void data2DocOfOrderList(File file, String idList, String date) {
+    public static void data2DocOfOrderList(File file, String idList, String date, int orderTimes) {
         String imgFile = "e:\\java_platform\\docs-data\\logo.jpg";
         String _fontFamily = "Calibri (Body)";
 
@@ -725,7 +728,7 @@ public class ExportWordDocument {
             run.setFontFamily(_fontFamily);
             run.setBold(true);
             run.setFontSize(14);
-            run.setText("ĐỀ NGHỊ BAO BÌ "+utils.getListWorkOrderName(idList));
+            run.setText("ĐỀ NGHỊ BAO BÌ "+utils.getListWorkOrderName(idList) + (orderTimes > 1 ? " (LẦN "+orderTimes+")" : ""));
 
             paragraph = doc.createParagraph();
             paragraph.setAlignment(ParagraphAlignment.LEFT);
@@ -768,7 +771,7 @@ public class ExportWordDocument {
             utils.setHeaderRowforSingleCell(row.getCell(5), "Ghi chú", 10, false, true, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
             utils.setHeaderRowforSingleCell(row.getCell(6), "LSX", 10, false, true, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
 
-            ObservableList<OrderBySupllier> orderObservableList = FXCollections.observableArrayList(orderBySupplierDAO.getList(idList));
+            ObservableList<OrderBySupllier> orderObservableList = FXCollections.observableArrayList(orderBySupplierDAO.getListByOrderTimes(idList, orderTimes));
             DecimalFormat formatter = new DecimalFormat("#,###");
 
             table = doc.createTable(orderObservableList.size(), 7);
@@ -810,7 +813,6 @@ public class ExportWordDocument {
             run.setFontSize(10);
             run.setBold(false);
             run.setText("Lưu ý: Mọi thay đổi hay có vấn đề chưa rõ phải phản hồi lại với bộ phận liên quan trước khi thực hiện để tránh sai sót có thể xảy ra.");
-            run.addBreak();
 
             table = doc.createTable(1, 2);
             table.setWidth("100%");
@@ -828,7 +830,7 @@ public class ExportWordDocument {
                 if(file != null) {
                     // save it to .docx file
 //                try (FileOutputStream out = new FileOutputStream(file.getPath())) // for fileChooser
-                    try (FileOutputStream out = new FileOutputStream(file.getPath()+"/DE NGHI BB "+ utils.getListWorkOrderName(idList) +".docx"))
+                    try (FileOutputStream out = new FileOutputStream(file.getPath()+"/DE NGHI BB "+ utils.getListWorkOrderName(idList) + (orderTimes > 1 ? " (L"+orderTimes+")" : "")+".docx"))
                     {
                         doc.write(out);
 //                        utils.alert("info", Alert.AlertType.INFORMATION, "Xuất file thành công!", "File đã được lưu vào ổ đĩa!").showAndWait();
