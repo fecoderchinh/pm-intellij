@@ -13,6 +13,7 @@ public class WorkOrderProductPackaging {
     String printed;
     int ship_address;
     int order_times;
+    String packaging_custom_code;
 
     public WorkOrderProductPackaging() {}
 
@@ -112,6 +113,14 @@ public class WorkOrderProductPackaging {
         this.order_times = order_times;
     }
 
+    public String getPackaging_custom_code() {
+        return packaging_custom_code;
+    }
+
+    public void setPackaging_custom_code(String packaging_custom_code) {
+        this.packaging_custom_code = packaging_custom_code;
+    }
+
     public WorkOrderProductPackaging(
             int id,
             int wop_id,
@@ -124,7 +133,8 @@ public class WorkOrderProductPackaging {
             float residual_qty,
             String printed,
             int ship_address,
-            int order_times
+            int order_times,
+            String packaging_custom_code
     ) {
         this.id = id;
         this.wop_id = wop_id;
@@ -138,5 +148,6 @@ public class WorkOrderProductPackaging {
         this.printed = printed;
         this.ship_address = ship_address;
         this.order_times = order_times;
+        this.packaging_custom_code = packaging_custom_code;
     }
 }

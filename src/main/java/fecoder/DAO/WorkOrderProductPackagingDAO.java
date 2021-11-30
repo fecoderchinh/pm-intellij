@@ -36,6 +36,7 @@ public class WorkOrderProductPackagingDAO {
             data.setPrinted(resultSet.getString("printed"));
             data.setShip_address(resultSet.getInt("ship_address"));
             data.setOrder_times(resultSet.getInt("order_times"));
+            data.setPackaging_custom_code(resultSet.getString("packaging_custom_code"));
         } catch (SQLException ex) {
             jdbcDAO.printSQLException(ex);
         }
@@ -110,7 +111,7 @@ public class WorkOrderProductPackagingDAO {
      * @param id work_order_product_packaging.wop_id
      * */
     public void deleteWOPPChildren(int id) {
-        String query = "delete from work_order_product_packaging where id in ( select id from work_order_product_packaging wopp where wopp.wop_id = ?)";
+        String query = "delete from work_order_product_packaging where wop_id in (?)";
         preparedDeleteWOPPChildren(query, id);
     }
 

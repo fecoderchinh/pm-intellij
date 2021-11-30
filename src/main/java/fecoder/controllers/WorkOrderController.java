@@ -18,6 +18,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -448,7 +449,7 @@ public class WorkOrderController implements Initializable {
 
             manage.setOnAction((ActionEvent event) -> {
                 WorkOrder workOrder = dataTable.getSelectionModel().getSelectedItem();
-                loadSingleProductScene((Stage) manage.getParentPopup().getOwnerWindow(),"/fxml/work_order_product.fxml", workOrder.getName(), workOrder, true);
+                loadSingleProductScene((Stage) manage.getParentPopup().getOwnerWindow(),"/fxml/work_order_product.fxml", workOrder.getName(), workOrder, 1152, 640);
             });
             contextMenu.getItems().add(manage);
 
@@ -480,7 +481,7 @@ public class WorkOrderController implements Initializable {
      * @param title scene title
      * @param workOrder data
      * */
-    private void loadSingleProductScene(Stage stage, String resource, String title, WorkOrder workOrder, boolean setMaxHeight) {
+    private void loadSingleProductScene(Stage stage, String resource, String title, WorkOrder workOrder, int minWidth, int minHeight) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource(resource));
@@ -493,19 +494,41 @@ public class WorkOrderController implements Initializable {
             scene.getStylesheets().add("style.css");
             _stage.setTitle(title);
             _stage.setScene(scene);
-            _stage.initModality(Modality.APPLICATION_MODAL);
-            _stage.setResizable(false);
+            _stage.initModality(Modality.WINDOW_MODAL);
+
+//            _stage.setResizable(false);
+//            _stage.setMaximized(true);
             _stage.getIcons().add(new Image("/images/icon.png"));
             stage.setOpacity(0);
+
+            _stage.setMinWidth(minWidth);
+            _stage.setWidth(minWidth);
+            _stage.setHeight(minHeight);
+            _stage.setMinHeight(minHeight);
+
+            ChangeListener<Number> widthListener = (observable, oldValue, newValue) -> {
+                double stageWidth = newValue.doubleValue();
+                _stage.setX(stage.getX() + stage.getWidth() / 2 - stageWidth / 2);
+            };
+            ChangeListener<Number> heightListener = (observable, oldValue, newValue) -> {
+                double stageHeight = newValue.doubleValue();
+                _stage.setY(stage.getY() + stage.getHeight() / 2 - stageHeight / 2);
+            };
+
+            _stage.widthProperty().addListener(widthListener);
+            _stage.heightProperty().addListener(heightListener);
+
+            _stage.setOnShown(e -> {
+                _stage.widthProperty().removeListener(widthListener);
+                _stage.heightProperty().removeListener(heightListener);
+            });
+
+            _stage.setMaximized(true);
+
             _stage.show();
+
             WorkOrderProductController controller = fxmlLoader.<WorkOrderProductController>getController();
             controller.setData(workOrder);
-
-            if(setMaxHeight) {
-                GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-                _stage.setHeight(gd.getDisplayMode().getHeight()-300);
-                _stage.setMaxHeight(gd.getDisplayMode().getHeight()-300);
-            }
 
             _stage.setOnHiding(e -> {
                 stage.setOpacity(1);
@@ -805,52 +828,56 @@ public class WorkOrderController implements Initializable {
     public void exportData(ActionEvent actionEvent) throws IOException {
 //        data2DocOfOrderList((Stage)((Node) actionEvent.getSource()).getScene().getWindow());
 
-        utils.openListCheckboxWindow((Stage)((Node) actionEvent.getSource()).getScene().getWindow(), nv -> {
+        if(dataTable.getSelectionModel().getSelectedItem() == null) {
+            utils.alert("err", Alert.AlertType.ERROR, "Lỗi", "Chưa chọn LSX").showAndWait();
+        } else {
+            utils.openListCheckboxWindow((Stage)((Node) actionEvent.getSource()).getScene().getWindow(), nv -> {
 
-            try {
-                FileChooser fileChooser = new FileChooser();
-                FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("Word document (*.docx)", "*.docx");
-                fileChooser.getExtensionFilters().add(extensionFilter);
+                try {
+                    FileChooser fileChooser = new FileChooser();
+                    FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("Word document (*.docx)", "*.docx");
+                    fileChooser.getExtensionFilters().add(extensionFilter);
 
-                DirectoryChooser directoryChooser = new DirectoryChooser();
-                directoryChooser.setTitle("Select folder");
+                    DirectoryChooser directoryChooser = new DirectoryChooser();
+                    directoryChooser.setTitle("Select folder");
 
 //            File file = fileChooser.showSaveDialog(window);
-                File file = directoryChooser.showDialog((Stage)((Node) actionEvent.getSource()).getScene().getWindow());
-                LocalDateTime now = LocalDateTime.now();
+                    File file = directoryChooser.showDialog((Stage)((Node) actionEvent.getSource()).getScene().getWindow());
+                    LocalDateTime now = LocalDateTime.now();
 
-                if(file != null) {
-                    ObservableList<OrderBySupllier> orderBySuplliers = FXCollections.observableArrayList(orderBySupplierDAO.getList(getListID()));
+                    if(file != null) {
+                        ObservableList<OrderBySupllier> orderBySuplliers = FXCollections.observableArrayList(orderBySupplierDAO.getList(getListID()));
 
-                    if(nv.get(1)) {
-                        for (OrderBySupllier orderBySupllier : orderBySuplliers) {
-                            ObservableList<OrderBySupllier> _sa = FXCollections.observableArrayList(orderBySupplierDAO.getListGroupByShippingAddress(getListID()));
-                            for(OrderBySupllier _saEach : _sa) {
-                                ExportWordDocument.data2DocOfOrderBySupplier(file, getListID(), orderBySupllier.getsCode(), _saEach.getShipAddress(), now.toString(), 1);
-                            }
+                        if(nv.get(1)) {
+                            for (OrderBySupllier orderBySupllier : orderBySuplliers) {
+                                ObservableList<OrderBySupllier> _sa = FXCollections.observableArrayList(orderBySupplierDAO.getListGroupByShippingAddress(getListID()));
+                                for(OrderBySupllier _saEach : _sa) {
+                                    ExportWordDocument.data2DocOfOrderBySupplier(file, getListID(), orderBySupllier.getsCode(), _saEach.getShipAddress(), now.toString(), 1);
+                                }
 //                            ExportWordDocument.data2DocOfOrderBySupplier(file, getListID(), orderBySupllier.getsCode(), now.toString());
+                            }
                         }
+
+                        String[] _arrayListID = getListID().split(",");
+                        for(int i=0;i<_arrayListID.length; i++) {
+                            workOrderDAO.updateData("order_date", now.getDayOfMonth()+"/"+now.getMonthValue()+"/"+now.getYear(), _arrayListID[i].trim());
+                            WorkOrder workOrder = workOrderDAO.getDataByID(Integer.parseInt(_arrayListID[i].trim()));
+
+                            if(nv.get(0)) {
+                                ExportWordDocument.data2WorksheetOfOrderListDraft(file, workOrder, now.toString());
+                            }
+
+                            if(nv.get(2)) {
+                                ExportWordDocument.data2DocOfOrderList(file, workOrder.getId()+"", now.toString(), 1);
+                            }
+                        }
+                        utils.alert("info", Alert.AlertType.INFORMATION, "Xuất file thành công!", "File đã được lưu vào đường dẫn " +file.getPath()).showAndWait();
                     }
-
-                    String[] _arrayListID = getListID().split(",");
-                    for(int i=0;i<_arrayListID.length; i++) {
-                        workOrderDAO.updateData("order_date", now.getDayOfMonth()+"/"+now.getMonthValue()+"/"+now.getYear(), _arrayListID[i].trim());
-                        WorkOrder workOrder = workOrderDAO.getDataByID(Integer.parseInt(_arrayListID[i].trim()));
-
-                        if(nv.get(0)) {
-                            ExportWordDocument.data2WorksheetOfOrderListDraft(file, workOrder, now.toString());
-                        }
-
-                        if(nv.get(2)) {
-                            ExportWordDocument.data2DocOfOrderList(file, workOrder.getId()+"", now.toString(), 1);
-                        }
-                    }
-                    utils.alert("info", Alert.AlertType.INFORMATION, "Xuất file thành công!", "File đã được lưu vào đường dẫn " +file.getPath()).showAndWait();
+                } catch(Exception ex) {
+                    utils.alert("err", Alert.AlertType.ERROR, "Lỗi", ex.getMessage()).showAndWait();
                 }
-            } catch(Exception ex) {
-                utils.alert("err", Alert.AlertType.ERROR, "Lỗi", ex.getMessage()).showAndWait();
-            }
-        }, "Tùy chọn");
+            }, "Tùy chọn");
+        }
 
     }
 

@@ -5,6 +5,7 @@ import fecoder.models.Product;
 import fecoder.utils.Utils;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -223,7 +224,7 @@ public class ProductController implements Initializable {
      * @param title scene title
      * @param product product data
      * */
-    private void loadSingleProductScene(Stage stage, String resource, String title, Product product, boolean setMaxHeight) {
+    private void loadSingleProductScene(Stage stage, String resource, String title, Product product, int minWidth, int minHeight) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource(resource));
@@ -235,19 +236,38 @@ public class ProductController implements Initializable {
             Stage _stage = new Stage();
             _stage.setTitle(title);
             _stage.setScene(scene);
-            _stage.initModality(Modality.APPLICATION_MODAL);
-            _stage.setResizable(false);
+            _stage.initModality(Modality.WINDOW_MODAL);
+//            _stage.setResizable(false);
             _stage.getIcons().add(new Image("/images/icon.png"));
             stage.setOpacity(0);
-            _stage.show();
+
             ProductPackagingController productPackagingController = fxmlLoader.<ProductPackagingController>getController();
             productPackagingController.setData(product);
 
-            if(setMaxHeight) {
-                GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-                _stage.setHeight(gd.getDisplayMode().getHeight()-300);
-                _stage.setMaxHeight(gd.getDisplayMode().getHeight()-300);
-            }
+            _stage.setMinWidth(minWidth);
+            _stage.setWidth(minWidth);
+            _stage.setHeight(minHeight);
+            _stage.setMinHeight(minHeight);
+
+            ChangeListener<Number> widthListener = (observable, oldValue, newValue) -> {
+                double stageWidth = newValue.doubleValue();
+                _stage.setX(stage.getX() + stage.getWidth() / 2 - stageWidth / 2);
+            };
+            ChangeListener<Number> heightListener = (observable, oldValue, newValue) -> {
+                double stageHeight = newValue.doubleValue();
+                _stage.setY(stage.getY() + stage.getHeight() / 2 - stageHeight / 2);
+            };
+
+            _stage.widthProperty().addListener(widthListener);
+            _stage.heightProperty().addListener(heightListener);
+
+            _stage.setOnShown(e -> {
+                _stage.widthProperty().removeListener(widthListener);
+                _stage.heightProperty().removeListener(heightListener);
+            });
+
+            _stage.setMaximized(true);
+            _stage.show();
 
             _stage.setOnHiding(e -> {
                 stage.setOpacity(1);
@@ -430,7 +450,7 @@ public class ProductController implements Initializable {
 
             managePackaging.setOnAction((ActionEvent event) -> {
                 Product product = dataTable.getSelectionModel().getSelectedItem();
-                loadSingleProductScene((Stage) managePackaging.getParentPopup().getOwnerWindow(),"/fxml/product_packaging.fxml", "Chi tiết mặt hàng: "+product.getDescription(), product, true);
+                loadSingleProductScene((Stage) managePackaging.getParentPopup().getOwnerWindow(),"/fxml/product_packaging.fxml", "Chi tiết mặt hàng: "+product.getDescription(), product, 800, 640);
             });
             contextMenu.getItems().add(managePackaging);
 

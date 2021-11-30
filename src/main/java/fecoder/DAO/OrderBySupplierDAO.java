@@ -45,6 +45,7 @@ public class OrderBySupplierDAO {
             data.setsFax(resultSet.getString("sFax"));
             data.setShipAddress(resultSet.getString("shipAddress"));
             data.setOrderTimes(resultSet.getString("orderTimes"));
+            data.setPackagingCustomCode(resultSet.getString("packagingCustomCode"));
         } catch (SQLException ex) {
             jdbcDAO.printSQLException(ex);
         }
@@ -67,7 +68,7 @@ public class OrderBySupplierDAO {
                 String selectAll =  "select" +
                         " wopp.id as woppID," +
                         " wo.id as woID," +
-                        " group_concat(distinct wo.name separator \"+\") as woName, " +
+                        " group_concat(distinct wo.name separator \" +\") as woName, " +
                         " p.name as pName," +
                         " wopp.printed as pIsPrinted," +
                         " p.specifications as pSpecs," +
@@ -85,7 +86,8 @@ public class OrderBySupplierDAO {
                         " s.phone as sPhone," +
                         " s.fax as sFax, " +
                         " sa.code_address as shipAddress, " +
-                        " wopp.order_times as orderTimes " +
+                        " wopp.order_times as orderTimes, " +
+                        " wopp.packaging_custom_code as packagingCustomCode " +
                         "from " +
                         " work_order_product_packaging wopp," +
                         " work_order wo," +
@@ -138,7 +140,7 @@ public class OrderBySupplierDAO {
                 String selectAll =  "select" +
                         " wopp.id as woppID," +
                         " wo.id as woID," +
-                        " group_concat(distinct wo.name separator \"+\") as woName, " +
+                        " group_concat(distinct wo.name separator \" +\") as woName, " +
                         " p.name as pName," +
                         " wopp.printed as pIsPrinted," +
                         " p.specifications as pSpecs," +
@@ -156,7 +158,8 @@ public class OrderBySupplierDAO {
                         " s.phone as sPhone," +
                         " s.fax as sFax, " +
                         " sa.code_address as shipAddress, " +
-                        " wopp.order_times as orderTimes " +
+                        " wopp.order_times as orderTimes, " +
+                        " wopp.packaging_custom_code as packagingCustomCode " +
                         "from " +
                         " work_order_product_packaging wopp," +
                         " work_order wo," +
@@ -174,7 +177,7 @@ public class OrderBySupplierDAO {
                         " and wopp.work_order_id in (" + idList + ") "+
                         " and wopp.order_times = " + order_times + " " +
                         "group by " +
-                        " wopp.packaging_id";
+                        " wopp.packaging_id, wopp.printed, wopp.packaging_custom_code";
                 ResultSet resultSet = statement.executeQuery(selectAll);
                 while(resultSet.next()) {
                     OrderBySupllier data = createData(resultSet);
@@ -209,7 +212,7 @@ public class OrderBySupplierDAO {
                 String selectAll =  "select" +
                         " wopp.id as woppID," +
                         " wo.id as woID," +
-                        " group_concat(distinct wo.name separator \"+\") as woName, " +
+                        " group_concat(distinct wo.name separator \" +\") as woName, " +
                         " p.name as pName," +
                         " wopp.printed as pIsPrinted," +
                         " p.specifications as pSpecs," +
@@ -227,7 +230,8 @@ public class OrderBySupplierDAO {
                         " s.phone as sPhone," +
                         " s.fax as sFax, " +
                         " sa.code_address as shipAddress, " +
-                        " wopp.order_times as orderTimes " +
+                        " wopp.order_times as orderTimes, " +
+                        " wopp.packaging_custom_code as packagingCustomCode " +
                         "from " +
                         " work_order_product_packaging wopp," +
                         " work_order wo," +
@@ -282,7 +286,7 @@ public class OrderBySupplierDAO {
                 String selectAll =  "select" +
                         " wopp.id as woppID," +
                         " wo.id as woID," +
-                        " group_concat(distinct wo.name separator \"+\") as woName, " +
+                        " group_concat(distinct wo.name separator \" +\") as woName, " +
                         " p.name as pName," +
                         " wopp.printed as pIsPrinted," +
                         " p.specifications as pSpecs," +
@@ -300,7 +304,8 @@ public class OrderBySupplierDAO {
                         " s.phone as sPhone," +
                         " s.fax as sFax, " +
                         " sa.code_address as shipAddress, " +
-                        " wopp.order_times as orderTimes " +
+                        " wopp.order_times as orderTimes, " +
+                        " wopp.packaging_custom_code as packagingCustomCode " +
                         "from " +
                         " work_order_product_packaging wopp," +
                         " work_order wo," +
@@ -320,7 +325,7 @@ public class OrderBySupplierDAO {
                         " and sa.code_address = '" + shippingCode + "' " +
                         " and wopp.order_times = " + order_times + " " +
                         "group by " +
-                        " wopp.packaging_id, sa.code_address";
+                        " wopp.packaging_id, sa.code_address, wopp.printed, wopp.packaging_custom_code";
                 ResultSet resultSet = statement.executeQuery(selectAll);
                 while(resultSet.next()) {
                     OrderBySupllier data = createData(resultSet);

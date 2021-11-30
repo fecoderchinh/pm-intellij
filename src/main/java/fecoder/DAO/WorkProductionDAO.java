@@ -46,6 +46,7 @@ public class WorkProductionDAO {
             data.setOrderDate(resultSet.getString("orderDate"));
             data.setPrice(resultSet.getFloat("price"));
             data.setOrderTimes(resultSet.getString("orderTimes"));
+            data.setPackagingCustomCode(resultSet.getString("packagingCustomCode"));
         } catch (SQLException ex) {
             jdbcDAO.printSQLException(ex);
         }
@@ -84,7 +85,8 @@ public class WorkProductionDAO {
                     " wopp.note as noteProduct, " +
                     " wo.order_date as orderDate, " +
                     " p2.price as price, " +
-                    " wop.order_times as orderTimes " +
+                    " wop.order_times as orderTimes, " +
+                    " wopp.packaging_custom_code as packagingCustomCode " +
                     "from " +
                     " work_order_product wop," +
                     " work_order wo," +
@@ -155,7 +157,8 @@ public class WorkProductionDAO {
                     " wopp.note as noteProduct, " +
                     " wo.order_date as orderDate, " +
                     " p2.price as price, " +
-                    " wop.order_times as orderTimes " +
+                    " wop.order_times as orderTimes, " +
+                    " wopp.packaging_custom_code as packagingCustomCode " +
                     "from " +
                     " work_order_product wop," +
                     " work_order wo," +
@@ -227,7 +230,8 @@ public class WorkProductionDAO {
                     " wopp.note as noteProduct, " +
                     " wo.order_date as orderDate, " +
                     " p2.price as price, " +
-                    " wop.order_times as orderTimes " +
+                    " wop.order_times as orderTimes, " +
+                    " wopp.packaging_custom_code as packagingCustomCode " +
                     "from " +
                     " work_order_product wop," +
                     " work_order wo," +
@@ -300,7 +304,8 @@ public class WorkProductionDAO {
                         " wopp.note as noteProduct, " +
                         " wo.order_date as orderDate, " +
                         " p2.price as price, " +
-                        " wop.order_times as orderTimes " +
+                        " wop.order_times as orderTimes, " +
+                        " wopp.packaging_custom_code as packagingCustomCode " +
                         "from " +
                         " work_order_product wop," +
                         " work_order wo," +
@@ -383,7 +388,8 @@ public class WorkProductionDAO {
                         " wopp.note as noteProduct, " +
                         " wo.order_date as orderDate, " +
                         " p2.price as price, " +
-                        " wop.order_times as orderTimes " +
+                        " wop.order_times as orderTimes, " +
+                        " wopp.packaging_custom_code as packagingCustomCode " +
                         "from " +
                         " work_order_product wop," +
                         " work_order wo," +

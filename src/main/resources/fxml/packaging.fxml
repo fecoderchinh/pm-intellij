@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane prefWidth="1024.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fecoder.controllers.PackagingController">
+<BorderPane prefHeight="640" prefWidth="1024.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fecoder.controllers.PackagingController">
 
     <top>
         <VBox spacing="10">
@@ -19,87 +19,100 @@
                 </Label>
             </HBox>
          <Separator prefWidth="200.0" />
-            <HBox prefHeight="46.0" prefWidth="1004.0" spacing="10">
-                <VBox prefHeight="134.0" prefWidth="927.0" spacing="10">
-                    <VBox prefHeight="135.0" prefWidth="370.0" spacing="10">
-                        <HBox prefWidth="900" spacing="10">
-                            <Label prefHeight="20.0" prefWidth="94.0" text="Tên BB">
-                                <font>
-                                    <Font size="14.0" />
-                                </font>
-                            </Label>
-                            <TextField fx:id="nameField" prefWidth="300" promptText="Tên Bao bì" />
-                            <Label prefHeight="20.0" prefWidth="106.0" text="Qui cách">
-                                <font>
-                                    <Font size="14.0" />
-                                </font>
-                            </Label>
-                            <TextField fx:id="specificationField" prefWidth="300" promptText="Qui cách" />
-                            <Label prefHeight="20.0" prefWidth="114.0" text="Kích thước">
-                                <font>
-                                    <Font size="14.0" />
-                                </font>
-                            </Label>
-                            <TextField fx:id="dimensionField" prefHeight="26.0" prefWidth="237.0" promptText="Kích thước" />
-                        </HBox>
-                        <HBox prefWidth="900" spacing="10">
-                            <ComboBox fx:id="typeComboBox" prefHeight="26.0" prefWidth="300.0">
-                                <items>
-                                    <FXCollections fx:factory="observableArrayList">
+         <GridPane hgap="10.0" vgap="10.0" VBox.vgrow="ALWAYS">
+           <columnConstraints>
+             <ColumnConstraints hgrow="SOMETIMES" maxWidth="139.0" minWidth="10.0" prefWidth="57.799998092651364" />
+               <ColumnConstraints hgrow="SOMETIMES" maxWidth="296.1999980926513" minWidth="10.0" prefWidth="173.00000190734863" />
+               <ColumnConstraints hgrow="SOMETIMES" maxWidth="301.0" minWidth="10.0" prefWidth="75.20003051757811" />
+               <ColumnConstraints hgrow="SOMETIMES" maxWidth="313.9999694824219" minWidth="10.0" prefWidth="256.6" />
+               <ColumnConstraints hgrow="SOMETIMES" maxWidth="227.0" minWidth="10.0" prefWidth="83.0" />
+               <ColumnConstraints hgrow="SOMETIMES" maxWidth="250.0" minWidth="10.0" prefWidth="201.39999999999998" />
+             <ColumnConstraints minWidth="10.0" prefWidth="100.0" />
+           </columnConstraints>
+           <rowConstraints>
+             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+           </rowConstraints>
+            <children>
+                      <Label prefHeight="20.0" text="Tên BB">
+                          <font>
+                              <Font size="14.0" />
+                          </font>
+                      </Label>
+                      <Label prefHeight="20.0" text="Qui cách" GridPane.columnIndex="2">
+                          <font>
+                              <Font size="14.0" />
+                          </font>
+                      </Label>
+                      <Label prefHeight="20.0" text="Kích thước" GridPane.columnIndex="4">
+                          <font>
+                              <Font size="14.0" />
+                          </font>
+                      </Label>
+                <Label text="Loại BB" GridPane.rowIndex="1">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </Label>
+                <Label text="NCC" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </Label>
+                      <Label prefHeight="20.0" text="SL Tối thiểu" GridPane.columnIndex="4" GridPane.rowIndex="1">
+                          <font>
+                              <Font size="14.0" />
+                          </font>
+                      </Label>
+                      <Label prefHeight="20.0" text="Đơn giá" GridPane.rowIndex="2">
+                          <font>
+                              <Font size="14.0" />
+                          </font>
+                      </Label>
+                      <Label prefHeight="20.0" text="Tồn" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                          <font>
+                              <Font size="14.0" />
+                          </font>
+                      </Label>
+                      <Label prefHeight="20.0" text="Ghi chú" GridPane.columnIndex="4" GridPane.rowIndex="2">
+                          <font>
+                              <Font size="14.0" />
+                          </font>
+                      </Label>
+                      <Label prefHeight="20.0" prefWidth="41.0" text="Mã BB" GridPane.rowIndex="3">
+                          <font>
+                              <Font size="14.0" />
+                          </font>
+                      </Label>
+                      <TextField fx:id="nameField" promptText="Tên Bao bì" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
+                      <TextField fx:id="specificationField" promptText="Qui cách" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS" />
+                      <TextField fx:id="dimensionField" prefHeight="26.0" promptText="Kích thước" GridPane.columnIndex="5" GridPane.hgrow="ALWAYS" />
+                      <ComboBox fx:id="typeComboBox" prefHeight="26.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
+                          <items>
+                              <FXCollections fx:factory="observableArrayList">
                                     </FXCollections>
-                                </items>
-                            </ComboBox>
-                            <ComboBox fx:id="suplierComboBox" prefHeight="26.0" prefWidth="300.0">
-                                <items>
-                                    <FXCollections fx:factory="observableArrayList">
+                          </items>
+                      </ComboBox>
+                      <ComboBox fx:id="suplierComboBox" prefHeight="26.0" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
+                          <items>
+                              <FXCollections fx:factory="observableArrayList">
                                     </FXCollections>
-                                </items>
-                            </ComboBox>
-                            <Label prefHeight="20.0" prefWidth="104.0" text="SL Tối thiểu">
-                                <font>
-                                    <Font size="14.0" />
-                                </font>
-                            </Label>
-                            <TextField fx:id="minimumField" prefWidth="300" promptText="Đặt tối thiểu" />
-                        </HBox>
-                        <HBox prefWidth="900" spacing="10">
-                            <Label prefHeight="20.0" prefWidth="102.0" text="Đơn giá">
-                                <font>
-                                    <Font size="14.0" />
-                                </font>
-                            </Label>
-                            <TextField fx:id="priceField" prefWidth="300" promptText="Đơn giá" />
-                            <Label prefHeight="20.0" prefWidth="85.0" text="Tồn">
-                                <font>
-                                    <Font size="14.0" />
-                                </font>
-                            </Label>
-                            <TextField fx:id="stockField" prefWidth="300" promptText="Tồn kho" />
-                            <Label prefHeight="20.0" prefWidth="102.0" text="Ghi chú">
-                                <font>
-                                    <Font size="14.0" />
-                                </font>
-                            </Label>
-                            <TextField fx:id="noteField" prefWidth="300" promptText="Ghi chú" />
-                        </HBox>
-                        <HBox prefWidth="900" spacing="10">
-                            <Label prefHeight="20.0" prefWidth="41.0" text="Mã BB">
-                                <font>
-                                    <Font size="14.0" />
-                                </font>
-                            </Label>
-                            <TextField fx:id="codeField" prefWidth="300" promptText="Mã BB" />
-                            <CheckBox fx:id="stampedField" text="In sẵn" />
-                            <CheckBox fx:id="mainField" text="Đóng gói chính" />
-                        </HBox>
-                    </VBox>
-                </VBox>
-                <VBox prefHeight="151.0" prefWidth="80.0" spacing="10">
-                    <Button fx:id="insertButton" mnemonicParsing="false" onAction="#insertButton" prefHeight="30.0" prefWidth="73.0" text="THÊM" />
-                    <Button fx:id="updateButton" mnemonicParsing="false" onAction="#updateButton" prefHeight="30.0" prefWidth="80.0" text="CẬP NHẬT" />
-                    <Button fx:id="clearButton" mnemonicParsing="false" onAction="#clearButton" prefHeight="30.0" prefWidth="73.0" text="LÀM MỚI" />
-                </VBox>
-            </HBox>
+                          </items>
+                      </ComboBox>
+                      <TextField fx:id="minimumField" promptText="Đặt tối thiểu" GridPane.columnIndex="5" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
+                      <TextField fx:id="priceField" promptText="Đơn giá" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
+                      <TextField fx:id="stockField" promptText="Tồn kho" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
+                        <TextField fx:id="codeField" promptText="Mã BB" GridPane.columnIndex="5" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
+                      <TextField fx:id="noteField" promptText="Ghi chú" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" />
+                      <CheckBox fx:id="stampedField" text="In sẵn" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+                      <CheckBox fx:id="mainField" text="Đóng gói chính" GridPane.columnIndex="5" GridPane.rowIndex="3" />
+                    <Button fx:id="insertButton" mnemonicParsing="false" onAction="#insertButton" prefHeight="30.0" prefWidth="108.0" text="THÊM" GridPane.columnIndex="6" />
+                    <Button fx:id="updateButton" mnemonicParsing="false" onAction="#updateButton" prefHeight="30.0" prefWidth="129.0" text="CẬP NHẬT" GridPane.columnIndex="6" GridPane.rowIndex="1" />
+                    <Button fx:id="clearButton" mnemonicParsing="false" onAction="#clearButton" prefHeight="30.0" prefWidth="122.0" text="LÀM MỚI" GridPane.columnIndex="6" GridPane.rowIndex="2" />
+            </children>
+         </GridPane>
          <Separator prefWidth="200.0" />
             <padding>
                 <Insets bottom="20" />
@@ -110,7 +123,7 @@
     <center>
         <VBox spacing="10">
             <HBox prefWidth="790" spacing="10">
-                <HBox alignment="CENTER_LEFT" prefWidth="500" spacing="10">
+                <HBox alignment="CENTER_LEFT" prefWidth="500" spacing="10" HBox.hgrow="ALWAYS">
                     <Label text="Tìm theo">
                         <font>
                             <Font size="14.0" />
@@ -130,7 +143,7 @@
                     </ComboBox>
                     <TextField fx:id="searchField" prefHeight="26.0" prefWidth="258.0" promptText="Nhập từ khóa" />
                 </HBox>
-                <HBox alignment="BASELINE_RIGHT" prefHeight="26.0" prefWidth="492.0" spacing="10">
+                <HBox alignment="BASELINE_RIGHT" prefHeight="26.0" prefWidth="492.0" spacing="10" HBox.hgrow="ALWAYS">
                     <Button id="reloadData" fx:id="reloadData" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#reloadData" text="TẢI LẠI BẢNG" />
                 </HBox>
             </HBox>

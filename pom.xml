@@ -19,6 +19,11 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.44</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>4.1.2</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

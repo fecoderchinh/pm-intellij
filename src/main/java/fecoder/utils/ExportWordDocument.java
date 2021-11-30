@@ -39,7 +39,7 @@ public class ExportWordDocument {
         Utils utils = new Utils();
 
         String imgFile = "e:\\java_platform\\docs-data\\logo.jpg";
-        String _fontFamily = "Calibri (Body)";
+        String _fontFamily = "Calibri";
 
         ObservableList<WorkProduction> productList = FXCollections.observableArrayList(workProductionDAO.getProductList(workOrder.getId()+""));
 
@@ -227,8 +227,9 @@ public class ExportWordDocument {
         SupplierDAO supplierDAO = new SupplierDAO();
         Supplier supplier = supplierDAO.getDataByCode("SVN");
 
+//        String imgFile = "C:\\Program Files\\Fecoder-Java\\logo.jpg"; //for compiler
         String imgFile = "e:\\java_platform\\docs-data\\logo.jpg";
-        String _fontFamily = "Calibri (Body)";
+        String _fontFamily = "Calibri";
 
         ObservableList<WorkProduction> productList = FXCollections.observableArrayList(workProductionDAO.getProductList(workOrder.getId()+""));
 
@@ -247,6 +248,7 @@ public class ExportWordDocument {
             sheet.setColumnWidth(6, 14*256);
             sheet.setColumnWidth(7, 14*256);
             sheet.setColumnWidth(8, 14*256);
+            sheet.setDefaultRowHeight((short) 900);
 
             int rownum = 0;
             Cell cell;
@@ -254,13 +256,13 @@ public class ExportWordDocument {
 
             HSSFCellStyle mainStyle = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 20, IndexedColors.BLACK.getIndex(), true, true, IndexedColors.YELLOW.getIndex(), HorizontalAlignment.LEFT, VerticalAlignment.CENTER);
             HSSFCellStyle headerStyle = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 14, IndexedColors.WHITE.getIndex(), true, true, IndexedColors.BLACK.getIndex(), HorizontalAlignment.LEFT, VerticalAlignment.CENTER);
-            HSSFCellStyle labelStyle = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 10, IndexedColors.BLACK.getIndex(), true, true, IndexedColors.WHITE.getIndex(), HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
-            HSSFCellStyle labelStyleLeft = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 10, IndexedColors.BLACK.getIndex(), true, true, IndexedColors.WHITE.getIndex(), HorizontalAlignment.LEFT, VerticalAlignment.CENTER);
-            HSSFCellStyle cellStyle = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 10, IndexedColors.BLACK.getIndex(), false, true, IndexedColors.WHITE.getIndex(), HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
-            HSSFCellStyle cellStyleLeft = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 10, IndexedColors.BLACK.getIndex(), false, true, IndexedColors.WHITE.getIndex(), HorizontalAlignment.LEFT, VerticalAlignment.CENTER);
+            HSSFCellStyle labelStyle = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 11, IndexedColors.BLACK.getIndex(), true, true, IndexedColors.WHITE.getIndex(), HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
+            HSSFCellStyle labelStyleLeft = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 11, IndexedColors.BLACK.getIndex(), true, true, IndexedColors.WHITE.getIndex(), HorizontalAlignment.LEFT, VerticalAlignment.CENTER);
+            HSSFCellStyle cellStyle = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 11, IndexedColors.BLACK.getIndex(), false, true, IndexedColors.WHITE.getIndex(), HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
+            HSSFCellStyle cellStyleLeft = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 11, IndexedColors.BLACK.getIndex(), false, true, IndexedColors.WHITE.getIndex(), HorizontalAlignment.LEFT, VerticalAlignment.CENTER);
 
             row = sheet.createRow(rownum);
-            row.setHeight((short) 500);
+//            row.setHeight((short) 500);
 
             // LSX
             cell = row.createCell(2, CellType.STRING);
@@ -276,7 +278,7 @@ public class ExportWordDocument {
             rownum +=1;
 
             row = sheet.createRow(rownum);
-            row.setHeight((short) 500);
+//            row.setHeight((short) 500);
 
             // NCC (C)
             cell = row.createCell(2, CellType.STRING);
@@ -317,7 +319,7 @@ public class ExportWordDocument {
                             8  //last column  (0-based)
                     ));
                     row = sheet.createRow(rownum);
-                    row.setHeight((short) 700);
+//                    row.setHeight((short) 700);
 
                     // Thực đặt
                     cell = row.createCell(2, CellType.STRING);
@@ -337,13 +339,14 @@ public class ExportWordDocument {
                         for(int j=0;j<packagingList.size(); j++) {
                             rownum++;
                             row = sheet.createRow(rownum);
+//                            row.setHeight((short) -1);
                             // NCC (C)
                             cell = row.createCell(2, CellType.STRING);
                             cell.setCellValue(packagingList.get(j).getPackagingSuplier());
                             cell.setCellStyle(cellStyle);
                             // Tên BB (Qui cách) (D)
                             cell = row.createCell(3, CellType.STRING);
-                            cell.setCellValue(packagingList.get(j).getPackagingName() + (packagingList.get(j).getPrintStatus() != null ? "("+ packagingList.get(j).getPrintStatus() +")" : "") + (!packagingList.get(j).getPackagingSpecification().equals("") ? " ("+ packagingList.get(j).getPackagingSpecification() +")" : ""));
+                            cell.setCellValue(packagingList.get(j).getPackagingName() + (packagingList.get(j).getPrintStatus() != null ? " ("+ packagingList.get(j).getPrintStatus() +")" : "") + (!packagingList.get(j).getPackagingSpecification().equals("") ? " ("+ packagingList.get(j).getPackagingSpecification() +")" : ""));
                             cell.setCellStyle(cellStyleLeft);
                             // Kích thước (E)
                             cell = row.createCell(4, CellType.STRING);
@@ -394,8 +397,9 @@ public class ExportWordDocument {
      * @param supplierCode list or single id from suppliers.code
      * */
     public static void data2DocOfOrderBySupplier(File file, String idList, String supplierCode, String shippingCode, String date, int orderTimes) {
+//        String imgFile = "C:\\Program Files\\Fecoder-Java\\logo.jpg"; // for compiler
         String imgFile = "e:\\java_platform\\docs-data\\logo.jpg";
-        String _fontFamily = "Calibri (Body)";
+        String _fontFamily = "Calibri";
         SupplierDAO supplierDAO = new SupplierDAO();
         OrderBySupplierDAO orderBySupplierDAO = new OrderBySupplierDAO();
         Utils utils = new Utils();
@@ -406,8 +410,8 @@ public class ExportWordDocument {
 
         String woList = "";
         for(int i=0;i<orderObservableList.size();i++) {
-            woList += orderObservableList.get(i).getWoName() + " (Lần "+orderObservableList.get(i).getOrderTimes()+")";
-            woList += (i<orderObservableList.size()-1) ? "+" : "";
+            woList += orderObservableList.get(i).getWoName() + (Integer.parseInt(orderObservableList.get(i).getOrderTimes()) > 1 ? " (Lần "+orderObservableList.get(i).getOrderTimes()+")" : "");
+            woList += (i<orderObservableList.size()-1) ? " + " : "";
         }
 
         ShipAddressDAO shipAddressDAO = new ShipAddressDAO();
@@ -456,11 +460,11 @@ public class ExportWordDocument {
                         Units.toEMU(45));            // 100x35 pixels
             }
             utils.setHeaderRowforSingleCell(row.getCell(1), SEAVINA.getName(), 10, true, true, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
-            utils.setHeaderRowforSingleCell(row.getCell(1), SEAVINA.getAddress(), 10, true, false, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
-            utils.setHeaderRowforSingleCell(row.getCell(1), "1801141886", 10, true, false, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
-            utils.setHeaderRowforSingleCell(row.getCell(1), SEAVINA.getPhone() + " - " + SEAVINA.getFax(), 10, true, false, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
-            utils.setHeaderRowforSingleCell(row.getCell(1), SEAVINA.getDeputy(), 10, true, false, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
-            utils.setHeaderRowforSingleCell(row.getCell(2), "TT5.6.1/ KD2-BM3", 10, false, false, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(1), SEAVINA.getAddress(), 10, true, true, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "1801141886", 10, true, true, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(1), SEAVINA.getPhone() + " - " + SEAVINA.getFax(), 10, true, true, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(1), SEAVINA.getDeputy(), 10, true, true, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(2), "TT5.6.1/ KD2-BM3", 10, false, true, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
 
             /*
              * Word content title
@@ -490,7 +494,7 @@ public class ExportWordDocument {
             paragraph.setAlignment(ParagraphAlignment.CENTER);
             run = paragraph.createRun();
             run.setFontFamily(_fontFamily);
-            run.setBold(true);
+            run.setBold(false);
             run.setFontSize(10);
             run.setText("(Số: "+supplierCode+".\t\t/"+_date.getYear()+")");
 
@@ -500,15 +504,15 @@ public class ExportWordDocument {
             run = paragraph.createRun();
             run.setFontFamily(_fontFamily);
 //            run.setBold(true);
-            run.setFontSize(10);
+            run.setFontSize(11);
             run.setBold(true);
             run.setText("Kính gửi: "+supplier.getName());
             run.addBreak();
-            run.setText("Đại diện: "+supplier.getDeputy());
+            run.setText("         "+supplier.getDeputy());
             run.addBreak();
             run.setText("Địa chỉ: "+supplier.getAddress());
             run.addBreak();
-            run.setText("Điện thoại: "+ supplier.getPhone() + (supplier.getFax() != null ? "          Fax: " + supplier.getFax() : ""));
+            run.setText((supplier.getPhone() != null ? "Điện thoại: "+ supplier.getPhone() : "") + (supplier.getFax() != null ? "          Fax: " + supplier.getFax() : ""));
             run.addBreak();
             run.setText(SEAVINA.getName()+" xin gửi ĐƠN ĐẶT HÀNG đến Quý Công Ty với chi tiết như sau:");
 
@@ -521,8 +525,8 @@ public class ExportWordDocument {
             row.getCell(2).setWidth("15%");
             row.getCell(3).setWidth("10%");
             row.getCell(4).setWidth("12%");
-            row.getCell(5).setWidth("10%");
-            row.getCell(6).setWidth("14%");
+            row.getCell(5).setWidth("14%");
+            row.getCell(6).setWidth("10%");
             row.getCell(7).setWidth("13%");
             row.getCell(0).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
             row.getCell(1).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
@@ -533,14 +537,14 @@ public class ExportWordDocument {
             row.getCell(6).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
             row.getCell(7).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
 
-            utils.setHeaderRowforSingleCell(row.getCell(0), "STT", 10, false, true, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
-            utils.setHeaderRowforSingleCell(row.getCell(1), "Tên Bao Bì", 10, false, true, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
-            utils.setHeaderRowforSingleCell(row.getCell(2), "Qui cách (CM)", 10, false, true, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
-            utils.setHeaderRowforSingleCell(row.getCell(3), "ĐVT", 10, false, true, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
-            utils.setHeaderRowforSingleCell(row.getCell(4), "SL Đặt", 10, false, true, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
-            utils.setHeaderRowforSingleCell(row.getCell(5), "Mã", 10, false, true, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
-            utils.setHeaderRowforSingleCell(row.getCell(6), "Đơn giá (Chưa VAT)", 10, false, true, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
-            utils.setHeaderRowforSingleCell(row.getCell(7), "LSX", 10, false, true, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(0), "STT", 11, false, true, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "Tên Bao Bì", 11, false, true, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(2), "Qui cách (CM)", 11, false, true, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(3), "ĐVT", 11, false, true, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(4), "SL Đặt", 11, false, true, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(5), "Đơn giá (Chưa VAT)", 11, false, true, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(6), "Mã", 11, false, true, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(7), "LSX", 11, false, true, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
 
             DecimalFormat formatter = new DecimalFormat("#,###");
 
@@ -566,15 +570,15 @@ public class ExportWordDocument {
                 row.getCell(6).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
                 row.getCell(7).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
 
-                utils.setHeaderRowforSingleCell(row.getCell(0), (i+1)+"", 10, false, false, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
-                utils.setHeaderRowforSingleCell(row.getCell(1), orderObservableList.get(i).getpName() + (orderObservableList.get(i).getpIsPrinted() != null ? (orderObservableList.get(i).getpIsPrinted() != null ? "("+orderObservableList.get(i).getpIsPrinted()+")" : "") : ""), 10, false, false, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
-                utils.setHeaderRowforSingleCell(row.getCell(1), orderObservableList.get(i).getpSpecs() != null ? " ("+ orderObservableList.get(i).getpSpecs() +")" : "", 10, false, false, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
-                utils.setHeaderRowforSingleCell(row.getCell(2), orderObservableList.get(i).getpDimension(), 10, false, false, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
-                utils.setHeaderRowforSingleCell(row.getCell(3), orderObservableList.get(i).getpUnit(), 10, false, false, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
-                utils.setHeaderRowforSingleCell(row.getCell(4), formatter.format(Float.parseFloat(orderObservableList.get(i).getpTotal()+""))+"", 10, false, false, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
-                utils.setHeaderRowforSingleCell(row.getCell(5), orderObservableList.get(i).getpCode(), 10, false, false, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
-                utils.setHeaderRowforSingleCell(row.getCell(6), "đ/"+orderObservableList.get(i).getpUnit(), 10, false, false, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
-                utils.setHeaderRowforSingleCell(row.getCell(7), orderObservableList.get(i).getWoName(), 10, false, false, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
+                utils.setHeaderRowforSingleCell(row.getCell(0), (i+1)+"", 11, false, false, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
+                utils.setHeaderRowforSingleCell(row.getCell(1), orderObservableList.get(i).getpName() + (orderObservableList.get(i).getpIsPrinted() != null ? (orderObservableList.get(i).getpIsPrinted() != null ? " ("+orderObservableList.get(i).getpIsPrinted()+")" : "") : ""), 11, false, false, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
+                utils.setHeaderRowforSingleCell(row.getCell(1), orderObservableList.get(i).getpSpecs() != null ? " ("+ orderObservableList.get(i).getpSpecs() +")" : "", 11, false, false, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
+                utils.setHeaderRowforSingleCell(row.getCell(2), orderObservableList.get(i).getpDimension(), 11, false, false, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
+                utils.setHeaderRowforSingleCell(row.getCell(3), orderObservableList.get(i).getpUnit(), 11, false, false, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
+                utils.setHeaderRowforSingleCell(row.getCell(4), formatter.format(Float.parseFloat(orderObservableList.get(i).getpTotal()+""))+"", 11, false, false, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
+                utils.setHeaderRowforSingleCell(row.getCell(5), "đ/"+orderObservableList.get(i).getpUnit(), 11, false, false, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
+                utils.setHeaderRowforSingleCell(row.getCell(6), (orderObservableList.get(i).getPackagingCustomCode() != null) ? orderObservableList.get(i).getPackagingCustomCode() : orderObservableList.get(i).getpCode(), 11, false, false, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
+                utils.setHeaderRowforSingleCell(row.getCell(7), orderObservableList.get(i).getWoName(), 11, false, false, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
             }
 
             table = doc.createTable(4, 2);
@@ -593,25 +597,27 @@ public class ExportWordDocument {
             row.getCell(0).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
             row.getCell(1).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
 
-            utils.setHeaderRowforSingleCell(row.getCell(0), "Đặc điểm và qui cách", 10, false, false, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
-            utils.setHeaderRowforSingleCell(row.getCell(1), "- Chất lượng: Đảm bảo đúng chất lượng và định lượng bao bì như mẫu chào hàng.", 10, true, false, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
-            utils.setHeaderRowforSingleCell(row.getCell(1), "- Sản xuất theo mẫu xác nhận ngày: " + _date.getDayOfMonth() + "/" + _date.getMonthValue() + "/"+ _date.getYear(), 10, true, false, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
-            utils.setHeaderRowforSingleCell(row.getCell(1), "- Bao bì phải làm đúng kích thước, màu sắc, thông tin như đã xác nhận.", 10, true, false, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
-            utils.setHeaderRowforSingleCell(row.getCell(1), "- Bao bì phải đạt tiêu chuẩn hàng Thủy sản xuất khẩu. Số lượng làm đủ, không thừa, không thiếu.", 10, true, false, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
-            utils.setHeaderRowforSingleCell(row.getCell(1), "- Chúng tôi sẽ trả lại các lô hàng làm sai qui cách và không đúng các yêu cầu trên.", 10, true, false, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
-            utils.setHeaderRowforSingleCell(row.getCell(1), "- Khi giao hàng vui lòng liên hệ: "+ shipAddress.getStocker() + " ("+shipAddress.getStocker_phone()+")", 10, false, false, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(0), "Đặc điểm và qui cách", 11, false, false, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "- Chất lượng: Đảm bảo đúng chất lượng và định lượng bao bì như mẫu chào hàng.", 11, true, true, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "- Sản xuất theo mẫu xác nhận ngày: ", 11, false, false, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(1), _date.getDayOfMonth() + "/" + _date.getMonthValue() + "/"+ _date.getYear(), 12, true, true, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "- Bao bì phải làm đúng kích thước, màu sắc, thông tin như đã xác nhận.", 11, true, false, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "- Bao bì phải đạt tiêu chuẩn hàng Thủy sản xuất khẩu. Số lượng làm đủ, không thừa, không thiếu.", 11, true, false, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "- Chúng tôi sẽ trả lại các lô hàng làm sai qui cách và không đúng các yêu cầu trên.", 11, true, false, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "- Khi giao hàng vui lòng liên hệ: ", 11, false, false, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(1), shipAddress.getStocker() + " ("+shipAddress.getStocker_phone()+")", 11, false, true, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
 
             row = table.getRow(1);
-            utils.setHeaderRowforSingleCell(row.getCell(0), "Ngày giao hàng", 10, false, false, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(0), "Ngày giao hàng", 11, false, false, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
 
             row = table.getRow(2);
-            utils.setHeaderRowforSingleCell(row.getCell(0), "Địa chỉ giao hàng", 10, false, false, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
-            utils.setHeaderRowforSingleCell(row.getCell(1), shipAddress.getName(), 10, true, false, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
-            utils.setHeaderRowforSingleCell(row.getCell(1), shipAddress.getAddress(), 10, false, false, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(0), "Địa chỉ giao hàng", 11, false, false, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(1), shipAddress.getName(), 11, true, true, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(1), shipAddress.getAddress(), 11, false, true, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
 
             row = table.getRow(3);
-            utils.setHeaderRowforSingleCell(row.getCell(0), "Chú ý", 10, false, false, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
-            utils.setHeaderRowforSingleCell(row.getCell(1), "Mọi thay đổi hoặc có vấn đề gì chưa rõ phải báo lại ngay với "+SEAVINA.getName()+" trước khi tiến hành.", 10, false, false, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(0), "Chú ý", 11, false, false, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "Mọi thay đổi hoặc có vấn đề gì chưa rõ phải báo lại ngay với "+SEAVINA.getName()+" trước khi tiến hành.", 11, false, false, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
 
             table = doc.createTable(1, 2);
             utils.spanCellsAcrossRow(table, 0,0,3);
@@ -624,8 +630,8 @@ public class ExportWordDocument {
             row.getCell(0).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
             row.getCell(1).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
 
-            utils.setHeaderRowforSingleCell(row.getCell(0), "Bên bán hàng", 10, false, true, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
-            utils.setHeaderRowforSingleCell(row.getCell(1), "Bên mua hàng", 10, false, true, ParagraphAlignment.RIGHT, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(0), "Bên bán hàng", 11, false, true, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "Bên mua hàng", 11, false, true, ParagraphAlignment.RIGHT, UnderlinePatterns.NONE);
 
 
             if(file != null && orderObservableList.size() > 0) {
@@ -651,8 +657,9 @@ public class ExportWordDocument {
      * @param orderTimes work_order_product_packaging.order_times
      * */
     public static void data2DocOfOrderList(File file, String idList, String date, int orderTimes) {
+//        String imgFile = "C:\\Program Files\\Fecoder-Java\\logo.jpg"; // for compiler
         String imgFile = "e:\\java_platform\\docs-data\\logo.jpg";
-        String _fontFamily = "Calibri (Body)";
+        String _fontFamily = "Calibri";
 
         Utils utils = new Utils();
         OrderBySupplierDAO orderBySupplierDAO = new OrderBySupplierDAO();
@@ -736,7 +743,7 @@ public class ExportWordDocument {
             run = paragraph.createRun();
             run.setFontFamily(_fontFamily);
 //            run.setBold(true);
-            run.setFontSize(10);
+            run.setFontSize(11);
             run.setBold(false);
             run.setText("Kính gửi: Phòng Mua Hàng Minh Tâm");
             run.addBreak();
@@ -763,13 +770,13 @@ public class ExportWordDocument {
             row.getCell(5).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
             row.getCell(6).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
 
-            utils.setHeaderRowforSingleCell(row.getCell(0), "STT", 10, false, true, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
-            utils.setHeaderRowforSingleCell(row.getCell(1), "Tên Bao Bì", 10, false, true, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
-            utils.setHeaderRowforSingleCell(row.getCell(2), "Qui cách (CM)", 10, false, true, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
-            utils.setHeaderRowforSingleCell(row.getCell(3), "ĐVT", 10, false, true, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
-            utils.setHeaderRowforSingleCell(row.getCell(4), "SL Đặt", 10, false, true, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
-            utils.setHeaderRowforSingleCell(row.getCell(5), "Ghi chú", 10, false, true, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
-            utils.setHeaderRowforSingleCell(row.getCell(6), "LSX", 10, false, true, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(0), "STT", 11, false, true, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "Tên Bao Bì", 11, false, true, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(2), "Qui cách (CM)", 11, false, true, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(3), "ĐVT", 11, false, true, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(4), "SL Đặt", 11, false, true, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(5), "Ghi chú", 11, false, true, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(6), "LSX", 11, false, true, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
 
             ObservableList<OrderBySupllier> orderObservableList = FXCollections.observableArrayList(orderBySupplierDAO.getListByOrderTimes(idList, orderTimes));
             DecimalFormat formatter = new DecimalFormat("#,###");
@@ -796,13 +803,13 @@ public class ExportWordDocument {
 
                 float residualNumber = Float.parseFloat(orderObservableList.get(i).getpTotal()+"") + Float.parseFloat(orderObservableList.get(i).getpStock()+"") - Float.parseFloat(orderObservableList.get(i).getpResidualQuantity()+"") - Float.parseFloat(orderObservableList.get(i).getpDesireQuantity()+"");
 
-                utils.setHeaderRowforSingleCell(row.getCell(0), (i+1)+"", 10, false, false, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
-                utils.setHeaderRowforSingleCell(row.getCell(1), orderObservableList.get(i).getpName() + ( orderObservableList.get(i).getpIsPrinted() != null ? "("+ orderObservableList.get(i).getpIsPrinted() +")" : "") + ( !orderObservableList.get(i).getpSpecs().equals("") ? " ("+ orderObservableList.get(i).getpSpecs() +")" : ""), 10, false, false, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
-                utils.setHeaderRowforSingleCell(row.getCell(2), orderObservableList.get(i).getpDimension(), 10, false, false, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
-                utils.setHeaderRowforSingleCell(row.getCell(3), orderObservableList.get(i).getpUnit(), 10, false, false, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
-                utils.setHeaderRowforSingleCell(row.getCell(4), formatter.format(Float.parseFloat(orderObservableList.get(i).getpTotal()+""))+"", 10, false, false, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
-                utils.setHeaderRowforSingleCell(row.getCell(5), residualNumber > 0 ? "Dư "+formatter.format(residualNumber) : "", 10, false, false, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
-                utils.setHeaderRowforSingleCell(row.getCell(6), orderObservableList.get(i).getWoName(), 10, false, false, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
+                utils.setHeaderRowforSingleCell(row.getCell(0), (i+1)+"", 11, false, false, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
+                utils.setHeaderRowforSingleCell(row.getCell(1), orderObservableList.get(i).getpName() + ( orderObservableList.get(i).getpIsPrinted() != null ? " ("+ orderObservableList.get(i).getpIsPrinted() +")" : "") + ( !orderObservableList.get(i).getpSpecs().equals("") ? " ("+ orderObservableList.get(i).getpSpecs() +")" : ""), 11, false, false, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
+                utils.setHeaderRowforSingleCell(row.getCell(2), orderObservableList.get(i).getpDimension(), 11, false, false, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
+                utils.setHeaderRowforSingleCell(row.getCell(3), orderObservableList.get(i).getpUnit(), 11, false, false, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
+                utils.setHeaderRowforSingleCell(row.getCell(4), formatter.format(Float.parseFloat(orderObservableList.get(i).getpTotal()+""))+"", 11, false, false, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
+                utils.setHeaderRowforSingleCell(row.getCell(5), residualNumber > 0 ? "Dư "+formatter.format(residualNumber) : "", 11, false, false, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
+                utils.setHeaderRowforSingleCell(row.getCell(6), orderObservableList.get(i).getWoName(), 11, false, false, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
             }
 
             paragraph = doc.createParagraph();
@@ -810,7 +817,7 @@ public class ExportWordDocument {
             paragraph.setSpacingLineRule(LineSpacingRule.AUTO);
             run = paragraph.createRun();
             run.setFontFamily(_fontFamily);
-            run.setFontSize(10);
+            run.setFontSize(11);
             run.setBold(false);
             run.setText("Lưu ý: Mọi thay đổi hay có vấn đề chưa rõ phải phản hồi lại với bộ phận liên quan trước khi thực hiện để tránh sai sót có thể xảy ra.");
 
@@ -823,8 +830,8 @@ public class ExportWordDocument {
             row.getCell(0).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
             row.getCell(1).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
 
-            utils.setHeaderRowforSingleCell(row.getCell(0), "Phòng Kinh Doanh", 10, false, true, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
-            utils.setHeaderRowforSingleCell(row.getCell(1), "Người Lập Biểu", 10, false, true, ParagraphAlignment.RIGHT, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(0), "Phòng Kinh Doanh", 11, false, true, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "Người Lập Biểu", 11, false, true, ParagraphAlignment.RIGHT, UnderlinePatterns.NONE);
 
             if(orderObservableList.size() > 0) {
                 if(file != null) {

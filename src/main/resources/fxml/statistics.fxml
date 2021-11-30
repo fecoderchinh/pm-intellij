@@ -28,7 +28,7 @@
     <center>
         <VBox spacing="10">
             <HBox prefWidth="790" spacing="10">
-                <HBox alignment="CENTER_LEFT" prefHeight="26.0" prefWidth="703.0" spacing="10">
+                <HBox alignment="CENTER_LEFT" prefHeight="26.0" prefWidth="703.0" spacing="10" HBox.hgrow="ALWAYS">
                     <Label text="Tìm theo">
                         <font>
                             <Font size="14.0" />
@@ -49,11 +49,11 @@
                     </ComboBox>
                     <TextField fx:id="searchField" promptText="Nhập từ khóa cần tìm" />
                 </HBox>
-                <HBox alignment="BASELINE_RIGHT" prefWidth="290" spacing="10">
-                    <Button id="reloadData" onAction="#reloadData" fx:id="reloadData" alignment="CENTER" defaultButton="true" mnemonicParsing="false" text="TẢI LẠI BẢNG" />
+                <HBox alignment="BASELINE_RIGHT" prefWidth="290" spacing="10" HBox.hgrow="ALWAYS">
+                    <Button id="reloadData" fx:id="reloadData" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#reloadData" text="TẢI LẠI BẢNG" />
                 </HBox>
             </HBox>
-            <TableView fx:id="dataTable" editable="true" maxWidth="1.7976931348623157E308" prefHeight="652.0" prefWidth="968.0">
+            <TableView fx:id="dataTable" editable="true" maxWidth="1.7976931348623157E308" prefWidth="968.0" VBox.vgrow="ALWAYS">
                 <columns>
                     <TableColumn fx:id="datetimeCol" prefWidth="120.0" text="Ngày đặt" />
                     <TableColumn fx:id="woNumberCol" prefWidth="120.0" text="LSX" />

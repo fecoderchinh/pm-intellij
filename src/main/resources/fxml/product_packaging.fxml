@@ -19,40 +19,58 @@
                 </Label>
             </HBox>
          <Separator prefWidth="200.0" />
-            <VBox prefHeight="0.0" prefWidth="1004.0" spacing="10">
-                <HBox prefHeight="26.0" prefWidth="460.0" spacing="10">
-                    <ComboBox fx:id="sizeComboBox" prefHeight="26.0" prefWidth="150.0">
-                        <items>
-                            <FXCollections fx:factory="observableArrayList" />
-                        </items>
-                    </ComboBox>
-                    <ComboBox fx:id="packagingComboBox" prefHeight="26.0" prefWidth="500.0">
-                        <items>
-                            <FXCollections fx:factory="observableArrayList" />
-                        </items>
-                    </ComboBox>
-                    <Label prefHeight="20.0" prefWidth="111.0" text="Số lượng">
+         <GridPane hgap="10.0" vgap="10.0" VBox.vgrow="ALWAYS">
+           <columnConstraints>
+             <ColumnConstraints halignment="RIGHT" maxWidth="108.0" minWidth="10.0" prefWidth="70.4" />
+               <ColumnConstraints hgrow="SOMETIMES" maxWidth="208.0" minWidth="10.0" prefWidth="104.0" />
+               <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="142.40001525878904" minWidth="10.0" prefWidth="90.6" />
+             <ColumnConstraints hgrow="SOMETIMES" maxWidth="216.60000000000002" minWidth="10.0" prefWidth="216.60000000000002" />
+               <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+           </columnConstraints>
+           <rowConstraints>
+             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+           </rowConstraints>
+            <children>
+               <Label text="Size">
+                  <font>
+                     <Font size="14.0" />
+                  </font></Label>
+               <Label text="Bao bì" GridPane.columnIndex="2">
+                  <font>
+                     <Font size="14.0" />
+                  </font></Label>
+                    <Label prefHeight="20.0" prefWidth="111.0" text="Số lượng" GridPane.columnIndex="4">
                         <font>
                             <Font size="14.0" />
                         </font>
                     </Label>
-                    <TextField fx:id="packQtyField" prefWidth="150" promptText="Số lượng" />
-                </HBox>
-                <HBox spacing="10">
-                    <Label prefHeight="20.0" prefWidth="62.0" text="Ghi chú">
+                    <Label prefHeight="20.0" prefWidth="62.0" text="Ghi chú" GridPane.rowIndex="1">
                         <font>
                             <Font size="14.0" />
                         </font>
                     </Label>
-                    <TextField fx:id="noteField" prefHeight="26.0" prefWidth="481.0" promptText="Ghi chú" />
-                </HBox>
-                <HBox spacing="10">
-                    <Button fx:id="insertButton" mnemonicParsing="false" onAction="#insertButton" prefHeight="30.0" prefWidth="60.0" text="THÊM" />
-                    <Button fx:id="updateButton" mnemonicParsing="false" onAction="#updateButton" prefHeight="30.0" prefWidth="80.0" text="CẬP NHẬT" />
-                    <Button fx:id="clearButton" mnemonicParsing="false" onAction="#clearButton" prefHeight="30.0" prefWidth="89.0" text="LÀM MỚI" />
-                </HBox>
-            <Separator prefWidth="200.0" />
-            </VBox>
+                    <ComboBox fx:id="sizeComboBox" prefHeight="26.0" prefWidth="214.0" GridPane.columnIndex="1">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList" />
+                        </items>
+                    </ComboBox>
+                    <ComboBox fx:id="packagingComboBox" prefHeight="26.0" prefWidth="500.0" GridPane.columnIndex="3">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList" />
+                        </items>
+                    </ComboBox>
+                    <TextField fx:id="packQtyField" prefWidth="150" promptText="Số lượng" GridPane.columnIndex="5" />
+                    <TextField fx:id="noteField" prefHeight="26.0" prefWidth="481.0" promptText="Ghi chú" GridPane.columnIndex="1" GridPane.columnSpan="5" GridPane.rowIndex="1" />
+                   <HBox spacing="10" GridPane.columnSpan="6" GridPane.rowIndex="2">
+                       <Button fx:id="insertButton" mnemonicParsing="false" onAction="#insertButton" prefHeight="30.0" prefWidth="60.0" text="THÊM" />
+                       <Button fx:id="updateButton" mnemonicParsing="false" onAction="#updateButton" prefHeight="30.0" prefWidth="80.0" text="CẬP NHẬT" />
+                       <Button fx:id="clearButton" mnemonicParsing="false" onAction="#clearButton" prefHeight="30.0" prefWidth="89.0" text="LÀM MỚI" />
+                   </HBox>
+            </children>
+         </GridPane>
             <padding>
                 <Insets bottom="20" />
             </padding>

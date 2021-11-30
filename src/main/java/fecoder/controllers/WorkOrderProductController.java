@@ -106,7 +106,16 @@ public class WorkOrderProductController implements Initializable {
     public void insertButton(ActionEvent actionEvent) {
         Product productInsertData = productDAO.getDataByName(utils.getComboBoxValue(productComboBox));
         int fakeAutoIncrementID = workOrderProductDAO.getFakeAutoIncrementID().getId();
-//        System.out.println(fakeAutoIncrementID);
+        System.out.println(
+                fakeAutoIncrementID+1 + "\n" +
+                this.innerData.getId() + "\n" +
+                ordinalNumberField.getText()+""+ "\n" +
+                productInsertData.getId()+ "\n" +
+                Float.parseFloat(qtyField.getText())+ "\n" +
+                noteField.getText()+""+ "\n" +
+                shipAddressDAO.getDataByID(1).getId()+ "\n" +
+                orderTimesField.getText()
+        );
         if(emptyFieldDetected()) {
             utils.alert("err", Alert.AlertType.ERROR, "Xảy ra lỗi!", "Không được bỏ trống các trường bắt buộc (*)").showAndWait();
         } else {
@@ -470,6 +479,7 @@ public class WorkOrderProductController implements Initializable {
         dataTable.getColumns().add(TreeTableUtil.getResidualQuantityColumn(dataTable, this, innerData));
 //        dataTable.getColumns().add(TreeTableUtil.getTotalResidualQuantityColumn(dataTable));
         dataTable.getColumns().add(TreeTableUtil.getPrintStatusColumn(dataTable, this, innerData));
+        dataTable.getColumns().add(TreeTableUtil.getPackagingCustomCodeColumn(dataTable, this, innerData));
 
 //        setContextMenu();
 

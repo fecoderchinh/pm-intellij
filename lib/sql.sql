@@ -61,11 +61,11 @@ CREATE TABLE supliers
 
 --  drop table supliers;
 
-insert into supliers (name, address, email, deputy, phone, fax, code)
+/*insert into supliers (name, address, email, deputy, phone, fax, code)
 values (N'Công Ty TNHH SX-TM Tân Thuận Thành', N'Lô 43A, Đường số 2, KCN Tân Tạo, Quận Bình Tân, TP HCM', 'tanthuanthanh1@gmail.com', N'Mr. Trung', '0933 202 188', '', 'TTT'),
 	   (N'Công Ty TNHH SX-TM Duy Nhật', N'Lô O, KCN An Nghiệp, X. An Hiệp, H. Châu Thành, T. Sóc Trăng', 'tam@baobiduynhat.com.vn', N'Mr. Tâm', '0793 622 857', '0793 825 964', 'DN'),
 	   (N'Công Ty TNHH Một Thành Viên Trung Tre', '108/49 KP.5, P. Định Hoà, Thủ Dầu Một, T. Bình Dương', 'kinhdoanh@trungtre.com', 'Mr. Trung', '0650 3 884 700', '0650 3 884580', 'TTR'),
-	   (N'Công Ty TNHH Hải Nam - CN Cần Thơ', 'K35, Đường số 3, Khu ĐTM Hưng Phú, P. Hưng Thạnh, Q. Cái Răng, Tp. Cần Thơ', '', 'Mr. Giang', '02923 733 399', '02923 753 399', 'HN');
+	   (N'Công Ty TNHH Hải Nam - CN Cần Thơ', 'K35, Đường số 3, Khu ĐTM Hưng Phú, P. Hưng Thạnh, Q. Cái Răng, Tp. Cần Thơ', '', 'Mr. Giang', '02923 733 399', '02923 753 399', 'HN');*/
 	   
 -- select * from supliers;
 	
@@ -119,12 +119,12 @@ create table types (
 
 -- drop table types;
 
-insert into types (name, unit)
+/*insert into types (name, unit)
 values (N'Thùng Carton', 'Cái'),
 	   (N'Hộp Duplex', 'Cái'),
 	   (N'Túi PA trắng', 'Cái'),
 	   (N'Que tre', 'Que'),
-	   (N'Rider', 'Tờ');
+	   (N'Rider', 'Tờ');*/
 	   
 -- select * from types;
 
@@ -155,11 +155,11 @@ create table packaging(
 
 -- drop table packaging;
 
-insert into packaging (name, specifications, dimension, suplier, type, minimum_order, stamped, code, main, note, price, stock)
+/*insert into packaging (name, specifications, dimension, suplier, type, minimum_order, stamped, code, main, note, price, stock)
 values ('Túi PA trắng 20 x 33 rider 7.5', 'PAPE, dày 100mic, hàn biên 1cm, đuôi rider 7.5 cm (bao gồm đường hàn)', '20 x 33', 4, 3, 0, 0, '', 0, '', 752, 0.0),
 	   (N'Que tre', 'Dài 20.5 cm, cờ 3.5 cm, đuờng kính 2.5 mm, canh trên bo tròn', '20.5 - 3.5', 3, 4, 0, 0, '', 0, '', 239, 0.0),
 	   (N'Rider KAILISBROS Cooked Prawn SGM 250g (New Ingredient)', 'Giấy C230, in Offset, 02 mặt khác nhau', '17.5 x 5', 1, 5, 0, 0, 'N742', 0, '', 170, 0.0),
-	   ('Thùng KAILISBROS Cooked Prawn SGM 250g x 20 (New COO)', 'Thùng giấy carton, 05 lớp, sóng EB, chống thấm 02 mặt, in Flexo 01 màu', '36.5 x 22 x 14', 1, 1, 0, 0, 'T556', 1, '', 6300, 0.0);
+	   ('Thùng KAILISBROS Cooked Prawn SGM 250g x 20 (New COO)', 'Thùng giấy carton, 05 lớp, sóng EB, chống thấm 02 mặt, in Flexo 01 màu', '36.5 x 22 x 14', 1, 1, 0, 0, 'T556', 1, '', 6300, 0.0);*/
 
 -- select * from packaging;
 
@@ -178,8 +178,8 @@ create table customers (
 
 -- drop table customers;
 
-insert into customers (name, note)
-values ('KB Seafood Company PTY LTD', '');
+/*insert into customers (name, note)
+values ('KB Seafood Company PTY LTD', '');*/
 
 -- select * from customers;
 
@@ -197,9 +197,9 @@ create table years(
 -- drop table years;
 
 insert into years(year)
-values ('2020'), ('2021');
+values ('2020'), ('2021'), ('2022'), ('2023'), ('2024'), ('2025');
 
-select * from years;
+-- select * from years;
 
 /*
 =================================================
@@ -227,10 +227,10 @@ create table work_order (
 
 -- drop tables work_order;
 
-insert into work_order (name, lot_number, po_number, year, customer_id, send_date, shipping_date, destination, note)
+/*insert into work_order (name, lot_number, po_number, year, customer_id, send_date, shipping_date, destination, note)
 values 
 	(replace('LSX                  301', ' ', ''), '125', '', 1, 1, str_to_date('14-05-2021','%d-%m-%Y'), str_to_date('10-07-2021','%d-%m-%Y'), 'Sydney, Úc', '' ),
-	(replace('LSX         303', ' ', ''), '126', '', 2, 1, str_to_date('14-05-2021','%d-%m-%Y'), str_to_date('10-07-2021','%d-%m-%Y'), 'Sydney, Úc', '' );
+	(replace('LSX         303', ' ', ''), '126', '', 2, 1, str_to_date('14-05-2021','%d-%m-%Y'), str_to_date('10-07-2021','%d-%m-%Y'), 'Sydney, Úc', '' );*/
 
 -- update work_order set name='LSX 301', lot_number='125', po_number='', year='1', customer_id='1', send_date=str_to_date('14-05-2021','%d-%m-%Y'), shipping_date=str_to_date('10-07-2021','%d-%m-%Y'), destination='Sydney, Úc', note='' where id=1;
 
@@ -251,8 +251,8 @@ create table sizes(
 -- drop table sizes;
 -- ALTER TABLE sizes AUTO_INCREMENT = 1;
 
-insert into sizes(size)
-values ('61/70'), ('16/20'), ('31/40');
+/*insert into sizes(size)
+values ('61/70'), ('16/20'), ('31/40');*/
 
 -- select * from sizes;
 
@@ -271,10 +271,10 @@ create table products(
 
 -- drop table products;
 
-insert into products (name, description, specification, note)
+/*insert into products (name, description, specification, note)
 values 
 	('Tôm Thẻ CPD Xiên Que Tỏi 250g x 20 - SGM', 'Tôm Vannamei PD Xiên Que, Tẩm Marinade Tỏi, Luộc', '72% tôm : 28% marinade', 'mô tả ngắn'),
-	('Tôm Sú CPD Tẩm Tỏi Bơ - GM (Coles)', 'Tôm Vannamei PD Xiên Que, Tẩm Marinade Tỏi, Luộc', '72% tôm : 28% marinade', 'mô tả ngắn');
+	('Tôm Sú CPD Tẩm Tỏi Bơ - GM (Coles)', 'Tôm Vannamei PD Xiên Que, Tẩm Marinade Tỏi, Luộc', '72% tôm : 28% marinade', 'mô tả ngắn');*/
 
 -- select * from products;
 
@@ -305,10 +305,10 @@ create table packaging_product_size (
 
 -- drop table packaging_product_size;
 
-insert into packaging_product_size (product_id, size_id, packaging_id, pack_qty)
+/*insert into packaging_product_size (product_id, size_id, packaging_id, pack_qty)
 values 
 	(1, 2, 1, 20), (1, 2, 2, 100), (1, 2, 3, 20), (1, 2, 4, 1),
-	(2, 3, 1, 20), (2, 3, 2, 50), (2, 3, 3, 20), (2, 3, 4, 1);
+	(2, 3, 1, 20), (2, 3, 2, 50), (2, 3, 3, 20), (2, 3, 4, 1);*/
 
 -- ALTER TABLE packaging_product_size AUTO_INCREMENT = 1;
 
@@ -385,6 +385,7 @@ create table work_order_product_packaging (
 	note longtext,
 	ship_address bigint unsigned,
 	order_times int not null default 1,
+	packaging_custom_code varchar(100),
 	primary key (id),
 	foreign key (wop_id) references work_order_product(id) on delete cascade,
 	foreign key (work_order_id) references work_order(id) on delete cascade,
@@ -394,13 +395,15 @@ create table work_order_product_packaging (
 );
 
 -- alter table work_order_product_packaging add order_times int not null default 1;
+-- alter table work_order_product_packaging add packaging_custom_code varchar(100);
 
 -- alter table work_order_product_packaging add ship_address bigint unsigned;
 -- alter table work_order_product_packaging add foreign key (ship_address) references ship_address(id) on delete cascade;
 
 -- drop table work_order_product_packaging;
 
--- select * from work_order_product_packaging;
+-- select * from work_order_product_packaging where work_order_id = 13 and product_id =3 group by order;
+-- select id from work_order_product_packaging where wop_id = 1;
 
 -- delete from work_order_product_packaging;
 
@@ -497,7 +500,7 @@ where
 -- 	and wop.ordinal_num = 1 -- filter by work_order_product.ordinal_num 
 ;*/
 
-select distinct
+/*select distinct
 	(@count := @count + 1),
 	wopp.id as id,
 	wop.ordinal_num as ordinalNumbers, 
@@ -548,7 +551,7 @@ where
 	and p.suplier = s.id
 	and wopp.work_order_id = 13
 group by wopp.id, wopp.order_times 
-order by s.code ASC;
+order by s.code ASC;*/
 
 
 /*tính số khối*/
@@ -619,9 +622,10 @@ where
 	and p.`type` = t.id
 	and p.suplier = s.id
 	and wopp.ship_address = sa.id
--- 	and wopp.actual_qty > 0 
-	and wopp.work_order_id in (6,7,8)
--- 	and s.code = " TTT"
+	and wopp.actual_qty > 0 
+-- 	and wopp.work_order_id in (3)
+-- 	and s.code = "TTT"
 -- 	and sa.code_address = "SVN"
+	and wopp.order_times = 1
 group by 
-	wopp.packaging_id;*/
+	wopp.packaging_id, wopp.printed, wopp.packaging_custom_code;*/

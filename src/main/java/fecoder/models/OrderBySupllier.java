@@ -22,6 +22,7 @@ public class OrderBySupllier {
     String sFax;
     String shipAddress;
     String orderTimes;
+    String packagingCustomCode;
 
     public OrderBySupllier() {}
 
@@ -46,7 +47,8 @@ public class OrderBySupllier {
             String sPhone,
             String sFax,
             String shipAddress,
-            String orderTimes
+            String orderTimes,
+            String packagingCustomCode
     ) {
         this.woppID = woppID;
         this.woID = woID;
@@ -69,6 +71,7 @@ public class OrderBySupllier {
         this.sFax = sFax;
         this.shipAddress = shipAddress;
         this.orderTimes = orderTimes;
+        this.packagingCustomCode = packagingCustomCode;
     }
 
     public int getWoppID() {
@@ -237,5 +240,13 @@ public class OrderBySupllier {
 
     public void setOrderTimes(String orderTimes) {
         this.orderTimes = orderTimes;
+    }
+
+    public String getPackagingCustomCode() {
+        return packagingCustomCode;
+    }
+
+    public void setPackagingCustomCode(String packagingCustomCode) {
+        this.packagingCustomCode = packagingCustomCode;
     }
 }

@@ -12,54 +12,60 @@
     <top>
         <VBox spacing="10">
             <HBox spacing="10">
-                <Label prefHeight="40.0" prefWidth="744.0" text="DANH SÁCH SẢN PHẨM">
+                <Label prefHeight="40.0" text="DANH SÁCH SẢN PHẨM" HBox.hgrow="ALWAYS">
                     <font>
                         <Font size="28.0" />
                     </font>
                 </Label>
-                <HBox spacing="10">
-                    <Button fx:id="insertButton" mnemonicParsing="false" onAction="#insertButton" prefHeight="30.0" prefWidth="60.0" text="THÊM" />
-                    <Button fx:id="updateButton" mnemonicParsing="false" onAction="#updateButton" prefHeight="30.0" prefWidth="80.0" text="CẬP NHẬT" />
-                    <Button fx:id="clearButton" mnemonicParsing="false" onAction="#clearButton" prefHeight="30.0" prefWidth="89.0" text="LÀM MỚI" />
-                    <padding>
-                        <Insets top="10" />
-                    </padding>
-                </HBox>
             </HBox>
-         <Separator prefWidth="200.0" />
-            <HBox prefHeight="0.0" prefWidth="1004.0" spacing="10">
-                <VBox prefHeight="62.0" prefWidth="1003.0" spacing="10">
-                    <HBox prefHeight="4.0" prefWidth="900.0" spacing="10">
-                        <Label prefHeight="20.0" prefWidth="185.0" text="Mã sản phẩm">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Label>
-                        <TextField fx:id="nameField" prefWidth="300" promptText="(vd: SGM --gợi nhớ)" />
-                        <Label prefHeight="20.0" prefWidth="185.0" text="Tên sản phẩm">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Label>
-                        <TextField fx:id="descriptionField" prefWidth="400" promptText="Tên sản phẩm" />
-                        <Label prefHeight="20.0" prefWidth="149.0" text="Ghi chú">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Label>
-                        <TextField fx:id="noteField" prefWidth="300" promptText="Ghi chú" />
-                    </HBox>
-                    <HBox prefHeight="26.0" prefWidth="900.0" spacing="10">
-                        <Label prefHeight="20.0" prefWidth="133.0" text="Qui cách">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Label>
-                        <TextField fx:id="specificationField" prefHeight="26.0" prefWidth="1004.0" promptText="Qui cách sản phẩm" />
-                    </HBox>
-                </VBox>
-            </HBox>
-         <Separator prefWidth="200.0" />
+            <Separator prefWidth="200.0" />
+            <GridPane hgap="10.0" vgap="10.0" VBox.vgrow="ALWAYS">
+                <columnConstraints>
+                    <ColumnConstraints />
+                    <ColumnConstraints />
+                    <ColumnConstraints />
+                    <ColumnConstraints />
+                    <ColumnConstraints />
+                    <ColumnConstraints />
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints />
+                    <RowConstraints />
+               <RowConstraints />
+                </rowConstraints>
+                <children>
+                    <Label prefHeight="20.0" text="Mã sản phẩm">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </Label>
+                    <Label prefHeight="20.0" text="Tên sản phẩm" GridPane.columnIndex="2">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </Label>
+                    <Label prefHeight="20.0" text="Ghi chú" GridPane.columnIndex="4">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </Label>
+                    <Label prefHeight="20.0" text="Qui cách" GridPane.rowIndex="1">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </Label>
+                    <TextField fx:id="nameField" promptText="(vd: SGM --gợi nhớ)" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
+                    <TextField fx:id="descriptionField" promptText="Tên sản phẩm" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS" />
+                    <TextField fx:id="noteField" prefWidth="300" promptText="Ghi chú" GridPane.columnIndex="5" />
+                    <TextField fx:id="specificationField" prefHeight="26.0" promptText="Qui cách sản phẩm" GridPane.columnIndex="1" GridPane.columnSpan="5" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
+                   <HBox spacing="10.0" GridPane.columnSpan="2" GridPane.rowIndex="2">
+                       <Button fx:id="insertButton" minHeight="30.0" mnemonicParsing="false" onAction="#insertButton" prefWidth="60.0" text="THÊM" />
+                       <Button fx:id="updateButton" minHeight="30.0" mnemonicParsing="false" onAction="#updateButton" prefWidth="80.0" text="CẬP NHẬT" />
+                       <Button fx:id="clearButton" minHeight="30.0" mnemonicParsing="false" onAction="#clearButton" prefWidth="89.0" text="LÀM MỚI" HBox.hgrow="ALWAYS" />
+                   </HBox>
+                </children>
+            </GridPane>
+            <Separator prefWidth="200.0" />
             <padding>
                 <Insets bottom="20" />
             </padding>
@@ -69,7 +75,7 @@
     <center>
         <VBox spacing="10">
             <HBox prefWidth="790" spacing="10">
-                <HBox alignment="CENTER_LEFT" prefWidth="500" spacing="10">
+                <HBox alignment="CENTER_LEFT" prefWidth="500" spacing="10" HBox.hgrow="ALWAYS">
                     <Label text="Tìm theo">
                         <font>
                             <Font size="14.0" />
@@ -89,7 +95,7 @@
                     </ComboBox>
                     <TextField fx:id="searchField" promptText="Gõ từ khóa cần tìm" />
                 </HBox>
-                <HBox alignment="BASELINE_RIGHT" prefHeight="26.0" prefWidth="497.0" spacing="10">
+                <HBox alignment="BASELINE_RIGHT" prefHeight="26.0" prefWidth="497.0" spacing="10" HBox.hgrow="ALWAYS">
                     <Button id="reloadData" fx:id="reloadData" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#reloadData" text="TẢI LẠI BẢNG" />
                 </HBox>
             </HBox>

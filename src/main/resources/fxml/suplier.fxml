@@ -23,101 +23,75 @@
                     </padding>
                 </HBox>
             <Separator prefWidth="200.0" />
-                <HBox>
-                    <VBox prefWidth="850">
-                        <HBox>
-                            <HBox prefWidth="240.0" spacing="10">
-                                <Label prefHeight="20.0" prefWidth="71.0" text="Mã">
-                                    <font>
-                                        <Font size="14.0" />
-                                    </font>
-                                </Label>
-                                <TextField fx:id="codeField" promptText="Mã NCC" />
-                                <padding>
-                                    <Insets bottom="10" left="10" right="10" top="10" />
-                                </padding>
-                            </HBox>
-                            <HBox prefWidth="340.0" spacing="10">
-                                <Label text="Tên">
-                                    <font>
-                                        <Font size="14.0" />
-                                    </font>
-                                </Label>
-                                <TextField fx:id="nameField" prefHeight="26.0" prefWidth="224.0" promptText="Tên NCC" />
-                                <padding>
-                                    <Insets bottom="10" left="10" right="10" top="10" />
-                                </padding>
-                            </HBox>
-                            <HBox prefWidth="440.0" spacing="10">
-                                <Label text="Email">
-                                    <font>
-                                        <Font size="14.0" />
-                                    </font>
-                                </Label>
-                                <TextField fx:id="emailField" prefHeight="26.0" prefWidth="312.0" promptText="Địa chỉ email" />
-                                <padding>
-                                    <Insets bottom="10" left="10" right="10" top="10" />
-                                </padding>
-                            </HBox>
-                        </HBox>
-                        <HBox>
-                            <HBox prefHeight="47.0" prefWidth="451.0" spacing="10">
-                                <Label text="Người liên hệ">
-                                    <font>
-                                        <Font size="14.0" />
-                                    </font>
-                                </Label>
-                                <TextField fx:id="deputyField" prefHeight="26.0" prefWidth="300.0" promptText="Người đại diện" />
-                                <padding>
-                                    <Insets bottom="10" left="10" right="10" top="10" />
-                                </padding>
-                            </HBox>
-                            <HBox prefWidth="240.0" spacing="10">
-                                <Label text="Điện thoại">
-                                    <font>
-                                        <Font size="14.0" />
-                                    </font>
-                                </Label>
-                                <TextField fx:id="phoneField" prefHeight="26.0" prefWidth="130.0" promptText="Số điện thoại" />
-                                <padding>
-                                    <Insets bottom="10" left="10" right="10" top="10" />
-                                </padding>
-                            </HBox>
-                            <HBox prefHeight="47.0" prefWidth="193.0" spacing="10">
-                                <Label text="Fax">
-                                    <font>
-                                        <Font size="14.0" />
-                                    </font>
-                                </Label>
-                                <TextField fx:id="faxField" prefHeight="26.0" prefWidth="126.0" promptText="Số Fax" />
-                                <padding>
-                                    <Insets bottom="10" left="10" right="10" top="10" />
-                                </padding>
-                            </HBox>
-                        </HBox>
-                        <HBox>
-                            <HBox prefWidth="1024" spacing="10">
-                                <Label text="Địa chỉ">
-                                    <font>
-                                        <Font size="14.0" />
-                                    </font>
-                                </Label>
-                                <TextField fx:id="addressField" prefHeight="26.0" prefWidth="767.0" promptText="Địa chỉ" />
-                                <padding>
-                                    <Insets bottom="10" left="10" right="10" top="10" />
-                                </padding>
-                            </HBox>
-                        </HBox>
-                    </VBox>
-                    <VBox prefWidth="174" spacing="13">
-                        <Button fx:id="insertButton" mnemonicParsing="false" onAction="#insertButton" prefHeight="30.0" prefWidth="150.0" text="THÊM" />
-                        <Button fx:id="updateButton" mnemonicParsing="false" onAction="#updateButton" prefHeight="30.0" prefWidth="150.0" text="CẬP NHẬT" />
-                        <Button fx:id="clearButton" mnemonicParsing="false" onAction="#clearButton" prefHeight="30.0" prefWidth="150.0" text="LÀM MỚI" />
-                        <padding>
-                            <Insets bottom="5" left="10" right="10" top="10" />
-                        </padding>
-                    </VBox>
-                </HBox>
+                <VBox>
+               <GridPane hgap="10.0" prefWidth="1004.0" vgap="10.0" HBox.hgrow="ALWAYS">
+                 <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="303.0" minWidth="10.0" prefWidth="99.39999999999998" />
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="500.9999694824219" minWidth="10.0" prefWidth="167.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="594.6" minWidth="10.0" prefWidth="79.2000000000001" />
+                    <ColumnConstraints hgrow="ALWAYS" maxWidth="524.0" minWidth="10.0" prefWidth="201.00000000000006" />
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="369.0" minWidth="10.0" prefWidth="67.60000000000002" />
+                    <ColumnConstraints hgrow="ALWAYS" maxWidth="350.0" minWidth="10.0" prefWidth="258.4" />
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="244.0" minWidth="10.0" prefWidth="140.0" />
+                 </columnConstraints>
+                 <rowConstraints>
+                   <RowConstraints vgrow="SOMETIMES" />
+                   <RowConstraints vgrow="SOMETIMES" />
+                     <RowConstraints vgrow="SOMETIMES" />
+                     <RowConstraints vgrow="SOMETIMES" />
+                 </rowConstraints>
+                  <children>
+                     <Label text="Mã">
+                         <font>
+                             <Font size="14.0" />
+                         </font>
+                     </Label>
+                  <Label text="Người liên hệ" GridPane.rowIndex="1">
+                          <font>
+                              <Font size="14.0" />
+                          </font>
+                  </Label>
+                      <Label prefHeight="20.0" text="Email" GridPane.columnIndex="4">
+                          <font>
+                              <Font size="14.0" />
+                          </font>
+                      </Label>
+                      <Label prefHeight="20.0" text="Fax" GridPane.columnIndex="4" GridPane.rowIndex="1">
+                          <font>
+                              <Font size="14.0" />
+                          </font>
+                      </Label>
+                      <Label text="Tên" GridPane.columnIndex="2">
+                          <font>
+                              <Font size="14.0" />
+                          </font>
+                      </Label>
+                      <Label text="Điện thoại" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                          <font>
+                              <Font size="14.0" />
+                          </font>
+                      </Label>
+                      <Label text="Địa chỉ" GridPane.rowIndex="2">
+                          <font>
+                              <Font size="14.0" />
+                          </font>
+                      </Label>
+                    <Button fx:id="insertButton" mnemonicParsing="false" onAction="#insertButton" prefHeight="30.0" prefWidth="150.0" text="THÊM" GridPane.columnIndex="6" />
+                    <Button fx:id="updateButton" mnemonicParsing="false" onAction="#updateButton" prefHeight="30.0" prefWidth="150.0" text="CẬP NHẬT" GridPane.columnIndex="6" GridPane.rowIndex="1" />
+                    <Button fx:id="clearButton" mnemonicParsing="false" onAction="#clearButton" prefHeight="26.0" prefWidth="148.0" text="LÀM MỚI" GridPane.columnIndex="6" GridPane.rowIndex="2" />
+                    <TextField fx:id="codeField" promptText="Mã NCC" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
+                    <TextField fx:id="nameField" prefHeight="26.0" prefWidth="224.0" promptText="Tên NCC" GridPane.columnIndex="3" />
+                    <TextField fx:id="emailField" prefHeight="26.0" prefWidth="312.0" promptText="Địa chỉ email" GridPane.columnIndex="5" />
+                    <TextField fx:id="deputyField" prefHeight="26.0" prefWidth="300.0" promptText="Người đại diện" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
+                    <TextField fx:id="phoneField" prefHeight="26.0" prefWidth="130.0" promptText="Số điện thoại" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                    <TextField fx:id="faxField" prefHeight="26.0" prefWidth="126.0" promptText="Số Fax" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+                    <TextField fx:id="addressField" prefHeight="26.0" prefWidth="777.0" promptText="Địa chỉ" GridPane.columnIndex="1" GridPane.columnSpan="5" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
+
+
+
+                  </children>
+               </GridPane>
+                </VBox>
             <Separator prefWidth="200.0" />
             </children>
             <padding>
@@ -133,7 +107,7 @@
     <center>
         <VBox prefHeight="414.0" prefWidth="1004.0" spacing="10">
             <HBox prefWidth="790" spacing="10">
-                <HBox alignment="CENTER_LEFT" prefWidth="500" spacing="10">
+                <HBox alignment="CENTER_LEFT" prefWidth="500" spacing="10" HBox.hgrow="ALWAYS">
                     <Label text="Lọc theo">
                         <font>
                             <Font size="14.0" />
@@ -153,7 +127,7 @@
                     </ComboBox>
                     <TextField fx:id="searchField" promptText="Gõ từ khóa" />
                 </HBox>
-                <HBox alignment="BASELINE_RIGHT" prefHeight="26.0" prefWidth="496.0" spacing="10">
+                <HBox alignment="BASELINE_RIGHT" prefHeight="26.0" prefWidth="496.0" spacing="10" HBox.hgrow="ALWAYS">
                     <Button id="reloadData" fx:id="reloadData" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#reloadData" text="TẢI LẠI BẢNG" />
                 </HBox>
             </HBox>

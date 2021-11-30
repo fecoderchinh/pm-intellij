@@ -24,6 +24,7 @@ public class WorkProduction {
     String orderDate;
     float price;
     String orderTimes;
+    String packagingCustomCode;
 
     public WorkProduction() {}
 
@@ -49,7 +50,8 @@ public class WorkProduction {
             String noteProduct,
             String orderDate,
             float price,
-            String orderTimes
+            String orderTimes,
+            String packagingCustomCode
     ) {
         this.id = id;
         this.ordinalNumbers = ordinalNumbers;
@@ -73,6 +75,7 @@ public class WorkProduction {
         this.orderDate = orderDate;
         this.price = price;
         this.orderTimes = orderTimes;
+        this.packagingCustomCode = packagingCustomCode;
     }
 
     public int getId() {
@@ -249,5 +252,13 @@ public class WorkProduction {
 
     public void setOrderTimes(String orderTimes) {
         this.orderTimes = orderTimes;
+    }
+
+    public String getPackagingCustomCode() {
+        return packagingCustomCode;
+    }
+
+    public void setPackagingCustomCode(String packagingCustomCode) {
+        this.packagingCustomCode = packagingCustomCode;
     }
 }

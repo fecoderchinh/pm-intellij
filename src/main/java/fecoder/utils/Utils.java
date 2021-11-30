@@ -12,6 +12,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
@@ -552,6 +553,7 @@ public class Utils {
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setResizable(false);
             stage.show();
+            stage.centerOnScreen();
 
         } catch (IOException e) {
             Logger logger = Logger.getLogger(getClass().getName());
@@ -565,7 +567,7 @@ public class Utils {
      * @param resource resource path
      * @param title scene title
      * */
-    public void loadSceneWithStage(Stage stage, String resource, String title, boolean setMaxHeight) {
+    public void loadSceneWithStage(Stage stage, String resource, String title, int minWidth, int minHeight) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource(resource));
@@ -579,18 +581,40 @@ public class Utils {
             _stage.getIcons().add(new Image("/images/icon.png"));
             _stage.setTitle(title);
             _stage.setScene(scene);
-            _stage.initModality(Modality.APPLICATION_MODAL);
-            _stage.setResizable(false);
-
-            if(setMaxHeight) {
-                GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-                _stage.setHeight(gd.getDisplayMode().getHeight()-300);
-                _stage.setMaxHeight(gd.getDisplayMode().getHeight()-300);
-            }
+            _stage.initModality(Modality.WINDOW_MODAL);
+            _stage.setResizable(true);
 
             _stage.setOnHiding(e -> stage.show());
 
+            ChangeListener<Number> widthListener = (observable, oldValue, newValue) -> {
+                double stageWidth = newValue.doubleValue();
+                _stage.setX(stage.getX() + stage.getWidth() / 2 - stageWidth / 2);
+            };
+            ChangeListener<Number> heightListener = (observable, oldValue, newValue) -> {
+                double stageHeight = newValue.doubleValue();
+                _stage.setY(stage.getY() + stage.getHeight() / 2 - stageHeight / 2);
+            };
+
+            _stage.widthProperty().addListener(widthListener);
+            _stage.heightProperty().addListener(heightListener);
+
+            _stage.setOnShown(e -> {
+                _stage.widthProperty().removeListener(widthListener);
+                _stage.heightProperty().removeListener(heightListener);
+            });
+
+//            GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+//            System.out.println(gd.getDisplayMode().getWidth());
+//            System.out.println(gd.getDisplayMode().getHeight());
+
+            _stage.setMinWidth(minWidth);
+            _stage.setWidth(minWidth);
+            _stage.setHeight(minHeight);
+            _stage.setMinHeight(minHeight);
+//            _stage.setMaximized(true);
+
             _stage.show();
+            _stage.centerOnScreen();
 
             stage.hide();
 
@@ -634,7 +658,7 @@ public class Utils {
         tempParagraph.setIndentationRight(100);
         tempParagraph.setAlignment(paragraphAlignment != null ? paragraphAlignment : ParagraphAlignment.LEFT);
         XWPFRun tempRun = tempParagraph.createRun();
-        tempRun.setFontFamily("Calibri (Body)");
+        tempRun.setFontFamily("Calibri");
         tempRun.setFontSize(fontsize);
         tempRun.setColor("000000");
         tempRun.setBold(bold);
