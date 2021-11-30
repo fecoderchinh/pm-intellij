@@ -701,4 +701,19 @@ public class Utils {
 
         return listWorkOrderName;
     }
+
+    public String getLogo(boolean canCompile) {
+        if (!canCompile) return "e:\\java_platform\\docs-data\\logo.jpg";
+        else return "C:\\Program Files\\Fecoder-Java\\logo.jpg";
+    }
+
+    public String setExportFont(String fontFamily) {
+        if (fontFamily==null) return "Calibri";
+        else return fontFamily;
+    }
+
+    public String getConfigFilePath(boolean canCompile) {
+        if (!canCompile) return "E:\\java_platform\\projects\\pmdb\\src\\main\\java\\fecoder\\config.properties";
+        else return "C:\\Program Files\\Fecoder-Java\\connection.properties";
+    }
 }

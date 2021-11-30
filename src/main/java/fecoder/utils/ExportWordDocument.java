@@ -27,6 +27,10 @@ import java.time.format.DateTimeFormatter;
 
 public class ExportWordDocument {
 
+    private static final Utils utils = new Utils();
+    private static final String imgUrl = utils.getLogo(false);
+    private static final String fontFamily = utils.setExportFont(null);
+
     /**
      * Exporting Draft Document for pre-check before processing
      *
@@ -227,9 +231,8 @@ public class ExportWordDocument {
         SupplierDAO supplierDAO = new SupplierDAO();
         Supplier supplier = supplierDAO.getDataByCode("SVN");
 
-//        String imgFile = "C:\\Program Files\\Fecoder-Java\\logo.jpg"; //for compiler
-        String imgFile = "e:\\java_platform\\docs-data\\logo.jpg";
-        String _fontFamily = "Calibri";
+        String imgFile = ExportWordDocument.imgUrl;
+        String _fontFamily = ExportWordDocument.fontFamily;
 
         ObservableList<WorkProduction> productList = FXCollections.observableArrayList(workProductionDAO.getProductList(workOrder.getId()+""));
 
@@ -397,9 +400,8 @@ public class ExportWordDocument {
      * @param supplierCode list or single id from suppliers.code
      * */
     public static void data2DocOfOrderBySupplier(File file, String idList, String supplierCode, String shippingCode, String date, int orderTimes) {
-//        String imgFile = "C:\\Program Files\\Fecoder-Java\\logo.jpg"; // for compiler
-        String imgFile = "e:\\java_platform\\docs-data\\logo.jpg";
-        String _fontFamily = "Calibri";
+        String imgFile = ExportWordDocument.imgUrl;
+        String _fontFamily = ExportWordDocument.fontFamily;
         SupplierDAO supplierDAO = new SupplierDAO();
         OrderBySupplierDAO orderBySupplierDAO = new OrderBySupplierDAO();
         Utils utils = new Utils();
@@ -657,9 +659,8 @@ public class ExportWordDocument {
      * @param orderTimes work_order_product_packaging.order_times
      * */
     public static void data2DocOfOrderList(File file, String idList, String date, int orderTimes) {
-//        String imgFile = "C:\\Program Files\\Fecoder-Java\\logo.jpg"; // for compiler
-        String imgFile = "e:\\java_platform\\docs-data\\logo.jpg";
-        String _fontFamily = "Calibri";
+        String imgFile = ExportWordDocument.imgUrl;
+        String _fontFamily = ExportWordDocument.fontFamily;
 
         Utils utils = new Utils();
         OrderBySupplierDAO orderBySupplierDAO = new OrderBySupplierDAO();
@@ -830,8 +831,8 @@ public class ExportWordDocument {
             row.getCell(0).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
             row.getCell(1).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
 
-            utils.setHeaderRowforSingleCell(row.getCell(0), "Phòng Kinh Doanh", 11, false, true, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
-            utils.setHeaderRowforSingleCell(row.getCell(1), "Người Lập Biểu", 11, false, true, ParagraphAlignment.RIGHT, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(0), "\tPhòng Kinh Doanh", 11, false, true, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);
+            utils.setHeaderRowforSingleCell(row.getCell(1), "Người Lập Biểu\t", 11, false, true, ParagraphAlignment.RIGHT, UnderlinePatterns.NONE);
 
             if(orderObservableList.size() > 0) {
                 if(file != null) {

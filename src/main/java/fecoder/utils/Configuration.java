@@ -10,9 +10,8 @@ import java.util.Properties;
 
 public class Configuration {
     private static final Properties prop=new Properties();
-//    private static final File f = new File("C:\\Program Files\\Fecoder-Java\\connection.properties"); // for compiler
-    private static final File f = new File("E:\\java_platform\\projects\\pmdb\\src\\main\\java\\fecoder\\config.properties");
     private static final Utils utils = new Utils();
+    private static final File f = new File(utils.getConfigFilePath(false));
 
     public Configuration() {
 
