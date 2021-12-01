@@ -4,6 +4,7 @@ import fecoder.DAO.*;
 import fecoder.models.*;
 import fecoder.utils.Utils;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.StringBinding;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
@@ -29,6 +30,9 @@ import javafx.util.Callback;
 import javafx.util.converter.IntegerStringConverter;
 
 import java.net.URL;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -43,9 +47,11 @@ public class StatsController implements Initializable {
     public TableColumn<WorkProduction, String> woNumberCol;
     public TableColumn<WorkProduction, String> pNameCol;
     public TableColumn<WorkProduction, String> pDimCol;
-    public TableColumn<WorkProduction, Integer> pQuantityCol;
+    public TableColumn<WorkProduction, String> pQuantityCol;
+    public TableColumn<WorkProduction, Integer> pUnitCol;
     public TableColumn<WorkProduction, Float> pStockCol;
-    public TableColumn<WorkProduction, Integer> pActualQtyCol;
+    public TableColumn<WorkProduction, String> pActualQtyCol;
+    public TableColumn<WorkProduction, String> pResidualQtyCol;
     public TableColumn<WorkProduction, Float> pPriceCol;
     public Label anchorLabel;
     public Label anchorData;
@@ -64,7 +70,7 @@ public class StatsController implements Initializable {
      * Handle on searching data
      * */
     public void setSearchField() {
-        ObservableList<WorkProduction> list = FXCollections.observableArrayList(workProductionDAO.getList());
+        ObservableList<WorkProduction> list = FXCollections.observableArrayList(workProductionDAO.getListForStats());
         FilteredList<WorkProduction> filteredList = new FilteredList<>(list, p -> true);
 
         searchField.textProperty()
@@ -136,14 +142,84 @@ public class StatsController implements Initializable {
     private void loadView(){
         dataTable.setEditable(true);
 
+        Locale locale  = new Locale("en", "US");
+        DecimalFormat df = (DecimalFormat) NumberFormat.getNumberInstance(locale);
+        df.applyPattern("###,###.###");
+
         datetimeCol.setCellValueFactory(new PropertyValueFactory<>("orderDate"));
         woNumberCol.setCellValueFactory(new PropertyValueFactory<>("workOrderName"));
         pNameCol.setCellValueFactory(new PropertyValueFactory<>("packagingName"));
         pDimCol.setCellValueFactory(new PropertyValueFactory<>("packagingDimension"));
-        pQuantityCol.setCellValueFactory(new PropertyValueFactory<>("packQuantity"));
+        pQuantityCol.setCellValueFactory(new PropertyValueFactory<>("workOrderQuantity"));
+        pQuantityCol.setCellFactory(tc -> {
+            TableCell<WorkProduction, String> cell = new TableCell<>();
+
+            Text text = new Text();
+            cell.setGraphic(text);
+            cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
+            text.wrappingWidthProperty().bind(pQuantityCol.widthProperty());
+            text.textProperty().bind(new StringBinding() {
+                { bind(cell.itemProperty()); }
+                @Override
+                protected String computeValue() {
+                    return cell.itemProperty().getValue() != null ? df.format(Float.parseFloat(cell.itemProperty().getValue())) : "";
+                }
+            });
+            return cell;
+        });
+        pUnitCol.setCellValueFactory(new PropertyValueFactory<>("unit"));
         pStockCol.setCellValueFactory(new PropertyValueFactory<>("stock"));
         pActualQtyCol.setCellValueFactory(new PropertyValueFactory<>("actualQuantity"));
+        pActualQtyCol.setCellFactory(tc -> {
+            TableCell<WorkProduction, String> cell = new TableCell<>();
+
+            Text text = new Text();
+            cell.setGraphic(text);
+            cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
+            text.wrappingWidthProperty().bind(pActualQtyCol.widthProperty());
+            text.textProperty().bind(new StringBinding() {
+                { bind(cell.itemProperty()); }
+                @Override
+                protected String computeValue() {
+                    return cell.itemProperty().getValue() != null ? df.format(Float.parseFloat(cell.itemProperty().getValue())) : "";
+                }
+            });
+            return cell;
+        });
+        pResidualQtyCol.setCellValueFactory(new PropertyValueFactory<>("totalResidualQuantity"));
+        pResidualQtyCol.setCellFactory(tc -> {
+            TableCell<WorkProduction, String> cell = new TableCell<>();
+
+            Text text = new Text();
+            cell.setGraphic(text);
+            cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
+            text.wrappingWidthProperty().bind(pResidualQtyCol.widthProperty());
+            text.textProperty().bind(new StringBinding() {
+                { bind(cell.itemProperty()); }
+                @Override
+                protected String computeValue() {
+                    return (cell.itemProperty().getValue() != null && Float.parseFloat(cell.itemProperty().getValue()) > 0) ? "Dư "+df.format(Float.parseFloat(cell.itemProperty().getValue())) : "";
+                }
+            });
+            return cell;
+        });
         pPriceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
+        pPriceCol.setCellFactory(tc -> {
+            TableCell<WorkProduction, Float> cell = new TableCell<>();
+
+            Text text = new Text();
+            cell.setGraphic(text);
+            cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
+            text.wrappingWidthProperty().bind(pPriceCol.widthProperty());
+            text.textProperty().bind(new StringBinding() {
+                { bind(cell.itemProperty()); }
+                @Override
+                protected String computeValue() {
+                    return cell.itemProperty().getValue() != null ? df.format(Float.parseFloat(cell.itemProperty().getValue()+"")) : "";
+                }
+            });
+            return cell;
+        });
 
         dataTable.setOnKeyPressed(event -> {
             if(event.getCode() == KeyCode.ESCAPE || event.getCode() == KeyCode.F5) {

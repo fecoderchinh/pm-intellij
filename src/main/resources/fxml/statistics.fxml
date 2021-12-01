@@ -60,8 +60,10 @@
                     <TableColumn fx:id="pNameCol" prefWidth="300.0" text="Bao bì" />
                     <TableColumn fx:id="pDimCol" prefWidth="150.0" text="Qui cách" />
                     <TableColumn fx:id="pQuantityCol" prefWidth="100.0" text="SL Cần" />
+                    <TableColumn fx:id="pUnitCol" prefWidth="50.0" text="ĐVT" />
                     <TableColumn fx:id="pStockCol" prefWidth="100.0" text="SL Tồn" />
                     <TableColumn fx:id="pActualQtyCol" prefWidth="100.0" text="SL Đặt" />
+                    <TableColumn fx:id="pResidualQtyCol" prefWidth="100.0" text="Dư" />
                     <TableColumn fx:id="pPriceCol" prefWidth="100.0" text="Đơn giá" />
                 </columns>
             </TableView>

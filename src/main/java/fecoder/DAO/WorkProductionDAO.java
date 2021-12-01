@@ -126,6 +126,76 @@ public class WorkProductionDAO {
     /**
      * Getting all records of table
      *
+     * @return list
+     * */
+    public List<WorkProduction> getListForStats() {
+        List<WorkProduction> list = new ArrayList<>();
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            Statement statement = conn.createStatement();
+            String selectAll =  "select distinct " +
+                    " wopp.id as id, " +
+                    " wop.ordinal_num as ordinalNumbers, " +
+                    " wop.id as woID, " + // new
+                    " wo.name as workOrderName, " +
+                    " p.name as productName, " +
+                    " concat(p2.name, if(wopp.printed is null, '', concat( '(',wopp.printed ,')' ) ) ) as packagingName, " +
+                    " p2.specifications as packagingSpecification, " +
+                    " p2.dimension as packagingDimension, " +
+                    " s.code as packagingSuplier, " +
+                    " p2.code as packagingCode, " +
+                    " t.unit as unit, " +
+                    " wopp.printed as printStatus, " +
+                    " pps.pack_qty as packQuantity, " +
+                    " (pps.pack_qty * wop.qty) as workOrderQuantity, " +
+                    " wopp.stock as stock, " +
+                    " wopp.actual_qty as actualQuantity, " +
+                    " wopp.residual_qty as residualQuantity, " +
+                    " (wopp.actual_qty + wopp.stock - wopp.residual_qty - (pps.pack_qty * wop.qty)) as totalResidualQuantity, " +
+                    " wopp.note as noteProduct, " +
+                    " wo.order_date as orderDate, " +
+                    " p2.price as price, " +
+                    " wop.order_times as orderTimes, " +
+                    " wopp.packaging_custom_code as packagingCustomCode " +
+                    "from " +
+                    " work_order_product wop," +
+                    " work_order wo," +
+                    " products p," +
+                    " packaging p2," +
+                    " types t," +
+                    " supliers s," +
+                    " packaging_product_size pps," +
+                    " work_order_product_packaging wopp " +
+                    "where" +
+                    " wop.work_order_id = wo.id" +
+                    " and wop.product_id = p.id" +
+                    " and p2.`type` = t.id" +
+                    " and p2.suplier = s.id " +
+                    " and pps.product_id = p.id " +
+                    " and pps.packaging_id = p2.id" +
+                    " and wopp.wop_id = wop.id" +
+                    " and wopp.work_order_id = wo.id" +
+                    " and wopp.product_id = p.id" +
+                    " and wopp.packaging_id = p2.id" +
+                    " group by wopp.id" +
+                    " order by orderDate";
+            ResultSet resultSet = statement.executeQuery(selectAll);
+            while(resultSet.next()) {
+                WorkProduction data = createData(resultSet);
+                list.add(data);
+            }
+            resultSet.close();
+            conn.close();
+        } catch (ClassNotFoundException | SQLException | IOException ex) {
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
+        }
+        return list;
+    }
+
+    /**
+     * Getting all records of table
+     *
      * @param workOrderID the id of work order
      *
      * @return list

@@ -18,9 +18,9 @@
                     </font>
                 </Label>
                 <HBox nodeOrientation="RIGHT_TO_LEFT" spacing="10" HBox.hgrow="ALWAYS">
-                    <Button fx:id="insertButton" mnemonicParsing="false" onAction="#insertButton" prefHeight="30.0" prefWidth="60.0" text="THÊM" />
-                    <Button fx:id="updateButton" mnemonicParsing="false" onAction="#updateButton" prefHeight="30.0" prefWidth="80.0" text="CẬP NHẬT" />
                     <Button fx:id="clearButton" mnemonicParsing="false" onAction="#clearButton" prefHeight="30.0" prefWidth="89.0" text="LÀM MỚI" />
+                    <Button fx:id="updateButton" mnemonicParsing="false" onAction="#updateButton" prefHeight="30.0" prefWidth="80.0" text="CẬP NHẬT" />
+                    <Button fx:id="insertButton" mnemonicParsing="false" onAction="#insertButton" prefHeight="30.0" prefWidth="60.0" text="THÊM" />
                     <padding>
                         <Insets top="5" />
                     </padding>
