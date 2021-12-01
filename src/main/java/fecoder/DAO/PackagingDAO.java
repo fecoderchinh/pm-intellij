@@ -67,6 +67,31 @@ public class PackagingDAO {
     }
 
     /**
+     * Getting all records of table
+     *
+     * @return list
+     * */
+    public List<Packaging> getListWithCode() {
+        List<Packaging> list = new ArrayList<>();
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            Statement statement = conn.createStatement();
+            String selectAll = "select p.id as id, concat(p.name, ' (', s.code, ')') as name, p.specifications as specifications, p.dimension as dimension, p.suplier as suplier, p.type as type, p.minimum_order as minimum_order, p.stamped as stamped, p.code as code, p.main as main, p.note as note, p.price as price, p.stock as stock from "+tableName+" as p, supliers as s where p.suplier = s.id order by id DESC";
+            ResultSet resultSet = statement.executeQuery(selectAll);
+            while(resultSet.next()) {
+                Packaging data = createData(resultSet);
+                list.add(data);
+            }
+            resultSet.close();
+            conn.close();
+        } catch (ClassNotFoundException | SQLException | IOException ex) {
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
+        }
+        return list;
+    }
+
+    /**
      * Retrieving raw data
      *
      * @return data

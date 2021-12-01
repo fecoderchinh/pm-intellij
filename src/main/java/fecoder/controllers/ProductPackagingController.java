@@ -65,7 +65,7 @@ public class ProductPackagingController implements Initializable {
     private final PackagingOwnerStringDAO packagingOwnerStringDAO = new PackagingOwnerStringDAO();
 
     private final ObservableList<Size> sizeObservableList = FXCollections.observableArrayList(sizeDAO.getList());
-    private final ObservableList<Packaging> packagingObservableList = FXCollections.observableArrayList(packagingDAO.getList());
+    private final ObservableList<Packaging> packagingObservableList = FXCollections.observableArrayList(packagingDAO.getListWithCode());
 
     private int currentRow;
     private String currentCell;
