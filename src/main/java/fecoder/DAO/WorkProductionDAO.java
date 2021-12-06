@@ -158,7 +158,8 @@ public class WorkProductionDAO {
                     " wo.order_date as orderDate, " +
                     " p2.price as price, " +
                     " wop.order_times as orderTimes, " +
-                    " wopp.packaging_custom_code as packagingCustomCode " +
+                    " wopp.packaging_custom_code as packagingCustomCode, " +
+                    " p2.main as main " +
                     "from " +
                     " work_order_product wop," +
                     " work_order wo," +
