@@ -125,6 +125,17 @@ public class YearController implements Initializable {
                     });
                 });
 
+        yearField.textProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    filteredList.setPredicate(str -> {
+                        if (newValue == null || newValue.isEmpty())
+                            return true;
+                        String lowerCaseFilter = newValue.toLowerCase();
+                        return str.getYear().toLowerCase().contains
+                                (lowerCaseFilter);
+                    });
+                });
+
         SortedList<Year> sortedList = new SortedList<>(filteredList);
         sortedList.comparatorProperty().bind(dataTable.comparatorProperty());
 

@@ -188,6 +188,17 @@ public class ProductController implements Initializable {
                     }
                 });
 
+        nameField.textProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    productFilteredList.setPredicate(str -> {
+                        if (newValue == null || newValue.isEmpty())
+                            return true;
+                        String lowerCaseFilter = newValue.toLowerCase();
+                        return str.getName().toLowerCase().contains
+                                (lowerCaseFilter);
+                    });
+                });
+
         searchComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if(newVal != null) {
                 searchField.setText(null);

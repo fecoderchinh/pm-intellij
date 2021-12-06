@@ -555,7 +555,7 @@ order by s.code ASC;*/
 
 
 /*tính số khối*/
-/*select 
+select 
 	p.name, 
 	p.dimension, 
 	(SELECT SUBSTRING_INDEX(p.dimension , 'x', 1)) as length, 
@@ -563,7 +563,7 @@ order by s.code ASC;*/
 	(SELECT SUBSTRING_INDEX(p.dimension , 'x', -1)) as height,
 	((SELECT SUBSTRING_INDEX(p.dimension , 'x', 1))*(SELECT SUBSTRING_INDEX((SELECT SUBSTRING_INDEX(p.dimension , 'x', 2)) , 'x', -1))*(SELECT SUBSTRING_INDEX(p.dimension , 'x', -1))*wop.qty) as CBM
 from packaging p, products p2, work_order_product wop, work_order_product_packaging wopp 
-where wop.product_id = p2.id and wopp.packaging_id = p.id and wop.product_id = 1 and type=1;*/
+where wop.product_id = p2.id and wopp.packaging_id = p.id and wop.product_id = 1 and type=1;
 
 /*list đề nghị*/
 /*select distinct (@count := @count + 1) AS rowNumber, wo.id as woID, wo.name as workOrderName, p.name as packagingName,  p.specifications as specs,  p.dimension as dimension, t.unit as unit, wopp.actual_qty as total, if((wopp.actual_qty - wopp.residual_qty + wopp.stock - wopp.work_order_qty) > 0, (wopp.actual_qty - wopp.residual_qty + wopp.stock - wopp.work_order_qty), "") as totalResidualQuantity
@@ -590,7 +590,7 @@ where
 	group by wopp.id;*/
 	
 /*đơn đặt hàng*/
-/*select
+select
 	wopp.id as woppID,
 	wo.id as woID,
 	group_concat(distinct wo.name separator "+") as woName, 
@@ -608,7 +608,8 @@ where
 	s.name as sName,
 	s.phone as sPhone,
 	s.fax as sFax,
-	sa.code_address as shipAddress
+	sa.code_address as shipAddress,
+	sum(((SELECT SUBSTRING_INDEX(p.dimension , 'x', 1))*(SELECT SUBSTRING_INDEX((SELECT SUBSTRING_INDEX(p.dimension , 'x', 2)) , 'x', -1))*(SELECT SUBSTRING_INDEX(p.dimension , 'x', -1))*wopp.work_order_qty)) as cbm
 from 
 	work_order_product_packaging wopp,
 	work_order wo,
@@ -622,10 +623,10 @@ where
 	and p.`type` = t.id
 	and p.suplier = s.id
 	and wopp.ship_address = sa.id
-	and wopp.actual_qty > 0 
--- 	and wopp.work_order_id in (3)
+-- 	and wopp.actual_qty > 0 
+	and wopp.work_order_id in (2)
 -- 	and s.code = "TTT"
 -- 	and sa.code_address = "SVN"
-	and wopp.order_times = 1
-group by 
-	wopp.packaging_id, wopp.printed, wopp.packaging_custom_code;*/
+-- 	and wopp.order_times = 1
+	and p.main = 1;
+select * from work_order_product_packaging wopp where wopp.work_order_id = 2;

@@ -23,6 +23,8 @@ public class OrderBySupllier {
     String shipAddress;
     String orderTimes;
     String packagingCustomCode;
+    boolean main;
+    String cbm;
 
     public OrderBySupllier() {}
 
@@ -48,7 +50,9 @@ public class OrderBySupllier {
             String sFax,
             String shipAddress,
             String orderTimes,
-            String packagingCustomCode
+            String packagingCustomCode,
+            boolean main,
+            String cbm
     ) {
         this.woppID = woppID;
         this.woID = woID;
@@ -72,6 +76,8 @@ public class OrderBySupllier {
         this.shipAddress = shipAddress;
         this.orderTimes = orderTimes;
         this.packagingCustomCode = packagingCustomCode;
+        this.main = main;
+        this.cbm = cbm;
     }
 
     public int getWoppID() {
@@ -248,5 +254,21 @@ public class OrderBySupllier {
 
     public void setPackagingCustomCode(String packagingCustomCode) {
         this.packagingCustomCode = packagingCustomCode;
+    }
+
+    public boolean isMain() {
+        return main;
+    }
+
+    public void setMain(boolean main) {
+        this.main = main;
+    }
+
+    public String getCbm() {
+        return cbm;
+    }
+
+    public void setCbm(String cbm) {
+        this.cbm = cbm;
     }
 }

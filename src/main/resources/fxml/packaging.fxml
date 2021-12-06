@@ -21,11 +21,11 @@
          <Separator prefWidth="200.0" />
          <GridPane hgap="10.0" vgap="10.0" VBox.vgrow="ALWAYS">
            <columnConstraints>
-             <ColumnConstraints hgrow="SOMETIMES" maxWidth="139.0" minWidth="10.0" prefWidth="57.799998092651364" />
+             <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="139.0" minWidth="10.0" prefWidth="57.799998092651364" />
                <ColumnConstraints hgrow="SOMETIMES" maxWidth="296.1999980926513" minWidth="10.0" prefWidth="173.00000190734863" />
-               <ColumnConstraints hgrow="SOMETIMES" maxWidth="301.0" minWidth="10.0" prefWidth="75.20003051757811" />
+               <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="301.0" minWidth="10.0" prefWidth="75.20003051757811" />
                <ColumnConstraints hgrow="SOMETIMES" maxWidth="313.9999694824219" minWidth="10.0" prefWidth="256.6" />
-               <ColumnConstraints hgrow="SOMETIMES" maxWidth="227.0" minWidth="10.0" prefWidth="83.0" />
+               <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="227.0" minWidth="10.0" prefWidth="83.0" />
                <ColumnConstraints hgrow="SOMETIMES" maxWidth="250.0" minWidth="10.0" prefWidth="201.39999999999998" />
              <ColumnConstraints minWidth="10.0" prefWidth="100.0" />
            </columnConstraints>
@@ -76,12 +76,12 @@
                               <Font size="14.0" />
                           </font>
                       </Label>
-                      <Label prefHeight="20.0" text="Ghi chú" GridPane.columnIndex="4" GridPane.rowIndex="2">
+                      <Label prefHeight="20.0" text="Mã BB" GridPane.columnIndex="4" GridPane.rowIndex="2">
                           <font>
                               <Font size="14.0" />
                           </font>
                       </Label>
-                      <Label prefHeight="20.0" prefWidth="41.0" text="Mã BB" GridPane.rowIndex="3">
+                      <Label prefHeight="20.0" text="Ghi chú" GridPane.rowIndex="3">
                           <font>
                               <Font size="14.0" />
                           </font>

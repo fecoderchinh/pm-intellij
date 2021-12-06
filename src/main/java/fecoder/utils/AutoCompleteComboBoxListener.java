@@ -1,5 +1,7 @@
 package fecoder.utils;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -7,6 +9,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.skin.ComboBoxListViewSkin;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 
 public class AutoCompleteComboBoxListener<T> implements EventHandler<KeyEvent> {
@@ -17,6 +21,7 @@ public class AutoCompleteComboBoxListener<T> implements EventHandler<KeyEvent> {
     private boolean moveCaretToPos = false;
     private int caretPos;
     private final Utils utils = new Utils();
+    private final KeyCombination kc_CONTROL_A = new KeyCodeCombination(KeyCode.A, KeyCombination.CONTROL_DOWN);
 
     public AutoCompleteComboBoxListener(final ComboBox comboBox, boolean editable, String prompText) {
         this.comboBox = comboBox;
@@ -40,7 +45,7 @@ public class AutoCompleteComboBoxListener<T> implements EventHandler<KeyEvent> {
                 e.consume();
             }
         });
-        skin.getPopupContent().prefHeight(500);
+//        skin.getPopupContent().prefHeight(500);
         comboBox.setSkin(skin);
     }
 
@@ -68,7 +73,7 @@ public class AutoCompleteComboBoxListener<T> implements EventHandler<KeyEvent> {
 
         if (event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.LEFT
                 || event.isControlDown() || event.getCode() == KeyCode.HOME
-                || event.getCode() == KeyCode.END || event.getCode() == KeyCode.TAB) {
+                || event.getCode() == KeyCode.END || event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER) {
             return;
         }
 
@@ -80,17 +85,19 @@ public class AutoCompleteComboBoxListener<T> implements EventHandler<KeyEvent> {
                 list.add(data.get(i));
             }
         }
-        String t = comboBox.getEditor().getText();
-
+//        String t = comboBox.getEditor().getText();
+//
         comboBox.setItems(list);
-        comboBox.getEditor().setText(t);
-        if(!moveCaretToPos) {
-            caretPos = -1;
-        }
-        moveCaret(t.length());
-        if(!list.isEmpty()) {
-            comboBox.hide(); //before you set new visibleRowCount value
-            comboBox.show(); //after you set new visibleRowCount value
+//        comboBox.getEditor().setText(t);
+//        if(!moveCaretToPos) {
+//            caretPos = -1;
+//        }
+//        moveCaret(t.length());
+        if(!this.kc_CONTROL_A.match(event)) {
+            if(!list.isEmpty()) {
+                comboBox.hide(); //before you set new visibleRowCount value
+                comboBox.show(); //after you set new visibleRowCount value
+            }
         }
     }
 

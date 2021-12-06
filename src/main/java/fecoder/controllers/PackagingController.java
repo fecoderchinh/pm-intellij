@@ -1,6 +1,7 @@
 package fecoder.controllers;
 
 import fecoder.DAO.PackagingDAO;
+import fecoder.DAO.PackagingToStringDAO;
 import fecoder.DAO.SupplierDAO;
 import fecoder.DAO.TypeDAO;
 import fecoder.models.*;
@@ -25,8 +26,11 @@ import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
+import javafx.util.StringConverter;
 import javafx.util.converter.FloatStringConverter;
 import javafx.util.converter.IntegerStringConverter;
 import org.apache.poi.ss.formula.functions.T;
@@ -57,24 +61,25 @@ public class PackagingController implements Initializable {
     public Label anchorData;
     public TextField stockField;
 
-    public TableView<Packaging> dataTable;
-    public TableColumn<Packaging, Integer> idColumn;
-    public TableColumn<Packaging, Boolean> stampedColumn;
-    public TableColumn<Packaging, Boolean> mainColumn;
-    public TableColumn<Packaging, String> nameColumn;
-    public TableColumn<Packaging, String> specificationColumn;
-    public TableColumn<Packaging, String> dimensionColumn;
-    public TableColumn<Packaging, Integer> minimumColumn;
-    public TableColumn<Packaging, Integer> typeColumn;
-    public TableColumn<Packaging, Integer> suplierColumn;
-    public TableColumn<Packaging, String> codeColumn;
-    public TableColumn<Packaging, Float> priceColumn;
-    public TableColumn<Packaging, String> noteColumn;
-    public TableColumn<Packaging, Float> stockColumn;
+    public TableView<PackagingToString> dataTable;
+    public TableColumn<PackagingToString, Integer> idColumn;
+    public TableColumn<PackagingToString, Boolean> stampedColumn;
+    public TableColumn<PackagingToString, Boolean> mainColumn;
+    public TableColumn<PackagingToString, String> nameColumn;
+    public TableColumn<PackagingToString, String> specificationColumn;
+    public TableColumn<PackagingToString, String> dimensionColumn;
+    public TableColumn<PackagingToString, Integer> minimumColumn;
+    public TableColumn<PackagingToString, String> typeColumn;
+    public TableColumn<PackagingToString, String> suplierColumn;
+    public TableColumn<PackagingToString, String> codeColumn;
+    public TableColumn<PackagingToString, Float> priceColumn;
+    public TableColumn<PackagingToString, String> noteColumn;
+    public TableColumn<PackagingToString, Float> stockColumn;
 
     private final TypeDAO typeDAO = new TypeDAO();
     private final SupplierDAO supplierDAO = new SupplierDAO();
     private final PackagingDAO packagingDAO = new PackagingDAO();
+    private final PackagingToStringDAO packagingToStringDAO = new PackagingToStringDAO();
 
     private int currentRow;
     private String currentCell;
@@ -228,19 +233,17 @@ public class PackagingController implements Initializable {
     /**
      * Handle on clearing comnbobox
      * */
-    private void getComboBoxData(Packaging packaging) {
+    private void getComboBoxData(PackagingToString packaging) {
         if(!suplierComboBox.isEditable()) {
-            suplierComboBox.getSelectionModel().select(supplierDAO.getDataByID(packaging.getSuplier()));
+            suplierComboBox.getSelectionModel().select(supplierDAO.getDataByCode(packaging.getSuplier()));
         } else {
-            Supplier _supplierModel = supplierDAO.getDataByID(packaging.getSuplier());
-            suplierComboBox.getEditor().setText(_supplierModel.getCode());
+            suplierComboBox.getEditor().setText(packaging.getSuplier());
         }
 
         if(!typeComboBox.isEditable()) {
-            typeComboBox.getSelectionModel().select(typeDAO.getDataByID(packaging.getType()));
+            typeComboBox.getSelectionModel().select(typeDAO.getDataByName(packaging.getType()));
         } else {
-            Type _typeModel = typeDAO.getDataByID(packaging.getType());
-            typeComboBox.getEditor().setText(_typeModel.getName());
+            typeComboBox.getEditor().setText(packaging.getType());
         }
     }
 
@@ -255,7 +258,7 @@ public class PackagingController implements Initializable {
      *
      * @param packaging - the packaging data
      * */
-    private void getPackaging(Packaging packaging) {
+    private void getPackaging(PackagingToString packaging) {
         nameField.setText(packaging.getName());
         specificationField.setText(packaging.getSpecifications());
         dimensionField.setText(packaging.getDimension());
@@ -279,8 +282,8 @@ public class PackagingController implements Initializable {
      * Handle on searching data
      * */
     public void setSearchField() {
-        ObservableList<Packaging> packagingObservableList = FXCollections.observableArrayList(packagingDAO.getList());
-        FilteredList<Packaging> packagingFilteredList = new FilteredList<>(packagingObservableList, p -> true);
+        ObservableList<PackagingToString> packagingObservableList = FXCollections.observableArrayList(packagingToStringDAO.getList());
+        FilteredList<PackagingToString> packagingFilteredList = new FilteredList<>(packagingObservableList, p -> true);
 
         searchField.textProperty()
                 .addListener((observable, oldValue, newValue) -> {
@@ -315,13 +318,23 @@ public class PackagingController implements Initializable {
                     }
                 });
 
+        nameField.textProperty().addListener((observable, oldValue, newValue) -> {
+            packagingFilteredList.setPredicate(str -> {
+                if (newValue == null || newValue.isEmpty())
+                    return true;
+                String lowerCaseFilter = newValue.toLowerCase();
+                return str.getName().toLowerCase().contains
+                        (lowerCaseFilter);
+            });
+        });
+
         searchComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if(newVal != null) {
                 searchField.setText("");
             }
         });
 
-        SortedList<Packaging> packagingSortedList = new SortedList<>(packagingFilteredList);
+        SortedList<PackagingToString> packagingSortedList = new SortedList<>(packagingFilteredList);
         packagingSortedList.comparatorProperty().bind(dataTable.comparatorProperty());
 
         dataTable.setItems(packagingSortedList);
@@ -331,14 +344,14 @@ public class PackagingController implements Initializable {
      * Getting current row on click
      * */
     public void getCurrentRow() {
-        TableView.TableViewSelectionModel<Packaging> packagingTableViewSelectionModel = dataTable.getSelectionModel();
+        TableView.TableViewSelectionModel<PackagingToString> packagingTableViewSelectionModel = dataTable.getSelectionModel();
         packagingTableViewSelectionModel.setSelectionMode(SelectionMode.SINGLE);
 
-        ObservableList<Packaging> packagingObservableList1 = packagingTableViewSelectionModel.getSelectedItems();
+        ObservableList<PackagingToString> packagingObservableList1 = packagingTableViewSelectionModel.getSelectedItems();
 
-        packagingObservableList1.addListener(new ListChangeListener<Packaging>() {
+        packagingObservableList1.addListener(new ListChangeListener<PackagingToString>() {
             @Override
-            public void onChanged(Change<? extends Packaging> change) {
+            public void onChanged(Change<? extends PackagingToString> change) {
 //                System.out.println("Selection changed: " + change.getList());
             }
         });
@@ -384,159 +397,159 @@ public class PackagingController implements Initializable {
         idColumn.setCellValueFactory(column -> new ReadOnlyObjectWrapper<Integer>(dataTable.getItems().indexOf(column.getValue())+1));
 
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        nameColumn.setCellFactory(tc -> {
-
-            TableCell<Packaging, String> cell = new TableCell<>();
-
-            currentRow = cell.getIndex();
-            currentCell = cell.getText();
-
-            Text text = new Text();
-            cell.setGraphic(text);
-            cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
-            text.wrappingWidthProperty().bind(nameColumn.widthProperty());
-            text.textProperty().bind(new StringBinding() {
-                { bind(cell.itemProperty()); }
-                @Override
-                protected String computeValue() {
-                    if(cell.itemProperty().getValue() != null) {
-                        Packaging item = packagingDAO.getDataByName(cell.itemProperty().getValue());
-//                        return item.isStamped() ? cell.itemProperty().getValue()+" (Số LOT)" : cell.itemProperty().getValue()+"";
-                        return cell.itemProperty().getValue()+"";
-                    } else {
-                        return "";
-                    }
-                }
-            });
-
-//            EDIT IN NEW WINDOW
-            cell.setOnMouseClicked(e -> {
-                if (e.getClickCount() == 2 && ! cell.isEmpty()) {
-                    utils.openTextareaWindow(dataTable.getScene().getWindow(), cell.getItem(), newValue -> {
-                        Packaging item = dataTable.getItems().get(cell.getIndex());
-                        item.setName(newValue);
-                        packagingDAO.updateData("name", newValue, item.getId());
-                        dataTable.refresh();
-                    }, "Cập nhật tên bao bì");
-                }
-            });
-
-            return cell ;
-        });
+//        nameColumn.setCellFactory(tc -> {
+//
+//            TableCell<Packaging, String> cell = new TableCell<>();
+//
+//            currentRow = cell.getIndex();
+//            currentCell = cell.getText();
+//
+//            Text text = new Text();
+//            cell.setGraphic(text);
+//            cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
+//            text.wrappingWidthProperty().bind(nameColumn.widthProperty());
+//            text.textProperty().bind(new StringBinding() {
+//                { bind(cell.itemProperty()); }
+//                @Override
+//                protected String computeValue() {
+//                    if(cell.itemProperty().getValue() != null) {
+//                        Packaging item = packagingDAO.getDataByName(cell.itemProperty().getValue());
+////                        return item.isStamped() ? cell.itemProperty().getValue()+" (Số LOT)" : cell.itemProperty().getValue()+"";
+//                        return cell.itemProperty().getValue()+"";
+//                    } else {
+//                        return "";
+//                    }
+//                }
+//            });
+//
+////            EDIT IN NEW WINDOW
+//            cell.setOnMouseClicked(e -> {
+//                if (e.getClickCount() == 2 && ! cell.isEmpty()) {
+//                    utils.openTextareaWindow(dataTable.getScene().getWindow(), cell.getItem(), newValue -> {
+//                        Packaging item = dataTable.getItems().get(cell.getIndex());
+//                        item.setName(newValue);
+//                        packagingDAO.updateData("name", newValue, item.getId());
+//                        dataTable.refresh();
+//                    }, "Cập nhật tên bao bì");
+//                }
+//            });
+//
+//            return cell ;
+//        });
 
         specificationColumn.setCellValueFactory(new PropertyValueFactory<>("specifications"));
-        specificationColumn.setCellFactory(tc -> {
-
-            TableCell<Packaging, String> cell = new TableCell<>();
-
-            currentRow = cell.getIndex();
-            currentCell = cell.getText();
-
-            Text text = new Text();
-            cell.setGraphic(text);
-            cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
-            text.wrappingWidthProperty().bind(specificationColumn.widthProperty());
-            text.textProperty().bind(cell.itemProperty());
-
-//            EDIT IN NEW WINDOW
-            cell.setOnMouseClicked(e -> {
-                if (e.getClickCount() == 2 && ! cell.isEmpty()) {
-                    utils.openTextareaWindow(dataTable.getScene().getWindow(), cell.getItem(), newValue -> {
-                        Packaging item = dataTable.getItems().get(cell.getIndex());
-                        item.setName(newValue);
-                        packagingDAO.updateData("specifications", newValue, item.getId());
-                        dataTable.refresh();
-                    }, "Cập nhật qui cách");
-                }
-            });
-
-            return cell ;
-        });
+//        specificationColumn.setCellFactory(tc -> {
+//
+//            TableCell<Packaging, String> cell = new TableCell<>();
+//
+//            currentRow = cell.getIndex();
+//            currentCell = cell.getText();
+//
+//            Text text = new Text();
+//            cell.setGraphic(text);
+//            cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
+//            text.wrappingWidthProperty().bind(specificationColumn.widthProperty());
+//            text.textProperty().bind(cell.itemProperty());
+//
+////            EDIT IN NEW WINDOW
+//            cell.setOnMouseClicked(e -> {
+//                if (e.getClickCount() == 2 && ! cell.isEmpty()) {
+//                    utils.openTextareaWindow(dataTable.getScene().getWindow(), cell.getItem(), newValue -> {
+//                        Packaging item = dataTable.getItems().get(cell.getIndex());
+//                        item.setName(newValue);
+//                        packagingDAO.updateData("specifications", newValue, item.getId());
+//                        dataTable.refresh();
+//                    }, "Cập nhật qui cách");
+//                }
+//            });
+//
+//            return cell ;
+//        });
 
         dimensionColumn.setCellValueFactory(new PropertyValueFactory<>("dimension"));
-        dimensionColumn.setCellFactory(TextFieldTableCell.<Packaging>forTableColumn());
-        dimensionColumn.setOnEditCommit(event -> {
-            final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
-            ((Packaging) event.getTableView().getItems().get(event.getTablePosition().getRow())).setDimension(data);
-            packagingDAO.updateData("dimension", data, event.getRowValue().getId());
-            dataTable.refresh();
-        });
+//        dimensionColumn.setCellFactory(TextFieldTableCell.<Packaging>forTableColumn());
+//        dimensionColumn.setOnEditCommit(event -> {
+//            final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
+//            ((Packaging) event.getTableView().getItems().get(event.getTablePosition().getRow())).setDimension(data);
+//            packagingDAO.updateData("dimension", data, event.getRowValue().getId());
+//            dataTable.refresh();
+//        });
 
         minimumColumn.setCellValueFactory(new PropertyValueFactory<>("minimum_order"));
-        minimumColumn.setCellFactory(TextFieldTableCell.<Packaging, Integer>forTableColumn(new IntegerStringConverter()));
-        minimumColumn.setOnEditCommit(event -> {
-            final int data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
-            ((Packaging) event.getTableView().getItems().get(event.getTablePosition().getRow())).setMinimum_order(data);
-            packagingDAO.updateDataInteger("minimum_order", data, event.getRowValue().getId());
-            dataTable.refresh();
-        });
+//        minimumColumn.setCellFactory(TextFieldTableCell.<Packaging, Integer>forTableColumn(new IntegerStringConverter()));
+//        minimumColumn.setOnEditCommit(event -> {
+//            final int data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
+//            ((Packaging) event.getTableView().getItems().get(event.getTablePosition().getRow())).setMinimum_order(data);
+//            packagingDAO.updateDataInteger("minimum_order", data, event.getRowValue().getId());
+//            dataTable.refresh();
+//        });
 
         codeColumn.setCellValueFactory(new PropertyValueFactory<>("code"));
-        codeColumn.setCellFactory(TextFieldTableCell.<Packaging>forTableColumn());
-        codeColumn.setOnEditCommit(event -> {
-            final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
-            ((Packaging) event.getTableView().getItems().get(event.getTablePosition().getRow())).setCode(data);
-            packagingDAO.updateData("code", data.trim().replace(" ", "").toUpperCase(), event.getRowValue().getId());
-            dataTable.refresh();
-        });
+//        codeColumn.setCellFactory(TextFieldTableCell.<Packaging>forTableColumn());
+//        codeColumn.setOnEditCommit(event -> {
+//            final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
+//            ((Packaging) event.getTableView().getItems().get(event.getTablePosition().getRow())).setCode(data);
+//            packagingDAO.updateData("code", data.trim().replace(" ", "").toUpperCase(), event.getRowValue().getId());
+//            dataTable.refresh();
+//        });
 
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
-        priceColumn.setCellFactory(TextFieldTableCell.<Packaging, Float>forTableColumn(new FloatStringConverter()));
-        priceColumn.setOnEditCommit(event -> {
-            final float data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
-            ((Packaging) event.getTableView().getItems().get(event.getTablePosition().getRow())).setPrice(data);
-            packagingDAO.updateDataFloat("price", data, event.getRowValue().getId());
-            dataTable.refresh();
-        });
+//        priceColumn.setCellFactory(TextFieldTableCell.<Packaging, Float>forTableColumn(new FloatStringConverter()));
+//        priceColumn.setOnEditCommit(event -> {
+//            final float data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
+//            ((Packaging) event.getTableView().getItems().get(event.getTablePosition().getRow())).setPrice(data);
+//            packagingDAO.updateDataFloat("price", data, event.getRowValue().getId());
+//            dataTable.refresh();
+//        });
 
         stockColumn.setCellValueFactory(new PropertyValueFactory<>("stock"));
-        stockColumn.setCellFactory(TextFieldTableCell.<Packaging, Float>forTableColumn(new FloatStringConverter()));
-        stockColumn.setOnEditCommit(event -> {
-            final float data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
-            ((Packaging) event.getTableView().getItems().get(event.getTablePosition().getRow())).setStock(data);
-            packagingDAO.updateDataFloat("stock", data, event.getRowValue().getId());
-            dataTable.refresh();
-        });
+//        stockColumn.setCellFactory(TextFieldTableCell.<Packaging, Float>forTableColumn(new FloatStringConverter()));
+//        stockColumn.setOnEditCommit(event -> {
+//            final float data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
+//            ((Packaging) event.getTableView().getItems().get(event.getTablePosition().getRow())).setStock(data);
+//            packagingDAO.updateDataFloat("stock", data, event.getRowValue().getId());
+//            dataTable.refresh();
+//        });
 
         noteColumn.setCellValueFactory(new PropertyValueFactory<>("note"));
-        noteColumn.setCellFactory(tc -> {
-
-            TableCell<Packaging, String> cell = new TableCell<>();
-
-            currentRow = cell.getIndex();
-            currentCell = cell.getText();
-
-            Text text = new Text();
-            cell.setGraphic(text);
-            cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
-            text.wrappingWidthProperty().bind(noteColumn.widthProperty());
-            text.textProperty().bind(cell.itemProperty());
-
-//            EDIT IN NEW WINDOW
-            cell.setOnMouseClicked(e -> {
-                if (e.getClickCount() == 2 && ! cell.isEmpty()) {
-                    utils.openTextareaWindow(dataTable.getScene().getWindow(), cell.getItem(), newValue -> {
-                        Packaging item = dataTable.getItems().get(cell.getIndex());
-                        item.setName(newValue);
-                        packagingDAO.updateData("note", newValue, item.getId());
-                        dataTable.refresh();
-                    }, "Cập nhật ghi chú");
-                }
-            });
-
-            return cell ;
-        });
+//        noteColumn.setCellFactory(tc -> {
+//
+//            TableCell<Packaging, String> cell = new TableCell<>();
+//
+//            currentRow = cell.getIndex();
+//            currentCell = cell.getText();
+//
+//            Text text = new Text();
+//            cell.setGraphic(text);
+//            cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
+//            text.wrappingWidthProperty().bind(noteColumn.widthProperty());
+//            text.textProperty().bind(cell.itemProperty());
+//
+////            EDIT IN NEW WINDOW
+//            cell.setOnMouseClicked(e -> {
+//                if (e.getClickCount() == 2 && ! cell.isEmpty()) {
+//                    utils.openTextareaWindow(dataTable.getScene().getWindow(), cell.getItem(), newValue -> {
+//                        Packaging item = dataTable.getItems().get(cell.getIndex());
+//                        item.setName(newValue);
+//                        packagingDAO.updateData("note", newValue, item.getId());
+//                        dataTable.refresh();
+//                    }, "Cập nhật ghi chú");
+//                }
+//            });
+//
+//            return cell ;
+//        });
 
         stampedColumn.setCellFactory( CheckBoxTableCell.forTableColumn(stampedColumn) );
         stampedColumn.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<Packaging, Boolean>, ObservableValue<Boolean>>()
+                new Callback<TableColumn.CellDataFeatures<PackagingToString, Boolean>, ObservableValue<Boolean>>()
                 {
                     @Override
-                    public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<Packaging, Boolean> param)
+                    public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<PackagingToString, Boolean> param)
                     {
                         boolean check = param.getValue().isMain();
 
-                        Packaging packaging = param.getValue();
+                        PackagingToString packaging = param.getValue();
 
                         SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(packaging.isStamped());
 
@@ -559,12 +572,12 @@ public class PackagingController implements Initializable {
                 });
         mainColumn.setCellFactory( CheckBoxTableCell.forTableColumn(mainColumn) );
         mainColumn.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<Packaging, Boolean>, ObservableValue<Boolean>>()
+                new Callback<TableColumn.CellDataFeatures<PackagingToString, Boolean>, ObservableValue<Boolean>>()
                 {
                     //This callback tell the cell how to bind the data model 'Registered' property to
                     //the cell, itself.
                     @Override
-                    public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<Packaging, Boolean> param)
+                    public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<PackagingToString, Boolean> param)
                     {
                         boolean check = param.getValue().isMain();
 //                         int check = param.getValue().isMain() ? 1 : 0;
@@ -583,7 +596,7 @@ public class PackagingController implements Initializable {
 //                        return new SimpleBooleanProperty(check);
 //                        return booleanProperty;
 
-                        Packaging packaging = param.getValue();
+                        PackagingToString packaging = param.getValue();
 
                         SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(packaging.isMain());
 
@@ -607,208 +620,163 @@ public class PackagingController implements Initializable {
 
         ObservableList<Type> typeObservableList = FXCollections.observableArrayList(typeDAO.getList());
         typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
-//        typeColumn.setCellFactory(ComboBoxTableCell.forTableColumn(typeObservableList));
-//        typeColumn.setCellFactory(new Callback<TableColumn<Packaging, Type>,TableCell<Packaging, Type>>() {
+//        typeColumn.setCellFactory(tc -> {
 //
-//            @Override
-//            public TableCell<Packaging, Type> call(TableColumn<Packaging, Type> param) {
+//            TableCell<Packaging, Integer> cell = new TableCell<>();
 //
-//                ComboBoxTableCell<Packaging, Type> ct= new ComboBoxTableCell<>();
-////                ct.getItems().addAll(FXCollections.observableArrayList(typeDAO.getTypes()));
+//            currentRow = cell.getIndex();
+//            currentCell = cell.getText();
 //
-//                ct.setComboBoxEditable(true);
+//            Text text = new Text();
 //
-//                FilteredList<Type> typeFilteredList = new FilteredList<>(typeObservableList, p -> true);
-//                ct.textProperty()
-//                        .addListener((observable, oldValue, newValue) -> {
-//                            typeFilteredList.setPredicate(str -> {
-//                                if (newValue == null || newValue.isEmpty())
-//                                    return true;
-//                                String lowerCaseFilter = newValue.toLowerCase();
-//                                return str.getName().toLowerCase().contains
-//                                        (lowerCaseFilter);
-//                            });
+//            ComboBox<Type> comboBoxTableCell = new ComboBox<>();
+//            comboBoxTableCell.setConverter(new StringConverter<Type>() {
+//                @Override
+//                public String toString(Type data) {
+//                    if (data == null) return null;
+//                    return data.toString();
+//                }
 //
-//                            System.out.println(typeFilteredList + " " +  oldValue + " " + newValue);
-//                        });
+//                @Override
+//                public Type fromString(String s) {
+//                    return null;
+//                }
+//            });
 //
-//                SortedList<Type> typeSortedList = new SortedList<>(typeFilteredList);
+//            comboBoxTableCell.getItems().addAll(typeObservableList);
+//            new AutoCompleteComboBoxListener<>(comboBoxTableCell, true, typeDAO.getLastestData().getName());
 //
-//                ct.getItems().clear();
-//                ct.getItems().addAll(typeSortedList);
+//            cell.setGraphic(text);
+//            cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
+//            text.wrappingWidthProperty().bind(typeColumn.widthProperty());
 //
-//                return ct;
-//            }
+//            text.textProperty().bind(new StringBinding() {
+//                { bind(cell.itemProperty()); }
+//                @Override
+//                protected String computeValue() {
+////                    return cell.itemProperty().getValue() != null ? cell.itemProperty().getValue()+"" : "";
+//                    if(cell.itemProperty().getValue() != null) {
+//                        Type data = typeDAO.getDataByID(cell.itemProperty().getValue());
+//                        return data.getName();
+//                    } else {
+//                        return "";
+//                    }
+//                }
+//            });
 //
+//            cell.setOnMouseClicked(e -> {
+//                if (e.getClickCount() == 2 && ! cell.isEmpty()) {
+//                    cell.setGraphic(comboBoxTableCell);
+//                    cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
+//                    comboBoxTableCell.setMaxWidth(Control.USE_COMPUTED_SIZE);
+//                    comboBoxTableCell.setEditable(true);
+//                    comboBoxTableCell.getEditor().setText(typeDAO.getDataByID(cell.itemProperty().getValue()).getName());
+//
+//                    comboBoxTableCell.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Type>() {
+//                        @Override
+//                        public void changed(ObservableValue<? extends Type> observableValue, Type data, Type t1) {
+//                            if(t1 != null) {
+//                                if(!cell.isEmpty()) {
+//                                    TablePosition pos = (TablePosition) dataTable.getSelectionModel().getSelectedCells().get(0);
+//                                    int selectedRow = dataTable.getItems().get(pos.getRow()).getId();
+//                                    packagingDAO.updateDataInteger("type", t1.getId(), selectedRow);
+//                                }
+//                            }
+//                        }
+//                    });
+//
+//                    comboBoxTableCell.addEventFilter(KeyEvent.ANY, ke -> {
+//                        if(ke.getCode() == KeyCode.ENTER) {
+//                            clearFields();
+//                            reload();
+//                        }
+//                    });
+//                }
+//            });
+//
+//            return cell ;
 //        });
-
-
-//        typeColumn.setOnEditCommit(event -> {
-//            event.getRowValue().setType(event.getNewValue().getId());
-//            packagingDAO.updateDataInteger("type", event.getNewValue().getId(), event.getRowValue().getId());
-//        });
-
-        typeColumn.setCellFactory(TextFieldTableCell.<Packaging, Integer>forTableColumn(new IntegerStringConverter()));
-        typeColumn.setCellFactory(tc -> {
-
-            TableCell<Packaging, Integer> cell = new TableCell<>();
-
-            currentRow = cell.getIndex();
-            currentCell = cell.getText();
-
-            Text text = new Text();
-            AutoFillTextBox<Type> box = new AutoFillTextBox<Type>(typeObservableList);
-            cell.setGraphic(text);
-            cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
-            text.wrappingWidthProperty().bind(typeColumn.widthProperty());
-            text.textProperty().bind(new StringBinding() {
-                { bind(cell.itemProperty()); }
-                @Override
-                protected String computeValue() {
-//                    return cell.itemProperty().getValue() != null ? cell.itemProperty().getValue()+"" : "";
-                    if(cell.itemProperty().getValue() != null) {
-                        Type typeByName = typeDAO.getDataByID(cell.itemProperty().getValue());
-                        return typeByName.getName();
-                    } else {
-                     return "";
-                    }
-                }
-            });
-
-            cell.setOnMouseClicked(e -> {
-                if (e.getClickCount() == 2 && ! cell.isEmpty()) {
-                    TablePosition pos = (TablePosition) dataTable.getSelectionModel().getSelectedCells().get(0);
-                    int selectedRow = dataTable.getItems().get(pos.getRow()).getId();
-                    cell.setGraphic(box);
-                    cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
-                    box.getTextbox().setPromptText("Nhập từ để tìm");
-
-                    box.getTextbox().setOnKeyReleased(event -> {
-                        if(event.getCode() == KeyCode.ENTER && !typeDAO.hasName(box.getTextbox().textProperty().getValue())) {
-                            Alert alert = new Alert(Alert.AlertType.ERROR);
-                            alert.setTitle("Lỗi!");
-                            alert.setHeaderText("Đã có lỗi xảy ra!");
-                            alert.setContentText(box.getText() + " không tồn tại! Xin thử lại!");
-
-                            alert.showAndWait();
-                        }
-                    });
-
-                    box.getTextbox().textProperty().addListener((obs, oldVal, newVal) -> {
-                        if (!box.getText().isEmpty() && box.getItem() != null && box.getItem().getName().toLowerCase().trim().equals(newVal.toLowerCase().trim())) {
-                            packagingDAO.updateDataInteger("type", box.getItem().getId(), selectedRow);
-                            dataTable.refresh();
-                            reload();
-                        }
-                    });
-
-                    box.getTextbox().setOnAction(new EventHandler<ActionEvent>() {
-                        @Override
-                        public void handle(ActionEvent actionEvent) {
-                            Type typeByName = typeDAO.getDataByName(box.getTextbox().textProperty().getValue());
-
-                            int newPackagingTypeID = typeByName.getId();
-
-                            if (typeDAO.hasName(box.getTextbox().textProperty().getValue())) {
-                                packagingDAO.updateDataInteger("type", newPackagingTypeID, selectedRow);
-                                dataTable.refresh();
-                                reload();
-                            }
-                        }
-                    });
-                }
-            });
-
-            cell.setOnKeyPressed(event -> {
-                if(event.getCode() == KeyCode.ESCAPE) {
-                    cell.setGraphic(text);
-                }
-            });
-
-            return cell ;
-        });
 
         ObservableList<Supplier> supplierObservableList = FXCollections.observableArrayList(supplierDAO.getList());
         suplierColumn.setCellValueFactory(new PropertyValueFactory<>("suplier"));
-        suplierColumn.setCellFactory(TextFieldTableCell.<Packaging, Integer>forTableColumn(new IntegerStringConverter()));
-        suplierColumn.setCellFactory(tc -> {
-
-            TableCell<Packaging, Integer> cell = new TableCell<>();
-
-            currentRow = cell.getIndex();
-            currentCell = cell.getText();
-
-            Text text = new Text();
-            AutoFillTextBox<Supplier> box = new AutoFillTextBox<Supplier>(supplierObservableList);
-            cell.setGraphic(text);
-            cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
-            text.wrappingWidthProperty().bind(suplierColumn.widthProperty());
-            text.textProperty().bind(new StringBinding() {
-                { bind(cell.itemProperty()); }
-                @Override
-                protected String computeValue() {
-//                    return cell.itemProperty().getValue() != null ? cell.itemProperty().getValue()+"" : "";
-                    if(cell.itemProperty().getValue() != null) {
-                        Supplier dataByID = supplierDAO.getDataByID(cell.itemProperty().getValue());
-                        return dataByID.getCode();
-                    } else {
-                        return "";
-                    }
-                }
-            });
-
-            cell.setOnMouseClicked(e -> {
-                if (e.getClickCount() == 2 && ! cell.isEmpty()) {
-                    TablePosition pos = (TablePosition) dataTable.getSelectionModel().getSelectedCells().get(0);
-                    int selectedRow = dataTable.getItems().get(pos.getRow()).getId();
-                    cell.setGraphic(box);
-                    cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
-                    box.getTextbox().setPromptText("Nhập mã NCC");
-
-                    box.getTextbox().setOnKeyReleased(event -> {
-                        if(event.getCode() == KeyCode.ENTER && !supplierDAO.hasName(box.getTextbox().textProperty().getValue())) {
-                            Alert alert = new Alert(Alert.AlertType.ERROR);
-                            alert.setTitle("Lỗi!");
-                            alert.setHeaderText("Đã có lỗi xảy ra!");
-                            alert.setContentText(box.getText() + " không tồn tại! Xin thử lại!");
-
-                            alert.showAndWait();
-                        }
-                    });
-
-                    box.getTextbox().textProperty().addListener((obs, oldVal, newVal) -> {
-                        if (!box.getText().isEmpty() && box.getItem() != null && box.getItem().getCode().toLowerCase().trim().equals(newVal.toLowerCase().trim())) {
-                            packagingDAO.updateDataInteger("suplier", box.getItem().getId(), selectedRow);
-                            dataTable.refresh();
-                            reload();
-                        }
-                    });
-
-                    box.getTextbox().setOnAction(new EventHandler<ActionEvent>() {
-                        @Override
-                        public void handle(ActionEvent actionEvent) {
-                            Supplier dataByName = supplierDAO.getDataByName(box.getTextbox().textProperty().getValue());
-
-                            int newPackagingSuplierID = dataByName.getId();
-
-                            if (supplierDAO.hasName(box.getTextbox().textProperty().getValue())) {
-                                packagingDAO.updateDataInteger("suplier", newPackagingSuplierID, selectedRow);
-                                dataTable.refresh();
-                                reload();
-                            }
-                        }
-                    });
-                }
-            });
-
-            cell.setOnKeyPressed(event -> {
-                if(event.getCode() == KeyCode.ESCAPE) {
-                    cell.setGraphic(text);
-                }
-            });
-
-            return cell ;
-        });
+//        suplierColumn.setCellFactory(tc -> {
+//
+//            TableCell<Packaging, Integer> cell = new TableCell<>();
+//
+//            currentRow = cell.getIndex();
+//            currentCell = cell.getText();
+//
+//            Text text = new Text();
+//
+//            ComboBox<Supplier> comboBoxTableCell = new ComboBox<>();
+//            comboBoxTableCell.setConverter(new StringConverter<Supplier>() {
+//                @Override
+//                public String toString(Supplier data) {
+//                    if (data == null) return null;
+//                    return data.getCode();
+//                }
+//
+//                @Override
+//                public Supplier fromString(String s) {
+//                    return null;
+//                }
+//            });
+//
+//            comboBoxTableCell.getItems().addAll(supplierObservableList);
+//            new AutoCompleteComboBoxListener<>(comboBoxTableCell, true, supplierDAO.getLastestData().getCode());
+//
+//            cell.setGraphic(text);
+//            cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
+//            text.wrappingWidthProperty().bind(suplierColumn.widthProperty());
+//
+//
+//            text.textProperty().bind(new StringBinding() {
+//                { bind(cell.itemProperty()); }
+//                @Override
+//                protected String computeValue() {
+////                    return cell.itemProperty().getValue() != null ? cell.itemProperty().getValue()+"" : "";
+//                    if(cell.itemProperty().getValue() != null) {
+//                        Supplier data = supplierDAO.getDataByID(cell.itemProperty().getValue());
+//                        return data.getCode();
+//                    } else {
+//                        return "";
+//                    }
+//                }
+//            });
+//
+//            cell.setOnMouseClicked(e -> {
+//                if (e.getClickCount() == 2 && ! cell.isEmpty()) {
+//                    cell.setGraphic(comboBoxTableCell);
+//                    cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
+//                    comboBoxTableCell.setMaxWidth(Control.USE_COMPUTED_SIZE);
+//                    comboBoxTableCell.setEditable(true);
+//                    comboBoxTableCell.getEditor().setText(supplierDAO.getDataByID(cell.itemProperty().getValue()).getCode());
+//
+//                    comboBoxTableCell.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Supplier>() {
+//                        @Override
+//                        public void changed(ObservableValue<? extends Supplier> observableValue, Supplier data, Supplier t1) {
+//                            if(t1 != null) {
+//                                if(!cell.isEmpty()) {
+//                                    TablePosition pos = (TablePosition) dataTable.getSelectionModel().getSelectedCells().get(0);
+//                                    int selectedRow = dataTable.getItems().get(pos.getRow()).getId();
+//                                    packagingDAO.updateDataInteger("suplier", t1.getId(), selectedRow);
+////                                    clearFields();
+////                                    reload();
+//                                }
+//                            }
+//                        }
+//                    });
+//                    comboBoxTableCell.addEventFilter(KeyEvent.ANY, ke -> {
+//                        if(ke.getCode() == KeyCode.ENTER) {
+//                            clearFields();
+//                            reload();
+//                        }
+//                    });
+//                }
+//            });
+//
+//            return cell ;
+//        });
 
         dataTable.setOnKeyPressed(event -> {
             if(event.getCode() == KeyCode.ESCAPE || event.getCode() == KeyCode.F5) {
@@ -816,8 +784,8 @@ public class PackagingController implements Initializable {
             }
         });
 
-        dataTable.setRowFactory((TableView<Packaging> tableView) -> {
-            final TableRow<Packaging> row = new TableRow<>();
+        dataTable.setRowFactory((TableView<PackagingToString> tableView) -> {
+            final TableRow<PackagingToString> row = new TableRow<>();
 
             final ContextMenu contextMenu = new ContextMenu();
             final MenuItem viewItem = new MenuItem("Chi tiết");
@@ -825,14 +793,14 @@ public class PackagingController implements Initializable {
             final MenuItem removeItem = new MenuItem("Xóa dòng");
 
             viewItem.setOnAction((ActionEvent event) -> {
-                Packaging packaging = dataTable.getSelectionModel().getSelectedItem();
+                PackagingToString packaging = dataTable.getSelectionModel().getSelectedItem();
                 int rowIndex = dataTable.getSelectionModel().getSelectedIndex();
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Chi tiết bao bì");
                 alert.setHeaderText(packaging.getName());
-                Supplier supplier = supplierDAO.getDataByID(packaging.getSuplier());
-                Type type = typeDAO.getDataByID(packaging.getType());
+                Supplier supplier = supplierDAO.getDataByCode(packaging.getSuplier());
+                Type type = typeDAO.getDataByName(packaging.getType());
                 String packagingCode = packaging.getCode() != null ? packaging.getCode() : "Không qui định";
                 String stampStatus = packaging.isStamped() ? "In sẵn (Thông tin theo lô)" : "Không in";
                 String mainStatus = packaging.isMain() ? "Bao gói chính" : "Bao bì bên trong";
@@ -864,7 +832,7 @@ public class PackagingController implements Initializable {
             contextMenu.getItems().add(viewItem);
 
             editItem.setOnAction((ActionEvent event) -> {
-                Packaging packaging = dataTable.getSelectionModel().getSelectedItem();
+                PackagingToString packaging = dataTable.getSelectionModel().getSelectedItem();
 //                System.out.println(packaging.getId() + " " + packaging.getType() + " " + packaging.getSuplier());
                 getPackaging(packaging);
                 hideComboBoxForUpdatingData();
@@ -872,7 +840,7 @@ public class PackagingController implements Initializable {
             contextMenu.getItems().add(editItem);
 
             removeItem.setOnAction((ActionEvent event) -> {
-                Packaging packaging = dataTable.getSelectionModel().getSelectedItem();
+                PackagingToString packaging = dataTable.getSelectionModel().getSelectedItem();
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Thông báo!");
                 alert.setHeaderText("Xóa: "+packaging.getName());
@@ -891,6 +859,17 @@ public class PackagingController implements Initializable {
                             .then((ContextMenu)null)
                             .otherwise(contextMenu)
             );
+
+            row.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    if(mouseEvent.getClickCount() == 2 && !row.isEmpty()) {
+                        PackagingToString packaging = dataTable.getSelectionModel().getSelectedItem();
+                        getPackaging(packaging);
+                        hideComboBoxForUpdatingData();
+                    }
+                }
+            });
             return row ;
         });
 

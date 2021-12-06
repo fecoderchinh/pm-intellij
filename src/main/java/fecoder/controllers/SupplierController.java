@@ -211,6 +211,17 @@ public class SupplierController implements Initializable {
                     }
                 });
 
+        codeField.textProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    filteredList.setPredicate(str -> {
+                        if (newValue == null || newValue.isEmpty())
+                            return true;
+                        String lowerCaseFilter = newValue.toLowerCase();
+                        return str.getCode().toLowerCase().contains
+                                (lowerCaseFilter);
+                    });
+                });
+
         comboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if(newVal != null) {
                 searchField.setText(null);

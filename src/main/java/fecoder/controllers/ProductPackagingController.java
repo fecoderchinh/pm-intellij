@@ -9,6 +9,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,21 +24,25 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.control.skin.ComboBoxListViewSkin;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
+import javafx.util.StringConverter;
 import javafx.util.converter.FloatStringConverter;
 import javafx.util.converter.IntegerStringConverter;
 
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class ProductPackagingController implements Initializable {
     public Label mainLabel;
     public ComboBox<Size> sizeComboBox;
-    public ComboBox<Packaging> packagingComboBox;
+    public ComboBox<PackagingToString> packagingComboBox;
     public TextField packQtyField;
     public Button insertButton;
     public Button updateButton;
@@ -47,7 +52,7 @@ public class ProductPackagingController implements Initializable {
     public Button reloadData;
     public TableView<PackagingOwnerString> dataTable;
     public TableColumn<PackagingOwnerString, Integer> idColumn;
-    public TableColumn<PackagingOwnerString, Size> sizeColumn;
+    public TableColumn<PackagingOwnerString, String> sizeColumn;
     public TableColumn<PackagingOwnerString, String> packagingColumn;
     public TableColumn<PackagingOwnerString, Float> packingQtyColumn;
     public TableColumn<PackagingOwnerString, String> noteColumn;
@@ -63,9 +68,10 @@ public class ProductPackagingController implements Initializable {
     private final SizeDAO sizeDAO = new SizeDAO();
     private final PackagingDAO packagingDAO = new PackagingDAO();
     private final PackagingOwnerStringDAO packagingOwnerStringDAO = new PackagingOwnerStringDAO();
+    private final PackagingToStringDAO packagingToStringDAO = new PackagingToStringDAO();
 
     private final ObservableList<Size> sizeObservableList = FXCollections.observableArrayList(sizeDAO.getList());
-    private final ObservableList<Packaging> packagingObservableList = FXCollections.observableArrayList(packagingDAO.getListWithCode());
+    private final ObservableList<PackagingToString> packagingObservableList = FXCollections.observableArrayList(packagingToStringDAO.getList());
 
     private int currentRow;
     private String currentCell;
@@ -85,12 +91,10 @@ public class ProductPackagingController implements Initializable {
     }
 
     public void insertButton(ActionEvent actionEvent) {
-        String sizeValue = utils.getComboBoxValue(sizeComboBox);
-        String packagingValue = utils.getComboBoxValue(packagingComboBox);
-        Size sizeInsertData = sizeDAO.getDataByName(sizeValue);
-        Packaging packagingInsertData = packagingDAO.getDataByName(packagingValue);
+        Size size = sizeDAO.getDataByName(utils.getComboBoxValue(sizeComboBox));
+        PackagingToString packaging = packagingToStringDAO.getDataByName(utils.getComboBoxValue(packagingComboBox));
         try {
-            packagingOwnerDAO.insert(this.product.getId(), sizeInsertData.getId(), packagingInsertData.getId(), Float.parseFloat(packQtyField.getText()), noteField.getText());
+            packagingOwnerDAO.insert(this.product.getId(), size.getId(), packaging.getId(), Float.parseFloat(packQtyField.getText()), noteField.getText());
             clearFields();
             reload();
         } catch (NumberFormatException e) {
@@ -99,12 +103,10 @@ public class ProductPackagingController implements Initializable {
     }
 
     public void updateButton(ActionEvent actionEvent) {
-        String sizeValue = utils.getComboBoxValue(sizeComboBox);
-        String packagingValue = utils.getComboBoxValue(packagingComboBox);
-        Size sizeInsertData = sizeDAO.getDataByName(sizeValue);
-        Packaging packagingInsertData = packagingDAO.getDataByName(packagingValue);
+        Size size = sizeDAO.getDataByName(utils.getComboBoxValue(sizeComboBox));
+        PackagingToString packaging = packagingToStringDAO.getDataByName(utils.getComboBoxValue(packagingComboBox));
         try {
-            packagingOwnerDAO.update(this.product.getId(), sizeInsertData.getId(), packagingInsertData.getId(), Float.parseFloat(packQtyField.getText()), noteField.getText(),Integer.parseInt(anchorData.getText()));
+            packagingOwnerDAO.update(this.product.getId(), size.getId(), packaging.getId(), Float.parseFloat(packQtyField.getText()), noteField.getText(),Integer.parseInt(anchorData.getText()));
             clearFields();
             reload();
         } catch (NumberFormatException e) {
@@ -143,6 +145,9 @@ public class ProductPackagingController implements Initializable {
 
                 isUpdating = false;
 
+                if (newValue == null || newValue.isEmpty())
+                    return true;
+
                 // Check if the search term is contained anywhere in our list
                 if (item.getSize().toLowerCase().contains(newValue.toLowerCase().trim()) && !isUpdating) {
                     sizeComboBox.show();
@@ -163,29 +168,41 @@ public class ProductPackagingController implements Initializable {
      * Handle on filter Packaging Combobox
      * */
     private void filterPackagingComboBox() {
+        packagingComboBox.setEditable(true);
         // Create the listener to filter the list as user enters search terms
-        FilteredList<Packaging> dataFilteredList = new FilteredList<>(packagingObservableList, p-> true);
+        FilteredList<PackagingToString> dataFilteredList = new FilteredList<>(packagingObservableList, p-> true);
 
 //        // Add listener to our ComboBox textfield to filter the list
-//        packagingComboBox.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
-//            dataFilteredList.setPredicate(item -> {
-//
-//                isUpdating = false;
-//
-//                // Check if the search term is contained anywhere in our list
-//                if (item.getName().toLowerCase().contains(newValue.toLowerCase().trim()) && !isUpdating) {
-//                    packagingComboBox.show();
-//                    return true;
-//                }
-//
-//                // No matches found
-//                return false;
-//            });
-//
-//        });
-//
-//        packagingComboBox.getItems().removeAll(packagingObservableList);
-//        packagingComboBox.getItems().addAll(dataFilteredList);
+        packagingComboBox.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
+
+            String value = newValue;
+            // If any item is selected we get the first word of that item.
+            String selected = packagingComboBox.getSelectionModel().getSelectedItem() != null
+                    ? packagingComboBox.getSelectionModel().getSelectedItem().getName() : null;
+
+            dataFilteredList.setPredicate(item -> {
+
+                isUpdating = false;
+
+                if (newValue == null || newValue.isEmpty())
+                    return true;
+
+                // Check if the search term is contained anywhere in our list
+                if (item.getName().toLowerCase().contains(newValue.toLowerCase()) && !isUpdating) {
+                    packagingComboBox.show();
+                    return true;
+                }
+
+                // No matches found
+                return false;
+            });
+
+            SortedList<PackagingToString> sortedList = new SortedList<>(dataFilteredList);
+
+            packagingComboBox.getItems().removeAll(packagingObservableList);
+            packagingComboBox.getItems().addAll(sortedList);
+
+        });
     }
 
     /**
@@ -205,10 +222,10 @@ public class ProductPackagingController implements Initializable {
      * Handle on resetting ComboBox
      * */
     private void resetComboBox() {
-        Size sizeData = sizeDAO.getDataByName("16/20");
+        Size sizeData = sizeDAO.getLastestData();
         utils.setComboBoxValue(sizeComboBox, sizeData.getSize());
 
-        Packaging packagingData = packagingDAO.getDataByID(7);
+        Packaging packagingData = packagingDAO.getLastestData();
         utils.setComboBoxValue(packagingComboBox, packagingData.getName());
     }
 
@@ -224,7 +241,7 @@ public class ProductPackagingController implements Initializable {
         }
 
         if(!packagingComboBox.isEditable()) {
-            packagingComboBox.getSelectionModel().select(packagingDAO.getDataByID(data.getPackaging_id()));
+            packagingComboBox.getSelectionModel().select(packagingToStringDAO.getDataByID(data.getPackaging_id()));
         } else {
             Packaging _pM = packagingDAO.getDataByID(data.getPackaging_id());
             packagingComboBox.getEditor().setText(_pM.getName());
@@ -312,6 +329,18 @@ public class ProductPackagingController implements Initializable {
                             .then((ContextMenu)null)
                             .otherwise(contextMenu)
             );
+
+            row.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    if(mouseEvent.getClickCount() == 2 && !row.isEmpty()) {
+                        PackagingOwnerString packagingOwnerString = dataTable.getSelectionModel().getSelectedItem();
+                        PackagingOwner packagingOwnerData = packagingOwnerDAO.getDataByID(packagingOwnerString.getId());
+                        getData(packagingOwnerData);
+                        hideComboBoxForUpdatingData();
+                    }
+                }
+            });
             return row ;
         });
     }
@@ -419,85 +448,161 @@ public class ProductPackagingController implements Initializable {
         idColumn.setSortable(false);
         idColumn.setCellValueFactory(column -> new ReadOnlyObjectWrapper<Integer>(dataTable.getItems().indexOf(column.getValue())+1));
 
-        sizeColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<PackagingOwnerString, Size>, ObservableValue<Size>>() {
-            @Override
-            public ObservableValue<Size> call(TableColumn.CellDataFeatures<PackagingOwnerString, Size> sizeCellDataFeatures) {
-                Size data = sizeDAO.getDataByName(sizeCellDataFeatures.getValue().getSize());
-                return new SimpleObjectProperty<>(data);
-            }
-        });
-        sizeColumn.setCellFactory(ComboBoxTableCell.forTableColumn(sizeObservableList));
+//        sizeColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<PackagingOwnerString, String>, ObservableValue<Size>>() {
+//            @Override
+//            public ObservableValue<Size> call(TableColumn.CellDataFeatures<PackagingOwnerString, Size> sizeCellDataFeatures) {
+//                Size data = sizeDAO.getDataByName(sizeCellDataFeatures.getValue().getSize());
+//                return new SimpleObjectProperty<>(data);
+//            }
+//        });
+//        sizeColumn.setCellFactory(ComboBoxTableCell.forTableColumn(sizeObservableList));
+        sizeColumn.setCellValueFactory(new PropertyValueFactory<PackagingOwnerString, String>("size"));
+//        sizeColumn.setCellFactory(tc -> {
+//
+//            TableCell<PackagingOwnerString, String> cell = new TableCell<>();
+//
+//            currentRow = cell.getIndex();
+//            currentCell = cell.getText();
+//
+//            Text text = new Text();
+//
+//            ComboBox<Size> sizeComboBoxTableCell = new ComboBox<>();
+//            sizeComboBoxTableCell.setConverter(new StringConverter<Size>() {
+//                @Override
+//                public String toString(Size size) {
+//                    if (size == null) return null;
+//                    return size.toString();
+//                }
+//
+//                @Override
+//                public Size fromString(String s) {
+//                    return null;
+//                }
+//            });
+//
+//            sizeComboBoxTableCell.getItems().addAll(sizeObservableList);
+//            new AutoCompleteComboBoxListener<>(sizeComboBoxTableCell, true, sizeDAO.getLastestData().getSize());
+//
+//            cell.setGraphic(text);
+//            cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
+//            text.wrappingWidthProperty().bind(sizeColumn.widthProperty());
+//
+//            text.textProperty().bind(new StringBinding() {
+//                { bind(cell.itemProperty()); }
+//                @Override
+//                protected String computeValue() {
+//                    if(cell.itemProperty().getValue() != null) {
+//                        return cell.itemProperty().getValue().toString();
+//                    } else {
+//                        return "";
+//                    }
+//                }
+//            });
+//
+//            cell.setOnMouseClicked(e -> {
+//                if (e.getClickCount() == 2 && ! cell.isEmpty()) {
+//                    cell.setGraphic(sizeComboBoxTableCell);
+//                    cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
+//                    sizeComboBoxTableCell.setMaxWidth(Control.USE_COMPUTED_SIZE);
+//                    sizeComboBoxTableCell.setEditable(true);
+//                    sizeComboBoxTableCell.getEditor().setText(cell.itemProperty().getValue().toString());
+//
+//                    sizeComboBoxTableCell.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Size>() {
+//                        @Override
+//                        public void changed(ObservableValue<? extends Size> observableValue, Size size, Size t1) {
+//                            if(t1 != null) {
+//                                if(!cell.isEmpty()) {
+//                                    TablePosition pos = (TablePosition) dataTable.getSelectionModel().getSelectedCells().get(0);
+//                                    int selectedRow = dataTable.getItems().get(pos.getRow()).getId();
+//                                    packagingOwnerDAO.updateDataInteger("size_id", t1.getId(), selectedRow);
+////                                    clearFields();
+////                                    reload();
+//                                }
+//                            }
+//                        }
+//                    });
+//                }
+//            });
+//
+//            return cell ;
+//        });
 
         packagingColumn.setCellValueFactory(new PropertyValueFactory<PackagingOwnerString, String>("packagingName"));
-        packagingColumn.setCellFactory(tc -> {
-
-            TableCell<PackagingOwnerString, String> cell = new TableCell<>();
-
-            currentRow = cell.getIndex();
-            currentCell = cell.getText();
-
-            Text text = new Text();
-            ComboBox<Packaging> packagingComboBoxTableCell = new ComboBox<>();
-            cell.setGraphic(text);
-            cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
-            text.wrappingWidthProperty().bind(packagingColumn.widthProperty());
-            text.textProperty().bind(cell.itemProperty());
-
-            cell.setOnMouseClicked(e -> {
-                if (e.getClickCount() == 2 && ! cell.isEmpty()) {
-                    cell.setGraphic(packagingComboBoxTableCell);
-                    cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
-                    packagingComboBoxTableCell.setMaxWidth(Control.USE_COMPUTED_SIZE);
-                    packagingComboBoxTableCell.setEditable(true);
-                    packagingComboBoxTableCell.getEditor().setText(cell.itemProperty().getValue());
-
-                    FilteredList<Packaging> dataFilteredList = new FilteredList<>(packagingObservableList, p-> true);
-
-                    packagingComboBoxTableCell.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
-                        dataFilteredList.setPredicate(item -> {
-
-                            // If the TextField is empty, return all items in the original list
-                            if (newValue == null || newValue.isEmpty()) {
-                                packagingComboBoxTableCell.hide();
-                                return true;
-                            }
-
-                            // Check if the search term is contained anywhere in our list
-                            if (item.getName().trim().toLowerCase().contains(newValue.toLowerCase().trim())) {
-                                packagingComboBoxTableCell.show();
-                                return true;
-                            }
-
-                            // No matches found
-                            return false;
-                        });
-                        SortedList<Packaging> dataSortedList = new SortedList<>(dataFilteredList);
-                        packagingComboBoxTableCell.getItems().removeAll(packagingObservableList);
-                        packagingComboBoxTableCell.getItems().addAll(dataSortedList);
-                    });
+//        packagingColumn.setCellFactory(tc -> {
 //
-                    packagingComboBoxTableCell.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                        @Override
-                        public void handle(MouseEvent mouseEvent) {
-                            packagingComboBoxTableCell.setEditable(true);
-                        }
-                    });
-
-                    packagingComboBoxTableCell.setOnKeyPressed(event -> {
-                        if (event.getCode() == KeyCode.ENTER) {
-                            TablePosition pos = (TablePosition) dataTable.getSelectionModel().getSelectedCells().get(0);
-                            int selectedRow = dataTable.getItems().get(pos.getRow()).getId();
-                            Packaging packagingInsertData = packagingDAO.getDataByName(packagingComboBoxTableCell.getEditor().getText());
-                            packagingOwnerDAO.updateDataInteger("packaging_id", packagingInsertData.getId(), selectedRow);
-                            clearFields();
-                            reload();
-                        }
-                    });
-                }
-            });
-
-            return cell ;
-        });
+//            TableCell<PackagingOwnerString, String> cell = new TableCell<>();
+//
+//            currentRow = cell.getIndex();
+//            currentCell = cell.getText();
+//
+//            Text text = new Text();
+//            ComboBox<PackagingToString> packagingComboBoxTableCell = new ComboBox<>();
+//            packagingComboBoxTableCell.setConverter(new StringConverter<PackagingToString>() {
+//                @Override
+//                public String toString(PackagingToString packaging) {
+//                    if (packaging == null) return null;
+//                    return packaging.toString();
+//                }
+//
+//                @Override
+//                public PackagingToString fromString(String s) {
+//                    return null;
+//                }
+//            });
+//
+//            packagingComboBoxTableCell.getItems().addAll(packagingObservableList);
+//            new AutoCompleteComboBoxListener<>(packagingComboBoxTableCell, true, packagingDAO.getLastestData().getName());
+//
+//            cell.setGraphic(text);
+//            cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
+//            text.wrappingWidthProperty().bind(packagingColumn.widthProperty());
+//
+//            text.textProperty().bind(new StringBinding() {
+//                { bind(cell.itemProperty()); }
+//                @Override
+//                protected String computeValue() {
+//                    if(cell.itemProperty().getValue() != null) {
+//                        Packaging data = packagingDAO.getDataByName(cell.itemProperty().getValue());
+//                        return data.getName();
+//                    } else {
+//                        return "";
+//                    }
+//                }
+//            });
+//
+//            cell.setOnMouseClicked(e -> {
+//                if (e.getClickCount() == 2 && ! cell.isEmpty()) {
+//                    cell.setGraphic(packagingComboBoxTableCell);
+//                    cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
+//                    packagingComboBoxTableCell.setMaxWidth(Control.USE_COMPUTED_SIZE);
+//                    packagingComboBoxTableCell.setEditable(true);
+//                    packagingComboBoxTableCell.getEditor().setText(packagingDAO.getDataByName(cell.itemProperty().getValue()).getName());
+//
+//                    packagingComboBoxTableCell.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<PackagingToString>() {
+//                        @Override
+//                        public void changed(ObservableValue<? extends PackagingToString> observableValue, PackagingToString packaging, PackagingToString t1) {
+//                            if(t1 != null) {
+//                                if(!cell.isEmpty()) {
+//                                    TablePosition pos = (TablePosition) dataTable.getSelectionModel().getSelectedCells().get(0);
+//                                    int selectedRow = dataTable.getItems().get(pos.getRow()).getId();
+//                                    packagingOwnerDAO.updateDataInteger("packaging_id", t1.getId(), selectedRow);
+////                                    clearFields();
+////                                    reload();
+//                                }
+//                            }
+//                        }
+//                    });
+//                    packagingComboBoxTableCell.addEventFilter(KeyEvent.ANY, ke -> {
+//                        if(ke.getCode() == KeyCode.ENTER) {
+//                            clearFields();
+//                            reload();
+//                        }
+//                    });
+//                }
+//            });
+//
+//            return cell ;
+//        });
 
         packingQtyColumn.setCellValueFactory(new PropertyValueFactory<>("pack_qty"));
 //        packingQtyColumn.setCellFactory(TextFieldTableCell.<PackagingOwnerString, Float>forTableColumn(new FloatStringConverter()));
@@ -515,7 +620,10 @@ public class ProductPackagingController implements Initializable {
                 { bind(cell.itemProperty()); }
                 @Override
                 protected String computeValue() {
-                    return cell.itemProperty().getValue() != null ? String.format("%.3f", cell.itemProperty().getValue()) : "";
+                    Locale locale  = new Locale("en", "US");
+                    DecimalFormat df = (DecimalFormat) NumberFormat.getNumberInstance(locale);
+                    df.applyPattern("###,###.###");
+                    return cell.itemProperty().getValue() != null ? df.format(cell.itemProperty().getValue()) : "";
                 }
             });
             return cell;

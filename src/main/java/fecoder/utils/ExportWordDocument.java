@@ -22,8 +22,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 public class ExportWordDocument {
 
@@ -228,6 +230,10 @@ public class ExportWordDocument {
         WorkOrderProductPackagingDAO workOrderProductPackagingDAO = new WorkOrderProductPackagingDAO();
         Utils utils = new Utils();
 
+        Locale locale  = new Locale("en", "US");
+        DecimalFormat df = (DecimalFormat) NumberFormat.getNumberInstance(locale);
+        df.applyPattern("###,###.###");
+
         SupplierDAO supplierDAO = new SupplierDAO();
         Supplier supplier = supplierDAO.getDataByCode("SVN");
 
@@ -235,6 +241,8 @@ public class ExportWordDocument {
         String _fontFamily = ExportWordDocument.fontFamily;
 
         ObservableList<WorkProduction> productList = FXCollections.observableArrayList(workProductionDAO.getProductList(workOrder.getId()+""));
+        OrderBySupplierDAO orderBySupplierDAO = new OrderBySupplierDAO();
+        OrderBySupllier totalOrder = orderBySupplierDAO.getTotalOrder(workOrder.getId()+"");
 
         boolean hasData = false;
 
@@ -251,14 +259,17 @@ public class ExportWordDocument {
             sheet.setColumnWidth(6, 14*256);
             sheet.setColumnWidth(7, 14*256);
             sheet.setColumnWidth(8, 14*256);
+            sheet.setColumnWidth(9, 16*256);
+            sheet.setColumnWidth(10, 16*256);
+            sheet.setColumnWidth(11, 16*256);
             sheet.setDefaultRowHeight((short) 900);
 
             int rownum = 0;
             Cell cell;
             Row row;
 
-            HSSFCellStyle mainStyle = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 20, IndexedColors.BLACK.getIndex(), true, true, IndexedColors.YELLOW.getIndex(), HorizontalAlignment.LEFT, VerticalAlignment.CENTER);
-            HSSFCellStyle headerStyle = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 14, IndexedColors.WHITE.getIndex(), true, true, IndexedColors.BLACK.getIndex(), HorizontalAlignment.LEFT, VerticalAlignment.CENTER);
+            HSSFCellStyle mainStyle = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 24, IndexedColors.BLACK.getIndex(), true, true, IndexedColors.YELLOW.getIndex(), HorizontalAlignment.LEFT, VerticalAlignment.CENTER);
+            HSSFCellStyle headerStyle = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 16, IndexedColors.WHITE.getIndex(), true, true, IndexedColors.BLACK.getIndex(), HorizontalAlignment.LEFT, VerticalAlignment.CENTER);
             HSSFCellStyle labelStyle = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 11, IndexedColors.BLACK.getIndex(), true, true, IndexedColors.WHITE.getIndex(), HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
             HSSFCellStyle labelStyleLeft = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 11, IndexedColors.BLACK.getIndex(), true, true, IndexedColors.WHITE.getIndex(), HorizontalAlignment.LEFT, VerticalAlignment.CENTER);
             HSSFCellStyle cellStyle = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 11, IndexedColors.BLACK.getIndex(), false, true, IndexedColors.WHITE.getIndex(), HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
@@ -277,6 +288,14 @@ public class ExportWordDocument {
                     2, //first column (0-based)
                     8  //last column  (0-based)
             ));
+            // Tổng số khối (J)
+            cell = row.createCell(9, CellType.STRING);
+            cell.setCellValue(df.format(Float.parseFloat(totalOrder.getCbm())) + " (khối)");
+            cell.setCellStyle(labelStyle);
+            // Tổng số thùng (K)
+            cell = row.createCell(10, CellType.STRING);
+            cell.setCellValue(df.format(Float.parseFloat(totalOrder.getpDesireQuantity()+"")) + " (thùng)");
+            cell.setCellStyle(labelStyle);
 
             rownum +=1;
 
@@ -310,6 +329,14 @@ public class ExportWordDocument {
             // Thực đặt (I)
             cell = row.createCell(8, CellType.STRING);
             cell.setCellValue("Thực đặt");
+            cell.setCellStyle(labelStyle);
+            // Thông tin in sẵn (J)
+            cell = row.createCell(9, CellType.STRING);
+            cell.setCellValue("Thông tin in sẵn");
+            cell.setCellStyle(labelStyle);
+            // Số khối (K)
+            cell = row.createCell(10, CellType.STRING);
+            cell.setCellValue("Số khối");
             cell.setCellStyle(labelStyle);
 
             if(productList.size() > 0) {
@@ -371,6 +398,23 @@ public class ExportWordDocument {
                             cell = row.createCell(8, CellType.STRING);
                             cell.setCellValue(Float.parseFloat(packagingList.get(j).getActualQuantity()+"") > 0 ? formatter.format(Float.parseFloat(packagingList.get(j).getActualQuantity()+"")) : "");
                             cell.setCellStyle(cellStyle);
+                            // Thông tin in sẵn (J)
+                            cell = row.createCell(9, CellType.STRING);
+                            cell.setCellValue(packagingList.get(j).getPrintStatus());
+                            cell.setCellStyle(cellStyle);
+                            // Số khối (K)
+                            if(packagingList.get(j).getMain().equals("1")) {
+                                cell = row.createCell(10, CellType.STRING);
+                                float mul = 1;
+                                String[] listD = packagingList.get(j).getPackagingDimension().replace(" ", "").split("x");
+                                if( listD.length > 0) {
+                                    for(String d : listD) {
+                                        mul *= Float.parseFloat(d);
+                                    }
+                                }
+                                cell.setCellValue(packagingList.get(j).getMain().equals("1") ? df.format(mul * Float.parseFloat(packagingList.get(j).getWorkOrderQuantity()))  : "");
+                                cell.setCellStyle(cellStyle);
+                            }
                         }
                     }
                 }

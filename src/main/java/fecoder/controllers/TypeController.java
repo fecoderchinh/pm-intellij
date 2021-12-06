@@ -102,6 +102,17 @@ public class TypeController implements Initializable {
                     });
                 });
 
+        nameField.textProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    filteredList.setPredicate(str -> {
+                        if (newValue == null || newValue.isEmpty())
+                            return true;
+                        String lowerCaseFilter = newValue.toLowerCase();
+                        return str.getName().toLowerCase().contains
+                                (lowerCaseFilter);
+                    });
+                });
+
         SortedList<Type> sortedList = new SortedList<>(filteredList);
         sortedList.comparatorProperty().bind(dataTable.comparatorProperty());
 

@@ -256,6 +256,7 @@ public class Utils {
      * @param value The specific value that gonna set
      * */
     public void setComboBoxValue(ComboBox comboBox, String value) {
+        comboBox.getEditor().setText(null);
         if(comboBox.isEditable()) {
             comboBox.getEditor().setText(value);
         } else {
@@ -345,66 +346,66 @@ public class Utils {
      * */
     public void disableKeyEnterOnTextFieldComboBox(ComboBox id, boolean editable, String promptText)
     {
-        id.focusedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
-                if(t1) {
-                    id.setEditable(editable);
-                } else {
-                    id.setEditable(false);
-                }
-                if(editable) {
-                    id.setPromptText(promptText);
-                }
-            }
-        });
+//        id.focusedProperty().addListener(new ChangeListener<Boolean>() {
+//            @Override
+//            public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
+//                if(t1) {
+//                    id.setEditable(editable);
+//                } else {
+//                    id.setEditable(false);
+//                }
+//                if(editable) {
+//                    id.setPromptText(promptText);
+//                }
+//            }
+//        });
 
         // The below will fire an Enter event as Tab
         // @see <a href="https://stackoverflow.com/a/32830458"> A workaround </a>
-        id.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            if(event.getCode().equals(KeyCode.ENTER) || event.getCode().equals(KeyCode.TAB)) {
-                event.consume();
-                if(!id.getItems().isEmpty()) {
-                    boolean isThisField = false;
-                    for (Node child : id.getParent().getChildrenUnmodifiable()) {
-                        if (isThisField) {
-
-                            //This code will only execute after the current Node
-                            if (child.isFocusTraversable() && !child.isDisabled()) {
-                                child.requestFocus();
-
-                                //Reset check to prevent later Node from pulling focus
-                                isThisField = false;
-                            }
-                        } else {
-
-                            //Check if this is the current Node
-                            isThisField = child.equals(id);
-                        }
-                    }
-
-                    //Check if current Node still has focus
-                    boolean focusChanged = !id.isFocused();
-
-                    if (!focusChanged) {
-                        for (Node child : id.getParent().getChildrenUnmodifiable()) {
-                            if (!focusChanged && child.isFocusTraversable() && !child.isDisabled()) {
-                                child.requestFocus();
-
-                                //Update to prevent later Node from pulling focus
-                                focusChanged = true;
-                                id.setEditable(editable);
-                            }
-                        }
-                    }
-
-                    id.setEditable(false);
-                }
-            }
-//            if(!id.isFocused() || !id.getEditor().isFocused() || !id.isShowing()) {
-//                id.setEditable(false);
+//        id.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+//            if(event.getCode().equals(KeyCode.ENTER) || event.getCode().equals(KeyCode.TAB)) {
+//                event.consume();
+//                if(!id.getItems().isEmpty()) {
+//                    boolean isThisField = false;
+//                    for (Node child : id.getParent().getChildrenUnmodifiable()) {
+//                        if (isThisField) {
+//
+//                            //This code will only execute after the current Node
+//                            if (child.isFocusTraversable() && !child.isDisabled()) {
+//                                child.requestFocus();
+//
+//                                //Reset check to prevent later Node from pulling focus
+//                                isThisField = false;
+//                            }
+//                        } else {
+//
+//                            //Check if this is the current Node
+//                            isThisField = child.equals(id);
+//                        }
+//                    }
+//
+//                    //Check if current Node still has focus
+//                    boolean focusChanged = !id.isFocused();
+//
+//                    if (!focusChanged) {
+//                        for (Node child : id.getParent().getChildrenUnmodifiable()) {
+//                            if (!focusChanged && child.isFocusTraversable() && !child.isDisabled()) {
+//                                child.requestFocus();
+//
+//                                //Update to prevent later Node from pulling focus
+//                                focusChanged = true;
+//                                id.setEditable(editable);
+//                            }
+//                        }
+//                    }
+//
+//                    id.setEditable(false);
+//                }
 //            }
-        });
+////            if(!id.isFocused() || !id.getEditor().isFocused() || !id.isShowing()) {
+////                id.setEditable(false);
+////            }
+//        });
     }
 
     /**

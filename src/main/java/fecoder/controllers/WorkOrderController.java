@@ -30,9 +30,11 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.stage.*;
+import javafx.util.StringConverter;
 import javafx.util.converter.IntegerStringConverter;
 import org.apache.poi.util.Units;
 import org.apache.poi.wp.usermodel.HeaderFooterType;
@@ -73,17 +75,17 @@ public class WorkOrderController implements Initializable {
     public Label anchorLabel;
     public Label anchorData;
 
-    public TableView<WorkOrder> dataTable;
-    public TableColumn<WorkOrder, Integer> idColumn;
-    public TableColumn<WorkOrder, String> workOrderSendDateColumn;
-    public TableColumn<WorkOrder, String> workOrderNumberColumn;
-    public TableColumn<WorkOrder, String> workOrderLotColumn;
-    public TableColumn<WorkOrder, String> workOrderPOColumn;
-    public TableColumn<WorkOrder, Integer> workOrderYearColumn;
-    public TableColumn<WorkOrder, Integer> workOrderCustomerColumn;
-    public TableColumn<WorkOrder, String> workOrderShippingDateColumn;
-    public TableColumn<WorkOrder, String> workOrderDestinationColumn;
-    public TableColumn<WorkOrder, String> workOrderNoteColumn;
+    public TableView<WorkOrderToString> dataTable;
+    public TableColumn<WorkOrderToString, Integer> idColumn;
+    public TableColumn<WorkOrderToString, String> workOrderSendDateColumn;
+    public TableColumn<WorkOrderToString, String> workOrderNumberColumn;
+    public TableColumn<WorkOrderToString, String> workOrderLotColumn;
+    public TableColumn<WorkOrderToString, String> workOrderPOColumn;
+    public TableColumn<WorkOrderToString, String> workOrderYearColumn;
+    public TableColumn<WorkOrderToString, String> workOrderCustomerColumn;
+    public TableColumn<WorkOrderToString, String> workOrderShippingDateColumn;
+    public TableColumn<WorkOrderToString, String> workOrderDestinationColumn;
+    public TableColumn<WorkOrderToString, String> workOrderNoteColumn;
     public Button exportData;
 
     private int currentRow;
@@ -100,6 +102,7 @@ public class WorkOrderController implements Initializable {
     private final OrderBySupplierDAO orderBySupplierDAO = new OrderBySupplierDAO();
     private final SupplierDAO supplierDAO = new SupplierDAO();
     private final WorkProductionDAO workProductionDAO = new WorkProductionDAO();
+    private final WorkOrderToStringDAO workOrderToStringDAO = new WorkOrderToStringDAO();
 
     private final ObservableList<Year> yearObservableList = FXCollections.observableArrayList(yearDAO.getList());
     private final ObservableList<Customer> customerObservableList = FXCollections.observableArrayList(customerDAO.getList());
@@ -285,15 +288,13 @@ public class WorkOrderController implements Initializable {
     /**
      * Handle on clearing comnbobox
      * */
-    private void getComboBoxData(WorkOrder data) {
+    private void getComboBoxData(WorkOrderToString data) {
         if(!isEditableComboBox) {
-            workOrderYear.getSelectionModel().select(yearDAO.getDataByID(data.getYear()));
-            workOrderCustomer.getSelectionModel().select(customerDAO.getDataByID(data.getCustomerId()));
+            workOrderYear.getSelectionModel().select(yearDAO.getYear(data.getYear()));
+            workOrderCustomer.getSelectionModel().select(customerDAO.getCustomer(data.getCustomerId()));
         } else {
-            Year _yM = yearDAO.getDataByID(data.getYear());
-            workOrderYear.getEditor().setText(_yM.getYear());
-            Customer _cM = customerDAO.getDataByID(data.getCustomerId());
-            workOrderCustomer.getEditor().setText(_cM.getName());
+            workOrderYear.getEditor().setText(data.getYear());
+            workOrderCustomer.getEditor().setText(data.getCustomerId());
         }
     }
 
@@ -302,7 +303,7 @@ public class WorkOrderController implements Initializable {
      *
      * @param workOrder - the product data
      * */
-    private void getData(WorkOrder workOrder) {
+    private void getData(WorkOrderToString workOrder) {
         clearFields();
         workOrderName.setText(workOrder.getName());
         workOrderLotNumber.setText(workOrder.getLotNumber());
@@ -325,8 +326,8 @@ public class WorkOrderController implements Initializable {
      * Handle on searching data
      * */
     public void setSearchField() {
-        ObservableList<WorkOrder> list = FXCollections.observableArrayList(workOrderDAO.getList());
-        FilteredList<WorkOrder> filteredList = new FilteredList<>(list, p -> true);
+        ObservableList<WorkOrderToString> list = FXCollections.observableArrayList(workOrderToStringDAO.getList());
+        FilteredList<WorkOrderToString> filteredList = new FilteredList<>(list, p -> true);
 
         searchField.textProperty()
                 .addListener((observable, oldValue, newValue) -> {
@@ -381,6 +382,17 @@ public class WorkOrderController implements Initializable {
 
         workOrderName.textProperty()
                 .addListener((observable, oldValue, newValue) -> {
+                    filteredList.setPredicate(str -> {
+                        if (newValue == null || newValue.isEmpty())
+                            return true;
+                        String lowerCaseFilter = newValue.toLowerCase();
+                        return str.getName().toLowerCase().contains
+                                (lowerCaseFilter);
+                    });
+                });
+
+        workOrderName.textProperty()
+                .addListener((observable, oldValue, newValue) -> {
                     switch (searchComboBox.getValue()) {
                         case "Số lệnh":
                             filteredList.setPredicate(str -> {
@@ -400,7 +412,7 @@ public class WorkOrderController implements Initializable {
             }
         });
 
-        SortedList<WorkOrder> sortedList = new SortedList<>(filteredList);
+        SortedList<WorkOrderToString> sortedList = new SortedList<>(filteredList);
         sortedList.comparatorProperty().bind(dataTable.comparatorProperty());
 
         dataTable.setItems(sortedList);
@@ -416,8 +428,8 @@ public class WorkOrderController implements Initializable {
      * Setting context menu for table row
      * */
     private void setContextMenu() {
-        dataTable.setRowFactory((TableView<WorkOrder> tableView) -> {
-            final TableRow<WorkOrder> row = new TableRow<>();
+        dataTable.setRowFactory((TableView<WorkOrderToString> tableView) -> {
+            final TableRow<WorkOrderToString> row = new TableRow<>();
 
             final ContextMenu contextMenu = new ContextMenu();
             final MenuItem viewItem = new MenuItem("Chi tiết");
@@ -426,35 +438,35 @@ public class WorkOrderController implements Initializable {
             final MenuItem removeItem = new MenuItem("Xóa dòng");
 
             viewItem.setOnAction((ActionEvent event) -> {
-                WorkOrder workOrder = dataTable.getSelectionModel().getSelectedItem();
+                WorkOrderToString workOrder = dataTable.getSelectionModel().getSelectedItem();
                 int rowIndex = dataTable.getSelectionModel().getSelectedIndex();
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Chi tiết Lệnh sản xuất");
                 alert.setHeaderText(workOrder.getName());
                 alert.setContentText(
-                        "Số LSX: " + workOrder.getName() + "\n"
+                        workOrder.getName() + "\n"
                 );
 
                 alert.showAndWait();
             });
-            contextMenu.getItems().add(viewItem);
+//            contextMenu.getItems().add(viewItem);
 
             editItem.setOnAction((ActionEvent event) -> {
-                WorkOrder workOrder = dataTable.getSelectionModel().getSelectedItem();
+                WorkOrderToString workOrder = dataTable.getSelectionModel().getSelectedItem();
                 getData(workOrder);
                 hideComboBoxForUpdatingData();
             });
             contextMenu.getItems().add(editItem);
 
             manage.setOnAction((ActionEvent event) -> {
-                WorkOrder workOrder = dataTable.getSelectionModel().getSelectedItem();
+                WorkOrderToString workOrder = dataTable.getSelectionModel().getSelectedItem();
                 loadSingleProductScene((Stage) manage.getParentPopup().getOwnerWindow(),"/fxml/work_order_product.fxml", workOrder.getName(), workOrder, 1152, 640);
             });
             contextMenu.getItems().add(manage);
 
             removeItem.setOnAction((ActionEvent event) -> {
-                WorkOrder workOrder = dataTable.getSelectionModel().getSelectedItem();
+                WorkOrderToString workOrder = dataTable.getSelectionModel().getSelectedItem();
                 Alert alert = utils.alert("del", Alert.AlertType.CONFIRMATION, "Xóa: "+ workOrder.getName(), null);
 
                 Optional<ButtonType> result = alert.showAndWait();
@@ -470,6 +482,17 @@ public class WorkOrderController implements Initializable {
                             .then((ContextMenu)null)
                             .otherwise(contextMenu)
             );
+
+            row.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    if(mouseEvent.getClickCount() == 2 && !row.isEmpty()) {
+                        WorkOrderToString workOrder = dataTable.getSelectionModel().getSelectedItem();
+                        getData(workOrder);
+                        hideComboBoxForUpdatingData();
+                    }
+                }
+            });
             return row ;
         });
     }
@@ -481,7 +504,7 @@ public class WorkOrderController implements Initializable {
      * @param title scene title
      * @param workOrder data
      * */
-    private void loadSingleProductScene(Stage stage, String resource, String title, WorkOrder workOrder, int minWidth, int minHeight) {
+    private void loadSingleProductScene(Stage stage, String resource, String title, WorkOrderToString workOrder, int minWidth, int minHeight) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource(resource));
@@ -594,219 +617,203 @@ public class WorkOrderController implements Initializable {
         idColumn.setCellValueFactory(column -> new ReadOnlyObjectWrapper<Integer>(dataTable.getItems().indexOf(column.getValue())+1));
 
         workOrderNumberColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        workOrderNumberColumn.setCellFactory(TextFieldTableCell.<WorkOrder>forTableColumn());
-        workOrderNumberColumn.setOnEditCommit(event -> {
-            final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
-            ((WorkOrder) event.getTableView().getItems().get(event.getTablePosition().getRow())).setName(data.trim().replace(" ", ""));
-            workOrderDAO.updateData("name", data.trim().replace(" ", ""), event.getRowValue().getId()+"");
-            dataTable.refresh();
-        });
+//        workOrderNumberColumn.setCellFactory(TextFieldTableCell.<WorkOrder>forTableColumn());
+//        workOrderNumberColumn.setOnEditCommit(event -> {
+//            final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
+//            ((WorkOrder) event.getTableView().getItems().get(event.getTablePosition().getRow())).setName(data.trim().replace(" ", ""));
+//            workOrderDAO.updateData("name", data.trim().replace(" ", ""), event.getRowValue().getId()+"");
+//            dataTable.refresh();
+//        });
 
         workOrderLotColumn.setCellValueFactory(new PropertyValueFactory<>("lotNumber"));
-        workOrderLotColumn.setCellFactory(TextFieldTableCell.<WorkOrder>forTableColumn());
-        workOrderLotColumn.setOnEditCommit(event -> {
-            final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
-            ((WorkOrder) event.getTableView().getItems().get(event.getTablePosition().getRow())).setLotNumber(data);
-            workOrderDAO.updateData("lot_number", data, event.getRowValue().getId()+"");
-            dataTable.refresh();
-        });
+//        workOrderLotColumn.setCellFactory(TextFieldTableCell.<WorkOrder>forTableColumn());
+//        workOrderLotColumn.setOnEditCommit(event -> {
+//            final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
+//            ((WorkOrder) event.getTableView().getItems().get(event.getTablePosition().getRow())).setLotNumber(data);
+//            workOrderDAO.updateData("lot_number", data, event.getRowValue().getId()+"");
+//            dataTable.refresh();
+//        });
 
         workOrderPOColumn.setCellValueFactory(new PropertyValueFactory<>("purchaseOrder"));
-        workOrderPOColumn.setCellFactory(TextFieldTableCell.<WorkOrder>forTableColumn());
-        workOrderPOColumn.setOnEditCommit(event -> {
-            final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
-            ((WorkOrder) event.getTableView().getItems().get(event.getTablePosition().getRow())).setPurchaseOrder(data);
-            workOrderDAO.updateData("po_number", data, event.getRowValue().getId()+"");
-            dataTable.refresh();
-        });
+//        workOrderPOColumn.setCellFactory(TextFieldTableCell.<WorkOrder>forTableColumn());
+//        workOrderPOColumn.setOnEditCommit(event -> {
+//            final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
+//            ((WorkOrder) event.getTableView().getItems().get(event.getTablePosition().getRow())).setPurchaseOrder(data);
+//            workOrderDAO.updateData("po_number", data, event.getRowValue().getId()+"");
+//            dataTable.refresh();
+//        });
 
         workOrderYearColumn.setCellValueFactory(new PropertyValueFactory<>("year"));
-        workOrderYearColumn.setCellFactory(TextFieldTableCell.<WorkOrder, Integer>forTableColumn(new IntegerStringConverter()));
-        workOrderYearColumn.setCellFactory(tc -> {
-
-            TableCell<WorkOrder, Integer> cell = new TableCell<>();
-
-            currentRow = cell.getIndex();
-            currentCell = cell.getText();
-
-            Text text = new Text();
-            ComboBox<Year> commandComboBoxTableCell = new ComboBox<>();
-            cell.setGraphic(text);
-            cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
-            text.wrappingWidthProperty().bind(workOrderYearColumn.widthProperty());
-            text.textProperty().bind(new StringBinding() {
-                { bind(cell.itemProperty()); }
-                @Override
-                protected String computeValue() {
-//                    return cell.itemProperty().getValue() != null ? cell.itemProperty().getValue()+"" : "";
-                    if(cell.itemProperty().getValue() != null) {
-                        Year data = yearDAO.getDataByID(cell.itemProperty().getValue());
-                        return data.getYear();
-                    } else {
-                        return "";
-                    }
-                }
-            });
-
-            cell.setOnMouseClicked(e -> {
-                if (e.getClickCount() == 2 && ! cell.isEmpty()) {
-                    cell.setGraphic(commandComboBoxTableCell);
-                    cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
-                    commandComboBoxTableCell.setMaxWidth(Control.USE_COMPUTED_SIZE);
-                    commandComboBoxTableCell.getEditor().setText(cell.itemProperty().getValue().toString());
-
-                    commandComboBoxTableCell.getItems().addAll(yearObservableList);
-
-                    Year yearData = yearDAO.getDataByID(cell.itemProperty().getValue());
-                    commandComboBoxTableCell.setValue(yearData);
-
-                    commandComboBoxTableCell.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Year>() {
-                        @Override
-                        public void changed(ObservableValue<? extends Year> observableValue, Year year, Year t1) {
-                            TablePosition pos = (TablePosition) dataTable.getSelectionModel().getSelectedCells().get(0);
-                            int selectedRow = dataTable.getItems().get(pos.getRow()).getId();
-                            workOrderDAO.updateDataInteger("year", t1.getId(), selectedRow);
-                            clearFields();
-                            reload();
-                        }
-                    });
-                }
-            });
-
-            return cell ;
-        });
+//        workOrderYearColumn.setCellFactory(TextFieldTableCell.<WorkOrder, Integer>forTableColumn(new IntegerStringConverter()));
+//        workOrderYearColumn.setCellFactory(tc -> {
+//
+//            TableCell<WorkOrder, Integer> cell = new TableCell<>();
+//
+//            currentRow = cell.getIndex();
+//            currentCell = cell.getText();
+//
+//            Text text = new Text();
+//            ComboBox<Year> commandComboBoxTableCell = new ComboBox<>();
+//            cell.setGraphic(text);
+//            cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
+//            text.wrappingWidthProperty().bind(workOrderYearColumn.widthProperty());
+//            text.textProperty().bind(new StringBinding() {
+//                { bind(cell.itemProperty()); }
+//                @Override
+//                protected String computeValue() {
+////                    return cell.itemProperty().getValue() != null ? cell.itemProperty().getValue()+"" : "";
+//                    if(cell.itemProperty().getValue() != null) {
+//                        Year data = yearDAO.getDataByID(cell.itemProperty().getValue());
+//                        return data.getYear();
+//                    } else {
+//                        return "";
+//                    }
+//                }
+//            });
+//
+//            cell.setOnMouseClicked(e -> {
+//                if (e.getClickCount() == 2 && ! cell.isEmpty()) {
+//                    cell.setGraphic(commandComboBoxTableCell);
+//                    cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
+//                    commandComboBoxTableCell.setMaxWidth(Control.USE_COMPUTED_SIZE);
+//                    commandComboBoxTableCell.getEditor().setText(cell.itemProperty().getValue().toString());
+//
+//                    commandComboBoxTableCell.getItems().addAll(yearObservableList);
+//
+//                    Year yearData = yearDAO.getDataByID(cell.itemProperty().getValue());
+//                    commandComboBoxTableCell.setValue(yearData);
+//
+//                    commandComboBoxTableCell.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Year>() {
+//                        @Override
+//                        public void changed(ObservableValue<? extends Year> observableValue, Year year, Year t1) {
+//                            TablePosition pos = (TablePosition) dataTable.getSelectionModel().getSelectedCells().get(0);
+//                            int selectedRow = dataTable.getItems().get(pos.getRow()).getId();
+//                            workOrderDAO.updateDataInteger("year", t1.getId(), selectedRow);
+//                            clearFields();
+//                            reload();
+//                        }
+//                    });
+//                }
+//            });
+//
+//            return cell ;
+//        });
 
         workOrderCustomerColumn.setCellValueFactory(new PropertyValueFactory<>("customerId"));
-        workOrderCustomerColumn.setCellFactory(TextFieldTableCell.<WorkOrder, Integer>forTableColumn(new IntegerStringConverter()));
-        workOrderCustomerColumn.setCellFactory(tc -> {
-
-            TableCell<WorkOrder, Integer> cell = new TableCell<>();
-
-            currentRow = cell.getIndex();
-            currentCell = cell.getText();
-
-            Text text = new Text();
-            ComboBox<Customer> commandComboBoxTableCell = new ComboBox<>();
-            cell.setGraphic(text);
-            cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
-            text.wrappingWidthProperty().bind(workOrderCustomerColumn.widthProperty());
-            text.textProperty().bind(new StringBinding() {
-                { bind(cell.itemProperty()); }
-                @Override
-                protected String computeValue() {
-//                    return cell.itemProperty().getValue() != null ? cell.itemProperty().getValue()+"" : "";
-                    if(cell.itemProperty().getValue() != null) {
-                        Customer data = customerDAO.getDataByID(cell.itemProperty().getValue());
-                        return data.getName();
-                    } else {
-                        return "";
-                    }
-                }
-            });
-
-            cell.setOnMouseClicked(e -> {
-                if (e.getClickCount() == 2 && ! cell.isEmpty()) {
-                    cell.setGraphic(commandComboBoxTableCell);
-                    cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
-                    commandComboBoxTableCell.setMaxWidth(Control.USE_COMPUTED_SIZE);
-
-                    commandComboBoxTableCell.setEditable(true);
-                    commandComboBoxTableCell.getEditor().setText(cell.itemProperty().getValue().toString());
-
-                    Customer getCustomerByID = customerDAO.getDataByID(cell.itemProperty().getValue());
-                    commandComboBoxTableCell.getEditor().setText(getCustomerByID.getName());
-
-                    FilteredList<Customer> dataFilteredList = new FilteredList<>(customerObservableList, p-> true);
-
-                    commandComboBoxTableCell.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
-                        dataFilteredList.setPredicate(item -> {
-
-                            // If the TextField is empty, return all items in the original list
-                            if (newValue == null || newValue.isEmpty()) {
-                                commandComboBoxTableCell.hide();
-                                return true;
-                            }
-
-                            // Check if the search term is contained anywhere in our list
-                            if (item.getName().trim().toLowerCase().contains(newValue.toLowerCase().trim())) {
-                                commandComboBoxTableCell.show();
-                                return true;
-                            }
-
-                            // No matches found
-                            return false;
-                        });
-                        SortedList<Customer> dataSortedList = new SortedList<>(dataFilteredList);
-                        commandComboBoxTableCell.getItems().removeAll(customerObservableList);
-                        commandComboBoxTableCell.getItems().addAll(dataSortedList);
-                    });
+//        workOrderCustomerColumn.setCellFactory(tc -> {
 //
-                    commandComboBoxTableCell.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                        @Override
-                        public void handle(MouseEvent mouseEvent) {
-                            commandComboBoxTableCell.setEditable(true);
-                        }
-                    });
-
-                    commandComboBoxTableCell.setOnKeyPressed(event -> {
-                        if (event.getCode() == KeyCode.ENTER) {
-                            TablePosition pos = (TablePosition) dataTable.getSelectionModel().getSelectedCells().get(0);
-                            int selectedRow = dataTable.getItems().get(pos.getRow()).getId();
-                            Customer getCustomerFromName = customerDAO.getCustomer(commandComboBoxTableCell.getEditor().getText());
-                            if(!customerDAO.hasName(getCustomerFromName.getName())) {
-                                Alert alert = new Alert(Alert.AlertType.ERROR);
-                                alert.setTitle("Lỗi!");
-                                alert.setHeaderText("Đã xảy ra lỗi!");
-                                alert.setContentText("Dữ liệu: "+ commandComboBoxTableCell.getEditor().getText() +" không tồn tài");
-                                alert.showAndWait();
-                            } else {
-                                workOrderDAO.updateDataInteger("customer_id", getCustomerFromName.getId(), selectedRow);
-                                clearFields();
-                                reload();
-                            }
-                        }
-                    });
-                }
-            });
-
-            return cell ;
-        });
+//            TableCell<WorkOrder, Integer> cell = new TableCell<>();
+//
+//            currentRow = cell.getIndex();
+//            currentCell = cell.getText();
+//
+//            Text text = new Text();
+//
+//            ComboBox<Customer> comboBoxTableCell = new ComboBox<>();
+//            comboBoxTableCell.setConverter(new StringConverter<Customer>() {
+//                @Override
+//                public String toString(Customer data) {
+//                    if (data == null) return null;
+//                    return data.getName();
+//                }
+//
+//                @Override
+//                public Customer fromString(String s) {
+//                    return null;
+//                }
+//            });
+//
+//            comboBoxTableCell.getItems().addAll(customerObservableList);
+//            new AutoCompleteComboBoxListener<>(comboBoxTableCell, true, customerDAO.getLastestData().getName());
+//
+//            cell.setGraphic(text);
+//            cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
+//            text.wrappingWidthProperty().bind(workOrderCustomerColumn.widthProperty());
+//
+//
+//            text.textProperty().bind(new StringBinding() {
+//                { bind(cell.itemProperty()); }
+//                @Override
+//                protected String computeValue() {
+////                    return cell.itemProperty().getValue() != null ? cell.itemProperty().getValue()+"" : "";
+//                    if(cell.itemProperty().getValue() != null) {
+//                        Customer data = customerDAO.getDataByID(cell.itemProperty().getValue());
+//                        return data.toString();
+//                    } else {
+//                        return "";
+//                    }
+//                }
+//            });
+//
+//            cell.setOnMouseClicked(e -> {
+//                if (e.getClickCount() == 2 && ! cell.isEmpty()) {
+//                    cell.setGraphic(comboBoxTableCell);
+//                    cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
+//                    comboBoxTableCell.setMaxWidth(Control.USE_COMPUTED_SIZE);
+//                    comboBoxTableCell.setEditable(true);
+//                    comboBoxTableCell.getEditor().setText(supplierDAO.getDataByID(cell.itemProperty().getValue()).getCode());
+//
+//                    comboBoxTableCell.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Customer>() {
+//                        @Override
+//                        public void changed(ObservableValue<? extends Customer> observableValue, Customer data, Customer t1) {
+//                            if(t1 != null) {
+//                                if(!cell.isEmpty()) {
+//                                    TablePosition pos = (TablePosition) dataTable.getSelectionModel().getSelectedCells().get(0);
+//                                    int selectedRow = dataTable.getItems().get(pos.getRow()).getId();
+//                                    workOrderDAO.updateDataInteger("customer_id", t1.getId(), selectedRow);
+////                                    clearFields();
+////                                    reload();
+//                                }
+//                            }
+//                        }
+//                    });
+//                    comboBoxTableCell.addEventFilter(KeyEvent.ANY, ke -> {
+//                        if(ke.getCode() == KeyCode.ENTER) {
+//                            clearFields();
+//                            reload();
+//                        }
+//                    });
+//                }
+//            });
+//
+//            return cell ;
+//        });
 
         workOrderSendDateColumn.setCellValueFactory(new PropertyValueFactory<>("sendDate"));
-        workOrderSendDateColumn.setCellFactory(TextFieldTableCell.<WorkOrder>forTableColumn());
-        workOrderSendDateColumn.setOnEditCommit(event -> {
-            final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
-            ((WorkOrder) event.getTableView().getItems().get(event.getTablePosition().getRow())).setSendDate(data);
-            workOrderDAO.updateData("send_date", data, event.getRowValue().getId()+"");
-            dataTable.refresh();
-        });
+//        workOrderSendDateColumn.setCellFactory(TextFieldTableCell.<WorkOrder>forTableColumn());
+//        workOrderSendDateColumn.setOnEditCommit(event -> {
+//            final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
+//            ((WorkOrder) event.getTableView().getItems().get(event.getTablePosition().getRow())).setSendDate(data);
+//            workOrderDAO.updateData("send_date", data, event.getRowValue().getId()+"");
+//            dataTable.refresh();
+//        });
 
         workOrderShippingDateColumn.setCellValueFactory(new PropertyValueFactory<>("shippingDate"));
-        workOrderShippingDateColumn.setCellFactory(TextFieldTableCell.<WorkOrder>forTableColumn());
-        workOrderShippingDateColumn.setOnEditCommit(event -> {
-            final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
-            ((WorkOrder) event.getTableView().getItems().get(event.getTablePosition().getRow())).setShippingDate(data);
-            workOrderDAO.updateData("shipping_date", data, event.getRowValue().getId()+"");
-            dataTable.refresh();
-        });
+//        workOrderShippingDateColumn.setCellFactory(TextFieldTableCell.<WorkOrder>forTableColumn());
+//        workOrderShippingDateColumn.setOnEditCommit(event -> {
+//            final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
+//            ((WorkOrder) event.getTableView().getItems().get(event.getTablePosition().getRow())).setShippingDate(data);
+//            workOrderDAO.updateData("shipping_date", data, event.getRowValue().getId()+"");
+//            dataTable.refresh();
+//        });
 
         workOrderDestinationColumn.setCellValueFactory(new PropertyValueFactory<>("destination"));
-        workOrderDestinationColumn.setCellFactory(TextFieldTableCell.<WorkOrder>forTableColumn());
-        workOrderDestinationColumn.setOnEditCommit(event -> {
-            final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
-            ((WorkOrder) event.getTableView().getItems().get(event.getTablePosition().getRow())).setDestination(data);
-            workOrderDAO.updateData("destination", data, event.getRowValue().getId()+"");
-            dataTable.refresh();
-        });
+//        workOrderDestinationColumn.setCellFactory(TextFieldTableCell.<WorkOrder>forTableColumn());
+//        workOrderDestinationColumn.setOnEditCommit(event -> {
+//            final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
+//            ((WorkOrder) event.getTableView().getItems().get(event.getTablePosition().getRow())).setDestination(data);
+//            workOrderDAO.updateData("destination", data, event.getRowValue().getId()+"");
+//            dataTable.refresh();
+//        });
 
         workOrderNoteColumn.setCellValueFactory(new PropertyValueFactory<>("note"));
-        workOrderNoteColumn.setCellFactory(TextFieldTableCell.<WorkOrder>forTableColumn());
-        workOrderNoteColumn.setOnEditCommit(event -> {
-            final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
-            ((WorkOrder) event.getTableView().getItems().get(event.getTablePosition().getRow())).setNote(data);
-            workOrderDAO.updateData("note", data, event.getRowValue().getId()+"");
-            dataTable.refresh();
-        });
+//        workOrderNoteColumn.setCellFactory(TextFieldTableCell.<WorkOrder>forTableColumn());
+//        workOrderNoteColumn.setOnEditCommit(event -> {
+//            final String data = event.getNewValue() != null ? event.getNewValue() : event.getOldValue();
+//            ((WorkOrder) event.getTableView().getItems().get(event.getTablePosition().getRow())).setNote(data);
+//            workOrderDAO.updateData("note", data, event.getRowValue().getId()+"");
+//            dataTable.refresh();
+//        });
 
         dataTable.setOnKeyPressed(event -> {
             if(event.getCode() == KeyCode.ESCAPE || event.getCode() == KeyCode.F5) {

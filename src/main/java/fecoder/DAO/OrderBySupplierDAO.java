@@ -46,6 +46,8 @@ public class OrderBySupplierDAO {
             data.setShipAddress(resultSet.getString("shipAddress"));
             data.setOrderTimes(resultSet.getString("orderTimes"));
             data.setPackagingCustomCode(resultSet.getString("packagingCustomCode"));
+            data.setMain(resultSet.getBoolean("main"));
+            data.setCbm(resultSet.getString("cbm"));
         } catch (SQLException ex) {
             jdbcDAO.printSQLException(ex);
         }
@@ -87,7 +89,9 @@ public class OrderBySupplierDAO {
                         " s.fax as sFax, " +
                         " sa.code_address as shipAddress, " +
                         " wopp.order_times as orderTimes, " +
-                        " wopp.packaging_custom_code as packagingCustomCode " +
+                        " wopp.packaging_custom_code as packagingCustomCode, " +
+                        " p.main as main, " +
+                        " if(p.main, sum(((SELECT SUBSTRING_INDEX(p.dimension , 'x', 1))*(SELECT SUBSTRING_INDEX((SELECT SUBSTRING_INDEX(p.dimension , 'x', 2)) , 'x', -1))*(SELECT SUBSTRING_INDEX(p.dimension , 'x', -1))*wopp.work_order_qty)), '') as cbm " +
                         "from " +
                         " work_order_product_packaging wopp," +
                         " work_order wo," +
@@ -127,6 +131,72 @@ public class OrderBySupplierDAO {
      * Getting all records of table
      *
      * @param idList list of work_order_product_packaging.work_order_id
+     *
+     * @return list
+     * */
+    public OrderBySupllier getTotalOrder(String idList) {
+        OrderBySupllier data = new OrderBySupllier();
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            Statement statement = conn.createStatement();
+            String selectAll =  "select" +
+                    " wopp.id as woppID," +
+                    " wo.id as woID," +
+                    " group_concat(distinct wo.name separator \" +\") as woName, " +
+                    " p.name as pName," +
+                    " wopp.printed as pIsPrinted," +
+                    " p.specifications as pSpecs," +
+                    " p.dimension as pDimension," +
+                    " t.unit as pUnit," +
+                    " sum(wopp.work_order_qty) as pDesireQuantity," +
+                    " sum(wopp.actual_qty) as pTotal," +
+                    " sum(wopp.stock) as pStock," +
+                    " sum(wopp.residual_qty) as pResidualQuantity," +
+                    " s.code as sCode," +
+                    " p.code as pCode," +
+                    " s.address as sAddress," +
+                    " s.deputy as sDeputy," +
+                    " s.name as sName," +
+                    " s.phone as sPhone," +
+                    " s.fax as sFax, " +
+                    " sa.code_address as shipAddress, " +
+                    " wopp.order_times as orderTimes, " +
+                    " wopp.packaging_custom_code as packagingCustomCode, " +
+                    " p.main as main, " +
+                    " sum(((SELECT SUBSTRING_INDEX(p.dimension , 'x', 1))*(SELECT SUBSTRING_INDEX((SELECT SUBSTRING_INDEX(p.dimension , 'x', 2)) , 'x', -1))*(SELECT SUBSTRING_INDEX(p.dimension , 'x', -1))*wopp.work_order_qty)) as cbm " +
+                    "from " +
+                    " work_order_product_packaging wopp," +
+                    " work_order wo," +
+                    " packaging p," +
+                    " types t ," +
+                    " supliers s, " +
+                    " ship_address sa " +
+                    "where " +
+                    " wopp.work_order_id = wo.id" +
+                    " and wopp.packaging_id = p.id" +
+                    " and p.`type` = t.id" +
+                    " and p.suplier = s.id" +
+                    " and wopp.ship_address = sa.id" +
+//                    " and wopp.actual_qty > 0 " +
+                    " and wopp.work_order_id in (" + idList + ") "+
+                    " and p.main = 1 ";
+            ResultSet resultSet = statement.executeQuery(selectAll);
+            while(resultSet.next()) {
+                data = createData(resultSet);
+            }
+            resultSet.close();
+            conn.close();
+        } catch (ClassNotFoundException | SQLException | IOException ex) {
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
+        }
+        return data;
+    }
+
+    /**
+     * Getting all records of table
+     *
+     * @param idList list of work_order_product_packaging.work_order_id
      * @param order_times list of work_order_product_packaging.order_times
      *
      * @return list
@@ -159,7 +229,9 @@ public class OrderBySupplierDAO {
                         " s.fax as sFax, " +
                         " sa.code_address as shipAddress, " +
                         " wopp.order_times as orderTimes, " +
-                        " wopp.packaging_custom_code as packagingCustomCode " +
+                        " wopp.packaging_custom_code as packagingCustomCode, " +
+                        " p.main as main, " +
+                        " if(p.main, sum(((SELECT SUBSTRING_INDEX(p.dimension , 'x', 1))*(SELECT SUBSTRING_INDEX((SELECT SUBSTRING_INDEX(p.dimension , 'x', 2)) , 'x', -1))*(SELECT SUBSTRING_INDEX(p.dimension , 'x', -1))*wopp.work_order_qty)), '') as cbm " +
                         "from " +
                         " work_order_product_packaging wopp," +
                         " work_order wo," +
@@ -231,7 +303,9 @@ public class OrderBySupplierDAO {
                         " s.fax as sFax, " +
                         " sa.code_address as shipAddress, " +
                         " wopp.order_times as orderTimes, " +
-                        " wopp.packaging_custom_code as packagingCustomCode " +
+                        " wopp.packaging_custom_code as packagingCustomCode, " +
+                        " p.main as main, " +
+                        " if(p.main, sum(((SELECT SUBSTRING_INDEX(p.dimension , 'x', 1))*(SELECT SUBSTRING_INDEX((SELECT SUBSTRING_INDEX(p.dimension , 'x', 2)) , 'x', -1))*(SELECT SUBSTRING_INDEX(p.dimension , 'x', -1))*wopp.work_order_qty)), '') as cbm " +
                         "from " +
                         " work_order_product_packaging wopp," +
                         " work_order wo," +
@@ -280,63 +354,60 @@ public class OrderBySupplierDAO {
     public List<OrderBySupllier> getListBySupplierCode(String idList, String code, String shippingCode, int order_times) {
         List<OrderBySupllier> list = new ArrayList<>();
         try {
-            if(!idList.isEmpty()) {
-                Connection conn = ConnectionUtils.getMyConnection();
-                Statement statement = conn.createStatement();
-                String selectAll =  "select" +
-                        " wopp.id as woppID," +
-                        " wo.id as woID," +
-                        " group_concat(distinct wo.name separator \" +\") as woName, " +
-                        " p.name as pName," +
-                        " wopp.printed as pIsPrinted," +
-                        " p.specifications as pSpecs," +
-                        " p.dimension as pDimension," +
-                        " t.unit as pUnit," +
-                        " sum(wopp.work_order_qty) as pDesireQuantity," +
-                        " sum(wopp.actual_qty) as pTotal," +
-                        " sum(wopp.stock) as pStock," +
-                        " sum(wopp.residual_qty) as pResidualQuantity," +
-                        " s.code as sCode," +
-                        " p.code as pCode," +
-                        " s.address as sAddress," +
-                        " s.deputy as sDeputy," +
-                        " s.name as sName," +
-                        " s.phone as sPhone," +
-                        " s.fax as sFax, " +
-                        " sa.code_address as shipAddress, " +
-                        " wopp.order_times as orderTimes, " +
-                        " wopp.packaging_custom_code as packagingCustomCode " +
-                        "from " +
-                        " work_order_product_packaging wopp," +
-                        " work_order wo," +
-                        " packaging p," +
-                        " types t ," +
-                        " supliers s, " +
-                        " ship_address sa " +
-                        "where " +
-                        " wopp.work_order_id = wo.id" +
-                        " and wopp.packaging_id = p.id" +
-                        " and p.`type` = t.id" +
-                        " and p.suplier = s.id" +
-                        " and wopp.ship_address = sa.id" +
-                        " and wopp.actual_qty > 0 " +
-                        "and wopp.work_order_id in (" + idList + ") "+
-                        " and s.code = '" + code + "' " +
-                        " and sa.code_address = '" + shippingCode + "' " +
-                        " and wopp.order_times = " + order_times + " " +
-                        "group by " +
-                        " wopp.packaging_id, sa.code_address, wopp.printed, wopp.packaging_custom_code";
-                ResultSet resultSet = statement.executeQuery(selectAll);
-                while(resultSet.next()) {
-                    OrderBySupllier data = createData(resultSet);
-                    list.add(data);
-                }
-                resultSet.close();
-                conn.close();
-            } else {
-                Utils utils = new Utils();
-                utils.alert("err", Alert.AlertType.ERROR, "Lỗi", "Chưa chọn LSX").showAndWait();
+            Connection conn = ConnectionUtils.getMyConnection();
+            Statement statement = conn.createStatement();
+            String selectAll =  "select" +
+                    " wopp.id as woppID," +
+                    " wo.id as woID," +
+                    " group_concat(distinct wo.name separator \" +\") as woName, " +
+                    " p.name as pName," +
+                    " wopp.printed as pIsPrinted," +
+                    " p.specifications as pSpecs," +
+                    " p.dimension as pDimension," +
+                    " t.unit as pUnit," +
+                    " sum(wopp.work_order_qty) as pDesireQuantity," +
+                    " sum(wopp.actual_qty) as pTotal," +
+                    " sum(wopp.stock) as pStock," +
+                    " sum(wopp.residual_qty) as pResidualQuantity," +
+                    " s.code as sCode," +
+                    " p.code as pCode," +
+                    " s.address as sAddress," +
+                    " s.deputy as sDeputy," +
+                    " s.name as sName," +
+                    " s.phone as sPhone," +
+                    " s.fax as sFax, " +
+                    " sa.code_address as shipAddress, " +
+                    " wopp.order_times as orderTimes, " +
+                    " wopp.packaging_custom_code as packagingCustomCode, " +
+                    " p.main as main, " +
+                    " if(p.main, sum(((SELECT SUBSTRING_INDEX(p.dimension , 'x', 1))*(SELECT SUBSTRING_INDEX((SELECT SUBSTRING_INDEX(p.dimension , 'x', 2)) , 'x', -1))*(SELECT SUBSTRING_INDEX(p.dimension , 'x', -1))*wopp.work_order_qty)), '') as cbm " +
+                    "from " +
+                    " work_order_product_packaging wopp," +
+                    " work_order wo," +
+                    " packaging p," +
+                    " types t ," +
+                    " supliers s, " +
+                    " ship_address sa " +
+                    "where " +
+                    " wopp.work_order_id = wo.id" +
+                    " and wopp.packaging_id = p.id" +
+                    " and p.`type` = t.id" +
+                    " and p.suplier = s.id" +
+                    " and wopp.ship_address = sa.id" +
+                    " and wopp.actual_qty > 0 " +
+                    "and wopp.work_order_id in (" + idList + ") "+
+                    " and s.code = '" + code + "' " +
+                    " and sa.code_address = '" + shippingCode + "' " +
+                    " and wopp.order_times = " + order_times + " " +
+                    "group by " +
+                    " wopp.packaging_id, sa.code_address, wopp.printed, wopp.packaging_custom_code";
+            ResultSet resultSet = statement.executeQuery(selectAll);
+            while(resultSet.next()) {
+                OrderBySupllier data = createData(resultSet);
+                list.add(data);
             }
+            resultSet.close();
+            conn.close();
         } catch (ClassNotFoundException | SQLException | IOException ex) {
             assert ex instanceof SQLException;
             jdbcDAO.printSQLException((SQLException) ex);
