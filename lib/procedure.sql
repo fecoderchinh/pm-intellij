@@ -23,3 +23,24 @@ end #
 delimiter;
  drop PROCEDURE insert_wopp_children;
 call insert_wopp_children(6, 2, 2.0, 2, 350, "", 1, 1);
+
+delimiter #
+create procedure update_wopp_children
+(
+	in t_wop_id bigint,
+	in t_work_order_id bigint,
+	in t_ordinal_num varchar(100),
+	in t_product_id bigint,
+	in t_qty float,
+	in t_note longtext,
+	in t_order_times int
+)
+begin
+	update work_order_product set work_order_id=t_work_order_id, ordinal_num=t_ordinal_num, product_id=t_product_id, qty=t_qty, note=t_note, order_times=t_order_times where id=t_wop_id;
+
+	update work_order_product_packaging wopp	 join (		 select pps.packaging_id as _id, pps.pack_qty as _pack_qty		 from packaging_product_size pps		 where pps.product_id=t_product_id	 ) pps on wopp.packaging_id = pps._id	 set wopp.work_order_qty = pps._pack_qty * t_qty, wopp.order_times=t_order_times where wopp.wop_id = t_wop_id;
+end #
+
+delimiter;
+ drop PROCEDURE update_wopp_children;
+call update_wopp_children(16, 4, 4.0, 14, 350, "", 1);

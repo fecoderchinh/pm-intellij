@@ -86,7 +86,7 @@ public class ProductPackagingController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         filterComboBox();
         new AutoCompleteComboBoxListener<>(sizeComboBox, true, sizeDAO.getLastestData().getSize());
-        new AutoCompleteComboBoxListener<>(packagingComboBox, true, packagingDAO.getLastestData().getName());
+        new AutoCompleteComboBoxListener<>(packagingComboBox, true, packagingToStringDAO.getLastestData().getCustomName());
         loadView();
     }
 
@@ -225,8 +225,8 @@ public class ProductPackagingController implements Initializable {
         Size sizeData = sizeDAO.getLastestData();
         utils.setComboBoxValue(sizeComboBox, sizeData.getSize());
 
-        Packaging packagingData = packagingDAO.getLastestData();
-        utils.setComboBoxValue(packagingComboBox, packagingData.getName());
+        PackagingToString packagingData = packagingToStringDAO.getLastestData();
+        utils.setComboBoxValue(packagingComboBox, packagingData.getCustomName());
     }
 
     /**
@@ -243,8 +243,8 @@ public class ProductPackagingController implements Initializable {
         if(!packagingComboBox.isEditable()) {
             packagingComboBox.getSelectionModel().select(packagingToStringDAO.getDataByID(data.getPackaging_id()));
         } else {
-            Packaging _pM = packagingDAO.getDataByID(data.getPackaging_id());
-            packagingComboBox.getEditor().setText(_pM.getName());
+            PackagingToString _pM = packagingToStringDAO.getDataByID(data.getPackaging_id());
+            packagingComboBox.getEditor().setText(_pM.getCustomName());
         }
     }
 

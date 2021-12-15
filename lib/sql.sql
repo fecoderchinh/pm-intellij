@@ -50,7 +50,7 @@ CREATE TABLE supliers
  phone varchar(250),
  fax varchar(250),
  code varchar(10),
- fixed_ship_address bit not null default 0,
+--  fixed_ship_address bit not null default 0,
  primary key (id),
  unique key (code)
 );
@@ -455,7 +455,11 @@ table hiển thị thông tin số lượng nhập/xuất, có thể dùng để
 - CHƯA TEST THỰC TẾ
 */
 
-/*select distinct 
+update work_order_product_packaging wopp join ( select pps.packaging_id as _id, pps.pack_qty as _pack_qty from packaging_product_size pps where pps.product_id=14 ) pps on wopp.packaging_id = pps._id set wopp.work_order_qty = pps._pack_qty * 120, wopp.order_times=1 where wopp.wop_id = 16;
+
+select distinct  * from work_order_product_packaging wopp where wopp.wop_id = 16;
+
+select distinct 
 	wopp.id as woppID,
 	wop.ordinal_num as woOrdinalNumbers, 
 	wop.id as woID, 
@@ -498,7 +502,8 @@ where
 -- 	and wo.id in ("1") -- filter by work_order.id
 -- 	and p.id = 1 -- filter by products.id
 -- 	and wop.ordinal_num = 1 -- filter by work_order_product.ordinal_num 
-;*/
+	and wopp.wop_id = 16
+;
 
 /*select distinct
 	(@count := @count + 1),
@@ -555,7 +560,7 @@ order by s.code ASC;*/
 
 
 /*tính số khối*/
-select 
+/*select 
 	p.name, 
 	p.dimension, 
 	(SELECT SUBSTRING_INDEX(p.dimension , 'x', 1)) as length, 
@@ -563,7 +568,7 @@ select
 	(SELECT SUBSTRING_INDEX(p.dimension , 'x', -1)) as height,
 	((SELECT SUBSTRING_INDEX(p.dimension , 'x', 1))*(SELECT SUBSTRING_INDEX((SELECT SUBSTRING_INDEX(p.dimension , 'x', 2)) , 'x', -1))*(SELECT SUBSTRING_INDEX(p.dimension , 'x', -1))*wop.qty) as CBM
 from packaging p, products p2, work_order_product wop, work_order_product_packaging wopp 
-where wop.product_id = p2.id and wopp.packaging_id = p.id and wop.product_id = 1 and type=1;
+where wop.product_id = p2.id and wopp.packaging_id = p.id and wop.product_id = 1 and type=1;*/
 
 /*list đề nghị*/
 /*select distinct (@count := @count + 1) AS rowNumber, wo.id as woID, wo.name as workOrderName, p.name as packagingName,  p.specifications as specs,  p.dimension as dimension, t.unit as unit, wopp.actual_qty as total, if((wopp.actual_qty - wopp.residual_qty + wopp.stock - wopp.work_order_qty) > 0, (wopp.actual_qty - wopp.residual_qty + wopp.stock - wopp.work_order_qty), "") as totalResidualQuantity
@@ -590,7 +595,7 @@ where
 	group by wopp.id;*/
 	
 /*đơn đặt hàng*/
-select
+/*select
 	wopp.id as woppID,
 	wo.id as woID,
 	group_concat(distinct wo.name separator "+") as woName, 
@@ -629,4 +634,4 @@ where
 -- 	and sa.code_address = "SVN"
 -- 	and wopp.order_times = 1
 	and p.main = 1;
-select * from work_order_product_packaging wopp where wopp.work_order_id = 2;
+select * from work_order_product_packaging wopp where wopp.work_order_id = 2;*/

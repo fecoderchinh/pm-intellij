@@ -246,6 +246,8 @@ public class WorkOrderProductDAO {
      * @param productID column product_id
      * @param quantity column qty
      * @param note column note
+     * @param ship_address column ship_address
+     * @param order_times column order_times
      * */
     public void insert_wopp_children(int wop_id, int workOrderID, String ordinalNumber, int productID, float quantity, String note, int ship_address, int order_times) {
         String insertQuery = "{call insert_wopp_children(?, ?, ?, ?, ?, ?, ?, ? )}";
@@ -289,6 +291,8 @@ public class WorkOrderProductDAO {
      * @param productID column product_id
      * @param quantity column qty
      * @param note column note
+     * @param ship_address column ship_address
+     * @param order_times column order_times
      * */
     public void preparedInsertWOPPChildrenQuery(String query, int wop_id, int workOrderID, String ordinalNumber, int productID, float quantity, String note, int ship_address, int order_times) {
         try {
@@ -326,6 +330,55 @@ public class WorkOrderProductDAO {
     public void update(int workOrderID, String ordinalNumber, int productID, float quantity, String note, int order_times, int id) {
         String query = "update "+ tableName +" set work_order_id=?, ordinal_num=?, product_id=?, qty=?, note=?, order_times=? where id=?";
         preparedUpdateQuery(query, workOrderID, ordinalNumber, productID, quantity, note, id, order_times);
+        System.out.println("success");
+    }
+
+    /**
+     * Inserting all columns
+     *
+     * @param wop_id column work_order_product.id
+     * @param workOrderID column work_order_id
+     * @param ordinalNumber column ordinal_num
+     * @param productID column product_id
+     * @param quantity column qty
+     * @param note column note
+     * @param order_times column order_times
+     * */
+    public void update_wopp_children(int wop_id, int workOrderID, String ordinalNumber, int productID, float quantity, String note, int order_times) {
+        String query = "{call update_wopp_children(?, ?, ?, ?, ?, ?, ?)}";
+        preparedUpdateWOPPChildrenQuery(query, wop_id, workOrderID, ordinalNumber, productID, quantity, note, order_times);
+    }
+
+    /**
+     * Preparing Insert Query before action
+     *
+     * @param workOrderID column work_order_id
+     * @param ordinalNumber column ordinal_num
+     * @param productID column product_id
+     * @param quantity column qty
+     * @param note column note
+     * @param order_times column order_times
+     * */
+    public void preparedUpdateWOPPChildrenQuery(String query, int wop_id, int workOrderID, String ordinalNumber, int productID, float quantity, String note, int order_times) {
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            CallableStatement callableStatement = conn.prepareCall(query);
+            callableStatement.setInt(1, wop_id);
+            callableStatement.setInt(2, workOrderID);
+            callableStatement.setString(3, ordinalNumber);
+            callableStatement.setInt(4, productID);
+            callableStatement.setFloat(5, quantity);
+            callableStatement.setString(6, note);
+            callableStatement.setInt(7, order_times);
+
+            callableStatement.executeUpdate();
+
+            callableStatement.close();
+            conn.close();
+        } catch (Exception ex) {
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
+        }
     }
 
     /**
@@ -347,8 +400,8 @@ public class WorkOrderProductDAO {
             preparedStatement.setInt(3, productID);
             preparedStatement.setFloat(4, quantity);
             preparedStatement.setString(5, note);
-            preparedStatement.setInt(5, order_times);
-            preparedStatement.setInt(6, id);
+            preparedStatement.setInt(6, order_times);
+            preparedStatement.setInt(7, id);
 
             preparedStatement.executeUpdate();
 

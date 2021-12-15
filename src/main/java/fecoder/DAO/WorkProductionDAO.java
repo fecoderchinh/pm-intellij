@@ -78,7 +78,8 @@ public class WorkProductionDAO {
                     " t.unit as unit, " +
                     " wopp.printed as printStatus, " +
                     " pps.pack_qty as packQuantity, " +
-                    " (pps.pack_qty * wop.qty) as workOrderQuantity, " +
+//                    " (pps.pack_qty * wop.qty) as workOrderQuantity, " +
+                    " wopp.work_order_qty as workOrderQuantity, " +
                     " wopp.stock as stock, " +
                     " wopp.actual_qty as actualQuantity, " +
                     " wopp.residual_qty as residualQuantity, " +
@@ -149,7 +150,8 @@ public class WorkProductionDAO {
                     " t.unit as unit, " +
                     " wopp.printed as printStatus, " +
                     " pps.pack_qty as packQuantity, " +
-                    " (pps.pack_qty * wop.qty) as workOrderQuantity, " +
+//                    " (pps.pack_qty * wop.qty) as workOrderQuantity, " +
+                    " wopp.work_order_qty as workOrderQuantity, " +
                     " wopp.stock as stock, " +
                     " wopp.actual_qty as actualQuantity, " +
                     " wopp.residual_qty as residualQuantity, " +
@@ -222,7 +224,8 @@ public class WorkProductionDAO {
                     " t.unit as unit, " +
                     " wopp.printed as printStatus, " +
                     " pps.pack_qty as packQuantity, " +
-                    " (pps.pack_qty * wop.qty) as workOrderQuantity, " +
+//                    " (pps.pack_qty * wop.qty) as workOrderQuantity, " +
+                    " wopp.work_order_qty as workOrderQuantity, " +
                     " wopp.stock as stock, " +
                     " wopp.actual_qty as actualQuantity, " +
                     " wopp.residual_qty as residualQuantity, " +
@@ -296,7 +299,8 @@ public class WorkProductionDAO {
                     " t.unit as unit, " +
                     " wopp.printed as printStatus, " +
                     " pps.pack_qty as packQuantity, " +
-                    " (pps.pack_qty * wop.qty) as workOrderQuantity, " +
+//                    " (pps.pack_qty * wop.qty) as workOrderQuantity, " +
+                    " wopp.work_order_qty as workOrderQuantity, " +
                     " wopp.stock as stock, " +
                     " wopp.actual_qty as actualQuantity, " +
                     " wopp.residual_qty as residualQuantity, " +
@@ -456,7 +460,8 @@ public class WorkProductionDAO {
                         " t.unit as unit, " +
                         " wopp.printed as printStatus, " +
                         " pps.pack_qty as packQuantity, " +
-                        " (pps.pack_qty * wop.qty) as workOrderQuantity, " +
+//                    " (pps.pack_qty * wop.qty) as workOrderQuantity, " +
+                        " wopp.work_order_qty as workOrderQuantity, " +
                         " wopp.stock as stock, " +
                         " wopp.actual_qty as actualQuantity, " +
                         " wopp.residual_qty as residualQuantity, " +
@@ -492,7 +497,7 @@ public class WorkProductionDAO {
                         " and wop.ordinal_num = " + ordinal_num +
                         " and wop.order_times = " + ordinal_times +
                         " group by wopp.id" +
-                        " order by s.code ASC";
+                        " order by wop.id";
                 ResultSet resultSet = statement.executeQuery(selectAll);
                 while(resultSet.next()) {
                     WorkProduction data = createData(resultSet);

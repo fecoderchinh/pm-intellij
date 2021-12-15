@@ -143,20 +143,14 @@ public class WorkOrderProductController implements Initializable {
 //            System.out.println(Float.parseFloat(qtyField.getText()));
 //            System.out.println(workOrderProductPackaging.getWop_id());
             try {
-                workOrderProductDAO.update(
+                workOrderProductDAO.update_wopp_children(
+                        Integer.parseInt(anchorData.getText()), // work_order_product.id
                         this.innerData.getId(), // work_order_product.work_order_id
                         ordinalNumberField.getText()+"", // work_order_product.ordinal_num
                         product.getId(), // work_order_product.product_id
                         Float.parseFloat(qtyField.getText()), // work_order_product.qty
                         noteField.getText()+"", // work_order_product.note
-                        !orderTimesField.getText().isEmpty() ? Integer.parseInt(orderTimesField.getText()) : 1, // work_order_product.order_times
-                        Integer.parseInt(anchorData.getText()) // work_order_product.id
-                );
-                workOrderProductPackagingDAO.updateWOPPChildren(
-                        product.getId(),
-                        Float.parseFloat(qtyField.getText()),
-                        !orderTimesField.getText().isEmpty() ? Integer.parseInt(orderTimesField.getText()) : 1,
-                        Integer.parseInt(anchorData.getText())
+                        !orderTimesField.getText().isEmpty() ? Integer.parseInt(orderTimesField.getText()) : 1 // work_order_product.order_times
                 );
                 clearFields();
                 reload();
