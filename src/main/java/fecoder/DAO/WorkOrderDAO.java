@@ -172,6 +172,38 @@ public class WorkOrderDAO {
     }
 
     /**
+     * Inserting all columns
+     *
+     * @param workOrderID column work_order_id
+     * */
+    public void delete_wopp_children(int workOrderID) {
+        String query = "{call delete_wopp_children(?)}";
+        preparedDeleteWOPPChildrenQuery(query, workOrderID);
+    }
+
+    /**
+     * Preparing Insert Query before action
+     *
+     * @param query MySQL Query
+     * @param workOrderID column work_order_id
+     * */
+    public void preparedDeleteWOPPChildrenQuery(String query, int workOrderID) {
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            CallableStatement callableStatement = conn.prepareCall(query);
+            callableStatement.setInt(1, workOrderID);
+
+            callableStatement.executeUpdate();
+
+            callableStatement.close();
+            conn.close();
+        } catch (Exception ex) {
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
+        }
+    }
+
+    /**
      * Getting all records by its id
      *
      * @param id - the record's id

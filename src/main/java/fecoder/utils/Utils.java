@@ -169,9 +169,9 @@ public class Utils {
         stage.initOwner(owner);
         stage.initModality(Modality.APPLICATION_MODAL);
 
-        CheckBox exportDraft = new CheckBox("Xuất KIỂM TRA BB");
-        CheckBox exportOrderBySupplier = new CheckBox("Xuất Đơn Hàng");
-        CheckBox exportOrderList = new CheckBox("Xuất Đề Nghị BB");
+        CheckBox exportDraft = new CheckBox("Xuất KIỂM TRA BB.xls");
+        CheckBox exportOrderBySupplier = new CheckBox("Xuất Đơn Hàng.docx");
+        CheckBox exportOrderList = new CheckBox("Xuất Đề Nghị BB.docx");
 
         Button exportAll = new Button("CHỌN HẾT");
         exportAll.setOnAction(e -> {

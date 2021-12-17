@@ -471,7 +471,7 @@ public class WorkOrderController implements Initializable {
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (alert.getAlertType() == Alert.AlertType.CONFIRMATION && result.get() == ButtonType.OK){
-                    workOrderDAO.delete(workOrder.getId());
+                    workOrderDAO.delete_wopp_children(workOrder.getId());
                     reload();
                 }
             });

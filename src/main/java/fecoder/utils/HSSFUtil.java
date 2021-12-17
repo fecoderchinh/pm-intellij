@@ -6,7 +6,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 
 public class HSSFUtil {
-    public static HSSFCellStyle createStyle(HSSFWorkbook workbook, BorderStyle borderStyle, short fontSize, short textColor, boolean boldText, boolean wrapText, short backgroundColor, HorizontalAlignment hAlign, VerticalAlignment vAlign) {
+    public static HSSFCellStyle createStyle(HSSFWorkbook workbook, BorderStyle borderStyle, short fontSize, short textColor, boolean boldText, boolean wrapText, short backgroundColor, HorizontalAlignment hAlign, VerticalAlignment vAlign, boolean lockCell) {
         HSSFFont font = workbook.createFont();
         font.setBold(boldText);
         font.setFontName("Calibri");
@@ -23,6 +23,7 @@ public class HSSFUtil {
         style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         style.setAlignment(hAlign);
         style.setVerticalAlignment(vAlign);
+        style.setLocked(lockCell);
         return style;
     }
 }

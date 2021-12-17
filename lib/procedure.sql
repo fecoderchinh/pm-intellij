@@ -44,3 +44,22 @@ end #
 delimiter;
  drop PROCEDURE update_wopp_children;
 call update_wopp_children(16, 4, 4.0, 14, 350, "", 1);
+
+delimiter #
+create procedure delete_wopp_children
+(
+	in t_work_order_id bigint
+)
+begin
+	delete from work_order where id=t_work_order_id;
+
+	delete from work_order_product_packaging where id in (
+		select id
+		from work_order_product_packaging wopp
+		where wopp.work_order_id=t_work_order_id
+	);
+end #
+
+delimiter;
+ drop PROCEDURE delete_wopp_children;
+call delete_wopp_children(7);

@@ -6,6 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFPrintSetup;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
@@ -15,7 +16,9 @@ import org.apache.poi.util.Units;
 import org.apache.poi.wp.usermodel.HeaderFooterType;
 import org.apache.poi.xwpf.usermodel.*;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPageMar;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPageSz;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STPageOrientation;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -252,6 +255,24 @@ public class ExportWordDocument {
             HSSFWorkbook workbook = new HSSFWorkbook();
             HSSFSheet sheet = workbook.createSheet("KIEM TRA");
 
+            sheet.protectSheet("keep-it-un-editable");
+
+            sheet.setZoom(75);
+            sheet.getPrintSetup().setPaperSize(HSSFPrintSetup.A4_PAPERSIZE);
+            sheet.getPrintSetup().setHeaderMargin(0.3D);
+            sheet.getPrintSetup().setFooterMargin(0.3D);
+            sheet.setMargin(Sheet.LeftMargin, 0.25);
+            sheet.setMargin(Sheet.RightMargin, 0.25);
+            sheet.setMargin(Sheet.TopMargin, 0.2);
+            sheet.setMargin(Sheet.BottomMargin, 0.2);
+
+            PrintSetup ps = sheet.getPrintSetup();
+            sheet.setAutobreaks(true);
+            ps.setFitHeight((short) 0);
+            ps.setFitWidth((short) 1);
+
+            workbook.setPrintArea(0, "$C:$I");
+
             // sets the column with for the column to width*256
             sheet.setColumnWidth(3, 55*256);
             sheet.setColumnWidth(4, 13*256);
@@ -268,12 +289,12 @@ public class ExportWordDocument {
             Cell cell;
             Row row;
 
-            HSSFCellStyle mainStyle = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 24, IndexedColors.BLACK.getIndex(), true, true, IndexedColors.YELLOW.getIndex(), HorizontalAlignment.LEFT, VerticalAlignment.CENTER);
-            HSSFCellStyle headerStyle = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 16, IndexedColors.WHITE.getIndex(), true, true, IndexedColors.BLACK.getIndex(), HorizontalAlignment.LEFT, VerticalAlignment.CENTER);
-            HSSFCellStyle labelStyle = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 11, IndexedColors.BLACK.getIndex(), true, true, IndexedColors.WHITE.getIndex(), HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
-            HSSFCellStyle labelStyleLeft = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 11, IndexedColors.BLACK.getIndex(), true, true, IndexedColors.WHITE.getIndex(), HorizontalAlignment.LEFT, VerticalAlignment.CENTER);
-            HSSFCellStyle cellStyle = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 11, IndexedColors.BLACK.getIndex(), false, true, IndexedColors.WHITE.getIndex(), HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
-            HSSFCellStyle cellStyleLeft = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 11, IndexedColors.BLACK.getIndex(), false, true, IndexedColors.WHITE.getIndex(), HorizontalAlignment.LEFT, VerticalAlignment.CENTER);
+            HSSFCellStyle mainStyle = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 24, IndexedColors.BLACK.getIndex(), true, true, IndexedColors.YELLOW.getIndex(), HorizontalAlignment.LEFT, VerticalAlignment.CENTER, false);
+            HSSFCellStyle headerStyle = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 16, IndexedColors.WHITE.getIndex(), true, true, IndexedColors.BLACK.getIndex(), HorizontalAlignment.LEFT, VerticalAlignment.CENTER, true);
+            HSSFCellStyle labelStyle = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 11, IndexedColors.BLACK.getIndex(), true, true, IndexedColors.WHITE.getIndex(), HorizontalAlignment.CENTER, VerticalAlignment.CENTER, true);
+            HSSFCellStyle labelStyleLeft = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 11, IndexedColors.BLACK.getIndex(), true, true, IndexedColors.WHITE.getIndex(), HorizontalAlignment.LEFT, VerticalAlignment.CENTER, true);
+            HSSFCellStyle cellStyle = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 11, IndexedColors.BLACK.getIndex(), false, true, IndexedColors.WHITE.getIndex(), HorizontalAlignment.CENTER, VerticalAlignment.CENTER, true);
+            HSSFCellStyle cellStyleLeft = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 11, IndexedColors.BLACK.getIndex(), false, true, IndexedColors.WHITE.getIndex(), HorizontalAlignment.LEFT, VerticalAlignment.CENTER, true);
 
             row = sheet.createRow(rownum);
 //            row.setHeight((short) 500);
@@ -456,8 +477,10 @@ public class ExportWordDocument {
 
         String woList = "";
         for(int i=0;i<orderObservableList.size();i++) {
-            woList += orderObservableList.get(i).getWoName() + (Integer.parseInt(orderObservableList.get(i).getOrderTimes()) > 1 ? " (Lần "+orderObservableList.get(i).getOrderTimes()+")" : "");
-            woList += (i<orderObservableList.size()-1) ? " + " : "";
+            if(!woList.contains(orderObservableList.get(i).getWoName())) {
+                woList += orderObservableList.get(i).getWoName() + (Integer.parseInt(orderObservableList.get(i).getOrderTimes()) > 1 ? " (Lần "+orderObservableList.get(i).getOrderTimes()+")" : "");
+                woList += (i<orderObservableList.size()-1) ? " " : "";
+            }
         }
 
         ShipAddressDAO shipAddressDAO = new ShipAddressDAO();
@@ -470,12 +493,27 @@ public class ExportWordDocument {
             XWPFTable table;
             XWPFTableRow row;
 
-            CTSectPr sectPr = doc.getDocument().getBody().addNewSectPr();
-            CTPageMar pageMar = sectPr.addNewPgMar();
-            pageMar.setLeft(BigInteger.valueOf(820L));
-            pageMar.setTop(BigInteger.valueOf(500L));
-            pageMar.setRight(BigInteger.valueOf(820L));
-            pageMar.setBottom(BigInteger.valueOf(500L));
+            if (!doc.getDocument().getBody().isSetSectPr()) {
+                doc.getDocument().getBody().addNewSectPr();
+            }
+            CTSectPr section = doc.getDocument().getBody().getSectPr();
+
+            if(!section.isSetPgSz()) {
+                section.addNewPgSz();
+            }
+            CTPageSz pageSize = section.getPgSz();
+            // A4 = 595x842 => multiply 20 since BigInteger represents 1/20 Point
+            // for more detail about paper sizes, check the below url
+            // https://www.gnu.org/software/gv/manual/html_node/Paper-Keywords-and-paper-size-in-points.html
+            pageSize.setH(BigInteger.valueOf(16840));
+            pageSize.setW(BigInteger.valueOf(11900));
+            pageSize.setOrient(STPageOrientation.PORTRAIT);
+
+            CTPageMar pageMar = section.addNewPgMar();
+            pageMar.setLeft(BigInteger.valueOf(620L));
+            pageMar.setTop(BigInteger.valueOf(300L));
+            pageMar.setRight(BigInteger.valueOf(720L));
+            pageMar.setBottom(BigInteger.valueOf(300L));
 
             /*
              * Word Header
@@ -683,7 +721,7 @@ public class ExportWordDocument {
             if(file != null && orderObservableList.size() > 0) {
                 // save it to .docx file
 //                try (FileOutputStream out = new FileOutputStream(file.getPath())) // for fileChooser
-                try (FileOutputStream out = new FileOutputStream(file.getPath()+"/"+ supplierCode + "-"+woList+ " ("+shipAddress.getCode_address()+")"+ ".docx"))
+                try (FileOutputStream out = new FileOutputStream(file.getPath()+"/"+ supplierCode + "-"+woList.trim().replace(" ", "+")+ " ("+shipAddress.getCode_address()+")"+ ".docx"))
                 {
                     doc.write(out);
 //                    utils.alert("info", Alert.AlertType.INFORMATION, "Xuất file thành công!", "File đã được lưu vào ổ đĩa!").showAndWait();
@@ -691,7 +729,8 @@ public class ExportWordDocument {
             }
 
         } catch (Exception e) {
-            System.out.println(e);
+//            System.out.println(e);
+            utils.alert("err", Alert.AlertType.ERROR, "Lỗi!", e.getMessage()).showAndWait();
         }
     }
 
@@ -716,12 +755,27 @@ public class ExportWordDocument {
             XWPFTable table;
             XWPFTableRow row;
 
-            CTSectPr sectPr = doc.getDocument().getBody().addNewSectPr();
-            CTPageMar pageMar = sectPr.addNewPgMar();
-            pageMar.setLeft(BigInteger.valueOf(820L));
-            pageMar.setTop(BigInteger.valueOf(500L));
-            pageMar.setRight(BigInteger.valueOf(820L));
-            pageMar.setBottom(BigInteger.valueOf(500L));
+            if (!doc.getDocument().getBody().isSetSectPr()) {
+                doc.getDocument().getBody().addNewSectPr();
+            }
+            CTSectPr section = doc.getDocument().getBody().getSectPr();
+
+            if(!section.isSetPgSz()) {
+                section.addNewPgSz();
+            }
+            CTPageSz pageSize = section.getPgSz();
+            // A4 = 595x842 => multiply 20 since BigInteger represents 1/20 Point
+            // for more detail about paper sizes, check the below url
+            // https://www.gnu.org/software/gv/manual/html_node/Paper-Keywords-and-paper-size-in-points.html
+            pageSize.setH(BigInteger.valueOf(16840));
+            pageSize.setW(BigInteger.valueOf(11900));
+            pageSize.setOrient(STPageOrientation.PORTRAIT);
+
+            CTPageMar pageMar = section.addNewPgMar();
+            pageMar.setLeft(BigInteger.valueOf(620L));
+            pageMar.setTop(BigInteger.valueOf(300L));
+            pageMar.setRight(BigInteger.valueOf(720L));
+            pageMar.setBottom(BigInteger.valueOf(300L));
 
             /*
              * Word Header
@@ -891,7 +945,8 @@ public class ExportWordDocument {
             }
 
         } catch (Exception e) {
-            System.out.println(e);
+//            System.out.println(e);
+            utils.alert("err", Alert.AlertType.ERROR, "Lỗi!", e.getMessage()).showAndWait();
         }
     }
 }
