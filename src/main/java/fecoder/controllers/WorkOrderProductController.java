@@ -26,8 +26,14 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.util.Units;
 import org.apache.poi.wp.usermodel.HeaderFooterType;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.*;
 
@@ -56,6 +62,7 @@ public class WorkOrderProductController implements Initializable {
     public TextField searchField;
     public Button reloadData;
     public Button exportData;
+    public Button importData;
 
     public TableView<WorkOrderProductString> productTableView;
     public TableColumn<WorkOrderProductString, String> productIdColumn;
@@ -1056,6 +1063,73 @@ public class WorkOrderProductController implements Initializable {
 
         } catch (Exception e) {
             System.out.println(e);
+        }
+    }
+
+    public void importData(ActionEvent actionEvent) {
+        try {
+            FileChooser fileChooser = new FileChooser();
+            FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("Excel Workbook (*.xls)", "*.xls");
+            fileChooser.getExtensionFilters().add(extensionFilter);
+
+            File file = fileChooser.showOpenDialog((Stage)((Node) actionEvent.getSource()).getScene().getWindow());
+
+            if(file != null) {
+                FileInputStream fis = new FileInputStream(file.getPath());
+                HSSFWorkbook wb = new HSSFWorkbook(fis);
+                HSSFSheet sheet = wb.getSheetAt(0);
+                Row row;
+                Row top = sheet.getRow(0);
+
+                if((int) Double.parseDouble(String.valueOf(top.getCell(25))) == this.innerData.getId()) {
+                    for(int i=2; i<=sheet.getLastRowNum(); i++) {
+                        row = sheet.getRow(i);
+
+                        boolean cell_0_null = (row.getCell(0) == null || row.getCell(0).getCellType() == CellType.BLANK);
+                        boolean cell_1_null = (row.getCell(1) == null || row.getCell(1).getCellType() == CellType.BLANK);
+                        boolean cell_7_null = (row.getCell(7) == null || row.getCell(7).getCellType() == CellType.BLANK);
+                        boolean cell_8_null = (row.getCell(8) == null || row.getCell(8).getCellType() == CellType.BLANK);
+                        boolean cell_9_null = (row.getCell(9) == null || row.getCell(9).getCellType() == CellType.BLANK);
+
+                        boolean str_cell_7_empty = String.valueOf(row.getCell(7)).isEmpty();
+                        boolean str_cell_8_empty = String.valueOf(row.getCell(8)).isEmpty();
+                        boolean str_cell_9_empty = String.valueOf(row.getCell(9)).isEmpty();
+
+                        float stock = cell_7_null ? 0 : (str_cell_7_empty ? 0 : (float) Double.parseDouble(String.valueOf(row.getCell(7)).replaceAll(",", "")) );
+                        float actual_qty = cell_8_null ? 0 : (str_cell_8_empty ? 0 : (float) Double.parseDouble(String.valueOf(row.getCell(8)).replaceAll(",", "")) );
+                        String printed = cell_9_null ? "" : (str_cell_9_empty ? "" : String.valueOf(row.getCell(9)) );
+
+                        if(!cell_0_null || cell_1_null) {
+                            continue;
+                        }
+
+                        int id = (int) Double.parseDouble(String.valueOf(row.getCell(1)));
+
+//                        System.out.println(
+//                            "KT ID: "+cell_1_null + " => "+ id +"\n"+
+//                            "KT Tồn: "+ cell_7_null + " => "+ stock +"\n"+
+//                            "KT Thực đặt: "+ cell_8_null + " => "+ actual_qty +"\n"+
+//                            "KT In sẵn: "+ cell_9_null + " => "+ printed
+//                        );
+
+//                        float stock = !cell_7_null ? (float) Double.parseDouble(String.valueOf(row.getCell(7)).replaceAll(",", "")) : 0;
+//                        float actual_qty = !cell_8_null ? (float) Double.parseDouble(String.valueOf(row.getCell(8)).replaceAll(",", "")) : 0;
+//                        String printed = !cell_9_null ? String.valueOf(row.getCell(9)) : "";
+//                        int wopp_id = (int) Double.parseDouble(String.valueOf(row.getCell(1)));
+//
+//                        System.out.println(stock +", "+actual_qty+", "+printed+", "+wopp_id);
+
+                        workOrderProductPackagingDAO.updateDataFromSheet(stock, actual_qty, printed, id);
+
+//                        System.out.println("----------------------------------------------------------------");
+                    }
+                } else {
+                    utils.alert("err", Alert.AlertType.ERROR, "Lỗi", "Lỗi, nhập không đúng định dạng! Hệ thống chỉ hỗ trợ nhập Data từ file nháp (KIEM TRA BB "+ this.innerData.getName() +".xls) đã xuất trước đó. Vui lòng giữ nguyên định dạng và thử lại.").showAndWait();
+                }
+                reload();
+            }
+        } catch (Exception ex){
+            utils.alert("err", Alert.AlertType.ERROR, "Lỗi", ex.getMessage()).showAndWait();
         }
     }
 

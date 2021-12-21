@@ -39,7 +39,7 @@ public class TreeTableUtil {
 
         ObservableList<WorkProduction> workOrderList = FXCollections.observableArrayList(workProductionDAO.getWorkOrderList(workOrderID+""));
 
-        Locale locale  = new Locale("vi", "VN");
+        Locale locale  = new Locale("en", "US");
         DecimalFormat df = (DecimalFormat) NumberFormat.getNumberInstance(locale);
         df.applyPattern("###,###.###");
 

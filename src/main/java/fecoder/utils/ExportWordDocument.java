@@ -33,7 +33,7 @@ import java.util.Locale;
 public class ExportWordDocument {
 
     private static final Utils utils = new Utils();
-    private static final String imgUrl = utils.getLogo(false);
+    private static final String imgUrl = utils.getLogo(true);
     private static final String fontFamily = utils.setExportFont(null);
 
     /**
@@ -290,11 +290,15 @@ public class ExportWordDocument {
             Row row;
 
             HSSFCellStyle mainStyle = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 24, IndexedColors.BLACK.getIndex(), true, true, IndexedColors.YELLOW.getIndex(), HorizontalAlignment.LEFT, VerticalAlignment.CENTER, false);
-            HSSFCellStyle headerStyle = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 16, IndexedColors.WHITE.getIndex(), true, true, IndexedColors.BLACK.getIndex(), HorizontalAlignment.LEFT, VerticalAlignment.CENTER, true);
-            HSSFCellStyle labelStyle = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 11, IndexedColors.BLACK.getIndex(), true, true, IndexedColors.WHITE.getIndex(), HorizontalAlignment.CENTER, VerticalAlignment.CENTER, true);
-            HSSFCellStyle labelStyleLeft = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 11, IndexedColors.BLACK.getIndex(), true, true, IndexedColors.WHITE.getIndex(), HorizontalAlignment.LEFT, VerticalAlignment.CENTER, true);
-            HSSFCellStyle cellStyle = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 11, IndexedColors.BLACK.getIndex(), false, true, IndexedColors.WHITE.getIndex(), HorizontalAlignment.CENTER, VerticalAlignment.CENTER, true);
-            HSSFCellStyle cellStyleLeft = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 11, IndexedColors.BLACK.getIndex(), false, true, IndexedColors.WHITE.getIndex(), HorizontalAlignment.LEFT, VerticalAlignment.CENTER, true);
+            HSSFCellStyle headerStyle = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 16, IndexedColors.WHITE.getIndex(), true, true, IndexedColors.BLACK.getIndex(), HorizontalAlignment.LEFT, VerticalAlignment.CENTER, false);
+            HSSFCellStyle labelStyle = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 11, IndexedColors.BLACK.getIndex(), true, true, IndexedColors.WHITE.getIndex(), HorizontalAlignment.CENTER, VerticalAlignment.CENTER, false);
+            HSSFCellStyle labelStyleLocked = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 11, IndexedColors.BLACK.getIndex(), true, true, IndexedColors.WHITE.getIndex(), HorizontalAlignment.CENTER, VerticalAlignment.CENTER, true);
+            HSSFCellStyle labelStyleLeft = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 11, IndexedColors.BLACK.getIndex(), true, true, IndexedColors.WHITE.getIndex(), HorizontalAlignment.LEFT, VerticalAlignment.CENTER, false);
+            HSSFCellStyle cellStyle = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 11, IndexedColors.BLACK.getIndex(), false, true, IndexedColors.WHITE.getIndex(), HorizontalAlignment.CENTER, VerticalAlignment.CENTER, false);
+            HSSFCellStyle cellStyleLocked = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 11, IndexedColors.BLACK.getIndex(), false, true, IndexedColors.WHITE.getIndex(), HorizontalAlignment.CENTER, VerticalAlignment.CENTER, true);
+            HSSFCellStyle cellStyleLeft = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 11, IndexedColors.BLACK.getIndex(), false, true, IndexedColors.WHITE.getIndex(), HorizontalAlignment.LEFT, VerticalAlignment.CENTER, false);
+            HSSFCellStyle cellStyleLeftLocked = HSSFUtil.createStyle(workbook, BorderStyle.THIN, (short) 11, IndexedColors.BLACK.getIndex(), false, true, IndexedColors.WHITE.getIndex(), HorizontalAlignment.LEFT, VerticalAlignment.CENTER, true);
+            HSSFCellStyle lockedCell = HSSFUtil.createStyle(workbook, BorderStyle.HAIR, (short) 1, IndexedColors.WHITE.getIndex(), false, false, IndexedColors.WHITE.getIndex(), HorizontalAlignment.CENTER, VerticalAlignment.CENTER, true);
 
             row = sheet.createRow(rownum);
 //            row.setHeight((short) 500);
@@ -309,14 +313,24 @@ public class ExportWordDocument {
                     2, //first column (0-based)
                     8  //last column  (0-based)
             ));
-            // Tổng số khối (J)
-            cell = row.createCell(9, CellType.STRING);
-            cell.setCellValue(df.format(Float.parseFloat(totalOrder.getCbm())) + " (khối)");
-            cell.setCellStyle(labelStyle);
-            // Tổng số thùng (K)
-            cell = row.createCell(10, CellType.STRING);
-            cell.setCellValue(df.format(Float.parseFloat(totalOrder.getpDesireQuantity()+"")) + " (thùng)");
-            cell.setCellStyle(labelStyle);
+
+            if(totalOrder.getCbm() != null || totalOrder.getpDesireQuantity() > 0) {
+                // Tổng số khối (J)
+                cell = row.createCell(9, CellType.STRING);
+                cell.setCellValue(df.format(Float.parseFloat(totalOrder.getCbm())) + " (khối)");
+                cell.setCellStyle(labelStyle);
+                // Tổng số thùng (K)
+                cell = row.createCell(10, CellType.STRING);
+                cell.setCellValue(df.format(Float.parseFloat(totalOrder.getpDesireQuantity()+"")) + " (thùng)");
+                cell.setCellStyle(labelStyle);
+            } else {
+                utils.alert("info", Alert.AlertType.INFORMATION, "Thông báo", "Không thể tính toán được số khối hoặc tổng thùng. Vui lòng kiểm tra lại.").showAndWait();
+            }
+
+            // wopp.work_order_id (Z)
+            cell = row.createCell(25, CellType.STRING);
+            cell.setCellValue(totalOrder.getWoID());
+            cell.setCellStyle(lockedCell);
 
             rownum +=1;
 
@@ -372,6 +386,11 @@ public class ExportWordDocument {
                     row = sheet.createRow(rownum);
 //                    row.setHeight((short) 700);
 
+                    // wopp.product_id (B)
+                    cell = row.createCell(1, CellType.STRING);
+                    cell.setCellValue(workOrderProductPackagingDAO.getDataByID(productList.get(i).getId()).getProduct_id());
+                    cell.setCellStyle(lockedCell);
+
                     // Thực đặt
                     cell = row.createCell(2, CellType.STRING);
                     cell.setCellValue(productList.get(i).getOrdinalNumbers() + "/ " + productList.get(i).getProductName() + " (Lần "+productList.get(i).getOrderTimes()+")");
@@ -391,26 +410,36 @@ public class ExportWordDocument {
                             rownum++;
                             row = sheet.createRow(rownum);
 //                            row.setHeight((short) -1);
+                            // wopp.id (A)
+                            cell = row.createCell(0, CellType.STRING);
+                            cell.setCellValue(packagingList.get(j).getId());
+                            cell.setCellStyle(lockedCell);
+
+                            // wopp.work_order_id (Z)
+//                            cell = row.createCell(25, CellType.STRING);
+//                            cell.setCellValue(workOrderProductPackagingDAO.getDataByID(packagingList.get(j).getId()).getWork_order_id());
+//                            cell.setCellStyle(lockedCell);
+
                             // NCC (C)
                             cell = row.createCell(2, CellType.STRING);
                             cell.setCellValue(packagingList.get(j).getPackagingSuplier());
-                            cell.setCellStyle(cellStyle);
+                            cell.setCellStyle(cellStyleLocked);
                             // Tên BB (Qui cách) (D)
                             cell = row.createCell(3, CellType.STRING);
-                            cell.setCellValue(packagingList.get(j).getPackagingName() + (packagingList.get(j).getPrintStatus() != null ? " ("+ packagingList.get(j).getPrintStatus() +")" : "") + (!packagingList.get(j).getPackagingSpecification().equals("") ? " ("+ packagingList.get(j).getPackagingSpecification() +")" : ""));
-                            cell.setCellStyle(cellStyleLeft);
+                            cell.setCellValue(packagingList.get(j).getPackagingName() + (packagingList.get(j).getPrintStatus() != null? " ("+ packagingList.get(j).getPrintStatus() +")" : "") + (!packagingList.get(j).getPackagingSpecification().equals("") ? " ("+ packagingList.get(j).getPackagingSpecification() +")" : ""));
+                            cell.setCellStyle(cellStyleLeftLocked);
                             // Kích thước (E)
                             cell = row.createCell(4, CellType.STRING);
                             cell.setCellValue(packagingList.get(j).getPackagingDimension());
-                            cell.setCellStyle(cellStyle);
+                            cell.setCellStyle(cellStyleLocked);
                             // ĐVT (F)
                             cell = row.createCell(5, CellType.STRING);
                             cell.setCellValue(packagingList.get(j).getUnit());
-                            cell.setCellStyle(cellStyle);
+                            cell.setCellStyle(cellStyleLocked);
                             // Cần (G)
                             cell = row.createCell(6, CellType.STRING);
                             cell.setCellValue(Float.parseFloat(packagingList.get(j).getWorkOrderQuantity()+"") > 0 ? formatter.format(Float.parseFloat(packagingList.get(j).getWorkOrderQuantity()+"")) : "");
-                            cell.setCellStyle(cellStyle);
+                            cell.setCellStyle(cellStyleLocked);
                             // Tồn (H)
                             cell = row.createCell(7, CellType.STRING);
                             cell.setCellValue(Float.parseFloat(packagingList.get(j).getStock()+"") > 0 ? formatter.format(Float.parseFloat(packagingList.get(j).getStock()+"")) : "");
@@ -478,7 +507,11 @@ public class ExportWordDocument {
         String woList = "";
         for(int i=0;i<orderObservableList.size();i++) {
             if(!woList.contains(orderObservableList.get(i).getWoName())) {
-                woList += orderObservableList.get(i).getWoName() + (Integer.parseInt(orderObservableList.get(i).getOrderTimes()) > 1 ? " (Lần "+orderObservableList.get(i).getOrderTimes()+")" : "");
+                if(orderObservableList.get(i).getWoName().contains("+")) {
+                    woList += orderObservableList.get(i).getWoName().trim().replace("+","") + (Integer.parseInt(orderObservableList.get(i).getOrderTimes()) > 1 ? " (Lần "+orderObservableList.get(i).getOrderTimes()+")" : "");
+                } else {
+                    woList += orderObservableList.get(i).getWoName() + (Integer.parseInt(orderObservableList.get(i).getOrderTimes()) > 1 ? " (Lần "+orderObservableList.get(i).getOrderTimes()+")" : "");
+                }
                 woList += (i<orderObservableList.size()-1) ? " " : "";
             }
         }
@@ -900,7 +933,7 @@ public class ExportWordDocument {
                 row.getCell(5).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
                 row.getCell(6).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
 
-                float residualNumber = Float.parseFloat(orderObservableList.get(i).getpTotal()+"") + Float.parseFloat(orderObservableList.get(i).getpStock()+"") - Float.parseFloat(orderObservableList.get(i).getpResidualQuantity()+"") - Float.parseFloat(orderObservableList.get(i).getpDesireQuantity()+"");
+                float residualNumber = Float.parseFloat(orderObservableList.get(i).getpResidualQuantity()+"") > 0 ? Float.parseFloat(orderObservableList.get(i).getpTotal()+"") + Float.parseFloat(orderObservableList.get(i).getpStock()+"") - Float.parseFloat(orderObservableList.get(i).getpResidualQuantity()+"") - Float.parseFloat(orderObservableList.get(i).getpDesireQuantity()+"") : 0;
 
                 utils.setHeaderRowforSingleCell(row.getCell(0), (i+1)+"", 11, false, false, ParagraphAlignment.CENTER, UnderlinePatterns.NONE);
                 utils.setHeaderRowforSingleCell(row.getCell(1), orderObservableList.get(i).getpName() + ( orderObservableList.get(i).getpIsPrinted() != null ? " ("+ orderObservableList.get(i).getpIsPrinted() +")" : "") + ( !orderObservableList.get(i).getpSpecs().equals("") ? " ("+ orderObservableList.get(i).getpSpecs() +")" : ""), 11, false, false, ParagraphAlignment.LEFT, UnderlinePatterns.NONE);

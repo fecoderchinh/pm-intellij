@@ -129,6 +129,7 @@
                         <TextField fx:id="searchField" promptText="Nhập từ khóa cần tìm" />
                     </HBox>
                     <HBox alignment="BASELINE_RIGHT" prefHeight="26.0" prefWidth="494.0" spacing="10" HBox.hgrow="ALWAYS">
+                        <Button id="importData" fx:id="importData" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#importData" text="NHẬP DATA" />
                         <Label text="Chọn lần đặt">
                             <font>
                                 <Font size="14.0" />

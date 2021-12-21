@@ -136,6 +136,38 @@ public class WorkOrderProductPackagingDAO {
     }
 
     /**
+     * */
+    public void updateDataFromSheet(float stock, float actual_qty, String printed, int id) {
+        String query = "update "+tableName+
+                " set stock=?,actual_qty=?,printed=?"+
+                " where id=?";
+        preparedUpdateDataFromSheet(query, stock, actual_qty, printed, id);
+    }
+
+    /**
+     * */
+    private void preparedUpdateDataFromSheet(String query, float stock, float actual_qty, String printed, int id) {
+        try {
+            Connection conn = ConnectionUtils.getMyConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setFloat(1, stock);
+            preparedStatement.setFloat(2, actual_qty);
+            preparedStatement.setString(3, printed);
+            preparedStatement.setInt(4, id);
+
+            preparedStatement.executeUpdate();
+
+//            System.out.println(preparedStatement);
+
+            preparedStatement.close();
+            conn.close();
+        } catch (Exception ex) {
+            assert ex instanceof SQLException;
+            jdbcDAO.printSQLException((SQLException) ex);
+        }
+    }
+
+    /**
      * Preparing Insert Query before action
      *
      * @param query query string
